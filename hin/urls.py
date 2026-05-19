@@ -11,11 +11,9 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('terms/', views.terms, name='terms'),
     path('privacy/', views.privacy, name='privacy'),
-    path('faq/', views.faq, name='faq'),
     path('contact/', views.contact, name='contact'),
     
     # Authentication
-    path('signup/', views.signup, name='signup'),
     path('login/', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
     path('dashboard/', views.dashboard, name='dashboard'),

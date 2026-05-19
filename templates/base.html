@@ -4,42 +4,300 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HIN Technologies - {% block title %}DevOps Training{% endblock %}</title>
+
+    {% load static %}
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    {% load static %}
     <link rel="stylesheet" href="{% static 'hin/css/custom.css' %}">
 </head>
+
 <body>
-    {% include 'cms/includes/navbar.html' %}
-    
-    {% include 'cms/includes/messages.html' %}
-    
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
-    
-    {% include 'cms/includes/footer.html' %}
-    
-    {% include 'cms/includes/delete_modal.html' %}
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Delete confirmation modal handler
-        document.addEventListener('DOMContentLoaded', function() {
-            var deleteModal = document.getElementById('deleteModal');
-            if (deleteModal) {
-                deleteModal.addEventListener('show.bs.modal', function(event) {
-                    var button = event.relatedTarget;
-                    var deleteUrl = button.getAttribute('data-delete-url');
-                    var deleteForm = document.getElementById('deleteForm');
-                    if (deleteForm) {
-                        deleteForm.action = deleteUrl;
-                    }
-                });
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{% url 'hin:home' %}">
+            HIN Technologies
+        </a>
+
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'hin:home' %}">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'hin:about' %}">About</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'hin:service_list' %}">Services</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'hin:client_list' %}">Clients</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'hin:blog_list' %}">Blogs</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'hin:contact' %}">Contact</a>
+                </li>
+
+                {% if user.is_authenticated %}
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle"
+                       href="#"
+                       id="userDropdown"
+                       role="button"
+                       data-bs-toggle="dropdown">
+                        <i class="fas fa-user"></i>
+                        {{ user.username }}
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+
+                        <li>
+                            <a class="dropdown-item" href="{% url 'hin:dashboard' %}">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item" href="{% url 'hin:profile' %}">
+                                <i class="fas fa-user-circle"></i>
+                                Profile
+                            </a>
+                        </li>
+
+                        {% if perms.hin.view_contactenquiry %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'hin:enquiry_list' %}">
+                                <i class="fas fa-envelope"></i>
+                                Enquiries
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        {% if perms.hin.add_service or perms.hin.change_service %}
+                        <li>
+                            <a class="dropdown-item" href="{% url 'hin:service_manage' %}">
+                                <i class="fas fa-cogs"></i>
+                                Manage Services
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        {% if perms.hin.add_blog or perms.hin.change_blog %}
+                        <li>
+                            <a class="dropdown-item" href="{% url 'hin:blog_manage' %}">
+                                <i class="fas fa-blog"></i>
+                                Manage Blogs
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        {% if perms.hin.add_client or perms.hin.change_client %}
+                        <li>
+                            <a class="dropdown-item" href="{% url 'hin:client_manage' %}">
+                                <i class="fas fa-building"></i>
+                                Manage Clients
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        {% if user.is_superuser %}
+                        <li><hr class="dropdown-divider"></li>
+
+                        <li>
+                            <a class="dropdown-item" href="{% url 'hin:user_list' %}">
+                                <i class="fas fa-users"></i>
+                                Manage Users
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item" href="/admin/">
+                                <i class="fas fa-database"></i>
+                                Django Admin
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        <li><hr class="dropdown-divider"></li>
+
+                        <li>
+                            <a class="dropdown-item" href="{% url 'hin:logout' %}">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+
+                {% else %}
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'hin:login' %}">
+                        Login
+                    </a>
+                </li>
+
+
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<!-- MESSAGES -->
+{% if messages %}
+<div class="container mt-3">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show"
+         role="alert">
+        {{ message }}
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert">
+        </button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+
+<!-- PAGE CONTENT -->
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
+
+
+<!-- FOOTER -->
+<footer class="bg-dark text-white pt-5 mt-5">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-4 mb-4">
+                <h5>HIN Technologies</h5>
+                <p>Master DevOps with Hands-On Training</p>
+                <p>
+                    <small>
+                        Industry-focused curriculum |
+                        Real-time projects |
+                        Career guidance
+                    </small>
+                </p>
+            </div>
+
+            <div class="col-md-2 mb-4">
+                <h5>Quick Links</h5>
+
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'hin:home' %}" class="text-white-50">Home</a></li>
+                    <li><a href="{% url 'hin:about' %}" class="text-white-50">About</a></li>
+                    <li><a href="{% url 'hin:service_list' %}" class="text-white-50">Services</a></li>
+                    <li><a href="{% url 'hin:client_list' %}" class="text-white-50">Clients</a></li>
+                    <li><a href="{% url 'hin:blog_list' %}" class="text-white-50">Blogs</a></li>
+                    <li><a href="{% url 'hin:contact' %}" class="text-white-50">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <h5>Contact Info</h5>
+
+                <ul class="list-unstyled">
+                    <li>📞 Phone/WhatsApp: [Placeholder]</li>
+                    <li>✉️ info@hintechnologies.in</li>
+                    <li>📍 Bengaluru</li>
+                </ul>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <h5>Follow Us</h5>
+
+                <div>
+                    <a href="#" class="text-white-50 me-3">
+                        <i class="fab fa-facebook fa-2x"></i>
+                    </a>
+
+                    <a href="#" class="text-white-50 me-3">
+                        <i class="fab fa-linkedin fa-2x"></i>
+                    </a>
+
+                    <a href="#" class="text-white-50 me-3">
+                        <i class="fab fa-twitter fa-2x"></i>
+                    </a>
+
+                    <a href="#" class="text-white-50 me-3">
+                        <i class="fab fa-youtube fa-2x"></i>
+                    </a>
+                </div>
+
+                <hr class="my-3">
+
+                <a href="{% url 'hin:terms' %}" class="text-white-50">
+                    Terms
+                </a> |
+                <a href="{% url 'hin:privacy' %}" class="text-white-50">
+                    Privacy
+                </a>
+            </div>
+
+        </div>
+
+        <hr>
+
+        <div class="text-center py-3">
+            <p class="mb-0">
+                &copy; 2026 HIN Technologies.
+                All rights reserved.
+            </p>
+        </div>
+    </div>
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    var deleteModal = document.getElementById('deleteModal');
+
+    if (deleteModal) {
+        deleteModal.addEventListener('show.bs.modal', function(event) {
+
+            var button = event.relatedTarget;
+            var deleteUrl = button.getAttribute('data-delete-url');
+            var deleteForm = document.getElementById('deleteForm');
+
+            if (deleteForm) {
+                deleteForm.action = deleteUrl;
             }
         });
-    </script>
-    {% block extra_js %}{% endblock %}
+    }
+});
+</script>
+
+{% block extra_js %}{% endblock %}
+
 </body>
 </html>

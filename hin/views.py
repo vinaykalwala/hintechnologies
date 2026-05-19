@@ -28,16 +28,7 @@ def terms(request):
 def privacy(request):
     return render(request, 'privacy.html')
 
-def faq(request):
-    faqs = [
-        {'question': 'Who can enroll in this DevOps training?', 'answer': 'Any graduate with basic computer knowledge can enroll. Freshers and experienced IT professionals are both welcome.'},
-        {'question': 'What is the duration of the course?', 'answer': 'The Complete DevOps Mastery Program runs for 3 months (weekend batches). We also offer 8-week accelerated and 6-week 1-on-1 mentorship programs.'},
-        {'question': 'Do you provide placement assistance?', 'answer': 'Yes. We share your resume with our 50+ hiring partners, conduct mock interviews, and provide career guidance.'},
-        {'question': 'Is this course available online?', 'answer': 'Yes. All our programs are available in both classroom (Bengaluru) and live online formats.'},
-        {'question': 'What tools will I learn?', 'answer': 'Git, Linux, Maven, Jenkins, SonarQube, JFrog, Docker, Kubernetes, Datadog, New Relic, Ansible, Terraform, and Jira.'},
-        {'question': 'Do I get a certificate?', 'answer': 'Yes. You receive a certificate of completion and build a GitHub portfolio with 4+ real projects.'},
-    ]
-    return render(request, 'faq.html', {'faqs': faqs})
+
 
 # ==================== CONTACT ENQUIRY ====================
 
@@ -145,7 +136,7 @@ def service_manage(request):
         service_to_edit = get_object_or_404(Service, pk=edit_id)
         if not request.user.has_perm('hin.change_service'):
             messages.error(request, 'You don\'t have permission to edit services.')
-            return redirect('service_list')
+            return redirect('hin:service_list')
     
     if request.method == 'POST':
         if service_to_edit:
@@ -156,7 +147,7 @@ def service_manage(request):
         if form.is_valid():
             service = form.save()
             messages.success(request, f'Service "{service.title}" saved successfully.')
-            return redirect('service_list')
+            return redirect('hin:service_list')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
@@ -350,7 +341,7 @@ from django.contrib.auth.models import User, Permission
 from .models import ContactEnquiry, Service, Blog, Client
 from .forms import (
     ContactEnquiryForm, ServiceForm, BlogForm, ClientForm,
-    SignUpForm, LoginForm, UserProfileForm,
+    LoginForm, UserProfileForm,
     UserCreateWithPermissionsForm, UserEditWithPermissionsForm
 )
 
@@ -363,24 +354,6 @@ def is_admin_or_staff(user):
     return user.is_authenticated and (user.is_superuser or user.is_staff)
 
 # ==================== AUTHENTICATION VIEWS ====================
-
-def signup(request):
-    if request.user.is_authenticated:
-        return redirect('hin:dashboard')
-    
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, f'Welcome {user.username}! Your account has been created.')
-            return redirect('hin:dashboard')
-        else:
-            messages.error(request, 'Please correct the errors below.')
-    else:
-        form = SignUpForm()
-    
-    return render(request, 'auth/signup.html', {'form': form})
 
 def user_login(request):
     if request.user.is_authenticated:
@@ -534,17 +507,22 @@ def user_edit(request, user_id):
 @login_required
 @user_passes_test(is_superuser)
 def user_delete(request, user_id):
-    user = get_object_or_404(User, id=user_id)
-    
-    if user == request.user:
-        messages.error(request, 'You cannot delete your own account.')
-        return redirect('hin:user_list')
-    
-    if request.method == 'POST':
-        username = user.username
-        user.delete()
-        messages.success(request, f'User "{username}" has been deleted successfully!')
-        return redirect('hin:user_list')
-    
-    return render(request, 'users/user_confirm_delete.html', {'delete_user': user})
 
+    user = get_object_or_404(User, id=user_id)
+
+    if user == request.user:
+        messages.error(
+            request,
+            'You cannot delete your own account.'
+        )
+        return redirect('hin:user_list')
+
+    username = user.username
+    user.delete()
+
+    messages.success(
+        request,
+        f'User "{username}" deleted successfully!'
+    )
+
+    return redirect('hin:user_list')
