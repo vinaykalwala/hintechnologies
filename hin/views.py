@@ -108,13 +108,42 @@ def enquiry_delete(request, pk):
 
 # ==================== SERVICES ====================
 
-def service_list(request):
+def public_services(request):
+    """Public facing services page - no admin controls"""
     services = Service.objects.filter(is_active=True)
     
-    # Search
+    # Search functionality for public
     search_query = request.GET.get('search')
     if search_query:
-        services = services.filter(title__icontains=search_query)
+        services = services.filter(
+            Q(title__icontains=search_query) |
+            Q(short_description__icontains=search_query)
+        )
+    
+    # Pagination
+    paginator = Paginator(services, 9)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'services': page_obj,
+        'search_query': search_query,
+        'total_services': services.count(),
+    }
+    return render(request, 'services/public_services.html', context)
+
+# ==================== ADMIN SERVICES LIST VIEW ====================
+
+def service_list(request):
+    """Admin view for listing services (read-only for public with login)"""
+    services = Service.objects.all()
+    
+    search_query = request.GET.get('search')
+    if search_query:
+        services = services.filter(
+            Q(title__icontains=search_query) |
+            Q(short_description__icontains=search_query)
+        )
     
     paginator = Paginator(services, 12)
     page_number = request.GET.get('page')
@@ -125,10 +154,12 @@ def service_list(request):
         'search_query': search_query,
     })
 
+# ==================== ADMIN SERVICE MANAGEMENT VIEW ====================
+
 @login_required
 @permission_required('hin.add_service', raise_exception=True)
-@permission_required('hin.change_service', raise_exception=True)
 def service_manage(request):
+    """Admin view for adding/editing services"""
     edit_id = request.GET.get('edit')
     service_to_edit = None
     
@@ -140,9 +171,9 @@ def service_manage(request):
     
     if request.method == 'POST':
         if service_to_edit:
-            form = ServiceForm(request.POST, instance=service_to_edit)
+            form = ServiceForm(request.POST, request.FILES, instance=service_to_edit)
         else:
-            form = ServiceForm(request.POST)
+            form = ServiceForm(request.POST, request.FILES)
         
         if form.is_valid():
             service = form.save()
@@ -155,15 +186,15 @@ def service_manage(request):
     
     all_services = Service.objects.all()
     can_delete = request.user.has_perm('hin.delete_service')
-    can_edit = request.user.has_perm('hin.change_service')
     
-    return render(request, 'services/service_list.html', {
+    return render(request, 'services/service_manage.html', {
         'form': form,
         'services': all_services,
         'editing_service': service_to_edit,
         'can_delete': can_delete,
-        'can_edit': can_edit,
     })
+
+# ==================== ADMIN SERVICE DELETE VIEW ====================
 
 @login_required
 @permission_required('hin.delete_service', raise_exception=True)
@@ -173,9 +204,8 @@ def service_delete(request, pk):
         service_title = service.title
         service.delete()
         messages.success(request, f'Service "{service_title}" deleted successfully.')
-        return redirect('service_list')
+        return redirect('hin:service_list')
     return render(request, 'services/service_confirm_delete.html', {'service': service})
-
 # ==================== BLOGS ====================
 
 def blog_list(request):

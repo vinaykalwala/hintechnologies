@@ -1,0 +1,454 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Our DevOps Services - HIN Technologies{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-primary text-white py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-lg-8 mx-auto">
+                <h1 class="display-4 fw-bold">Our DevOps Services</h1>
+                <p class="lead mt-3">Comprehensive DevOps training and consulting services to accelerate your career</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search Bar -->
+<section class="py-4 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form method="get" class="d-flex">
+                    <input type="text" name="search" class="form-control me-2" 
+                           placeholder="Search services..." value="{{ search_query }}">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                    {% if search_query %}
+                    <a href="{% url 'hin:public_services' %}" class="btn btn-secondary ms-2">
+                        <i class="fas fa-times"></i> Clear
+                    </a>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Grid -->
+<section class="py-5">
+    <div class="container">
+        {% if search_query %}
+        <div class="alert alert-info text-center">
+            <i class="fas fa-search"></i> Showing results for: "<strong>{{ search_query }}</strong>" 
+            ({{ total_services }} service{% if total_services != 1 %}s{% endif %} found)
+        </div>
+        {% endif %}
+        
+        <div class="row g-4">
+            {% for service in services %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm hover-card">
+                    {% if service.image %}
+                    <img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.title }}" 
+                         style="height: 220px; object-fit: cover;">
+                    {% else %}
+                    <div class="card-img-top bg-gradient-primary d-flex align-items-center justify-content-center" 
+                         style="height: 220px;">
+                        <i class="fas fa-cogs fa-5x text-white opacity-50"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h3 class="h5 card-title fw-bold">{{ service.title }}</h3>
+                        <p class="card-text text-muted">{{ service.short_description }}</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-top-0 pb-3">
+                        <button type="button" class="btn btn-outline-primary w-100" data-bs-toggle="modal" 
+                                data-bs-target="#serviceModal{{ service.id }}">
+                            <i class="fas fa-info-circle"></i> View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal for detailed description -->
+            <div class="modal fade" id="serviceModal{{ service.id }}" tabindex="-1" aria-labelledby="serviceModalLabel{{ service.id }}" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="serviceModalLabel{{ service.id }}">
+                                <i class="fas {{ service.icon|default:'fa-cogs' }}"></i> {{ service.title }}
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            {% if service.image %}
+                            <div class="text-center mb-4">
+                                <img src="{{ service.image.url }}" class="img-fluid rounded" alt="{{ service.title }}" style="max-height: 300px; width: auto;">
+                            </div>
+                            {% endif %}
+                            <div class="mb-4">
+                                <h6 class="fw-bold text-primary">Overview</h6>
+                                <p>{{ service.short_description }}</p>
+                            </div>
+                            <hr>
+                            <div>
+                                <h6 class="fw-bold text-primary">Detailed Description</h6>
+                                <div class="service-full-description">
+                                    {{ service.full_description|linebreaks }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="{% url 'hin:contact' %}" class="btn btn-primary">
+                                <i class="fas fa-envelope"></i> Enquire Now
+                            </a>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="fas fa-times"></i> Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-search fa-4x text-muted mb-3 d-block"></i>
+                <h3>No Services Found</h3>
+                <p class="text-muted">No services match your search criteria. Please try different keywords.</p>
+                <a href="{% url 'hin:public_services' %}" class="btn btn-primary mt-3">
+                    <i class="fas fa-eye"></i> View All Services
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if services.has_other_pages %}
+        <div class="row mt-5">
+            <div class="col-12">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        {% if services.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}">
+                                <i class="fas fa-angle-double-left"></i> First
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ services.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">
+                                <i class="fas fa-angle-left"></i> Previous
+                            </a>
+                        </li>
+                        {% endif %}
+                        
+                        {% for num in services.paginator.page_range %}
+                            {% if services.number == num %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                            {% elif num > services.number|add:'-3' and num < services.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}">{{ num }}</a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if services.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ services.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">
+                                Next <i class="fas fa-angle-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ services.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}">
+                                Last <i class="fas fa-angle-double-right"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Why Choose Us Section -->
+<section class="bg-light py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="fw-bold">Why Choose Our DevOps Services?</h2>
+                <p class="lead text-muted">We deliver practical, hands-on training that works</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="text-center p-3">
+                    <div class="mb-3">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3">
+                            <i class="fas fa-chalkboard-user fa-3x text-primary"></i>
+                        </div>
+                    </div>
+                    <h5 class="fw-bold">Expert Trainers</h5>
+                    <p class="text-muted">Learn from industry professionals with 8+ years of DevOps experience</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-3">
+                    <div class="mb-3">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3">
+                            <i class="fas fa-project-diagram fa-3x text-primary"></i>
+                        </div>
+                    </div>
+                    <h5 class="fw-bold">Real Projects</h5>
+                    <p class="text-muted">Build production-ready CI/CD pipelines from scratch</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-3">
+                    <div class="mb-3">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3">
+                            <i class="fas fa-certificate fa-3x text-primary"></i>
+                        </div>
+                    </div>
+                    <h5 class="fw-bold">Certification</h5>
+                    <p class="text-muted">Get recognized with industry-validated certification</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-4 mt-2">
+            <div class="col-md-4">
+                <div class="text-center p-3">
+                    <div class="mb-3">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3">
+                            <i class="fas fa-clock fa-3x text-primary"></i>
+                        </div>
+                    </div>
+                    <h5 class="fw-bold">Flexible Timing</h5>
+                    <p class="text-muted">Weekend and weekday batches available for working professionals</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-3">
+                    <div class="mb-3">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3">
+                            <i class="fas fa-users fa-3x text-primary"></i>
+                        </div>
+                    </div>
+                    <h5 class="fw-bold">Small Batches</h5>
+                    <p class="text-muted">Personalized attention with maximum 30 students per batch</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-3">
+                    <div class="mb-3">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3">
+                            <i class="fas fa-briefcase fa-3x text-primary"></i>
+                        </div>
+                    </div>
+                    <h5 class="fw-bold">Placement Support</h5>
+                    <p class="text-muted">Resume building, mock interviews, and job referral support</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Training Modules Overview -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="fw-bold">What You'll Learn</h2>
+                <p class="lead text-muted">Complete DevOps curriculum covering industry-standard tools</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-3 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-code-branch fa-2x text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="fw-bold">Module 1: Introduction to DevOps & SDLC</h5>
+                                <p class="text-muted mb-0">Understanding Software Development Life Cycle (SDLC), Waterfall vs Agile vs DevOps, DevOps principles and practices</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-3 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fab fa-linux fa-2x text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="fw-bold">Module 2: Linux, Git & Maven</h5>
+                                <p class="text-muted mb-0">Linux basics & shell scripting, Git workflows, branching & merging, Maven project setup & dependency management</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-3 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-code fa-2x text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="fw-bold">Module 3: Code Quality & Artifact Management</h5>
+                                <p class="text-muted mb-0">SonarQube setup and integration, code quality gates, JFrog Artifactory for artifact storage</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-3 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fab fa-docker fa-2x text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="fw-bold">Module 4: Docker & Kubernetes</h5>
+                                <p class="text-muted mb-0">Docker containers, images, volumes, Kubernetes architecture, deployments, services, scaling</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card mb-3 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-chart-line fa-2x text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="fw-bold">Module 5: Monitoring & Observability</h5>
+                                <p class="text-muted mb-0">Application monitoring basics, Datadog setup and dashboards, New Relic integration</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-3 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-infinity fa-2x text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="fw-bold">Module 6: Configuration Management & IaC</h5>
+                                <p class="text-muted mb-0">Ansible basics and playbooks, Terraform for infrastructure provisioning, cloud automation best practices</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-3 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fab fa-jira fa-2x text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="fw-bold">Module 7: Project & Workflow Management</h5>
+                                <p class="text-muted mb-0">Jira, Agile project management, creating and tracking tickets</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card bg-primary text-white border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-rocket fa-2x"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="fw-bold">Capstone Project</h5>
+                                <p class="mb-0">End-to-end CI/CD pipeline implementation with Git, Jenkins, Docker, Kubernetes, and monitoring tools</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="bg-primary text-white py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 mb-3">
+                <h2 class="fw-bold">8+</h2>
+                <p>Years of Experience</p>
+            </div>
+            <div class="col-md-3 mb-3">
+                <h2 class="fw-bold">2,500+</h2>
+                <p>Students Trained</p>
+            </div>
+            <div class="col-md-3 mb-3">
+                <h2 class="fw-bold">50+</h2>
+                <p>Hiring Partners</p>
+            </div>
+            <div class="col-md-3 mb-3">
+                <h2 class="fw-bold">100%</h2>
+                <p>Hands-on Training</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5">
+    <div class="container text-center">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h2 class="fw-bold mb-3">Ready to Master DevOps?</h2>
+                <p class="lead text-muted mb-4">Join our next batch and transform your career with industry-ready skills</p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{% url 'hin:contact' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-envelope"></i> Enroll Now
+                    </a>
+                    <a href="tel:+919876543210" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-phone"></i> Call for Consultation
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.hover-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+}
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+.service-full-description ul, 
+.service-full-description ol {
+    padding-left: 1.5rem;
+}
+.service-full-description p {
+    margin-bottom: 1rem;
+}
+</style>
+{% endblock %}

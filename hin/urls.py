@@ -32,6 +32,8 @@ urlpatterns = [
     path('enquiries/<int:pk>/delete/', views.enquiry_delete, name='enquiry_delete'),
     
     # Services
+    
+    path('service/', views.public_services, name='public_services'),
     path('services/', views.service_list, name='service_list'),
     path('services/manage/', views.service_manage, name='service_manage'),
     path('services/<int:pk>/delete/', views.service_delete, name='service_delete'),

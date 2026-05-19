@@ -197,15 +197,15 @@ class ContactEnquiryForm(forms.ModelForm):
 class ServiceForm(forms.ModelForm):
     class Meta:
         model = Service
-        fields = ['title', 'short_description', 'full_description', 'icon', 'is_active']
+        fields = ['title', 'short_description', 'full_description', 'image', 'is_active']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Service Title'}),
             'short_description': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Brief description (max 500 chars)'}),
             'full_description': forms.Textarea(attrs={'class': 'form-control', 'rows': 6, 'placeholder': 'Detailed description'}),
-            'icon': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'fa-docker, fa-kubernetes, etc.'}),
+            'image': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
-
+        
 class BlogForm(forms.ModelForm):
     class Meta:
         model = Blog

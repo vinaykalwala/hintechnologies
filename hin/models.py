@@ -32,7 +32,7 @@ class Service(models.Model):
     slug = models.SlugField(unique=True, blank=True, max_length=250)
     short_description = models.TextField(max_length=500)
     full_description = models.TextField()
-    icon = models.CharField(max_length=100, help_text="FontAwesome icon class, e.g., 'fa-docker'")
+    image = models.ImageField(upload_to='service_images/', blank=True, null=True, help_text="Upload service image")
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -49,7 +49,7 @@ class Service(models.Model):
         return self.title
     
     def get_absolute_url(self):
-        return reverse('service_list')
+        return reverse('hin:public_services')
 
 class Blog(models.Model):
     title = models.CharField(max_length=250)
