@@ -4,16 +4,309 @@
 {% block title %}Our Clients & Partners{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    {% if perms.hin.add_client or perms.hin.change_client %}
-    <div class="card mb-5">
-        <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">{% if editing_client %}Edit Client{% else %}Add New Client{% endif %}</h3>
+<style>
+    :root {
+        --red: #AB1D1D;
+        --black: #121212;
+        --blue: #A7D2DB;
+        --pink: #D8A4A6;
+        --gray: #9E9EA2;
+        --white: #FDFCFC;
+        --bg: #F8F9FB;
+        --border: #E5E7EB;
+        --shadow-sm: 0 2px 12px rgba(18,18,18,0.04);
+        --shadow-md: 0 8px 24px rgba(18,18,18,0.08);
+        --shadow-lg: 0 16px 36px rgba(18,18,18,0.12);
+        --radius: 16px;
+        --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* Layout & Background */
+    .clients-layout {
+        background: var(--bg);
+        min-height: 100vh;
+        position: relative;
+        overflow: hidden;
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+    .clients-layout::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 340px;
+        background: linear-gradient(135deg, var(--red) 0%, #8A1616 100%);
+        clip-path: polygon(0 0, 100% 0, 100% 68%, 0 100%);
+        z-index: 0;
+    }
+    .content-container {
+        position: relative;
+        z-index: 1;
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
+    /* Header */
+    .layout-header {
+        text-align: center;
+        padding: 4.5rem 0 2.5rem;
+        color: var(--white);
+    }
+    .layout-header h1 {
+        font-size: clamp(2.2rem, 5vw, 3.4rem);
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        margin: 0;
+        line-height: 1.15;
+    }
+    .layout-header p {
+        font-size: 1.15rem;
+        opacity: 0.85;
+        margin-top: 0.75rem;
+        font-weight: 400;
+    }
+
+    /* Section Titles */
+    .section-label {
+        font-size: clamp(1.4rem, 3vw, 1.85rem);
+        font-weight: 700;
+        color: var(--black);
+        margin: 3rem 0 1.75rem;
+        position: relative;
+        padding-left: 1rem;
+    }
+    .section-label::before {
+        content: '';
+        position: absolute;
+        left: 0; top: 50%; transform: translateY(-50%);
+        width: 5px; height: 65%;
+        background: var(--blue);
+        border-radius: 3px;
+    }
+    .section-label.alt::before { background: var(--pink); }
+
+    /* Form Card */
+    .form-panel {
+        background: var(--white);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-lg);
+        padding: 2.25rem;
+        margin-top: 1.5rem;
+        border: 1px solid rgba(158,158,162,0.08);
+    }
+    .form-panel input[type="text"],
+    .form-panel input[type="url"],
+    .form-panel input[type="file"],
+    .form-panel select,
+    .form-panel textarea {
+        width: 100%;
+        padding: 0.95rem 1.15rem;
+        border: 1.5px solid var(--border);
+        border-radius: 12px;
+        background: #FAFBFC;
+        font-size: 1rem;
+        color: var(--black);
+        transition: var(--transition);
+    }
+    .form-panel input:focus,
+    .form-panel select:focus,
+    .form-panel textarea:focus {
+        outline: none;
+        border-color: var(--blue);
+        box-shadow: 0 0 0 4px rgba(167,210,219,0.2);
+        background: var(--white);
+    }
+    .form-panel label, .form-panel .form-label {
+        font-weight: 600;
+        color: var(--black);
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    .form-panel .form-check-label { font-weight: 500; cursor: pointer; }
+    .form-panel .form-check-input:checked {
+        background-color: var(--red);
+        border-color: var(--red);
+        box-shadow: none;
+    }
+
+    /* Buttons */
+    .btn-save-primary {
+        background: var(--red);
+        color: var(--white);
+        border: none;
+        padding: 0.95rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+    .btn-save-primary:hover { background: #8A1616; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(171,29,29,0.3); color: var(--white); }
+    .btn-cancel-secondary {
+        background: transparent;
+        border: 1.5px solid var(--gray);
+        color: var(--black);
+        padding: 0.95rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+    .btn-cancel-secondary:hover { border-color: var(--black); background: #F5F5F5; }
+
+    /* Client Grid */
+    .client-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+        gap: 1.25rem;
+    }
+    .client-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 1.35rem 1rem;
+        text-align: center;
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 165px;
+    }
+    .client-card::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        height: 3px;
+        background: var(--blue);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s var(--transition);
+        z-index: 1;
+    }
+    .client-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: rgba(167,210,219,0.3); }
+    .client-card:hover::after { transform: scaleX(1); }
+
+    .client-logo-box {
+        width: 100%;
+        height: 65px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.85rem;
+        background: linear-gradient(145deg, #f8f9fa, #eef1f5);
+        border-radius: 10px;
+        padding: 0.5rem;
+        transition: background 0.3s ease;
+    }
+    .client-card:hover .client-logo-box { background: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .client-logo { max-height: 100%; max-width: 90%; object-fit: contain; filter: grayscale(0.8); transition: var(--transition); }
+    .client-card:hover .client-logo { filter: grayscale(0); transform: scale(1.06); }
+
+    .client-name {
+        font-weight: 700;
+        color: var(--black);
+        font-size: 0.88rem;
+        line-height: 1.35;
+        margin-bottom: 0.65rem;
+    }
+    .client-actions { 
+        display: flex; 
+        gap: 0.5rem; 
+        width: 100%; 
+        margin-top: auto; 
+        position: relative; 
+        z-index: 10;
+    }
+    .btn-action-sm {
+        flex: 1;
+        padding: 0.45rem;
+        font-size: 0.75rem;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer !important;
+        font-weight: 600;
+        transition: var(--transition);
+        text-decoration: none;
+        text-align: center;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: auto !important;
+    }
+    .btn-edit-sm { background: var(--blue); color: var(--black); }
+    .btn-edit-sm:hover { background: #8CC0CA; }
+    .btn-delete-sm { background: var(--pink); color: var(--black); }
+    .btn-delete-sm:hover { background: #C58D8F; color: var(--white); }
+
+    /* Empty State */
+    .empty-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 2.5rem 1rem;
+        color: var(--gray);
+        font-weight: 500;
+        background: rgba(158,158,162,0.05);
+        border-radius: 14px;
+        border: 2px dashed rgba(158,158,162,0.2);
+    }
+
+    /* Modal Styling to Match Premium Theme */
+    .modal-content {
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 20px 50px rgba(18,18,18,0.15);
+    }
+    .modal-header { border-bottom: 1px solid var(--border); padding: 1.5rem; }
+    .modal-body { padding: 1.5rem; color: var(--black); }
+    .modal-footer { border-top: 1px solid var(--border); padding: 1.25rem 1.5rem; }
+    .modal-title { font-weight: 700; color: var(--dark-black); }
+    .btn-close:focus { box-shadow: none; }
+
+    /* Touch Device Optimizations */
+    @media (hover: none) and (pointer: coarse) {
+        .client-card::after { transform: scaleX(1); opacity: 0.5; }
+        .client-card { box-shadow: var(--shadow-md); }
+        .client-logo { filter: grayscale(0); }
+        .client-card:active { transform: scale(0.97); }
+        .btn-action-sm:active { opacity: 0.8; transform: scale(0.95); }
+        .btn-save-primary:active { transform: translateY(0) scale(0.97); }
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 991px) {
+        .clients-layout::before { height: 280px; clip-path: polygon(0 0, 100% 0, 100% 75%, 0 100%); }
+        .layout-header { padding: 3.5rem 0 2rem; }
+        .client-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+    }
+    @media (max-width: 575px) {
+        .form-panel { padding: 1.5rem; }
+        .client-grid { grid-template-columns: repeat(2, 1fr); gap: 0.85rem; }
+        .client-card { min-height: 145px; padding: 1rem; }
+        .client-logo-box { height: 50px; }
+        .client-actions { flex-direction: column; }
+        .btn-save-primary, .btn-cancel-secondary { width: 100%; margin-bottom: 0.5rem; }
+    }
+</style>
+
+<div class="clients-layout">
+    <div class="content-container">
+        <div class="layout-header">
+            <h1>Our Clients & Partners</h1>
+            <p>Trusted by industry leaders worldwide</p>
         </div>
-        <div class="card-body">
+
+        {% if perms.hin.add_client or perms.hin.change_client %}
+        <div class="form-panel">
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                <div class="row">
+                <div class="row g-3">
                     <div class="col-md-6">
                         <div class="mb-3">
                             {{ form.company_name.label_tag }}
@@ -27,13 +320,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row g-3">
                     <div class="col-md-6">
                         <div class="mb-3">
                             {{ form.logo.label_tag }}
                             {{ form.logo }}
                             {% if editing_client and editing_client.logo %}
-                            <small class="text-muted">Current: {{ editing_client.logo.name }}</small>
+                            <small class="d-block mt-2" style="color: var(--gray);">Current: {{ editing_client.logo.name }}</small>
                             {% endif %}
                         </div>
                     </div>
@@ -44,79 +337,118 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-check mb-3">
+                <div class="form-check mb-4">
                     {{ form.is_active }}
-                    <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
-                        Active (visible on website)
-                    </label>
+                    <label class="form-check-label" for="{{ form.is_active.id_for_label }}">Active (visible on website)</label>
                 </div>
-                <button type="submit" class="btn btn-primary">Save Client</button>
-                {% if editing_client %}
-                <a href="{% url 'hin:client_manage' %}" class="btn btn-secondary">Cancel Edit</a>
-                {% endif %}
+                <div class="d-flex flex-wrap gap-3">
+                    <button type="submit" class="btn-save-primary">Save Client</button>
+                    {% if editing_client %}
+                    <a href="{% url 'hin:client_manage' %}" class="btn-cancel-secondary">Cancel Edit</a>
+                    {% endif %}
+                </div>
             </form>
         </div>
-    </div>
-    {% endif %}
-    
-    {% if is_management %}
-    <h2 class="mb-4">Manage Clients</h2>
-    {% endif %}
-    
-    <div class="row mb-5">
-        <div class="col-12">
-            <h2 class="text-center mb-4">Our Hiring Partners</h2>
-            <div class="row g-4 justify-content-center">
-                {% for partner in hiring_partners %}
-                <div class="col-md-2 col-4 text-center">
-                    {% if partner.logo %}
-                    <img src="{{ partner.logo.url }}" class="img-fluid mb-2" alt="{{ partner.company_name }}" style="max-height: 60px;">
-                    {% else %}
-                    <div class="border p-2">{{ partner.company_name }}</div>
-                    {% endif %}
-                    <small>{{ partner.company_name }}</small>
-                    {% if perms.hin.change_client or perms.hin.delete_client %}
-                    <div class="mt-2">
-                        <a href="?edit={{ partner.id }}" class="btn btn-sm btn-warning">Edit</a>
-                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-delete-url="{% url 'hin:client_delete' pk=partner.id %}">
-                            Delete
-                        </button>
-                    </div>
-                    {% endif %}
+        {% endif %}
+
+        {% if is_management %}
+        <h2 class="section-label">Manage Clients</h2>
+        {% endif %}
+
+        <h2 class="section-label">Our Hiring Partners</h2>
+        <div class="client-grid">
+            {% for partner in hiring_partners %}
+            <div class="client-card">
+                {% if partner.logo %}
+                <div class="client-logo-box">
+                    <img src="{{ partner.logo.url }}" class="client-logo" alt="{{ partner.company_name }}">
                 </div>
-                {% empty %}
-                <p class="text-center">No hiring partners added yet.</p>
-                {% endfor %}
+                {% else %}
+                <div class="client-logo-box">
+                    <span style="color: var(--gray); font-size: 0.8rem; font-weight: 600;">No Logo</span>
+                </div>
+                {% endif %}
+                <div class="client-name">{{ partner.company_name }}</div>
+                {% if perms.hin.change_client or perms.hin.delete_client %}
+                <div class="client-actions">
+                    <a href="?edit={{ partner.id }}" class="btn-action-sm btn-edit-sm">Edit</a>
+                    <button type="button" class="btn-action-sm btn-delete-sm" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#deleteModal" 
+                            data-delete-url="{% url 'hin:client_delete' pk=partner.id %}">Delete</button>
+                </div>
+                {% endif %}
             </div>
+            {% empty %}
+            <div class="empty-state">No hiring partners added yet.</div>
+            {% endfor %}
         </div>
-    </div>
-    
-    <div class="row mt-5">
-        <div class="col-12">
-            <h2 class="text-center mb-4">Companies That Trust Us</h2>
-            <div class="row g-4 justify-content-center">
-                {% for client in corporate_clients %}
-                <div class="col-md-2 col-4 text-center">
-                    {% if client.logo %}
-                    <img src="{{ client.logo.url }}" class="img-fluid mb-2" alt="{{ client.company_name }}" style="max-height: 60px;">
-                    {% else %}
-                    <div class="border p-2">{{ client.company_name }}</div>
-                    {% endif %}
-                    <small>{{ client.company_name }}</small>
-                    {% if perms.hin.change_client or perms.hin.delete_client %}
-                    <div class="mt-2">
-                        <a href="?edit={{ client.id }}" class="btn btn-sm btn-warning">Edit</a>
-                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-delete-url="{% url 'hin:client_delete' pk=client.id %}">
-                            Delete
-                        </button>
-                    </div>
-                    {% endif %}
+
+        <h2 class="section-label alt">Companies That Trust Us</h2>
+        <div class="client-grid">
+            {% for client in corporate_clients %}
+            <div class="client-card">
+                {% if client.logo %}
+                <div class="client-logo-box">
+                    <img src="{{ client.logo.url }}" class="client-logo" alt="{{ client.company_name }}">
                 </div>
-                {% empty %}
-                <p class="text-center">No corporate clients added yet.</p>
-                {% endfor %}
+                {% else %}
+                <div class="client-logo-box">
+                    <span style="color: var(--gray); font-size: 0.8rem; font-weight: 600;">No Logo</span>
+                </div>
+                {% endif %}
+                <div class="client-name">{{ client.company_name }}</div>
+                {% if perms.hin.change_client or perms.hin.delete_client %}
+                <div class="client-actions">
+                    <a href="?edit={{ client.id }}" class="btn-action-sm btn-edit-sm">Edit</a>
+                    <button type="button" class="btn-action-sm btn-delete-sm" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#deleteModal" 
+                            data-delete-url="{% url 'hin:client_delete' pk=client.id %}">Delete</button>
+                </div>
+                {% endif %}
             </div>
+            {% empty %}
+            <div class="empty-state">No corporate clients added yet.</div>
+            {% endfor %}
         </div>
     </div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this client? This action cannot be undone.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 10px; font-weight: 600;">Cancel</button>
+        <form id="deleteForm" method="POST">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger" style="border-radius: 10px; font-weight: 600; background: var(--red); border: none;">Yes, Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var deleteModalEl = document.getElementById('deleteModal');
+    deleteModalEl.addEventListener('show.bs.modal', function (event) {
+      var button = event.relatedTarget;
+      var deleteUrl = button.getAttribute('data-delete-url');
+      var form = document.getElementById('deleteForm');
+      if (form && deleteUrl) {
+        form.action = deleteUrl;
+      }
+    });
+  });
+</script>
 {% endblock %}
