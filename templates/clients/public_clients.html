@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Our Clients & Partners - HIN Technologies{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-primary text-white py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-lg-8 mx-auto">
+                <h1 class="display-4 fw-bold">Our Clients & Partners</h1>
+                <p class="lead mt-3">Trusted by leading companies and hiring partners worldwide</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Hiring Partners Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="fw-bold">Our Hiring Partners</h2>
+                <p class="lead text-muted">Companies that actively recruit our trained professionals</p>
+                <div class="divider bg-primary mx-auto" style="width: 80px; height: 3px;"></div>
+            </div>
+        </div>
+        
+        <div class="row g-4 justify-content-center">
+            {% for client in hiring_partners %}
+            <div class="col-md-3 col-6">
+                <div class="card h-100 border-0 shadow-sm hover-card text-center p-4">
+                    {% if client.logo %}
+                    <div class="partner-logo-wrapper mb-3">
+                        <img src="{{ client.logo.url }}" class="img-fluid partner-logo" alt="{{ client.company_name }}">
+                    </div>
+                    {% else %}
+                    <div class="partner-logo-placeholder bg-light d-flex align-items-center justify-content-center mb-3">
+                        <i class="fas fa-building fa-3x text-muted"></i>
+                    </div>
+                    {% endif %}
+                    <h5 class="company-name">{{ client.company_name }}</h5>
+                    {% if client.website_url %}
+                    <a href="{{ client.website_url }}" target="_blank" class="btn btn-sm btn-outline-primary mt-2">
+                        <i class="fas fa-external-link-alt"></i> Visit Website
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-building fa-4x text-muted mb-3 d-block"></i>
+                <h4>No Hiring Partners Added Yet</h4>
+                <p class="text-muted">Check back soon for updates on our hiring partners.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Corporate Clients Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="fw-bold">Companies That Trust Us</h2>
+                <p class="lead text-muted">Corporate clients who chose HIN Technologies for team upskilling</p>
+                <div class="divider bg-primary mx-auto" style="width: 80px; height: 3px;"></div>
+            </div>
+        </div>
+        
+        <div class="row g-4 justify-content-center">
+            {% for client in corporate_clients %}
+            <div class="col-md-3 col-6">
+                <div class="card h-100 border-0 shadow-sm hover-card text-center p-4">
+                    {% if client.logo %}
+                    <div class="partner-logo-wrapper mb-3">
+                        <img src="{{ client.logo.url }}" class="img-fluid partner-logo" alt="{{ client.company_name }}">
+                    </div>
+                    {% else %}
+                    <div class="partner-logo-placeholder bg-light d-flex align-items-center justify-content-center mb-3">
+                        <i class="fas fa-building fa-3x text-muted"></i>
+                    </div>
+                    {% endif %}
+                    <h5 class="company-name">{{ client.company_name }}</h5>
+                    {% if client.website_url %}
+                    <a href="{{ client.website_url }}" target="_blank" class="btn btn-sm btn-outline-primary mt-2">
+                        <i class="fas fa-external-link-alt"></i> Visit Website
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-building fa-4x text-muted mb-3 d-block"></i>
+                <h4>No Corporate Clients Added Yet</h4>
+                <p class="text-muted">Check back soon for updates on our corporate clients.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Why Partner With Us Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="fw-bold">Why Partner With HIN Technologies?</h2>
+                <p class="lead text-muted">We deliver quality-trained DevOps professionals</p>
+                <div class="divider bg-primary mx-auto" style="width: 80px; height: 3px;"></div>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="text-center p-4 h-100">
+                    <div class="icon-circle bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
+                        <i class="fas fa-user-graduate fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="fw-bold">Industry-Ready Talent</h5>
+                    <p class="text-muted">Our graduates work on real CI/CD projects and are ready for production environments</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-4 h-100">
+                    <div class="icon-circle bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
+                        <i class="fas fa-certificate fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="fw-bold">Certified Professionals</h5>
+                    <p class="text-muted">All students receive certification after completing hands-on projects</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-4 h-100">
+                    <div class="icon-circle bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
+                        <i class="fas fa-chart-line fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="fw-bold">Continuous Upskilling</h5>
+                    <p class="text-muted">Our curriculum is updated regularly with the latest DevOps tools and practices</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- For Corporate Clients CTA -->
+<section class="bg-dark text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h3 class="fw-bold mb-2">Looking to upskill your team?</h3>
+                <p class="lead mb-0">We offer custom corporate training programs for DevOps teams</p>
+            </div>
+            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                <a href="{% url 'hin:contact' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-envelope"></i> Contact Us
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Become a Hiring Partner CTA -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h3 class="fw-bold">Become a Hiring Partner</h3>
+                <p class="text-muted mb-4">Are you a company looking for trained DevOps professionals? Partner with us to recruit from our talent pool.</p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{% url 'hin:contact' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-handshake"></i> Partner With Us
+                    </a>
+                    <a href="mailto:corporate@hintechnologies.in" class="btn btn-outline-secondary">
+                        <i class="fas fa-envelope"></i> corporate@hintechnologies.in
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.hover-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+}
+
+.partner-logo-wrapper {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.partner-logo {
+    max-height: 80px;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.partner-logo-placeholder {
+    height: 100px;
+    width: 100%;
+    border-radius: 10px;
+}
+
+.company-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.divider {
+    height: 3px;
+    width: 60px;
+    background: #0d6efd;
+    margin: 20px auto;
+}
+
+.icon-circle {
+    width: 80px;
+    height: 80px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .partner-logo-wrapper {
+        height: 70px;
+    }
+    .partner-logo {
+        max-height: 60px;
+    }
+    .company-name {
+        font-size: 0.9rem;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,357 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}DevOps Blog - HIN Technologies{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-primary text-white py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-lg-8 mx-auto">
+                <h1 class="display-4 fw-bold">DevOps Blog</h1>
+                <p class="lead mt-3">Expert insights, tutorials, and best practices for DevOps professionals</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search and Filter Section -->
+<section class="py-4 bg-light">
+    <div class="container">
+        <div class="row g-3">
+            <div class="col-md-5">
+                <form method="get" class="d-flex">
+                    <input type="text" name="search" class="form-control me-2" 
+                           placeholder="Search blogs by title, author, or content..." 
+                           value="{{ search_query }}">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </form>
+            </div>
+            <div class="col-md-4">
+                <form method="get" class="d-flex">
+                    <select name="category" class="form-select me-2" onchange="this.form.submit()">
+                        <option value="">All Categories</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat }}" {% if current_category == cat %}selected{% endif %}>
+                            {{ cat }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    {% if current_category or search_query %}
+                    <a href="{% url 'hin:public_blogs' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-times"></i> Clear
+                    </a>
+                    {% endif %}
+                </form>
+            </div>
+            <div class="col-md-3 text-md-end">
+                <span class="badge bg-primary p-2">
+                    <i class="fas fa-blog"></i> {{ total_blogs }} Blog{{ total_blogs|pluralize }}
+                </span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Blog Posts Grid -->
+<section class="py-5">
+    <div class="container">
+        {% if search_query %}
+        <div class="alert alert-info text-center">
+            <i class="fas fa-search"></i> Showing results for: "<strong>{{ search_query }}</strong>" 
+            ({{ total_blogs }} blog{{ total_blogs|pluralize }} found)
+        </div>
+        {% endif %}
+        
+        {% if current_category %}
+        <div class="alert alert-success text-center">
+            <i class="fas fa-tag"></i> Showing posts in category: "<strong>{{ current_category }}</strong>"
+        </div>
+        {% endif %}
+        
+        <div class="row g-4">
+            {% for blog in blogs %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm hover-card">
+                    {% if blog.featured_image %}
+                    <div class="blog-image-wrapper">
+                        <img src="{{ blog.featured_image.url }}" class="card-img-top blog-image" alt="{{ blog.title }}">
+                        <div class="blog-category-badge">
+                            <span class="badge bg-primary">{{ blog.category }}</span>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="blog-image-placeholder d-flex align-items-center justify-content-center">
+                        <i class="fas fa-blog fa-4x text-muted"></i>
+                        <div class="blog-category-badge">
+                            <span class="badge bg-primary">{{ blog.category }}</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="card-body">
+                        <div class="blog-meta mb-2">
+                            <small class="text-muted">
+                                <i class="fas fa-user"></i> {{ blog.author }} | 
+                                <i class="fas fa-calendar-alt"></i> {{ blog.created_at|date:"d M Y" }}
+                            </small>
+                        </div>
+                        <h3 class="h5 card-title fw-bold">{{ blog.title }}</h3>
+                        <p class="card-text text-muted">{{ blog.short_description|truncatewords:25 }}</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-top-0 pb-3">
+                        <!-- Since no detail page, just show modal with full content -->
+                        <button type="button" class="btn btn-outline-primary w-100" data-bs-toggle="modal" 
+                                data-bs-target="#blogModal{{ blog.id }}">
+                            <i class="fas fa-book-open"></i> Read Full Article
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal for full blog content -->
+            <div class="modal fade" id="blogModal{{ blog.id }}" tabindex="-1" aria-labelledby="blogModalLabel{{ blog.id }}" aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="blogModalLabel{{ blog.id }}">{{ blog.title }}</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            {% if blog.featured_image %}
+                            <div class="text-center mb-4">
+                                <img src="{{ blog.featured_image.url }}" class="img-fluid rounded" alt="{{ blog.title }}" style="max-height: 400px; width: auto;">
+                            </div>
+                            {% endif %}
+                            
+                            <div class="blog-meta-large mb-4 pb-2 border-bottom">
+                                <span class="me-3">
+                                    <i class="fas fa-user text-primary"></i> <strong>Author:</strong> {{ blog.author }}
+                                </span>
+                                <span class="me-3">
+                                    <i class="fas fa-calendar-alt text-primary"></i> <strong>Published:</strong> {{ blog.created_at|date:"d M Y" }}
+                                </span>
+                                <span>
+                                    <i class="fas fa-tag text-primary"></i> <strong>Category:</strong> {{ blog.category }}
+                                </span>
+                            </div>
+                            
+                            <div class="blog-full-content">
+                                <h4 class="mb-3">Overview</h4>
+                                <p class="lead">{{ blog.short_description }}</p>
+                                
+                                {% if blog.short_description != blog.content|truncatewords:50 %}
+                                <hr>
+                                <h4 class="mb-3 mt-4">Full Article</h4>
+                                <div class="blog-content">
+                                    {{ blog.content|linebreaks }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="fas fa-times"></i> Close
+                            </button>
+                            <a href="{% url 'hin:contact' %}" class="btn btn-primary">
+                                <i class="fas fa-envelope"></i> Enquire About Training
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-blog fa-4x text-muted mb-3 d-block"></i>
+                <h3>No Blog Posts Found</h3>
+                <p class="text-muted">
+                    {% if search_query or current_category %}
+                    No blog posts match your search criteria. Try different keywords or clear filters.
+                    {% else %}
+                    Blog posts will appear here once published. Check back soon for expert DevOps content!
+                    {% endif %}
+                </p>
+                {% if search_query or current_category %}
+                <a href="{% url 'hin:public_blogs' %}" class="btn btn-primary">
+                    <i class="fas fa-eye"></i> View All Posts
+                </a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if blogs.has_other_pages %}
+        <div class="row mt-5">
+            <div class="col-12">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        {% if blogs.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}">
+                                <i class="fas fa-angle-double-left"></i> First
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ blogs.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}">
+                                <i class="fas fa-angle-left"></i> Previous
+                            </a>
+                        </li>
+                        {% endif %}
+                        
+                        {% for num in blogs.paginator.page_range %}
+                            {% if blogs.number == num %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                            {% elif num > blogs.number|add:'-3' and num < blogs.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}">{{ num }}</a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if blogs.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ blogs.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}">
+                                Next <i class="fas fa-angle-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ blogs.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}">
+                                Last <i class="fas fa-angle-double-right"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+
+
+<!-- Popular Categories Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center mb-4">
+            <div class="col-12">
+                <h3 class="fw-bold">Explore by Category</h3>
+                <p class="text-muted">Find articles based on your interests</p>
+            </div>
+        </div>
+        <div class="row g-3 justify-content-center">
+            {% for cat in categories %}
+            <div class="col-auto">
+                <a href="?category={{ cat }}" class="btn btn-outline-primary rounded-pill px-4 category-btn">
+                    <i class="fas fa-tag"></i> {{ cat }}
+                </a>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="text-muted">No categories available yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="bg-primary text-white py-5">
+    <div class="container text-center">
+        <h3 class="fw-bold">Ready to Start Your DevOps Journey?</h3>
+        <p class="lead mb-4">Join our training program and become a certified DevOps professional</p>
+        <a href="{% url 'hin:contact' %}" class="btn btn-light btn-lg">
+            <i class="fas fa-graduation-cap"></i> Enroll Now
+        </a>
+    </div>
+</section>
+
+<style>
+.hover-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+}
+
+.blog-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: 200px;
+}
+
+.blog-image {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.hover-card:hover .blog-image {
+    transform: scale(1.05);
+}
+
+.blog-image-placeholder {
+    height: 200px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: relative;
+}
+
+.blog-category-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+.blog-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.blog-content pre {
+    background: #f4f4f4;
+    padding: 15px;
+    border-radius: 5px;
+    overflow-x: auto;
+}
+
+.blog-content code {
+    background: #f4f4f4;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-family: monospace;
+}
+
+.blog-meta-large {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.category-btn {
+    transition: all 0.3s ease;
+}
+
+.category-btn:hover {
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .blog-image-wrapper,
+    .blog-image-placeholder {
+        height: 180px;
+    }
+    .modal-dialog {
+        margin: 10px;
+    }
+}
+</style>
+{% endblock %}

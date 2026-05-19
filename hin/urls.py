@@ -33,19 +33,21 @@ urlpatterns = [
     
     # Services
     
-    path('service/', views.public_services, name='public_services'),
-    path('services/', views.service_list, name='service_list'),
+    path('services/', views.public_services, name='public_services'),
+    path('servicelist/', views.service_list, name='service_list'),
     path('services/manage/', views.service_manage, name='service_manage'),
     path('services/<int:pk>/delete/', views.service_delete, name='service_delete'),
     
     # Blogs
-    path('blogs/', views.blog_list, name='blog_list'),
+    path('blogs/', views.public_blogs, name='public_blogs'),
+    path('bloglist/', views.blog_list, name='blog_list'),
     path('blogs/manage/', views.blog_manage, name='blog_manage'),
     path('blogs/<slug:slug>/', views.blog_detail, name='blog_detail'),
     path('blogs/<int:pk>/delete/', views.blog_delete, name='blog_delete'),
     
-    # Clients
-    path('clients/', views.client_list, name='client_list'),
+
+    path('clients/', views.public_clients, name='public_clients'),
+    path('clientlist/', views.client_list, name='client_list'),
     path('clients/manage/', views.client_manage, name='client_manage'),
     path('clients/<int:pk>/delete/', views.client_delete, name='client_delete'),
 ]

@@ -258,7 +258,7 @@ def blog_manage(request):
         blog_to_edit = get_object_or_404(Blog, pk=edit_id)
         if not request.user.has_perm('hin.change_blog'):
             messages.error(request, 'You don\'t have permission to edit blogs.')
-            return redirect('blog_list')
+            return redirect('hin:blog_list')
     
     if request.method == 'POST':
         if blog_to_edit:
@@ -269,7 +269,7 @@ def blog_manage(request):
         if form.is_valid():
             blog = form.save()
             messages.success(request, f'Blog "{blog.title}" saved successfully.')
-            return redirect('blog_detail', slug=blog.slug)
+            return redirect('hin:blog_detail', slug=blog.slug)
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
@@ -319,7 +319,7 @@ def client_manage(request):
         client_to_edit = get_object_or_404(Client, pk=edit_id)
         if not request.user.has_perm('hin.change_client'):
             messages.error(request, 'You don\'t have permission to edit clients.')
-            return redirect('client_list')
+            return redirect('hin:client_list')
     
     if request.method == 'POST':
         if client_to_edit:
@@ -330,7 +330,7 @@ def client_manage(request):
         if form.is_valid():
             client = form.save()
             messages.success(request, f'Client "{client.company_name}" saved successfully.')
-            return redirect('client_list')
+            return redirect('hin:client_list')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
@@ -357,7 +357,7 @@ def client_delete(request, pk):
         client_name = client.company_name
         client.delete()
         messages.success(request, f'Client "{client_name}" deleted successfully.')
-        return redirect('client_list')
+        return redirect('hin:client_list')
     return render(request, 'clients/client_confirm_delete.html', {'client': client})
 
 # Add these imports and views to your existing views.py
@@ -556,3 +556,50 @@ def user_delete(request, user_id):
     )
 
     return redirect('hin:user_list')
+
+def public_clients(request):
+    """Public facing clients page - no admin controls"""
+    hiring_partners = Client.objects.filter(company_type='hiring_partner', is_active=True)
+    corporate_clients = Client.objects.filter(company_type='corporate_client', is_active=True)
+    
+    context = {
+        'hiring_partners': hiring_partners,
+        'corporate_clients': corporate_clients,
+    }
+    return render(request, 'clients/public_clients.html', context)
+
+def public_blogs(request):
+    """Public facing blogs page - no admin controls, no detail page"""
+    blogs = Blog.objects.filter(is_published=True)
+    
+    # Search functionality
+    search_query = request.GET.get('search')
+    if search_query:
+        blogs = blogs.filter(
+            Q(title__icontains=search_query) |
+            Q(short_description__icontains=search_query) |
+            Q(content__icontains=search_query) |
+            Q(author__icontains=search_query)
+        )
+    
+    # Category filter
+    category = request.GET.get('category')
+    if category:
+        blogs = blogs.filter(category__iexact=category)
+    
+    # Get all categories for filter dropdown
+    categories = Blog.objects.filter(is_published=True).values_list('category', flat=True).distinct()
+    
+    # Pagination (9 blogs per page)
+    paginator = Paginator(blogs, 9)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'blogs': page_obj,
+        'categories': categories,
+        'current_category': category,
+        'search_query': search_query,
+        'total_blogs': blogs.count(),
+    }
+    return render(request, 'blogs/public_blogs.html', context)
