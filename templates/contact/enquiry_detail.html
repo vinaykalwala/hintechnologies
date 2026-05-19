@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Enquiry Details{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white d-flex justify-content-between">
+                    <h3 class="mb-0">Enquiry from {{ enquiry.first_name }} {{ enquiry.last_name }}</h3>
+                    <a href="{% url 'hin:enquiry_toggle_read' pk=enquiry.pk %}" class="btn btn-sm btn-light">
+                        {% if enquiry.is_read %}Mark Unread{% else %}Mark Read{% endif %}
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>📧 Email:</strong> {{ enquiry.email }}</p>
+                            <p><strong>📱 Mobile:</strong> {{ enquiry.mobile_no }}</p>
+                            <p><strong>💼 Experience:</strong> {{ enquiry.get_experience_level_display }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>📅 Submitted:</strong> {{ enquiry.created_at|date:"d M Y h:i A" }}</p>
+                            <p><strong>🔄 Last Updated:</strong> {{ enquiry.updated_at|date:"d M Y h:i A" }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="{% url 'hin:enquiry_list' %}" class="btn btn-secondary">Back to List</a>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-delete-url="{% url 'hin:enquiry_delete' pk=enquiry.pk %}">
+                            Delete Enquiry
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

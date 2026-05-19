@@ -1,0 +1,289 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create User - HIN Technologies{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-user-plus"></i> Create New User with Permissions</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Basic Information -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-secondary text-white">
+                                <h5 class="mb-0">Basic Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="id_username" class="form-label">Username *</label>
+                                        {{ form.username }}
+                                        {% if form.username.errors %}
+                                            <div class="text-danger small">{{ form.username.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="id_email" class="form-label">Email *</label>
+                                        {{ form.email }}
+                                        {% if form.email.errors %}
+                                            <div class="text-danger small">{{ form.email.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="id_first_name" class="form-label">First Name</label>
+                                        {{ form.first_name }}
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="id_last_name" class="form-label">Last Name</label>
+                                        {{ form.last_name }}
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="id_password1" class="form-label">Password *</label>
+                                        {{ form.password1 }}
+                                        {% if form.password1.errors %}
+                                            <div class="text-danger small">{{ form.password1.errors }}</div>
+                                        {% endif %}
+                                        <div class="form-text">At least 8 characters. Can't be entirely numeric.</div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="id_password2" class="form-label">Confirm Password *</label>
+                                        {{ form.password2 }}
+                                        {% if form.password2.errors %}
+                                            <div class="text-danger small">{{ form.password2.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            {{ form.is_staff }}
+                                            <label class="form-check-label" for="id_is_staff">
+                                                Staff Status (can access admin panel)
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            {{ form.is_active }}
+                                            <label class="form-check-label" for="id_is_active">
+                                                Active (can login)
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Permissions Selection -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0"><i class="fas fa-lock"></i> Assign Permissions</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i> Select the permissions you want to assign to this user.
+                                    <strong>Superusers have all permissions automatically.</strong>
+                                </div>
+                                
+                                <!-- Contact Enquiry Permissions -->
+                                <div class="card mb-3">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0"><i class="fas fa-envelope"></i> Contact Enquiries Module</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-check">
+                                                    {{ form.can_view_enquiries }}
+                                                    <label class="form-check-label" for="{{ form.can_view_enquiries.id_for_label }}">
+                                                        View Contact Enquiries
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-check">
+                                                    {{ form.can_change_enquiries }}
+                                                    <label class="form-check-label" for="{{ form.can_change_enquiries.id_for_label }}">
+                                                        Change Contact Enquiries
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-check">
+                                                    {{ form.can_delete_enquiries }}
+                                                    <label class="form-check-label" for="{{ form.can_delete_enquiries.id_for_label }}">
+                                                        Delete Contact Enquiries
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Service Permissions -->
+                                <div class="card mb-3">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0"><i class="fas fa-cogs"></i> Services Module</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    {{ form.can_add_services }}
+                                                    <label class="form-check-label" for="{{ form.can_add_services.id_for_label }}">
+                                                        Add Services
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    {{ form.can_change_services }}
+                                                    <label class="form-check-label" for="{{ form.can_change_services.id_for_label }}">
+                                                        Change Services
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    {{ form.can_delete_services }}
+                                                    <label class="form-check-label" for="{{ form.can_delete_services.id_for_label }}">
+                                                        Delete Services
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    {{ form.can_view_services }}
+                                                    <label class="form-check-label" for="{{ form.can_view_services.id_for_label }}">
+                                                        View Services
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Blog Permissions -->
+                                <div class="card mb-3">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0"><i class="fas fa-blog"></i> Blogs Module</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    {{ form.can_add_blogs }}
+                                                    <label class="form-check-label" for="{{ form.can_add_blogs.id_for_label }}">
+                                                        Add Blogs
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    {{ form.can_change_blogs }}
+                                                    <label class="form-check-label" for="{{ form.can_change_blogs.id_for_label }}">
+                                                        Change Blogs
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    {{ form.can_delete_blogs }}
+                                                    <label class="form-check-label" for="{{ form.can_delete_blogs.id_for_label }}">
+                                                        Delete Blogs
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    {{ form.can_view_blogs }}
+                                                    <label class="form-check-label" for="{{ form.can_view_blogs.id_for_label }}">
+                                                        View Blogs
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Client Permissions -->
+                                <div class="card mb-3">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0"><i class="fas fa-building"></i> Clients Module</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    {{ form.can_add_clients }}
+                                                    <label class="form-check-label" for="{{ form.can_add_clients.id_for_label }}">
+                                                        Add Clients
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    {{ form.can_change_clients }}
+                                                    <label class="form-check-label" for="{{ form.can_change_clients.id_for_label }}">
+                                                        Change Clients
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    {{ form.can_delete_clients }}
+                                                    <label class="form-check-label" for="{{ form.can_delete_clients.id_for_label }}">
+                                                        Delete Clients
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    {{ form.can_view_clients }}
+                                                    <label class="form-check-label" for="{{ form.can_view_clients.id_for_label }}">
+                                                        View Clients
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-save"></i> Create User with Permissions
+                            </button>
+                            <a href="{% url 'hin:user_list' %}" class="btn btn-secondary btn-lg">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Optional: Add select all functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // You can add JavaScript to handle "select all" checkboxes if needed
+        const checkboxes = document.querySelectorAll('.permission-check');
+        console.log('Loaded', checkboxes.length, 'permission checkboxes');
+    });
+</script>
+{% endblock %}

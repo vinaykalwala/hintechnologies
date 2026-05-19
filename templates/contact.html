@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Us - HIN Technologies{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-6">
+            <h1>Contact HIN Technologies</h1>
+            <p class="lead">Ready to Start Your DevOps Journey? Get in touch with our admissions team.</p>
+            
+            <div class="mt-4">
+                <h4><i class="fas fa-map-marker-alt text-primary"></i> Visit Our Training Center</h4>
+                <p>[Address Placeholder – #123, 3rd Floor, Brigade Road, Bengaluru - 560001]</p>
+                
+                <h4><i class="fas fa-phone text-primary"></i> Call or WhatsApp</h4>
+                <p>[Phone Number Placeholder]<br>Mon-Sat, 10 AM to 7 PM IST</p>
+                
+                <h4><i class="fas fa-envelope text-primary"></i> Email Us</h4>
+                <p>General enquiries: info@hintechnologies.in<br>
+                Corporate training: corporate@hintechnologies.in<br>
+                Placements: careers@hintechnologies.in</p>
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Get in Touch</h3>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.first_name.label_tag }}
+                                {{ form.first_name }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.last_name.label_tag }}
+                                {{ form.last_name }}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            {{ form.experience_level.label_tag }}
+                            {{ form.experience_level }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.email.label_tag }}
+                            {{ form.email }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.mobile_no.label_tag }}
+                            {{ form.mobile_no }}
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Submit Enquiry</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ Section -->
+<div class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Frequently Asked Questions</h2>
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                Who can enroll in this DevOps training?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Any graduate with basic computer knowledge can enroll. Freshers and experienced IT professionals are both welcome. We start from fundamentals and gradually move to advanced topics.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                What is the duration of the course?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                The Complete DevOps Mastery Program runs for 3 months (weekend batches). We also offer 8-week accelerated and 6-week 1-on-1 mentorship programs.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                Do you provide placement assistance?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Yes. We share your resume with our 50+ hiring partners, conduct mock interviews, and provide career guidance. However, placement is not guaranteed as it depends on individual performance.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                Is this course available online?
+                            </button>
+                        </h2>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Yes. All our programs are available in both classroom (Bengaluru) and live online formats. Online students get the same curriculum, projects, and doubt-clearing support.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                                What tools will I learn in this program?
+                            </button>
+                        </h2>
+                        <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Git, Linux, Maven, Jenkins, SonarQube, JFrog Artifactory, Docker, Kubernetes, Datadog, New Relic, Ansible, Terraform, and Jira. You will integrate all tools in the capstone project.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">
+                                Do I get a certificate after completing the course?
+                            </button>
+                        </h2>
+                        <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Yes. You receive a certificate of completion that lists all modules covered and the capstone project. You also build a GitHub portfolio with 4+ real projects.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

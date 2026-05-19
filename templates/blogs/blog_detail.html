@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ blog.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <article>
+                <h1 class="mb-3">{{ blog.title }}</h1>
+                <p class="text-muted">
+                    By {{ blog.author }} | {{ blog.created_at|date:"d M Y" }} | Category: {{ blog.category }}
+                </p>
+                
+                {% if blog.featured_image %}
+                <img src="{{ blog.featured_image.url }}" class="img-fluid rounded mb-4" alt="{{ blog.title }}">
+                {% endif %}
+                
+                <div class="blog-content">
+                    {{ blog.content|linebreaks }}
+                </div>
+            </article>
+            
+            <hr class="my-5">
+            
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'hin:blog_list' %}" class="btn btn-secondary">← Back to Blogs</a>
+                {% if perms.hin.change_blog %}
+                <a href="{% url 'hin:blog_manage' %}?edit={{ blog.id }}" class="btn btn-warning">Edit Blog</a>
+                {% endif %}
+            </div>
+            
+            {% if recent_blogs %}
+            <div class="mt-5">
+                <h3>Recent Posts</h3>
+                <div class="row">
+                    {% for recent in recent_blogs %}
+                    <div class="col-md-4">
+                        <div class="card">
+                            {% if recent.featured_image %}
+                            <img src="{{ recent.featured_image.url }}" class="card-img-top" alt="{{ recent.title }}" style="height: 120px; object-fit: cover;">
+                            {% endif %}
+                            <div class="card-body">
+                                <h6 class="card-title">{{ recent.title|truncatewords:5 }}</h6>
+                                <a href="{% url 'hin:blog_detail' slug=recent.slug %}" class="btn btn-sm btn-primary">Read</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

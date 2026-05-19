@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - HIN Technologies{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white text-center">
+                    <i class="fas fa-user-circle fa-4x"></i>
+                    <h5 class="mt-2">{{ user.get_full_name|default:user.username }}</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong><i class="fas fa-user"></i> Username:</strong> {{ user.username }}</p>
+                    <p><strong><i class="fas fa-envelope"></i> Email:</strong> {{ user.email }}</p>
+                    <p><strong><i class="fas fa-calendar"></i> Joined:</strong> {{ user.date_joined|date:"d M Y" }}</p>
+                    <p><strong><i class="fas fa-clock"></i> Last Login:</strong> {{ user.last_login|date:"d M Y h:i A"|default:"Never" }}</p>
+                    
+                    <hr>
+                    
+                    <h6>Your Permissions:</h6>
+                    <ul class="small">
+                        {% if user.is_superuser %}
+                            <li>✅ Super Administrator (full access)</li>
+                        {% elif user.is_staff %}
+                            <li>✅ Staff Access</li>
+                        {% else %}
+                            <li>✅ Basic User Access</li>
+                        {% endif %}
+                        
+                        {% if perms.hin.view_contactenquiry %}
+                            <li>✅ Can view enquiries</li>
+                        {% endif %}
+                        {% if perms.hin.add_service %}
+                            <li>✅ Can add services</li>
+                        {% endif %}
+                        {% if perms.hin.add_blog %}
+                            <li>✅ Can write blogs</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-edit"></i> Edit Profile</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_username" class="form-label">Username</label>
+                            {{ form.username }}
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_first_name" class="form-label">First Name</label>
+                                {{ form.first_name }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_last_name" class="form-label">Last Name</label>
+                                {{ form.last_name }}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_email" class="form-label">Email Address</label>
+                            {{ form.email }}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-key"></i> Account Security</h5>
+                </div>
+                <div class="card-body">
+                    <p>To change your password, please use the <a href="/admin/password_change/">Django admin password change page</a>.</p>
+                    <a href="/admin/password_change/" class="btn btn-warning">Change Password</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

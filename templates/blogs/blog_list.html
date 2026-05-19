@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}DevOps Blog{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    {% if perms.hin.add_blog or perms.hin.change_blog %}
+    <div class="card mb-5">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">{% if editing_blog %}Edit Blog{% else %}Write New Blog{% endif %}</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    {{ form.title.label_tag }}
+                    {{ form.title }}
+                </div>
+                <div class="mb-3">
+                    {{ form.featured_image.label_tag }}
+                    {{ form.featured_image }}
+                </div>
+                <div class="mb-3">
+                    {{ form.short_description.label_tag }}
+                    {{ form.short_description }}
+                </div>
+                <div class="mb-3">
+                    {{ form.content.label_tag }}
+                    {{ form.content }}
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            {{ form.author.label_tag }}
+                            {{ form.author }}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            {{ form.category.label_tag }}
+                            {{ form.category }}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-check mt-4">
+                            {{ form.is_published }}
+                            <label class="form-check-label" for="{{ form.is_published.id_for_label }}">
+                                Publish immediately
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Blog</button>
+                {% if editing_blog %}
+                <a href="{% url 'hin:blog_manage' %}" class="btn btn-secondary">Cancel Edit</a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>{% if is_management %}Manage Blogs{% else %}Latest from Our Blog{% endif %}</h2>
+        </div>
+        <div class="col-md-4">
+            <form method="get" class="d-flex">
+                <input type="text" name="search" class="form-control me-2" placeholder="Search blogs..." value="{{ search_query }}">
+                <button type="submit" class="btn btn-outline-primary">Search</button>
+            </form>
+        </div>
+    </div>
+    
+    {% if categories and not is_management %}
+    <div class="mb-4">
+        <strong>Categories:</strong>
+        <a href="{% url 'hin:blog_list' %}" class="btn btn-sm {% if not current_category %}btn-primary{% else %}btn-outline-secondary{% endif %}">All</a>
+        {% for cat in categories %}
+        <a href="?category={{ cat }}" class="btn btn-sm {% if current_category == cat %}btn-primary{% else %}btn-outline-secondary{% endif %}">{{ cat }}</a>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="row">
+        {% for blog in blogs %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if blog.featured_image %}
+                <img src="{{ blog.featured_image.url }}" class="card-img-top" alt="{{ blog.title }}" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ blog.title }}</h5>
+                    <p class="text-muted small">By {{ blog.author }} | {{ blog.created_at|date:"d M Y" }} | {{ blog.category }}</p>
+                    <p class="card-text">{{ blog.short_description|truncatewords:20 }}</p>
+                    <a href="{% url 'hin:blog_detail' slug=blog.slug %}" class="btn btn-primary btn-sm">Read More →</a>
+                    {% if perms.hin.change_blog or perms.hin.delete_blog %}
+                    <div class="mt-2">
+                        {% if perms.hin.change_blog %}
+                        <a href="{% url 'hin:blog_manage' %}?edit={{ blog.id }}" class="btn btn-sm btn-warning">Edit</a>
+                        {% endif %}
+                        {% if perms.hin.delete_blog %}
+                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-delete-url="{% url 'hin:blog_delete' pk=blog.id %}">
+                            Delete
+                        </button>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center">No blog posts found.</p>
+        {% endfor %}
+    </div>
+    
+    {% include 'cms/includes/pagination.html' with page_obj=blogs %}
+</div>
+{% endblock %}

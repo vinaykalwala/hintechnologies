@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Enquiries Management{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1>Contact Enquiries</h1>
+    
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form method="get" class="d-flex">
+                <input type="text" name="search" class="form-control me-2" placeholder="Search by name, email, or phone" value="{{ search_query }}">
+                <button type="submit" class="btn btn-outline-primary">Search</button>
+            </form>
+        </div>
+        <div class="col-md-6 text-end">
+            <a href="?read=unread" class="btn btn-sm btn-warning">Unread Only</a>
+            <a href="?read=read" class="btn btn-sm btn-info">Read Only</a>
+            <a href="{% url 'hin:enquiry_list' %}" class="btn btn-sm btn-secondary">Clear Filters</a>
+        </div>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Status</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Mobile</th>
+                    <th>Experience</th>
+                    <th>Submitted</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for enquiry in enquiries %}
+                <tr class="{% if not enquiry.is_read %}table-warning{% endif %}">
+                    <td>{% if enquiry.is_read %}✅ Read{% else %}🔴 Unread{% endif %}</td>
+                    <td>{{ enquiry.first_name }} {{ enquiry.last_name }}</td>
+                    <td>{{ enquiry.email }}</td>
+                    <td>{{ enquiry.mobile_no }}</td>
+                    <td>{{ enquiry.get_experience_level_display }}</td>
+                    <td>{{ enquiry.created_at|date:"d M Y" }}</td>
+                    <td>
+                        <a href="{% url 'hin:enquiry_detail' pk=enquiry.pk %}" class="btn btn-sm btn-primary">View</a>
+                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-delete-url="{% url 'hin:enquiry_delete' pk=enquiry.pk %}">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">No enquiries found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    {% include 'cms/includes/pagination.html' with page_obj=enquiries %}
+</div>
+{% endblock %}
