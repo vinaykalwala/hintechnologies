@@ -187,7 +187,7 @@ def service_manage(request):
     all_services = Service.objects.all()
     can_delete = request.user.has_perm('hin.delete_service')
     
-    return render(request, 'services/service_manage.html', {
+    return render(request, 'services/service_list.html', {
         'form': form,
         'services': all_services,
         'editing_service': service_to_edit,

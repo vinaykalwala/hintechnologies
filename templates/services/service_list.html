@@ -1,88 +1,210 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Our DevOps Services{% endblock %}
+{% block title %}Manage Services - HIN Technologies{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    {% if perms.hin.add_service or perms.hin.change_service %}
-    <div class="card mb-5">
-        <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">{% if editing_service %}Edit Service{% else %}Add New Service{% endif %}</h3>
-        </div>
-        <div class="card-body">
-            <form method="post">
-                {% csrf_token %}
-                <div class="mb-3">
-                    {{ form.title.label_tag }}
-                    {{ form.title }}
-                </div>
-                <div class="mb-3">
-                    {{ form.short_description.label_tag }}
-                    {{ form.short_description }}
-                </div>
-                <div class="mb-3">
-                    {{ form.full_description.label_tag }}
-                    {{ form.full_description }}
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            {{ form.icon.label_tag }}
-                            {{ form.icon }}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-check mt-4">
-                            {{ form.is_active }}
-                            <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
-                                Active (visible on website)
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary">Save Service</button>
-                {% if editing_service %}
-                <a href="{% url 'hin:service_manage' %}" class="btn btn-secondary">Cancel Edit</a>
-                {% endif %}
-            </form>
-        </div>
-    </div>
-    {% endif %}
-    
-    <h2 class="mb-4">{% if is_management %}Manage Services{% else %}Our Services{% endif %}</h2>
-    
-    {% if search_query %}
-    <div class="alert alert-info">Search results for: "{{ search_query }}"</div>
-    {% endif %}
-    
+<div class="container-fluid py-4">
     <div class="row">
-        {% for service in services %}
-        <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100">
+        <div class="col-lg-8 mx-auto">
+            <!-- Add/Edit Service Form -->
+            {% if perms.hin.add_service or perms.hin.change_service %}
+            <div class="card mb-5 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        {% if editing_service %}
+                            <i class="fas fa-edit"></i> Edit Service
+                        {% else %}
+                            <i class="fas fa-plus-circle"></i> Add New Service
+                        {% endif %}
+                    </h3>
+                </div>
                 <div class="card-body">
-                    <i class="fas {{ service.icon }} fa-3x text-primary mb-3"></i>
-                    <h5 class="card-title">{{ service.title }}</h5>
-                    <p class="card-text">{{ service.short_description|truncatewords:30 }}</p>
-                    {% if perms.hin.change_service or perms.hin.delete_service %}
-                    <div class="mt-3">
-                        {% if perms.hin.change_service %}
-                        <a href="?edit={{ service.id }}" class="btn btn-sm btn-warning">Edit</a>
-                        {% endif %}
-                        {% if perms.hin.delete_service %}
-                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-delete-url="{% url 'hin:service_delete' pk=service.id %}">
-                            Delete
-                        </button>
-                        {% endif %}
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_title" class="form-label fw-bold">Service Title *</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="text-danger small">{{ form.title.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_short_description" class="form-label fw-bold">Short Description *</label>
+                            {{ form.short_description }}
+                            <div class="form-text">Brief description that appears on the services listing page (max 500 chars)</div>
+                            {% if form.short_description.errors %}
+                                <div class="text-danger small">{{ form.short_description.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_full_description" class="form-label fw-bold">Full Description *</label>
+                            {{ form.full_description }}
+                            {% if form.full_description.errors %}
+                                <div class="text-danger small">{{ form.full_description.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_image" class="form-label fw-bold">Service Image</label>
+                            {{ form.image }}
+                            <div class="form-text">Upload an image for this service (recommended size: 800x600px)</div>
+                            {% if editing_service and editing_service.image %}
+                            <div class="mt-2">
+                                <label class="fw-bold">Current Image:</label><br>
+                                <img src="{{ editing_service.image.url }}" alt="{{ editing_service.title }}" 
+                                     style="max-height: 150px; max-width: 100%; border-radius: 5px;" class="mt-1">
+                                <div class="form-text mt-1">Upload new image to replace current one.</div>
+                            </div>
+                            {% endif %}
+                            {% if form.image.errors %}
+                                <div class="text-danger small">{{ form.image.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check mt-2">
+                                    {{ form.is_active }}
+                                    <label class="form-check-label fw-bold" for="{{ form.is_active.id_for_label }}">
+                                        Active (visible on website)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save Service
+                            </button>
+                            {% if editing_service %}
+                            <a href="{% url 'hin:service_manage' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancel Edit
+                            </a>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Services List -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">
+                        <i class="fas fa-list"></i> 
+                        {% if is_management %}Manage Services{% else %}Our Services{% endif %}
+                    </h3>
+                    <span class="badge bg-light text-dark">{{ services|length }} Total</span>
+                </div>
+                <div class="card-body">
+                    <!-- Search Bar -->
+                    <div class="row mb-4">
+                        <div class="col-md-6 mx-auto">
+                            <form method="get" class="d-flex">
+                                <input type="text" name="search" class="form-control me-2" 
+                                       placeholder="Search services by title..." 
+                                       value="{{ search_query }}">
+                                <button type="submit" class="btn btn-outline-primary">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+                                {% if search_query %}
+                                <a href="{% url 'hin:service_manage' %}" class="btn btn-outline-secondary ms-2">
+                                    <i class="fas fa-times"></i> Clear
+                                </a>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                    
+                    {% if search_query %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-search"></i> Showing results for: "{{ search_query }}" 
+                        ({{ services|length }} service{% if services|length != 1 %}s{% endif %} found)
                     </div>
                     {% endif %}
+                    
+                    <!-- Services Grid -->
+                    <div class="row">
+                        {% for service in services %}
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 shadow-sm hover-card">
+                                {% if service.image %}
+                                <img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.title }}" 
+                                     style="height: 180px; object-fit: cover;">
+                                {% else %}
+                                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
+                                     style="height: 180px;">
+                                    <i class="fas fa-cogs fa-4x text-white opacity-50"></i>
+                                </div>
+                                {% endif %}
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="card-title mb-0">{{ service.title }}</h5>
+                                        {% if service.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                        {% endif %}
+                                    </div>
+                                    <p class="card-text text-muted small">{{ service.short_description|truncatewords:20 }}</p>
+                                    <hr>
+                                    <div class="text-muted small">
+                                        <i class="fas fa-calendar-alt"></i> Created: {{ service.created_at|date:"d M Y" }}
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-transparent">
+                                    <div class="btn-group w-100">
+                                        {% if perms.hin.change_service %}
+                                        <a href="?edit={{ service.id }}" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        {% endif %}
+                                        {% if perms.hin.delete_service %}
+                                        <button type="button" class="btn btn-danger btn-sm" 
+                                                data-bs-toggle="modal" data-bs-target="#deleteModal" 
+                                                data-delete-url="{% url 'hin:service_delete' pk=service.id %}">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="col-12 text-center py-5">
+                            <i class="fas fa-cogs fa-4x text-muted mb-3 d-block"></i>
+                            <h4>No Services Found</h4>
+                            <p class="text-muted">
+                                {% if search_query %}
+                                No services match your search criteria.
+                                {% else %}
+                                Click "Add New Service" above to create your first service.
+                                {% endif %}
+                            </p>
+                            {% if search_query %}
+                            <a href="{% url 'hin:service_manage' %}" class="btn btn-primary">
+                                <i class="fas fa-eye"></i> View All Services
+                            </a>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>
-        {% empty %}
-        <p class="text-center">No services found.</p>
-        {% endfor %}
     </div>
-    
 </div>
+
+<style>
+.hover-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+}
+</style>
 {% endblock %}
