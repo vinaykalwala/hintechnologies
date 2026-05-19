@@ -20,12 +20,7 @@ class ContactEnquiry(models.Model):
     
     class Meta:
         ordering = ['-created_at']
-        permissions = [
-            ('view_contactenquiry', 'Can view contact enquiry'),
-            ('change_contactenquiry', 'Can change contact enquiry'),
-            ('delete_contactenquiry', 'Can delete contact enquiry'),
-        ]
-    
+
     def __str__(self):
         return f"{self.first_name} {self.last_name} - {self.email}"
     
@@ -44,12 +39,6 @@ class Service(models.Model):
     
     class Meta:
         ordering = ['title']
-        permissions = [
-            ('add_service', 'Can add service'),
-            ('change_service', 'Can change service'),
-            ('delete_service', 'Can delete service'),
-            ('view_service', 'Can view service'),
-        ]
     
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -76,12 +65,7 @@ class Blog(models.Model):
     
     class Meta:
         ordering = ['-created_at']
-        permissions = [
-            ('add_blog', 'Can add blog'),
-            ('change_blog', 'Can change blog'),
-            ('delete_blog', 'Can delete blog'),
-            ('view_blog', 'Can view blog'),
-        ]
+        
     
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -110,12 +94,7 @@ class Client(models.Model):
     
     class Meta:
         ordering = ['company_name']
-        permissions = [
-            ('add_client', 'Can add client'),
-            ('change_client', 'Can change client'),
-            ('delete_client', 'Can delete client'),
-            ('view_client', 'Can view client'),
-        ]
+        
     
     def __str__(self):
         return self.company_name

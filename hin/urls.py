@@ -6,7 +6,7 @@ from . import views
 app_name = 'hin'
 
 urlpatterns = [
-    # ==================== STATIC PAGES ====================
+    # Static pages
     path('', views.home, name='home'),
     path('about/', views.about, name='about'),
     path('terms/', views.terms, name='terms'),
@@ -14,38 +14,37 @@ urlpatterns = [
     path('faq/', views.faq, name='faq'),
     path('contact/', views.contact, name='contact'),
     
-    # ==================== AUTHENTICATION ====================
+    # Authentication
     path('signup/', views.signup, name='signup'),
     path('login/', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('profile/', views.profile, name='profile'),
     
-    # ==================== USER MANAGEMENT (Superuser only) ====================
+    # User Management (Superuser only)
     path('users/', views.user_list, name='user_list'),
     path('users/create/', views.user_create, name='user_create'),
     path('users/<int:user_id>/edit/', views.user_edit, name='user_edit'),
-    path('users/<int:user_id>/permissions/', views.user_permissions, name='user_permissions'),
     path('users/<int:user_id>/delete/', views.user_delete, name='user_delete'),
     
-    # ==================== CONTACT ENQUIRIES ====================
+    # Contact enquiries
     path('enquiries/', views.enquiry_list, name='enquiry_list'),
     path('enquiries/<int:pk>/', views.enquiry_detail, name='enquiry_detail'),
     path('enquiries/<int:pk>/toggle-read/', views.enquiry_toggle_read, name='enquiry_toggle_read'),
     path('enquiries/<int:pk>/delete/', views.enquiry_delete, name='enquiry_delete'),
     
-    # ==================== SERVICES ====================
+    # Services
     path('services/', views.service_list, name='service_list'),
     path('services/manage/', views.service_manage, name='service_manage'),
     path('services/<int:pk>/delete/', views.service_delete, name='service_delete'),
     
-    # ==================== BLOGS ====================
+    # Blogs
     path('blogs/', views.blog_list, name='blog_list'),
     path('blogs/manage/', views.blog_manage, name='blog_manage'),
     path('blogs/<slug:slug>/', views.blog_detail, name='blog_detail'),
     path('blogs/<int:pk>/delete/', views.blog_delete, name='blog_delete'),
     
-    # ==================== CLIENTS ====================
+    # Clients
     path('clients/', views.client_list, name='client_list'),
     path('clients/manage/', views.client_manage, name='client_manage'),
     path('clients/<int:pk>/delete/', views.client_delete, name='client_delete'),

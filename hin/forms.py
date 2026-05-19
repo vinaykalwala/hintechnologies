@@ -1,3 +1,5 @@
+# hin/forms.py - Updated permission mappings
+
 from django import forms
 from django.contrib.auth.models import User, Permission
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -46,29 +48,30 @@ class UserCreateWithPermissionsForm(UserCreationForm):
     is_staff = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
     is_active = forms.BooleanField(required=False, initial=True, widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
     
-    # Permission fields grouped by module
-    # Contact Enquiry Permissions
-    can_view_enquiries = forms.BooleanField(required=False, label='View Contact Enquiries', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
-    can_change_enquiries = forms.BooleanField(required=False, label='Change Contact Enquiries', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
-    can_delete_enquiries = forms.BooleanField(required=False, label='Delete Contact Enquiries', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
+    # Permission fields grouped by module - USING CORRECT PERMISSION NAMES
+    # Contact Enquiry Permissions (Django default names)
+    can_view_contactenquiry = forms.BooleanField(required=False, label='View Contact Enquiries', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_add_contactenquiry = forms.BooleanField(required=False, label='Add Contact Enquiries', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_change_contactenquiry = forms.BooleanField(required=False, label='Change Contact Enquiries', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_delete_contactenquiry = forms.BooleanField(required=False, label='Delete Contact Enquiries', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
     
-    # Service Permissions
-    can_add_services = forms.BooleanField(required=False, label='Add Services', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
-    can_change_services = forms.BooleanField(required=False, label='Change Services', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
-    can_delete_services = forms.BooleanField(required=False, label='Delete Services', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
-    can_view_services = forms.BooleanField(required=False, label='View Services', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
+    # Service Permissions (Django default names)
+    can_view_service = forms.BooleanField(required=False, label='View Services', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_add_service = forms.BooleanField(required=False, label='Add Services', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_change_service = forms.BooleanField(required=False, label='Change Services', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_delete_service = forms.BooleanField(required=False, label='Delete Services', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
     
-    # Blog Permissions
-    can_add_blogs = forms.BooleanField(required=False, label='Add Blogs', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
-    can_change_blogs = forms.BooleanField(required=False, label='Change Blogs', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
-    can_delete_blogs = forms.BooleanField(required=False, label='Delete Blogs', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
-    can_view_blogs = forms.BooleanField(required=False, label='View Blogs', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
+    # Blog Permissions (Django default names)
+    can_view_blog = forms.BooleanField(required=False, label='View Blogs', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_add_blog = forms.BooleanField(required=False, label='Add Blogs', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_change_blog = forms.BooleanField(required=False, label='Change Blogs', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_delete_blog = forms.BooleanField(required=False, label='Delete Blogs', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
     
-    # Client Permissions
-    can_add_clients = forms.BooleanField(required=False, label='Add Clients', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
-    can_change_clients = forms.BooleanField(required=False, label='Change Clients', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
-    can_delete_clients = forms.BooleanField(required=False, label='Delete Clients', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
-    can_view_clients = forms.BooleanField(required=False, label='View Clients', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
+    # Client Permissions (Django default names)
+    can_view_client = forms.BooleanField(required=False, label='View Clients', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_add_client = forms.BooleanField(required=False, label='Add Clients', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_change_client = forms.BooleanField(required=False, label='Change Clients', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_delete_client = forms.BooleanField(required=False, label='Delete Clients', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
     
     class Meta:
         model = User
@@ -88,28 +91,19 @@ class UserCreateWithPermissionsForm(UserCreationForm):
             # Clear existing permissions
             user.user_permissions.clear()
             
-            # Dictionary mapping form field to permission codename
-            permission_mapping = {
-                'can_view_enquiries': 'view_contactenquiry',
-                'can_change_enquiries': 'change_contactenquiry',
-                'can_delete_enquiries': 'delete_contactenquiry',
-                'can_add_services': 'add_service',
-                'can_change_services': 'change_service',
-                'can_delete_services': 'delete_service',
-                'can_view_services': 'view_service',
-                'can_add_blogs': 'add_blog',
-                'can_change_blogs': 'change_blog',
-                'can_delete_blogs': 'delete_blog',
-                'can_view_blogs': 'view_blog',
-                'can_add_clients': 'add_client',
-                'can_change_clients': 'change_client',
-                'can_delete_clients': 'delete_client',
-                'can_view_clients': 'view_client',
-            }
+            # List of permission fields to check
+            permission_fields = [
+                'can_view_contactenquiry', 'can_add_contactenquiry', 'can_change_contactenquiry', 'can_delete_contactenquiry',
+                'can_view_service', 'can_add_service', 'can_change_service', 'can_delete_service',
+                'can_view_blog', 'can_add_blog', 'can_change_blog', 'can_delete_blog',
+                'can_view_client', 'can_add_client', 'can_change_client', 'can_delete_client',
+            ]
             
             # Assign selected permissions
-            for field_name, perm_codename in permission_mapping.items():
+            for field_name in permission_fields:
                 if self.cleaned_data.get(field_name):
+                    # Extract permission codename (remove 'can_' prefix)
+                    perm_codename = field_name[4:]  # Remove 'can_' from the beginning
                     try:
                         permission = Permission.objects.get(codename=perm_codename)
                         user.user_permissions.add(permission)
@@ -125,25 +119,26 @@ class UserEditWithPermissionsForm(forms.ModelForm):
     is_staff = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
     is_active = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
     
-    # Permission fields grouped by module
-    can_view_enquiries = forms.BooleanField(required=False, label='View Contact Enquiries', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
-    can_change_enquiries = forms.BooleanField(required=False, label='Change Contact Enquiries', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
-    can_delete_enquiries = forms.BooleanField(required=False, label='Delete Contact Enquiries', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
+    # Permission fields - USING CORRECT DJANGO DEFAULT NAMES
+    can_view_contactenquiry = forms.BooleanField(required=False, label='View Contact Enquiries', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_add_contactenquiry = forms.BooleanField(required=False, label='Add Contact Enquiries', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_change_contactenquiry = forms.BooleanField(required=False, label='Change Contact Enquiries', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_delete_contactenquiry = forms.BooleanField(required=False, label='Delete Contact Enquiries', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
     
-    can_add_services = forms.BooleanField(required=False, label='Add Services', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
-    can_change_services = forms.BooleanField(required=False, label='Change Services', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
-    can_delete_services = forms.BooleanField(required=False, label='Delete Services', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
-    can_view_services = forms.BooleanField(required=False, label='View Services', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
+    can_view_service = forms.BooleanField(required=False, label='View Services', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_add_service = forms.BooleanField(required=False, label='Add Services', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_change_service = forms.BooleanField(required=False, label='Change Services', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_delete_service = forms.BooleanField(required=False, label='Delete Services', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
     
-    can_add_blogs = forms.BooleanField(required=False, label='Add Blogs', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
-    can_change_blogs = forms.BooleanField(required=False, label='Change Blogs', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
-    can_delete_blogs = forms.BooleanField(required=False, label='Delete Blogs', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
-    can_view_blogs = forms.BooleanField(required=False, label='View Blogs', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
+    can_view_blog = forms.BooleanField(required=False, label='View Blogs', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_add_blog = forms.BooleanField(required=False, label='Add Blogs', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_change_blog = forms.BooleanField(required=False, label='Change Blogs', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_delete_blog = forms.BooleanField(required=False, label='Delete Blogs', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
     
-    can_add_clients = forms.BooleanField(required=False, label='Add Clients', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
-    can_change_clients = forms.BooleanField(required=False, label='Change Clients', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
-    can_delete_clients = forms.BooleanField(required=False, label='Delete Clients', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
-    can_view_clients = forms.BooleanField(required=False, label='View Clients', widget=forms.CheckboxInput(attrs={'class': 'form-check-input permission-check'}))
+    can_view_client = forms.BooleanField(required=False, label='View Clients', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_add_client = forms.BooleanField(required=False, label='Add Clients', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_change_client = forms.BooleanField(required=False, label='Change Clients', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_delete_client = forms.BooleanField(required=False, label='Delete Clients', widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
     
     class Meta:
         model = User
@@ -158,24 +153,17 @@ class UserEditWithPermissionsForm(forms.ModelForm):
             current_perms = self.instance.user_permissions.values_list('codename', flat=True)
             
             # Set initial values for permission checkboxes
-            self.fields['can_view_enquiries'].initial = 'view_contactenquiry' in current_perms
-            self.fields['can_change_enquiries'].initial = 'change_contactenquiry' in current_perms
-            self.fields['can_delete_enquiries'].initial = 'delete_contactenquiry' in current_perms
+            permission_fields = [
+                'view_contactenquiry', 'add_contactenquiry', 'change_contactenquiry', 'delete_contactenquiry',
+                'view_service', 'add_service', 'change_service', 'delete_service',
+                'view_blog', 'add_blog', 'change_blog', 'delete_blog',
+                'view_client', 'add_client', 'change_client', 'delete_client',
+            ]
             
-            self.fields['can_add_services'].initial = 'add_service' in current_perms
-            self.fields['can_change_services'].initial = 'change_service' in current_perms
-            self.fields['can_delete_services'].initial = 'delete_service' in current_perms
-            self.fields['can_view_services'].initial = 'view_service' in current_perms
-            
-            self.fields['can_add_blogs'].initial = 'add_blog' in current_perms
-            self.fields['can_change_blogs'].initial = 'change_blog' in current_perms
-            self.fields['can_delete_blogs'].initial = 'delete_blog' in current_perms
-            self.fields['can_view_blogs'].initial = 'view_blog' in current_perms
-            
-            self.fields['can_add_clients'].initial = 'add_client' in current_perms
-            self.fields['can_change_clients'].initial = 'change_client' in current_perms
-            self.fields['can_delete_clients'].initial = 'delete_client' in current_perms
-            self.fields['can_view_clients'].initial = 'view_client' in current_perms
+            for perm_codename in permission_fields:
+                field_name = f'can_{perm_codename}'
+                if field_name in self.fields:
+                    self.fields[field_name].initial = perm_codename in current_perms
     
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -185,28 +173,18 @@ class UserEditWithPermissionsForm(forms.ModelForm):
             # Clear existing permissions
             user.user_permissions.clear()
             
-            # Dictionary mapping form field to permission codename
-            permission_mapping = {
-                'can_view_enquiries': 'view_contactenquiry',
-                'can_change_enquiries': 'change_contactenquiry',
-                'can_delete_enquiries': 'delete_contactenquiry',
-                'can_add_services': 'add_service',
-                'can_change_services': 'change_service',
-                'can_delete_services': 'delete_service',
-                'can_view_services': 'view_service',
-                'can_add_blogs': 'add_blog',
-                'can_change_blogs': 'change_blog',
-                'can_delete_blogs': 'delete_blog',
-                'can_view_blogs': 'view_blog',
-                'can_add_clients': 'add_client',
-                'can_change_clients': 'change_client',
-                'can_delete_clients': 'delete_client',
-                'can_view_clients': 'view_client',
-            }
+            # List of permission fields to check
+            permission_fields = [
+                'can_view_contactenquiry', 'can_add_contactenquiry', 'can_change_contactenquiry', 'can_delete_contactenquiry',
+                'can_view_service', 'can_add_service', 'can_change_service', 'can_delete_service',
+                'can_view_blog', 'can_add_blog', 'can_change_blog', 'can_delete_blog',
+                'can_view_client', 'can_add_client', 'can_change_client', 'can_delete_client',
+            ]
             
             # Assign selected permissions
-            for field_name, perm_codename in permission_mapping.items():
+            for field_name in permission_fields:
                 if self.cleaned_data.get(field_name):
+                    perm_codename = field_name[4:]  # Remove 'can_' prefix
                     try:
                         permission = Permission.objects.get(codename=perm_codename)
                         user.user_permissions.add(permission)
@@ -215,7 +193,7 @@ class UserEditWithPermissionsForm(forms.ModelForm):
         
         return user
 
-# ==================== EXISTING FORMS (keep from previous) ====================
+# ==================== CMS FORMS (keep as is) ====================
 
 class ContactEnquiryForm(forms.ModelForm):
     class Meta:
