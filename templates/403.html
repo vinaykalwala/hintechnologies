@@ -1,16 +1,171 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Access Denied - 403{% endblock %}
 
 {% block content %}
-<div class="container py-5 text-center">
-    <div class="row">
-        <div class="col-md-6 mx-auto">
-            <h1 class="display-1 text-danger">403</h1>
-            <h2>Access Denied</h2>
-            <p class="lead">You don't have permission to access this page.</p>
-            <p>Please contact your administrator if you believe this is an error.</p>
-            <a href="{% url 'hin:home' %}" class="btn btn-primary">Return to Home</a>
+<style>
+    .error-container {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        margin-top: 2rem;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    }
+    
+    .error-card {
+        background: white;
+        border-radius: 20px;
+        padding: 3rem;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        transform: translateY(-20px);
+        transition: transform 0.3s ease;
+    }
+    
+    .error-card:hover {
+        transform: translateY(-25px);
+    }
+    
+    .error-number {
+        font-size: 120px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0;
+        line-height: 1;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .error-title {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 1rem;
+    }
+    
+    .error-message {
+        font-size: 1.1rem;
+        color: #718096;
+        margin-bottom: 1.5rem;
+    }
+    
+    .error-description {
+        color: #a0aec0;
+        margin-bottom: 2rem;
+        font-size: 0.95rem;
+    }
+    
+    .btn-custom {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 12px 30px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+    
+    .icon-lock {
+        font-size: 4rem;
+        color: #667eea;
+        margin-bottom: 1rem;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+        50% {
+            transform: scale(1.1);
+            opacity: 0.8;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+    
+    .suggestion-list {
+        text-align: left;
+        margin: 1.5rem 0;
+        padding: 0 1rem;
+    }
+    
+    .suggestion-list li {
+        color: #718096;
+        margin-bottom: 0.5rem;
+        list-style-type: none;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+    
+    .suggestion-list li:before {
+        content: "→";
+        position: absolute;
+        left: 0;
+        color: #667eea;
+        font-weight: bold;
+    }
+    
+    @media (max-width: 768px) {
+        .error-card {
+            padding: 2rem;
+            margin: 1rem;
+        }
+        
+        .error-number {
+            font-size: 80px;
+        }
+        
+        .error-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<div class="container py-5">
+    <div class="error-container">
+        <div class="row">
+            <div class="col-md-8 col-lg-6 mx-auto">
+                <div class="error-card">
+                    <div class="icon-lock">
+                        🔒
+                    </div>
+                    <h1 class="error-number">403</h1>
+                    <h2 class="error-title">Access Denied</h2>
+                    <p class="error-message">You don't have permission to access this page.</p>
+                    
+                    <div class="suggestion-list">
+                        <li>Verify your login credentials</li>
+                        <li>Check if you have the required permissions</li>
+                        <li>Contact your system administrator</li>
+                    </div>
+                    
+                    <p class="error-description">
+                        If you believe this is an error, please contact your administrator with the following details:<br>
+                        <small>Error Code: 403 | Time: {% now "Y-m-d H:i:s" %}</small>
+                    </p>
+                    
+                    <a href="{% url 'hin:home' %}" class="btn btn-custom">
+                        🏠 Return to Home
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>

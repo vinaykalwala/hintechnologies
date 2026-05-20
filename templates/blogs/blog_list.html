@@ -4,115 +4,513 @@
 {% block title %}DevOps Blog{% endblock %}
 
 {% block content %}
+
+<style>
+    :root {
+        --primary: #0f172a;
+        --secondary: #1e293b;
+        --accent: #06b6d4;
+        --light: #f8fafc;
+        --card: #ffffff;
+        --shadow: 0 10px 30px rgba(0, 0, 0, .08);
+    }
+
+    body {
+        background: #f1f5f9;
+    }
+
+    .blog-form-card {
+        background: rgba(255, 255, 255, .9);
+        backdrop-filter: blur(15px);
+        border-radius: 25px;
+        padding: 35px;
+        box-shadow: var(--shadow);
+        border: none;
+    }
+
+    .form-head {
+        background: linear-gradient(135deg, #0f172a, #06b6d4);
+        color: white;
+        padding: 18px;
+        border-radius: 18px;
+        margin-bottom: 25px;
+    }
+
+    .form-control,
+    select,
+    textarea {
+        border-radius: 12px !important;
+        padding: 12px;
+        border: 1px solid #dbeafe;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 10px rgba(6, 182, 212, .3);
+    }
+
+    .blog-heading {
+        font-size: 34px;
+        font-weight: 700;
+        color: var(--primary);
+    }
+
+    .search-box {
+        background: white;
+        padding: 8px;
+        border-radius: 50px;
+        box-shadow: var(--shadow);
+    }
+
+    .search-box input {
+        border: none;
+    }
+
+    .search-box input:focus {
+        box-shadow: none;
+    }
+
+    .category-pill {
+        text-decoration: none;
+        padding: 8px 18px;
+        border-radius: 30px;
+        margin: 5px;
+        display: inline-block;
+        background: white;
+        color: #334155;
+        box-shadow: var(--shadow);
+        transition: .3s;
+    }
+
+    .category-pill:hover {
+        background: var(--accent);
+        color: white;
+    }
+
+    .blog-card {
+
+        background: white;
+
+        border: none;
+
+        border-radius: 28px;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 15px 40px rgba(0, 0, 0, .08);
+
+        height: 100%;
+
+        display: flex;
+
+        flex-direction: column;
+
+        min-height: 620px;
+
+        transition: .4s;
+
+    }
+
+    .blog-card:hover {
+
+        transform:
+            translateY(-12px);
+
+    }
+
+    .blog-image {
+
+        width: 100%;
+
+        height: 240px;
+
+        object-fit: cover;
+
+    }
+
+    .blog-content {
+
+        padding: 25px;
+
+        display: flex;
+
+        flex-direction: column;
+
+        flex: 1;
+
+    }
+
+    .blog-title {
+
+        font-size: 24px;
+
+        font-weight: 700;
+
+        margin-bottom: 15px;
+
+    }
+
+    .blog-content p {
+
+        display: -webkit-box;
+
+        -webkit-line-clamp: 4;
+
+        -webkit-box-orient: vertical;
+
+        overflow: hidden;
+
+        min-height: 110px;
+
+        color: #475569;
+
+    }
+
+    .read-btn {
+        background: linear-gradient(135deg,
+                #0891b2,
+                #06b6d4);
+
+        color: white;
+        border: none;
+        border-radius: 30px;
+        padding: 10px 20px;
+    }
+
+    .action-btn {
+        border-radius: 20px;
+    }
+
+    .publish-box {
+        background: #f8fafc;
+        padding: 12px;
+        border-radius: 12px;
+    }
+
+    .empty-box {
+        background: white;
+        padding: 40px;
+        text-align: center;
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+    }
+    .action-box{
+
+display:flex;
+
+gap:12px;
+
+margin-top:auto;
+
+padding-top:20px;
+
+}
+
+.edit-blog{
+
+flex:1;
+
+background:
+linear-gradient(
+135deg,
+#f59e0b,
+#facc15);
+
+padding:12px;
+
+border-radius:14px;
+
+text-align:center;
+
+text-decoration:none;
+
+color:black;
+
+font-weight:600;
+
+}
+
+.delete-blog{
+
+flex:1;
+
+background:
+linear-gradient(
+135deg,
+#b31217,
+#8e0e12);
+
+padding:12px;
+
+border-radius:14px;
+
+text-align:center;
+
+text-decoration:none;
+
+color:white;
+
+font-weight:600;
+
+}
+</style>
+
 <div class="container py-5">
+
     {% if perms.hin.add_blog or perms.hin.change_blog %}
-    <div class="card mb-5">
-        <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">{% if editing_blog %}Edit Blog{% else %}Write New Blog{% endif %}</h3>
+
+    <div class="blog-form-card mb-5">
+
+        <div class="form-head">
+            <h3>
+                {% if editing_blog %}
+                ✏ Edit Blog
+                {% else %}
+                📝 Create New Blog
+                {% endif %}
+            </h3>
         </div>
-        <div class="card-body">
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="mb-3">
+
+        <form method="post" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
                     {{ form.title.label_tag }}
                     {{ form.title }}
                 </div>
-                <div class="mb-3">
+
+                <div class="col-md-6 mb-3">
                     {{ form.featured_image.label_tag }}
                     {{ form.featured_image }}
                 </div>
-                <div class="mb-3">
+
+                <div class="col-12 mb-3">
                     {{ form.short_description.label_tag }}
                     {{ form.short_description }}
                 </div>
-                <div class="mb-3">
+
+                <div class="col-12 mb-3">
                     {{ form.content.label_tag }}
                     {{ form.content }}
                 </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            {{ form.author.label_tag }}
-                            {{ form.author }}
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            {{ form.category.label_tag }}
-                            {{ form.category }}
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-check mt-4">
-                            {{ form.is_published }}
-                            <label class="form-check-label" for="{{ form.is_published.id_for_label }}">
-                                Publish immediately
-                            </label>
-                        </div>
-                    </div>
+
+                <div class="col-md-4 mb-3">
+                    {{ form.author.label_tag }}
+                    {{ form.author }}
                 </div>
-                <button type="submit" class="btn btn-primary">Save Blog</button>
-                {% if editing_blog %}
-                <a href="{% url 'hin:blog_manage' %}" class="btn btn-secondary">Cancel Edit</a>
-                {% endif %}
-            </form>
-        </div>
-    </div>
-    {% endif %}
-    
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h2>{% if is_management %}Manage Blogs{% else %}Latest from Our Blog{% endif %}</h2>
-        </div>
-        <div class="col-md-4">
-            <form method="get" class="d-flex">
-                <input type="text" name="search" class="form-control me-2" placeholder="Search blogs..." value="{{ search_query }}">
-                <button type="submit" class="btn btn-outline-primary">Search</button>
-            </form>
-        </div>
-    </div>
-    
-    {% if categories and not is_management %}
-    <div class="mb-4">
-        <strong>Categories:</strong>
-        <a href="{% url 'hin:blog_list' %}" class="btn btn-sm {% if not current_category %}btn-primary{% else %}btn-outline-secondary{% endif %}">All</a>
-        {% for cat in categories %}
-        <a href="?category={{ cat }}" class="btn btn-sm {% if current_category == cat %}btn-primary{% else %}btn-outline-secondary{% endif %}">{{ cat }}</a>
-        {% endfor %}
-    </div>
-    {% endif %}
-    
-    <div class="row">
-        {% for blog in blogs %}
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                {% if blog.featured_image %}
-                <img src="{{ blog.featured_image.url }}" class="card-img-top" alt="{{ blog.title }}" style="height: 200px; object-fit: cover;">
-                {% endif %}
-                <div class="card-body">
-                    <h5 class="card-title">{{ blog.title }}</h5>
-                    <p class="text-muted small">By {{ blog.author }} | {{ blog.created_at|date:"d M Y" }} | {{ blog.category }}</p>
-                    <p class="card-text">{{ blog.short_description|truncatewords:20 }}</p>
-                    <a href="{% url 'hin:blog_detail' slug=blog.slug %}" class="btn btn-primary btn-sm">Read More →</a>
-                    {% if perms.hin.change_blog or perms.hin.delete_blog %}
-                    <div class="mt-2">
-                        {% if perms.hin.change_blog %}
-                        <a href="{% url 'hin:blog_manage' %}?edit={{ blog.id }}" class="btn btn-sm btn-warning">Edit</a>
-                        {% endif %}
-                        {% if perms.hin.delete_blog %}
-                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-delete-url="{% url 'hin:blog_delete' pk=blog.id %}">
-                            Delete
-                        </button>
-                        {% endif %}
-                    </div>
-                    {% endif %}
+
+                <div class="col-md-4 mb-3">
+                    {{ form.category.label_tag }}
+                    {{ form.category }}
                 </div>
+
+                <div class="col-md-4">
+
+                    <div class="publish-box mt-4">
+
+                        {{ form.is_published }}
+
+                        <label for="{{ form.is_published.id_for_label }}">
+                            Publish Immediately
+                        </label>
+
+                    </div>
+
+                </div>
+
             </div>
-        </div>
-        {% empty %}
-        <p class="text-center">No blog posts found.</p>
-        {% endfor %}
+
+            <button class="btn read-btn">
+                Save Blog
+            </button>
+
+            {% if editing_blog %}
+            <a href="{% url 'hin:blog_manage' %}" class="btn btn-secondary ms-2">
+                Cancel
+            </a>
+            {% endif %}
+
+        </form>
+
     </div>
-    
+
+    {% endif %}
+
+
+    <div class="row align-items-center mb-5">
+
+        <div class="col-md-7">
+
+            <h2 class="blog-heading">
+
+                {% if is_management %}
+                Manage Blogs
+                {% else %}
+                Latest Blog Articles
+                {% endif %}
+
+            </h2>
+
+        </div>
+
+        <div class="col-md-5">
+
+            <form method="get">
+
+                <div class="search-box d-flex">
+
+                    <input type="text" name="search" class="form-control" placeholder="Search blogs..."
+                        value="{{ search_query }}">
+
+                    <button class="btn read-btn ms-2">
+
+                        Search
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    {% if categories and not is_management %}
+
+    <div class="mb-5">
+
+        <a href="{% url 'hin:blog_list' %}" class="category-pill">
+
+            All
+
+        </a>
+
+        {% for cat in categories %}
+
+        <a href="?category={{ cat }}" class="category-pill">
+
+            {{ cat }}
+
+        </a>
+
+        {% endfor %}
+
+    </div>
+
+    {% endif %}
+
+
+
+    <div class="row">
+
+        {% for blog in blogs %}
+
+        <div class="col-lg-4 col-md-6 mb-4">
+
+            <div class="blog-card">
+
+                {% if blog.featured_image %}
+
+                <img src="{{ blog.featured_image.url }}" class="blog-image" alt="{{ blog.title }}">
+
+                {% endif %}
+
+                <div class="blog-content">
+
+                    <div class="blog-meta">
+
+                        👤 {{ blog.author }}
+
+                        • {{ blog.created_at|date:"d M Y" }}
+
+                        • {{ blog.category }}
+
+                    </div>
+
+                    <div class="blog-title mb-3">
+
+                        {{ blog.title }}
+
+                    </div>
+
+                    <p>
+
+                        {{ blog.short_description|truncatewords:20 }}
+
+                    </p>
+
+                    <a href="{% url 'hin:blog_detail' slug=blog.slug %}" class="btn read-btn">
+
+                        Read More →
+
+                    </a>
+{% if perms.hin.change_blog or perms.hin.delete_blog %}
+
+<div class="action-box">
+
+{% if perms.hin.change_blog %}
+
+<a
+href="{% url 'hin:blog_manage' %}?edit={{ blog.id }}"
+
+class="edit-blog">
+
+<i class="fas fa-edit"></i>
+
+Edit
+
+</a>
+
+{% endif %}
+
+{% if perms.hin.delete_blog %}
+
+<a
+href="{% url 'hin:blog_delete' pk=blog.id %}"
+
+class="delete-blog">
+
+<i class="fas fa-trash"></i>
+
+Delete
+
+</a>
+
+{% endif %}
+
 </div>
+
+{% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12">
+
+            <div class="empty-box">
+
+                <h4>No Blog Posts Found</h4>
+
+                <p>Create your first article 🚀</p>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
 {% endblock %}

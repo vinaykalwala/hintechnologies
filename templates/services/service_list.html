@@ -4,207 +4,1189 @@
 {% block title %}Manage Services - HIN Technologies{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
+
+<div class="container-fluid py-5">
+
     <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <!-- Add/Edit Service Form -->
+
+        <div class="col-lg-10 mx-auto">
+
+            <!-- FORM SECTION -->
+
             {% if perms.hin.add_service or perms.hin.change_service %}
-            <div class="card mb-5 shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">
+
+            <div class="card form-card mb-5">
+
+                <div class="card-header form-header">
+
+                    <h3>
+
                         {% if editing_service %}
-                            <i class="fas fa-edit"></i> Edit Service
+                        <i class="fas fa-edit me-2"></i>
+                        Edit Service
                         {% else %}
-                            <i class="fas fa-plus-circle"></i> Add New Service
+                        <i class="fas fa-plus-circle me-2"></i>
+                        Add New Service
                         {% endif %}
+
                     </h3>
+
                 </div>
+
                 <div class="card-body">
+
                     <form method="post" enctype="multipart/form-data">
+
                         {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="id_title" class="form-label fw-bold">Service Title *</label>
-                            {{ form.title }}
-                            {% if form.title.errors %}
-                                <div class="text-danger small">{{ form.title.errors }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="id_short_description" class="form-label fw-bold">Short Description *</label>
-                            {{ form.short_description }}
-                            <div class="form-text">Brief description that appears on the services listing page (max 500 chars)</div>
-                            {% if form.short_description.errors %}
-                                <div class="text-danger small">{{ form.short_description.errors }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="id_full_description" class="form-label fw-bold">Full Description *</label>
-                            {{ form.full_description }}
-                            {% if form.full_description.errors %}
-                                <div class="text-danger small">{{ form.full_description.errors }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="id_image" class="form-label fw-bold">Service Image</label>
-                            {{ form.image }}
-                            <div class="form-text">Upload an image for this service (recommended size: 800x600px)</div>
-                            {% if editing_service and editing_service.image %}
-                            <div class="mt-2">
-                                <label class="fw-bold">Current Image:</label><br>
-                                <img src="{{ editing_service.image.url }}" alt="{{ editing_service.title }}" 
-                                     style="max-height: 150px; max-width: 100%; border-radius: 5px;" class="mt-1">
-                                <div class="form-text mt-1">Upload new image to replace current one.</div>
-                            </div>
-                            {% endif %}
-                            {% if form.image.errors %}
-                                <div class="text-danger small">{{ form.image.errors }}</div>
-                            {% endif %}
-                        </div>
-                        
+
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-check mt-2">
-                                    {{ form.is_active }}
-                                    <label class="form-check-label fw-bold" for="{{ form.is_active.id_for_label }}">
-                                        Active (visible on website)
-                                    </label>
-                                </div>
+
+                            <div class="col-md-6 mb-4">
+
+                                <label class="form-label">
+
+                                    <i class="fas fa-layer-group"></i>
+
+                                    Service Title
+
+                                </label>
+
+                                {{ form.title }}
+
                             </div>
+
+                            <div class="col-md-6 mb-4">
+
+                                <label class="form-label">
+
+                                    <i class="fas fa-image"></i>
+
+                                    Service Image
+
+                                </label>
+
+                                {{ form.image }}
+
+                            </div>
+
                         </div>
-                        
-                        <div class="mt-4">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> Save Service
-                            </button>
-                            {% if editing_service %}
-                            <a href="{% url 'hin:service_manage' %}" class="btn btn-secondary">
-                                <i class="fas fa-times"></i> Cancel Edit
-                            </a>
-                            {% endif %}
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                <i class="fas fa-align-left"></i>
+
+                                Short Description
+
+                            </label>
+
+                            {{ form.short_description }}
+
                         </div>
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                <i class="fas fa-file-alt"></i>
+
+                                Full Description
+
+                            </label>
+
+                            {{ form.full_description }}
+
+                        </div>
+
+                        {% if editing_service and editing_service.image %}
+
+                        <div class="current-image">
+
+                            <img src="{{ editing_service.image.url }}">
+
+                        </div>
+
+                        {% endif %}
+
+                        <div class="form-check mb-4">
+
+                            {{ form.is_active }}
+
+                            <label class="form-check-label">
+
+                                Visible On Website
+
+                            </label>
+
+                        </div>
+
+                        <button class="btn btn-save">
+
+                            <i class="fas fa-save"></i>
+
+                            Save Service
+
+                        </button>
+
+                        {% if editing_service %}
+
+                        <a href="{% url 'hin:service_manage' %}" class="btn btn-cancel">
+
+                            Cancel
+
+                        </a>
+
+                        {% endif %}
+
                     </form>
+
                 </div>
+
             </div>
+
             {% endif %}
-            
-            <!-- Services List -->
-            <div class="card shadow-sm">
-                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                    <h3 class="mb-0">
-                        <i class="fas fa-list"></i> 
-                        {% if is_management %}Manage Services{% else %}Our Services{% endif %}
-                    </h3>
-                    <span class="badge bg-light text-dark">{{ services|length }} Total</span>
-                </div>
-                <div class="card-body">
-                    <!-- Search Bar -->
-                    <div class="row mb-4">
-                        <div class="col-md-6 mx-auto">
-                            <form method="get" class="d-flex">
-                                <input type="text" name="search" class="form-control me-2" 
-                                       placeholder="Search services by title..." 
-                                       value="{{ search_query }}">
-                                <button type="submit" class="btn btn-outline-primary">
-                                    <i class="fas fa-search"></i> Search
-                                </button>
-                                {% if search_query %}
-                                <a href="{% url 'hin:service_manage' %}" class="btn btn-outline-secondary ms-2">
-                                    <i class="fas fa-times"></i> Clear
-                                </a>
-                                {% endif %}
-                            </form>
-                        </div>
-                    </div>
-                    
-                    {% if search_query %}
-                    <div class="alert alert-info">
-                        <i class="fas fa-search"></i> Showing results for: "{{ search_query }}" 
-                        ({{ services|length }} service{% if services|length != 1 %}s{% endif %} found)
-                    </div>
-                    {% endif %}
-                    
-                    <!-- Services Grid -->
-                    <div class="row">
-                        {% for service in services %}
-                        <div class="col-md-6 col-lg-4 mb-4">
-                            <div class="card h-100 shadow-sm hover-card">
-                                {% if service.image %}
-                                <img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.title }}" 
-                                     style="height: 180px; object-fit: cover;">
-                                {% else %}
-                                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
-                                     style="height: 180px;">
-                                    <i class="fas fa-cogs fa-4x text-white opacity-50"></i>
-                                </div>
-                                {% endif %}
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-start mb-2">
-                                        <h5 class="card-title mb-0">{{ service.title }}</h5>
-                                        {% if service.is_active %}
-                                        <span class="badge bg-success">Active</span>
-                                        {% else %}
-                                        <span class="badge bg-danger">Inactive</span>
-                                        {% endif %}
-                                    </div>
-                                    <p class="card-text text-muted small">{{ service.short_description|truncatewords:20 }}</p>
-                                    <hr>
-                                    <div class="text-muted small">
-                                        <i class="fas fa-calendar-alt"></i> Created: {{ service.created_at|date:"d M Y" }}
-                                    </div>
-                                </div>
-                                <div class="card-footer bg-transparent">
-                                    <div class="btn-group w-100">
-                                        {% if perms.hin.change_service %}
-                                        <a href="?edit={{ service.id }}" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </a>
-                                        {% endif %}
-                                        {% if perms.hin.delete_service %}
-                                        <button type="button" class="btn btn-danger btn-sm" 
-                                                data-bs-toggle="modal" data-bs-target="#deleteModal" 
-                                                data-delete-url="{% url 'hin:service_delete' pk=service.id %}">
-                                            <i class="fas fa-trash"></i> Delete
-                                        </button>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {% empty %}
-                        <div class="col-12 text-center py-5">
-                            <i class="fas fa-cogs fa-4x text-muted mb-3 d-block"></i>
-                            <h4>No Services Found</h4>
-                            <p class="text-muted">
-                                {% if search_query %}
-                                No services match your search criteria.
-                                {% else %}
-                                Click "Add New Service" above to create your first service.
-                                {% endif %}
-                            </p>
-                            {% if search_query %}
-                            <a href="{% url 'hin:service_manage' %}" class="btn btn-primary">
-                                <i class="fas fa-eye"></i> View All Services
-                            </a>
+
+            <!-- SERVICES -->
+
+            <div class="card service-main">
+
+                <div class="card-header service-header">
+
+                    <div>
+
+                        <h3>
+
+                            <i class="fas fa-cubes"></i>
+
+                            {% if is_management %}
+                            Manage Services
+                            {% else %}
+                            Our Services
                             {% endif %}
-                        </div>
-                        {% endfor %}
+
+                        </h3>
+
                     </div>
+
+                    <span class="total-badge">
+
+                        {{ services|length }}
+
+                        Services
+
+                    </span>
+
                 </div>
+
+                <div class="card-body">
+
+                    <!-- SEARCH -->
+
+                    <div class="search-box">
+
+                        <form method="get">
+
+                            <input type="text" name="search" placeholder="Search services..."
+                                value="{{ search_query }}">
+
+                            <button>
+
+                                <i class="fas fa-search"></i>
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                    <div class="row">
+
+                        {% for service in services %}
+
+                        <div class="col-lg-4 col-md-6 mb-4">
+
+                            <div class="service-card">
+
+                                {% if service.image %}
+
+                                <img src="{{ service.image.url }}" class="service-image">
+
+                                {% else %}
+
+                                <div class="image-placeholder">
+
+                                    <i class="fas fa-laptop-code"></i>
+
+                                </div>
+
+                                {% endif %}
+
+                                <div class="service-content">
+
+                                    <div class="top-row">
+
+                                        <h5>
+
+                                            {{ service.title }}
+
+                                        </h5>
+
+                                        {% if service.is_active %}
+                                        <span class="active">
+                                            Active
+                                        </span>
+                                        {% else %}
+                                        <span class="inactive">
+                                            Inactive
+                                        </span>
+                                        {% endif %}
+
+                                    </div>
+                                    <p class="service-desc">
+                                        {{ service.short_description }}
+                                    </p>
+                                    <button type="button" class="read-more-btn" data-bs-toggle="modal"
+                                        data-bs-target="#descModal{{service.id}}">
+
+                                        Read More →
+
+                                    </button>
+
+
+
+
+                                    <div class="date">
+
+                                        <i class="fas fa-calendar"></i>
+
+                                        {{ service.created_at|date:"d M Y" }}
+
+                                    </div>
+
+                                </div>
+
+                                <div class="action-buttons">
+
+                                    {% if perms.hin.change_service %}
+
+                                    <a href="?edit={{ service.id }}" class="edit-btn">
+
+                                        Edit
+
+                                    </a>
+
+                                    {% endif %}
+
+                                    {% if perms.hin.delete_service %}
+                                    <a href="{% url 'hin:service_delete' pk=service.id %}" class="delete-btn">
+
+                                        Delete
+
+                                    </a>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        {% empty %}
+
+                        <div class="text-center py-5">
+
+                            <i class="fas fa-cogs empty-icon"></i>
+
+                            <h3>No Services Found</h3>
+
+                        </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+                {% for service in services %}
+
+                <div class="modal fade" id="descModal{{service.id}}" tabindex="-1">
+
+                    <div class="modal-dialog
+modal-lg
+modal-dialog-centered">
+
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+
+                                <h5>
+
+                                    {{service.title}}
+
+                                </h5>
+
+                                <button type="button" class="btn-close" data-bs-dismiss="modal">
+
+                                </button>
+
+                            </div>
+
+                            <div class="modal-body">
+
+                                {% if service.image %}
+
+                                <img src="{{service.image.url}}" class="modal-img">
+
+                                {% endif %}
+
+                                <p>
+
+                                    {{service.full_description}}
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
             </div>
+
         </div>
+
     </div>
+
 </div>
 
 <style>
-.hover-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    :root {
+        --primary-red: #b31217;
+        --dark-red: #8e0e12;
+        --logo-blue: #0096c7;
+        --light-bg: #f7f9fc;
+        --dark: #111827;
+        --border: #e6e8ec;
+    }
+
+    body {
+
+        background:
+
+            linear-gradient(135deg,
+
+                #f7f9fc,
+
+                #eef5fb);
+
+    }
+
+    /* MAIN */
+
+    .card {
+
+        border: none;
+
+        border-radius: 25px;
+
+        overflow: hidden;
+
+        box-shadow:
+
+            0 15px 40px rgba(0, 0, 0, .06);
+
+    }
+
+    /* HEADERS */
+
+    .form-header {
+
+        background:
+
+            linear-gradient(135deg,
+
+                var(--primary-red),
+
+                var(--dark-red));
+
+        padding: 25px;
+
+        color: white;
+
+    }
+
+    .service-header {
+
+        background:
+
+            linear-gradient(135deg,
+
+                var(--dark),
+
+                var(--logo-blue));
+
+        padding: 25px;
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        color: white;
+
+    }
+
+    /* FORM */
+
+    .card-body {
+
+        padding: 35px;
+
+    }
+
+    .form-label {
+
+        font-weight: 600;
+
+        margin-bottom: 12px;
+
+        display: block;
+
+    }
+
+    .form-label i {
+
+        margin-right: 8px;
+
+        color: var(--primary-red);
+
+    }
+
+    input,
+    textarea {
+
+        width: 100%;
+
+        padding: 15px;
+
+        border-radius: 15px;
+
+        border: 1px solid var(--border);
+
+        background: #fafafa;
+
+    }
+
+    input:focus,
+    textarea:focus {
+
+        outline: none;
+
+        border-color: var(--logo-blue);
+
+        box-shadow:
+
+            0 0 0 5px rgba(0, 150, 199, .1);
+
+    }
+
+    .current-image img {
+
+        height: 130px;
+
+        border-radius: 15px;
+
+        margin-bottom: 20px;
+
+    }
+
+    /* BUTTONS */
+
+    .btn-save {
+
+        background:
+
+            linear-gradient(135deg,
+
+                var(--primary-red),
+
+                var(--dark-red));
+
+        color: white;
+
+        padding: 14px 30px;
+
+        border: none;
+
+        border-radius: 15px;
+
+    }
+
+    .btn-cancel {
+
+        background: #eee;
+
+        padding: 14px 25px;
+
+        border-radius: 15px;
+
+    }
+
+    /* SEARCH */
+
+    .search-box {
+
+        margin-bottom: 35px;
+
+    }
+
+    .search-box form {
+
+        display: flex;
+
+        gap: 10px;
+
+    }
+
+    .search-box button {
+
+        width: 60px;
+
+        border: none;
+
+        border-radius: 15px;
+
+        background: var(--logo-blue);
+
+        color: white;
+
+    }
+
+    .service-card {
+
+        background: white;
+
+        border-radius: 25px;
+
+        overflow: visible;
+
+        height: 100%;
+
+        display: flex;
+
+        flex-direction: column;
+
+        min-height: 650px;
+
+        box-shadow:
+            0 12px 35px rgba(0, 0, 0, .06);
+
+        transition: .4s;
+
+    }
+
+    .service-card:hover {
+
+        transform:
+            translateY(-10px);
+    }
+
+    .service-image {
+
+        width: 100%;
+
+        height: 230px;
+
+        object-fit: cover;
+    }
+
+    .service-content {
+
+        padding: 25px;
+
+        flex: 1;
+
+        display: flex;
+
+        flex-direction: column;
+    }
+
+    .top-row {
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: flex-start;
+
+        margin-bottom: 15px;
+    }
+
+    .service-desc {
+
+        display: -webkit-box;
+
+        -webkit-line-clamp: 4;
+
+        -webkit-box-orient: vertical;
+
+        overflow: hidden;
+
+        line-height: 1.8;
+
+        min-height: 120px;
+
+        color: #555;
+    }
+
+    .read-more-btn {
+
+        background: none;
+
+        border: none;
+
+        padding: 0;
+
+        margin-top: 10px;
+
+        font-weight: 600;
+
+        color: var(--logo-blue);
+
+        text-align: left;
+    }
+
+    .date {
+
+        margin-top: auto;
+
+        padding-top: 15px;
+
+        color: #888;
+    }
+
+    .action-buttons {
+
+        padding: 20px;
+
+        display: flex;
+
+        gap: 10px;
+
+        margin-top: auto;
+    }
+
+    .modal-content {
+
+        border-radius: 25px;
+
+        overflow: hidden;
+    }
+
+    .modal-img {
+
+        width: 100%;
+
+        height: 250px;
+
+        object-fit: cover;
+
+        border-radius: 15px;
+
+        margin-bottom: 20px;
+    }
+
+    .image-placeholder {
+
+        height: 220px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        font-size: 55px;
+
+        background:
+
+            linear-gradient(135deg,
+
+                var(--dark),
+
+                var(--logo-blue));
+
+        color: white;
+
+    }
+
+    .service-content {
+
+        padding: 25px;
+
+    }
+
+
+    .active {
+
+        background: #00c27a;
+
+        padding: 6px 12px;
+
+        border-radius: 20px;
+
+        color: white;
+
+    }
+
+    .inactive {
+
+        background: var(--primary-red);
+
+        padding: 6px 12px;
+
+        border-radius: 20px;
+
+        color: white;
+
+    }
+
+
+
+    .edit-btn {
+
+        flex: 1;
+
+        background: var(--logo-blue);
+
+        padding: 12px;
+
+        border-radius: 12px;
+
+        color: white;
+
+        text-align: center;
+
+        text-decoration: none;
+
+    }
+
+    .delete-btn {
+
+        flex: 1;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        padding: 12px;
+
+        border-radius: 12px;
+
+        background:
+            linear-gradient(135deg,
+
+                var(--primary-red),
+
+                var(--dark-red));
+
+        color: white;
+
+        text-decoration: none;
+
+        font-weight: 600;
+
+        transition: .3s;
+
+    }
+
+    .delete-btn:hover {
+
+        color: white;
+
+        transform: translateY(-2px);
+
+    }
+
+    .total-badge {
+
+        background: white;
+
+        padding: 10px 18px;
+
+        border-radius: 30px;
+
+        color: black;
+
+        font-weight: 600;
+
+    }
+
+    .empty-icon {
+
+        font-size: 70px;
+
+        background:
+
+            linear-gradient(135deg,
+
+                var(--primary-red),
+
+                var(--logo-blue));
+
+        -webkit-background-clip: text;
+
+        -webkit-text-fill-color: transparent;
+
+    }
+
+
+
+    .modal-content {
+
+        border: none;
+
+        border-radius: 25px;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 20px 50px rgba(0, 0, 0, .12);
+
+        animation:
+            popupShow .25s ease;
+
+    }
+
+    @keyframes popupShow {
+
+        from {
+
+            opacity: 0;
+
+            transform:
+                translateY(20px);
+
+        }
+
+        to {
+
+            opacity: 1;
+
+            transform:
+                translateY(0);
+
+        }
+
+    }
+
+    .modal-body {
+
+        max-height: 70vh;
+
+        overflow-y: auto;
+
+        padding: 25px;
+    }
+
+
+    .modal {
+
+        z-index: 99999;
+    }
+
+    .modal-dialog {
+
+        max-width: 850px;
+
+        margin: auto;
+    }
+
+    .modal-content {
+
+        position: relative;
+
+        overflow: hidden;
+
+    }
+
+    .modal-body {
+
+        max-height: 70vh;
+
+        overflow-y: auto;
+
+    }
+    /* ================= RESPONSIVE ================= */
+
+/* Large tablets */
+
+@media (max-width:992px){
+
+.container-fluid{
+
+padding:20px;
 }
-.hover-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+
+.col-lg-10{
+
+max-width:100%;
+}
+
+.service-card{
+
+min-height:auto;
+}
+
+.service-image,
+.image-placeholder{
+
+height:200px;
+}
+
+.card-body{
+
+padding:25px;
+}
+
+.modal-dialog{
+
+max-width:95%;
+}
+
+}
+
+/* Tablets */
+
+@media (max-width:768px){
+
+.form-header,
+.service-header{
+
+padding:20px;
+}
+
+.service-header{
+
+flex-direction:column;
+
+gap:15px;
+
+text-align:center;
+}
+
+.total-badge{
+
+width:100%;
+
+text-align:center;
+}
+
+.search-box form{
+
+flex-direction:column;
+}
+
+.search-box button{
+
+width:100%;
+
+height:55px;
+}
+
+.action-buttons{
+
+flex-direction:column;
+}
+
+.edit-btn,
+.delete-btn{
+
+width:100%;
+}
+
+.service-card{
+
+min-height:auto;
+}
+
+.service-content{
+
+padding:20px;
+}
+
+.service-image,
+.image-placeholder{
+
+height:180px;
+}
+
+.modal-img{
+
+height:220px;
+}
+
+.modal-body{
+
+padding:20px;
+}
+
+.modal-dialog{
+
+margin:15px;
+}
+
+}
+
+/* Mobile */
+
+@media (max-width:576px){
+
+.container-fluid{
+
+padding:10px;
+}
+
+.card{
+
+border-radius:18px;
+}
+
+.card-body{
+
+padding:18px;
+}
+
+.form-header h3,
+.service-header h3{
+
+font-size:20px;
+}
+
+.form-label{
+
+font-size:14px;
+}
+
+input,
+textarea{
+
+padding:12px;
+
+font-size:14px;
+}
+
+.btn-save,
+.btn-cancel{
+
+width:100%;
+
+margin-bottom:10px;
+}
+
+.service-card{
+
+border-radius:20px;
+}
+
+.service-image,
+.image-placeholder{
+
+height:160px;
+}
+
+.service-content{
+
+padding:16px;
+}
+
+.top-row{
+
+flex-direction:column;
+
+gap:10px;
+}
+
+.active,
+.inactive{
+
+width:fit-content;
+}
+
+.service-desc{
+
+min-height:auto;
+
+font-size:14px;
+}
+
+.read-more-btn{
+
+font-size:14px;
+}
+
+.action-buttons{
+
+padding:15px;
+}
+
+.edit-btn,
+.delete-btn{
+
+padding:10px;
+}
+
+.modal-dialog{
+
+margin:10px;
+}
+
+.modal-img{
+
+height:180px;
+}
+
+.modal-body{
+
+padding:15px;
+}
+
+}
+
+/* Small mobile */
+
+@media (max-width:380px){
+
+.form-header h3,
+.service-header h3{
+
+font-size:18px;
+}
+
+.total-badge{
+
+font-size:13px;
+}
+
+.service-image,
+.image-placeholder{
+
+height:140px;
+}
+
+.modal-img{
+
+height:150px;
+}
+
 }
 </style>
 {% endblock %}
