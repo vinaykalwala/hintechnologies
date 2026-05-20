@@ -4,267 +4,481 @@
 {% block title %}Edit User - HIN Technologies{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row">
-        <div class="col-lg-10 mx-auto">
-            <div class="card">
-                <div class="card-header bg-warning text-dark">
-                    <h4 class="mb-0"><i class="fas fa-user-edit"></i> Edit User: {{ edit_user.username }}</h4>
-                </div>
-                <div class="card-body">
-                    <form method="post">
-                        {% csrf_token %}
-                        
-                        <!-- Basic Information -->
-                        <div class="card mb-4">
-                            <div class="card-header bg-secondary text-white">
-                                <h5 class="mb-0">Basic Information</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="id_username" class="form-label">Username *</label>
-                                        {{ form.username }}
-                                        {% if form.username.errors %}
-                                            <div class="text-danger small">{{ form.username.errors }}</div>
-                                        {% endif %}
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="id_email" class="form-label">Email *</label>
-                                        {{ form.email }}
-                                        {% if form.email.errors %}
-                                            <div class="text-danger small">{{ form.email.errors }}</div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="id_first_name" class="form-label">First Name</label>
-                                        {{ form.first_name }}
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="id_last_name" class="form-label">Last Name</label>
-                                        {{ form.last_name }}
-                                    </div>
-                                </div>
-                                
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-check">
-                                            {{ form.is_staff }}
-                                            <label class="form-check-label" for="id_is_staff">
-                                                Staff Status (can access admin panel)
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-check">
-                                            {{ form.is_active }}
-                                            <label class="form-check-label" for="id_is_active">
-                                                Active (can login)
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                       <!-- Permissions Selection -->
-<div class="card mb-4">
-    <div class="card-header bg-info text-white">
-        <h5 class="mb-0">
-            <i class="fas fa-lock"></i> edit Permissions
-        </h5>
-    </div>
+<!-- Premium Font: Plus Jakarta Sans for a high-end tech feel -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <div class="card-body">
+<style>
+    :root {
+        /* User's Exact Color Palette */
+        --deep-red: #AB1D1D;
+        --dark-black: #0a164b;
+        --sky-blue: #A7D2DB;
+        --soft-pink: #D8A4A6;
+        --light-gray: #9E9EA2;
+        --white: #FDFCFC;
+        
+        /* Derived Transparencies for UI Depth */
+        --red-glow: rgba(171, 29, 29, 0.25);
+        --blue-glow: rgba(167, 210, 219, 0.3);
+        --pink-glow: rgba(216, 164, 166, 0.15);
+        --gray-light: rgba(158, 158, 162, 0.15);
+        
+        --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-        <!-- Contact Enquiry -->
-        <div class="card mb-3">
-            <div class="card-header bg-light">
-                <h6 class="mb-0">Contact Enquiries Module</h6>
+    body {
+        font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+        background-color: var(--white);
+        color: var(--dark-black);
+        margin: 0;
+        position: relative;
+    }
+
+    /* --- Eye-Catching Animated Background --- */
+    .mesh-bg {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        z-index: 0;
+        pointer-events: none;
+        background: 
+            radial-gradient(circle at 15% 0%, var(--blue-glow) 0%, transparent 40%),
+            radial-gradient(circle at 85% 100%, var(--pink-glow) 0%, transparent 40%);
+        animation: breathe 15s infinite alternate ease-in-out;
+    }
+    @keyframes breathe {
+        0% { transform: scale(1); opacity: 0.8; }
+        100% { transform: scale(1.05); opacity: 1; }
+    }
+
+    /* --- Main Layout --- */
+    .page-wrapper {
+        position: relative;
+        z-index: 1;
+        max-width: 1100px;
+        margin: 3rem auto;
+        padding: 0 1.5rem;
+        animation: slideUp 0.6s ease-out;
+    }
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .master-card {
+        background: var(--white);
+        border-radius: 24px;
+        box-shadow: 0 25px 50px rgba(18, 18, 18, 0.08);
+        overflow: hidden;
+        border: 1px solid var(--gray-light);
+    }
+
+    /* --- Striking Hero Header --- */
+    .master-header {
+        background: var(--dark-black);
+        padding: 2.5rem 3rem;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    /* Deep Red Geometric Accent in Header */
+    .master-header::after {
+        content: '';
+        position: absolute;
+        top: -40px; right: -40px;
+        width: 200px; height: 200px;
+        background: var(--deep-red);
+        border-radius: 50%;
+        opacity: 0.9;
+        filter: blur(2px);
+    }
+    .master-header::before {
+        content: '';
+        position: absolute;
+        bottom: -20px; right: 100px;
+        width: 100px; height: 100px;
+        background: var(--sky-blue);
+        border-radius: 50%;
+        opacity: 0.2;
+        filter: blur(20px);
+    }
+    
+    .header-icon {
+        background: rgba(253, 252, 252, 0.1);
+        backdrop-filter: blur(10px);
+        width: 64px; height: 64px;
+        border-radius: 16px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.8rem; color: var(--white);
+        border: 1px solid rgba(253, 252, 252, 0.2);
+        position: relative; z-index: 2;
+    }
+    .header-text { position: relative; z-index: 2; }
+    .header-text h3 {
+        color: var(--white);
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin: 0 0 5px 0;
+    }
+    .header-text p {
+        color: var(--light-gray);
+        margin: 0;
+        font-size: 1rem;
+    }
+
+    /* --- Body & Form Sections --- */
+    .master-body { padding: 3rem; }
+
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--dark-black);
+        margin-bottom: 1.5rem;
+        display: flex; align-items: center; gap: 10px;
+    }
+    .section-title i { color: var(--deep-red); }
+    .section-title::after {
+        content: ''; flex: 1; height: 1px;
+        background: linear-gradient(90deg, var(--gray-light), transparent);
+        margin-left: 10px;
+    }
+
+    /* --- Custom Inputs --- */
+    .input-group { margin-bottom: 1.5rem; }
+    .input-group label {
+        display: block;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--dark-black);
+        margin-bottom: 8px;
+    }
+    .input-group label span { color: var(--deep-red); }
+    
+    .input-group input[type="text"],
+    .input-group input[type="email"] {
+        width: 100%;
+        padding: 14px 18px;
+        border: 2px solid var(--gray-light);
+        border-radius: 12px;
+        background: var(--white);
+        font-family: inherit;
+        font-size: 1rem;
+        color: var(--dark-black);
+        transition: var(--transition);
+        box-sizing: border-box;
+    }
+    .input-group input:focus {
+        outline: none;
+        border-color: var(--sky-blue);
+        box-shadow: 0 0 0 5px var(--blue-glow);
+    }
+    .error-text { color: var(--deep-red); font-size: 0.85rem; margin-top: 5px; font-weight: 500; }
+
+    /* --- Status Highlight Box --- */
+    .status-box {
+        background: linear-gradient(135deg, rgba(216, 164, 166, 0.05), rgba(167, 210, 219, 0.1));
+        border: 1px solid var(--pink-glow);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    /* --- Beautiful Animated Toggles --- */
+    .custom-toggle-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 10px 0;
+    }
+    /* Hiding the default Django checkbox */
+    .custom-toggle-wrapper input[type="checkbox"] {
+        appearance: none; -webkit-appearance: none;
+        width: 52px; height: 28px;
+        background: var(--light-gray);
+        border-radius: 30px;
+        position: relative;
+        cursor: pointer;
+        outline: none;
+        transition: var(--transition);
+        flex-shrink: 0; margin: 0;
+    }
+    .custom-toggle-wrapper input[type="checkbox"]::after {
+        content: ''; position: absolute;
+        top: 3px; left: 3px;
+        width: 22px; height: 22px;
+        background: var(--white);
+        border-radius: 50%;
+        box-shadow: 0 2px 5px rgba(18,18,18,0.2);
+        transition: var(--transition);
+    }
+    .custom-toggle-wrapper input[type="checkbox"]:checked {
+        background: var(--deep-red); /* Using primary red for active states */
+    }
+    .custom-toggle-wrapper input[type="checkbox"]:checked::after {
+        transform: translateX(24px);
+    }
+    .toggle-text {
+        display: flex; flex-direction: column;
+    }
+    .toggle-text strong { color: var(--dark-black); font-size: 1rem; }
+    .toggle-text small { color: var(--light-gray); font-size: 0.85rem; margin-top: 2px; }
+
+    /* --- Permissions Grid & Cards --- */
+    .perm-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(240px, 1fr));
+        gap: 20px;
+        margin-bottom: 3rem;
+    }
+    .perm-card {
+        border: 1px solid var(--gray-light);
+        border-radius: 16px;
+        background: var(--white);
+        padding: 20px;
+        transition: var(--transition);
+    }
+    .perm-card:hover {
+        border-color: var(--sky-blue);
+        box-shadow: 0 10px 30px var(--blue-glow);
+        transform: translateY(-5px);
+    }
+    .perm-card-header {
+        font-weight: 700;
+        color: var(--dark-black);
+        margin-bottom: 15px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--gray-light);
+        display: flex; align-items: center; gap: 10px;
+    }
+    .perm-card:hover .perm-card-header { border-bottom-color: var(--soft-pink); }
+    .perm-card-header i { color: var(--light-gray); transition: var(--transition); }
+    .perm-card:hover .perm-card-header i { color: var(--deep-red); }
+
+    /* --- Buttons --- */
+    .actions-bar {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        padding-top: 2rem;
+        border-top: 1px solid var(--gray-light);
+    }
+    
+    .btn-custom {
+        padding: 14px 28px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1rem;
+        display: inline-flex; align-items: center; gap: 8px;
+        cursor: pointer; transition: var(--transition);
+        text-decoration: none; border: none;
+    }
+    
+    .btn-save {
+        background: var(--deep-red);
+        color: var(--white);
+        box-shadow: 0 8px 20px var(--red-glow);
+    }
+    .btn-save:hover {
+        background: #8A1616; /* Darker red on hover */
+        transform: translateY(-3px);
+        box-shadow: 0 12px 25px var(--red-glow);
+        color: var(--white);
+    }
+    
+    .btn-cancel {
+        background: transparent;
+        color: var(--dark-black);
+        border: 2px solid var(--light-gray);
+    }
+    .btn-cancel:hover {
+        border-color: var(--dark-black);
+        background: var(--dark-black);
+        color: var(--white);
+    }
+
+    /* --- Responsive --- */
+    @media (min-width: 769px) {
+        .row-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    }
+    @media (max-width: 768px) {
+        .master-header { padding: 2rem; flex-direction: column; text-align: center; }
+        .master-body { padding: 2rem 1.5rem; }
+        .actions-bar { flex-direction: column-reverse; }
+        .btn-custom { width: 100%; justify-content: center; }
+    }
+</style>
+
+<div class="mesh-bg"></div>
+
+<div class="page-wrapper">
+    <div class="master-card">
+        
+        <!-- Striking Header -->
+        <div class="master-header">
+            <div class="header-icon">
+                <i class="fas fa-user-astronaut"></i>
             </div>
-
-            <div class="card-body">
-                <div class="row">
-
-                    <div class="col-md-3">
-                        <div class="form-check">
-                            {{ form.can_view_contactenquiry }}
-                            <label class="form-check-label">
-                                View Contact Enquiries
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-check">
-                            {{ form.can_add_contactenquiry }}
-                            <label class="form-check-label">
-                                Add Contact Enquiries
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-check">
-                            {{ form.can_change_contactenquiry }}
-                            <label class="form-check-label">
-                                Change Contact Enquiries
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-check">
-                            {{ form.can_delete_contactenquiry }}
-                            <label class="form-check-label">
-                                Delete Contact Enquiries
-                            </label>
-                        </div>
-                    </div>
-
-                </div>
+            <div class="header-text">
+                <h3>{{ edit_user.username }}</h3>
+                <p>Manage profile details, account status, and system access</p>
             </div>
         </div>
 
-        <!-- Services -->
-        <div class="card mb-3">
-            <div class="card-header bg-light">
-                <h6 class="mb-0">Services Module</h6>
-            </div>
+        <div class="master-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                <!-- Section 1: Basic Information -->
+                <div class="section-title">
+                    <i class="fas fa-id-badge"></i> Basic Information
+                </div>
+                
+                <div class="row-grid">
+                    <div class="input-group">
+                        <label for="id_username">Username <span>*</span></label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            <div class="error-text"><i class="fas fa-exclamation-triangle"></i> {{ form.username.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="input-group">
+                        <label for="id_email">Email Address <span>*</span></label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <div class="error-text"><i class="fas fa-exclamation-triangle"></i> {{ form.email.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
 
-            <div class="card-body">
-                <div class="row">
+                <div class="row-grid">
+                    <div class="input-group">
+                        <label for="id_first_name">First Name</label>
+                        {{ form.first_name }}
+                    </div>
+                    <div class="input-group">
+                        <label for="id_last_name">Last Name</label>
+                        {{ form.last_name }}
+                    </div>
+                </div>
 
-                    <div class="col-md-3">
-                        <div class="form-check">
-                            {{ form.can_view_service }}
-                            <label>View Services</label>
+                <!-- Section 2: Account Status Highlight -->
+                <div class="status-box row-grid">
+                    <div class="custom-toggle-wrapper">
+                        {{ form.is_staff }}
+                        <div class="toggle-text">
+                            <strong for="id_is_staff">Staff Status</strong>
+                            <small>Grants access to the internal admin panel.</small>
+                        </div>
+                    </div>
+                    <div class="custom-toggle-wrapper">
+                        {{ form.is_active }}
+                        <div class="toggle-text">
+                            <strong for="id_is_active">Active Account</strong>
+                            <small>Toggle off to suspend user instead of deleting.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Detailed Permissions -->
+                <div class="section-title" style="margin-top: 2rem;">
+                    <i class="fas fa-shield-halved"></i> Access Permissions
+                </div>
+
+                <div class="perm-grid">
+                    
+                    <!-- Contact Module -->
+                    <div class="perm-card">
+                        <div class="perm-card-header">
+                            <i class="fas fa-envelope-open-text"></i> Contact Enquiries
+                        </div>
+                        <div class="custom-toggle-wrapper mb-2">
+                            {{ form.can_view_contactenquiry }} <label class="toggle-text"><strong>View</strong></label>
+                        </div>
+                        <div class="custom-toggle-wrapper mb-2">
+                            {{ form.can_add_contactenquiry }} <label class="toggle-text"><strong>Add</strong></label>
+                        </div>
+                        <div class="custom-toggle-wrapper mb-2">
+                            {{ form.can_change_contactenquiry }} <label class="toggle-text"><strong>Edit</strong></label>
+                        </div>
+                        <div class="custom-toggle-wrapper">
+                            {{ form.can_delete_contactenquiry }} <label class="toggle-text"><strong>Delete</strong></label>
                         </div>
                     </div>
 
-                    <div class="col-md-3">
-                        <div class="form-check">
-                            {{ form.can_add_service }}
-                            <label>Add Services</label>
+                    <!-- Services Module -->
+                    <div class="perm-card">
+                        <div class="perm-card-header">
+                            <i class="fas fa-layer-group"></i> Services Module
+                        </div>
+                        <div class="custom-toggle-wrapper mb-2">
+                            {{ form.can_view_service }} <label class="toggle-text"><strong>View</strong></label>
+                        </div>
+                        <div class="custom-toggle-wrapper mb-2">
+                            {{ form.can_add_service }} <label class="toggle-text"><strong>Add</strong></label>
+                        </div>
+                        <div class="custom-toggle-wrapper mb-2">
+                            {{ form.can_change_service }} <label class="toggle-text"><strong>Edit</strong></label>
+                        </div>
+                        <div class="custom-toggle-wrapper">
+                            {{ form.can_delete_service }} <label class="toggle-text"><strong>Delete</strong></label>
                         </div>
                     </div>
 
-                    <div class="col-md-3">
-                        <div class="form-check">
-                            {{ form.can_change_service }}
-                            <label>Change Services</label>
+                    <!-- Blogs Module -->
+                    <div class="perm-card">
+                        <div class="perm-card-header">
+                            <i class="fas fa-feather-pointed"></i> Blogs Module
+                        </div>
+                        <div class="custom-toggle-wrapper mb-2">
+                            {{ form.can_view_blog }} <label class="toggle-text"><strong>View</strong></label>
+                        </div>
+                        <div class="custom-toggle-wrapper mb-2">
+                            {{ form.can_add_blog }} <label class="toggle-text"><strong>Add</strong></label>
+                        </div>
+                        <div class="custom-toggle-wrapper mb-2">
+                            {{ form.can_change_blog }} <label class="toggle-text"><strong>Edit</strong></label>
+                        </div>
+                        <div class="custom-toggle-wrapper">
+                            {{ form.can_delete_blog }} <label class="toggle-text"><strong>Delete</strong></label>
                         </div>
                     </div>
 
-                    <div class="col-md-3">
-                        <div class="form-check">
-                            {{ form.can_delete_service }}
-                            <label>Delete Services</label>
+                    <!-- Clients Module -->
+                    <div class="perm-card">
+                        <div class="perm-card-header">
+                            <i class="fas fa-handshake"></i> Clients Module
+                        </div>
+                        <div class="custom-toggle-wrapper mb-2">
+                            {{ form.can_view_client }} <label class="toggle-text"><strong>View</strong></label>
+                        </div>
+                        <div class="custom-toggle-wrapper mb-2">
+                            {{ form.can_add_client }} <label class="toggle-text"><strong>Add</strong></label>
+                        </div>
+                        <div class="custom-toggle-wrapper mb-2">
+                            {{ form.can_change_client }} <label class="toggle-text"><strong>Edit</strong></label>
+                        </div>
+                        <div class="custom-toggle-wrapper">
+                            {{ form.can_delete_client }} <label class="toggle-text"><strong>Delete</strong></label>
                         </div>
                     </div>
 
                 </div>
-            </div>
-        </div>
 
-        <!-- Blogs -->
-        <div class="card mb-3">
-            <div class="card-header bg-light">
-                <h6 class="mb-0">Blogs Module</h6>
-            </div>
-
-            <div class="card-body">
-                <div class="row">
-
-                    <div class="col-md-3">
-                        <div class="form-check">
-                            {{ form.can_view_blog }}
-                            <label>View Blogs</label>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-check">
-                            {{ form.can_add_blog }}
-                            <label>Add Blogs</label>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-check">
-                            {{ form.can_change_blog }}
-                            <label>Change Blogs</label>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-check">
-                            {{ form.can_delete_blog }}
-                            <label>Delete Blogs</label>
-                        </div>
-                    </div>
-
+                <!-- Form Actions -->
+                <div class="actions-bar">
+                    <a href="{% url 'hin:user_list' %}" class="btn-custom btn-cancel">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn-custom btn-save">
+                        <i class="fas fa-save"></i> Update User Profile
+                    </button>
                 </div>
-            </div>
-        </div>
 
-        <!-- Clients -->
-        <div class="card mb-3">
-            <div class="card-header bg-light">
-                <h6 class="mb-0">Clients Module</h6>
-            </div>
-
-            <div class="card-body">
-                <div class="row">
-
-                    <div class="col-md-3">
-                        <div class="form-check">
-                            {{ form.can_view_client }}
-                            <label>View Clients</label>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-check">
-                            {{ form.can_add_client }}
-                            <label>Add Clients</label>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-check">
-                            {{ form.can_change_client }}
-                            <label>Change Clients</label>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-check">
-                            {{ form.can_delete_client }}
-                            <label>Delete Clients</label>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-                        
-                        <div class="text-end">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-save"></i> Update User & Permissions
-                            </button>
-                            <a href="{% url 'hin:user_list' %}" class="btn btn-secondary btn-lg">Cancel</a>
-                        </div>
-                    </form>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>

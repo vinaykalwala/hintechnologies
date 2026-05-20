@@ -4,245 +4,701 @@
 {% block title %}Our Clients & Partners - HIN Technologies{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="bg-primary text-white py-5">
-    <div class="container">
-        <div class="row text-center">
-            <div class="col-lg-8 mx-auto">
-                <h1 class="display-4 fw-bold">Our Clients & Partners</h1>
-                <p class="lead mt-3">Trusted by leading companies and hiring partners worldwide</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Hiring Partners Section -->
-<section class="py-5">
-    <div class="container">
-        <div class="row text-center mb-5">
-            <div class="col-lg-8 mx-auto">
-                <h2 class="fw-bold">Our Hiring Partners</h2>
-                <p class="lead text-muted">Companies that actively recruit our trained professionals</p>
-                <div class="divider bg-primary mx-auto" style="width: 80px; height: 3px;"></div>
-            </div>
-        </div>
-        
-        <div class="row g-4 justify-content-center">
-            {% for client in hiring_partners %}
-            <div class="col-md-3 col-6">
-                <div class="card h-100 border-0 shadow-sm hover-card text-center p-4">
-                    {% if client.logo %}
-                    <div class="partner-logo-wrapper mb-3">
-                        <img src="{{ client.logo.url }}" class="img-fluid partner-logo" alt="{{ client.company_name }}">
-                    </div>
-                    {% else %}
-                    <div class="partner-logo-placeholder bg-light d-flex align-items-center justify-content-center mb-3">
-                        <i class="fas fa-building fa-3x text-muted"></i>
-                    </div>
-                    {% endif %}
-                    <h5 class="company-name">{{ client.company_name }}</h5>
-                    {% if client.website_url %}
-                    <a href="{{ client.website_url }}" target="_blank" class="btn btn-sm btn-outline-primary mt-2">
-                        <i class="fas fa-external-link-alt"></i> Visit Website
-                    </a>
-                    {% endif %}
-                </div>
-            </div>
-            {% empty %}
-            <div class="col-12 text-center py-5">
-                <i class="fas fa-building fa-4x text-muted mb-3 d-block"></i>
-                <h4>No Hiring Partners Added Yet</h4>
-                <p class="text-muted">Check back soon for updates on our hiring partners.</p>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-
-<!-- Corporate Clients Section -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <div class="row text-center mb-5">
-            <div class="col-lg-8 mx-auto">
-                <h2 class="fw-bold">Companies That Trust Us</h2>
-                <p class="lead text-muted">Corporate clients who chose HIN Technologies for team upskilling</p>
-                <div class="divider bg-primary mx-auto" style="width: 80px; height: 3px;"></div>
-            </div>
-        </div>
-        
-        <div class="row g-4 justify-content-center">
-            {% for client in corporate_clients %}
-            <div class="col-md-3 col-6">
-                <div class="card h-100 border-0 shadow-sm hover-card text-center p-4">
-                    {% if client.logo %}
-                    <div class="partner-logo-wrapper mb-3">
-                        <img src="{{ client.logo.url }}" class="img-fluid partner-logo" alt="{{ client.company_name }}">
-                    </div>
-                    {% else %}
-                    <div class="partner-logo-placeholder bg-light d-flex align-items-center justify-content-center mb-3">
-                        <i class="fas fa-building fa-3x text-muted"></i>
-                    </div>
-                    {% endif %}
-                    <h5 class="company-name">{{ client.company_name }}</h5>
-                    {% if client.website_url %}
-                    <a href="{{ client.website_url }}" target="_blank" class="btn btn-sm btn-outline-primary mt-2">
-                        <i class="fas fa-external-link-alt"></i> Visit Website
-                    </a>
-                    {% endif %}
-                </div>
-            </div>
-            {% empty %}
-            <div class="col-12 text-center py-5">
-                <i class="fas fa-building fa-4x text-muted mb-3 d-block"></i>
-                <h4>No Corporate Clients Added Yet</h4>
-                <p class="text-muted">Check back soon for updates on our corporate clients.</p>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-
-<!-- Why Partner With Us Section -->
-<section class="py-5">
-    <div class="container">
-        <div class="row text-center mb-5">
-            <div class="col-lg-8 mx-auto">
-                <h2 class="fw-bold">Why Partner With HIN Technologies?</h2>
-                <p class="lead text-muted">We deliver quality-trained DevOps professionals</p>
-                <div class="divider bg-primary mx-auto" style="width: 80px; height: 3px;"></div>
-            </div>
-        </div>
-        
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="text-center p-4 h-100">
-                    <div class="icon-circle bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
-                        <i class="fas fa-user-graduate fa-3x text-primary"></i>
-                    </div>
-                    <h5 class="fw-bold">Industry-Ready Talent</h5>
-                    <p class="text-muted">Our graduates work on real CI/CD projects and are ready for production environments</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="text-center p-4 h-100">
-                    <div class="icon-circle bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
-                        <i class="fas fa-certificate fa-3x text-primary"></i>
-                    </div>
-                    <h5 class="fw-bold">Certified Professionals</h5>
-                    <p class="text-muted">All students receive certification after completing hands-on projects</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="text-center p-4 h-100">
-                    <div class="icon-circle bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
-                        <i class="fas fa-chart-line fa-3x text-primary"></i>
-                    </div>
-                    <h5 class="fw-bold">Continuous Upskilling</h5>
-                    <p class="text-muted">Our curriculum is updated regularly with the latest DevOps tools and practices</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- For Corporate Clients CTA -->
-<section class="bg-dark text-white py-5">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-8">
-                <h3 class="fw-bold mb-2">Looking to upskill your team?</h3>
-                <p class="lead mb-0">We offer custom corporate training programs for DevOps teams</p>
-            </div>
-            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-                <a href="{% url 'hin:contact' %}" class="btn btn-primary btn-lg">
-                    <i class="fas fa-envelope"></i> Contact Us
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Become a Hiring Partner CTA -->
-<section class="py-5">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 text-center">
-                <h3 class="fw-bold">Become a Hiring Partner</h3>
-                <p class="text-muted mb-4">Are you a company looking for trained DevOps professionals? Partner with us to recruit from our talent pool.</p>
-                <div class="d-flex justify-content-center gap-3 flex-wrap">
-                    <a href="{% url 'hin:contact' %}" class="btn btn-outline-primary">
-                        <i class="fas fa-handshake"></i> Partner With Us
-                    </a>
-                    <a href="mailto:corporate@hintechnologies.in" class="btn btn-outline-secondary">
-                        <i class="fas fa-envelope"></i> corporate@hintechnologies.in
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<!-- Google Fonts for Premium Typography -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
-.hover-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-}
-.hover-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
-}
+    :root {
+        /* Brand Colors */
+        --brand-red: #AB1D1D;
+        --brand-red-dark: #8A1616;
+        --brand-red-light: #FFEDED;
+        --brand-dark: #0F172A;
+        --brand-darker: #020617;
+        --brand-blue: #A7D2DB;
+        --brand-pink: #D8A4A6;
 
-.partner-logo-wrapper {
-    height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+        /* Neutral Colors */
+        --surface-white: #FFFFFF;
+        --surface-light: #F8FAFC;
+        --text-main: #334155;
+        --text-muted: #64748B;
+        --border-color: #E2E8F0;
 
-.partner-logo {
-    max-height: 80px;
-    max-width: 100%;
-    object-fit: contain;
-}
-
-.partner-logo-placeholder {
-    height: 100px;
-    width: 100%;
-    border-radius: 10px;
-}
-
-.company-name {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 0.5rem;
-}
-
-.divider {
-    height: 3px;
-    width: 60px;
-    background: #0d6efd;
-    margin: 20px auto;
-}
-
-.icon-circle {
-    width: 80px;
-    height: 80px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-@media (max-width: 768px) {
-    .partner-logo-wrapper {
-        height: 70px;
+        /* Effects */
+        --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 10px 25px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+        --shadow-lg: 0 25px 50px -12px rgba(171, 29, 29, 0.15);
+        --radius-lg: 24px;
+        --radius-md: 16px;
+        --transition-smooth: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .partner-logo {
-        max-height: 60px;
+
+    /* Base Styling */
+    .clients-public-page {
+        font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+        background-color: var(--surface-light);
+        color: var(--text-main);
+        overflow-x: hidden;
+        position: relative;
     }
-    .company-name {
+
+    /* --- Immersive Background --- */
+    .ambient-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+        background: radial-gradient(circle at top right, rgba(167, 210, 219, 0.15) 0%, transparent 40%),
+            radial-gradient(circle at bottom left, rgba(216, 164, 166, 0.15) 0%, transparent 40%);
+    }
+
+    .blob {
+        position: absolute;
+        filter: blur(80px);
+        opacity: 0.4;
+        z-index: -1;
+        animation: float 20s infinite ease-in-out alternate;
+    }
+
+    .blob-1 {
+        top: -10%;
+        left: -10%;
+        width: 50vw;
+        height: 50vw;
+        background: var(--brand-blue);
+        animation-delay: 0s;
+    }
+
+    .blob-2 {
+        bottom: -20%;
+        right: -10%;
+        width: 60vw;
+        height: 60vw;
+        background: var(--brand-pink);
+        animation-delay: -5s;
+    }
+
+    @keyframes float {
+        0% {
+            transform: translate(0, 0) scale(1);
+        }
+
+        50% {
+            transform: translate(5%, 10%) scale(1.1);
+        }
+
+        100% {
+            transform: translate(-5%, -5%) scale(0.9);
+        }
+    }
+
+    /* --- Hero Section --- */
+    .hero-section {
+        position: relative;
+        z-index: 1;
+        padding: clamp(8rem, 15vh, 12rem) 1.5rem clamp(4rem, 10vh, 8rem);
+        background: var(--brand-darker);
+        background-image:
+            radial-gradient(circle at 15% 50%, rgba(171, 29, 29, 0.4) 0%, transparent 50%),
+            radial-gradient(circle at 85% 30%, rgba(167, 210, 219, 0.15) 0%, transparent 50%);
+        text-align: center;
+        border-radius: 0 0 40px 40px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        margin-bottom: clamp(3rem, 6vw, 5rem);
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 100px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        color: var(--brand-blue);
+        font-weight: 600;
         font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+        animation: slideUpFade 0.8s ease-out;
     }
-}
+
+    .hero-title {
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        font-weight: 800;
+        color: #FFFFFF;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        margin-bottom: 1.5rem;
+        max-width: 900px;
+        margin-inline: auto;
+        animation: slideUpFade 1s ease-out 0.1s backwards;
+    }
+
+    .hero-title span {
+        background: linear-gradient(135deg, #FF6B6B, var(--brand-red));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+        font-size: clamp(1.1rem, 2vw, 1.25rem);
+        color: rgba(255, 255, 255, 0.7);
+        max-width: 600px;
+        margin-inline: auto;
+        animation: slideUpFade 1s ease-out 0.2s backwards;
+    }
+
+    /* --- Section Headers --- */
+    .section-header {
+        text-align: center;
+        margin-bottom: clamp(2.5rem, 5vw, 4rem);
+        position: relative;
+        z-index: 1;
+    }
+
+    .section-header h2 {
+        font-size: clamp(2rem, 4vw, 2.75rem);
+        font-weight: 800;
+        color: var(--brand-dark);
+        letter-spacing: -0.02em;
+        margin-bottom: 1rem;
+    }
+
+    .section-header p {
+        font-size: 1.15rem;
+        color: var(--text-muted);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .accent-line {
+        width: 60px;
+        height: 4px;
+        margin: 1.5rem auto 0;
+        background: linear-gradient(90deg, var(--brand-red), var(--brand-pink));
+        border-radius: 4px;
+    }
+
+    /* --- Modern Grid & Cards --- */
+    .partner-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .partner-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: var(--radius-lg);
+        padding: 2.5rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition-smooth);
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+    }
+
+    .partner-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--brand-red), var(--brand-pink), var(--brand-blue));
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: var(--transition-smooth);
+    }
+
+    .partner-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-lg);
+        background: #FFFFFF;
+        border-color: rgba(171, 29, 29, 0.1);
+    }
+
+    .partner-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .logo-container {
+        height: 80px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .partner-logo {
+        max-height: 100%;
+        max-width: 80%;
+        object-fit: contain;
+        filter: grayscale(1) opacity(0.5);
+        transition: var(--transition-smooth);
+    }
+
+    .partner-card:hover .partner-logo {
+        filter: grayscale(0) opacity(1);
+        transform: scale(1.05);
+    }
+
+    .partner-logo-placeholder {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: var(--surface-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        font-size: 2rem;
+    }
+
+    .company-name {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--brand-dark);
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-outline {
+        margin-top: auto;
+        padding: 0.75rem 1.5rem;
+        border-radius: 100px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--brand-dark);
+        background: transparent;
+        border: 2px solid var(--border-color);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: var(--transition-smooth);
+    }
+
+    .btn-outline:hover {
+        border-color: var(--brand-red);
+        color: var(--brand-red);
+        background: var(--brand-red-light);
+    }
+
+    /* --- Features Section --- */
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .feature-card {
+        background: var(--surface-white);
+        border-radius: var(--radius-lg);
+        padding: 2.5rem;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-color);
+        transition: var(--transition-smooth);
+        text-align: left;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .icon-box {
+        width: 64px;
+        height: 64px;
+        border-radius: 16px;
+        background: var(--brand-red-light);
+        color: var(--brand-red);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+        transition: var(--transition-smooth);
+    }
+
+    .feature-card:hover .icon-box {
+        background: var(--brand-red);
+        color: white;
+        transform: rotate(-10deg) scale(1.1);
+    }
+
+    .feature-card h4 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--brand-dark);
+    }
+
+    .feature-card p {
+        color: var(--text-muted);
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    /* --- Unified CTA Section --- */
+    .cta-banner {
+        background: linear-gradient(135deg, var(--brand-dark), var(--brand-darker));
+        border-radius: var(--radius-lg);
+        padding: clamp(3rem, 6vw, 5rem);
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 3rem;
+        margin-top: 5rem;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+    }
+
+    .cta-banner::before {
+        content: '';
+        position: absolute;
+        right: -10%;
+        top: -50%;
+        width: 50%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(171, 29, 29, 0.3) 0%, transparent 60%);
+        pointer-events: none;
+    }
+
+    .cta-content {
+        flex: 1;
+        max-width: 600px;
+    }
+
+    .cta-content h3 {
+        font-size: clamp(2rem, 4vw, 2.75rem);
+        font-weight: 800;
+        color: white;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+    .cta-content p {
+        font-size: 1.15rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .cta-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary {
+        background: var(--brand-red);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 100px;
+        font-weight: 700;
+        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        transition: var(--transition-smooth);
+        box-shadow: 0 8px 20px rgba(171, 29, 29, 0.4);
+    }
+
+    .btn-primary:hover {
+        background: #E02424;
+        transform: translateY(-3px);
+        box-shadow: 0 12px 25px rgba(171, 29, 29, 0.5);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 1rem 2rem;
+        border-radius: 100px;
+        font-weight: 600;
+        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        transition: var(--transition-smooth);
+        backdrop-filter: blur(10px);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-3px);
+        color: white;
+    }
+
+    /* --- Scroll Animation Classes --- */
+    .reveal {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+    }
+
+    .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* --- Mobile Optimizations --- */
+    @media (max-width: 991px) {
+        .cta-banner {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .cta-content {
+            max-width: 100%;
+        }
+
+        .cta-actions {
+            justify-content: center;
+        }
+
+        .partner-grid {
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        }
+    }
+
+    @media (max-width: 576px) {
+        .hero-section {
+            border-radius: 0 0 24px 24px;
+        }
+
+        .cta-actions {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .partner-card {
+            padding: 2rem 1.5rem;
+        }
+    }
+
+    @keyframes slideUpFade {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 </style>
+
+<div class="clients-public-page">
+    <!-- Ambient Background Blobs -->
+    <div class="ambient-background">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <!-- Stunning Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="hero-title">Our Clients <span>& Partners</span></h1>
+            <p class="hero-subtitle">Trusted by leading companies and hiring partners worldwide.</p>
+        </div>
+    </section>
+
+    <!-- Hiring Partners -->
+    <section class="py-5">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Our Hiring Partners</h2>
+                <p>Top tech companies that actively recruit our trained, production-ready professionals.</p>
+                <div class="accent-line"></div>
+            </div>
+
+            <div class="partner-grid">
+                {% for client in hiring_partners %}
+                <div class="partner-card reveal" style="transition-delay: {{ forloop.counter0|add:1 }}00ms;">
+                    <div class="logo-container">
+                        {% if client.logo %}
+                        <img src="{{ client.logo.url }}" class="partner-logo" alt="{{ client.company_name }} Logo">
+                        {% else %}
+                        <div class="partner-logo-placeholder">
+                            <i class="fa-solid fa-building"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <h3 class="company-name">{{ client.company_name }}</h3>
+                    {% if client.website_url %}
+                    <a href="{{ client.website_url }}" target="_blank" class="btn-outline">
+                        Visit Website <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <div class="col-12" style="grid-column: 1 / -1;">
+                    <div class="text-center p-5 reveal"
+                        style="background: white; border-radius: 24px; border: 1px dashed var(--border-color);">
+                        <i class="fa-solid fa-building fa-3x text-muted mb-3"></i>
+                        <h4 class="fw-bold">No Partners Listed Yet</h4>
+                        <p class="text-muted">We are currently updating our partner list. Check back soon.</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <br> <br>
+    <!-- Corporate Clients -->
+    <section class="py-5 mt-4">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Companies That Trust Us</h2>
+                <p>Organizations who chose HIN Technologies to upskill their teams and transform their infrastructure.
+                </p>
+                <div class="accent-line"></div>
+            </div>
+
+            <div class="partner-grid">
+                {% for client in corporate_clients %}
+                <div class="partner-card reveal" style="transition-delay: {{ forloop.counter0|add:1 }}00ms;">
+                    <div class="logo-container">
+                        {% if client.logo %}
+                        <img src="{{ client.logo.url }}" class="partner-logo" alt="{{ client.company_name }} Logo">
+                        {% else %}
+                        <div class="partner-logo-placeholder">
+                            <i class="fa-solid fa-briefcase"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <h3 class="company-name">{{ client.company_name }}</h3>
+                    {% if client.website_url %}
+                    <a href="{{ client.website_url }}" target="_blank" class="btn-outline">
+                        Visit Website <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <div class="col-12" style="grid-column: 1 / -1;">
+                    <div class="text-center p-5 reveal"
+                        style="background: white; border-radius: 24px; border: 1px dashed var(--border-color);">
+                        <i class="fa-solid fa-briefcase fa-3x text-muted mb-3"></i>
+                        <h4 class="fw-bold">No Clients Listed Yet</h4>
+                        <p class="text-muted">We are currently updating our corporate client list. Check back soon.</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <br> <br>
+    <!-- Why Partner With Us (Features) -->
+    <section class="py-5 mt-5">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Why Partner With HIN Technologies?</h2>
+                <p>We deliver elite, quality-trained professionals ready to tackle real-world production environments.
+                </p>
+                <div class="accent-line"></div>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card reveal" style="transition-delay: 100ms;">
+                    <div class="icon-box"><i class="fa-solid fa-laptop-code"></i></div>
+                    <h4>Industry-Ready Talent</h4>
+                    <p>Our graduates work on real CI/CD projects, Kubernetes clusters, and cloud setups, making them
+                        ready to deploy on day one.</p>
+                </div>
+                <div class="feature-card reveal" style="transition-delay: 200ms;">
+                    <div class="icon-box"><i class="fas fa-certificate"></i></div>
+                    <h4>Certified Professionals</h4>
+                    <p>Every student undergoes rigorous testing and hands-on evaluations to earn their certification
+                        before entering the talent pool.</p>
+                </div>
+                <div class="feature-card reveal" style="transition-delay: 300ms;">
+                    <div class="icon-box"><i class="fa-solid fa-rocket"></i></div>
+                    <h4>Continuous Upskilling</h4>
+                    <p>We constantly update our curriculum to align with the latest industry standards, ensuring our
+                        talent remains cutting-edge.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Unified CTA Banner -->
+    <section class="pb-5">
+        <div class="container">
+            <div class="cta-banner reveal">
+                <div class="cta-content">
+                    <h3>Ready to transform your workforce?</h3>
+                    <p>Whether you want to hire top-tier DevOps talent or upskill your existing engineering teams, we
+                        have a custom solution for you.</p>
+                    <div class="cta-actions">
+                        <a href="{% url 'hin:contact' %}" class="btn-primary">
+                            Become a Partner <i class="fa-solid fa-handshake"></i>
+                        </a>
+                        <a href="mailto:corporate@hintechnologies.in" class="btn-secondary">
+                            Email Us <i class="fa-solid fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Scroll Reveal Script -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const reveals = document.querySelectorAll(".reveal");
+
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("active");
+                    observer.unobserve(entry.target); // Run once
+                }
+            });
+        }, {
+            root: null,
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        });
+
+        reveals.forEach(reveal => {
+            revealObserver.observe(reveal);
+        });
+    });
+</script>
 {% endblock %}

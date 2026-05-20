@@ -4,451 +4,852 @@
 {% block title %}Our Clients & Partners{% endblock %}
 
 {% block content %}
+<!-- Google Fonts for Modern Typography -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Custom CSS for Colors & Design -->
 <style>
     :root {
-        --red: #AB1D1D;
-        --black: #121212;
-        --blue: #A7D2DB;
-        --pink: #D8A4A6;
-        --gray: #9E9EA2;
-        --white: #FDFCFC;
-        --bg: #F8F9FB;
-        --border: #E5E7EB;
-        --shadow-sm: 0 2px 12px rgba(18,18,18,0.04);
-        --shadow-md: 0 8px 24px rgba(18,18,18,0.08);
-        --shadow-lg: 0 16px 36px rgba(18,18,18,0.12);
-        --radius: 16px;
-        --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+        /* Color Palette */
+        --deep-red: #AB1D1D;
+        --deep-red-dark: #8A1616;
+        --deep-red-light: #F4D5D5;
+        --dark-black: #0F172A;
+        --sky-blue: #0EA5E9;
+        --sky-blue-light: #E0F2FE;
+        --soft-pink: #F43F5E;
+        --soft-pink-light: #FFE4E6;
+        --light-gray: #64748B;
+        --white: #FFFFFF;
+        --bg-light: #F8FAFC;
+        --border: #E2E8F0;
+
+        /* Shadows & Transitions */
+        --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* Layout & Background */
-    .clients-layout {
-        background: var(--bg);
-        min-height: 100vh;
-        position: relative;
-        overflow: hidden;
-        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    body {
+        background: var(--bg-light);
+        font-family: 'Inter', system-ui, sans-serif;
+        margin: 0;
+        color: var(--dark-black);
     }
-    .clients-layout::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 340px;
-        background: linear-gradient(135deg, var(--red) 0%, #8A1616 100%);
-        clip-path: polygon(0 0, 100% 0, 100% 68%, 0 100%);
-        z-index: 0;
-    }
-    .content-container {
-        position: relative;
-        z-index: 1;
+
+    /* --- Page Layout & Animations --- */
+    .clients-page-wrapper {
         max-width: 1280px;
         margin: 0 auto;
-        padding: 0 1.5rem;
+        padding: 30px 20px;
+        animation: fadeIn 0.6s ease-out;
     }
 
-    /* Header */
-    .layout-header {
-        text-align: center;
-        padding: 4.5rem 0 2.5rem;
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* --- Header / Hero --- */
+    .page-hero {
+        background: linear-gradient(135deg, var(--deep-red) 0%, #D93838 100%);
         color: var(--white);
-    }
-    .layout-header h1 {
-        font-size: clamp(2.2rem, 5vw, 3.4rem);
-        font-weight: 800;
-        letter-spacing: -0.5px;
-        margin: 0;
-        line-height: 1.15;
-    }
-    .layout-header p {
-        font-size: 1.15rem;
-        opacity: 0.85;
-        margin-top: 0.75rem;
-        font-weight: 400;
+        padding: 80px 30px;
+        border-radius: 24px;
+        text-align: center;
+        margin-bottom: 50px;
+        box-shadow: 0 20px 40px rgba(171, 29, 29, 0.2);
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
     }
 
-    /* Section Titles */
-    .section-label {
-        font-size: clamp(1.4rem, 3vw, 1.85rem);
-        font-weight: 700;
-        color: var(--black);
-        margin: 3rem 0 1.75rem;
-        position: relative;
-        padding-left: 1rem;
-    }
-    .section-label::before {
+    /* Decorative Shapes in Hero */
+    .page-hero::before {
         content: '';
         position: absolute;
-        left: 0; top: 50%; transform: translateY(-50%);
-        width: 5px; height: 65%;
-        background: var(--blue);
-        border-radius: 3px;
+        top: -20%;
+        left: -5%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+        border-radius: 50%;
+        z-index: -1;
     }
-    .section-label.alt::before { background: var(--pink); }
 
-    /* Form Card */
+    .page-hero::after {
+        content: '';
+        position: absolute;
+        bottom: -40%;
+        right: -10%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(14, 165, 233, 0.2) 0%, transparent 70%);
+        border-radius: 50%;
+        z-index: -1;
+    }
+
+    .page-hero h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        margin: 0 0 15px 0;
+        letter-spacing: -1px;
+    }
+
+    .page-hero p {
+        font-size: 1.25rem;
+        opacity: 0.9;
+        font-weight: 300;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* --- Form Panel --- */
     .form-panel {
         background: var(--white);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow-lg);
-        padding: 2.25rem;
-        margin-top: 1.5rem;
-        border: 1px solid rgba(158,158,162,0.08);
+        border-radius: 24px;
+        padding: 40px;
+        margin-bottom: 60px;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-md);
+        position: relative;
     }
+
+    .form-panel::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(90deg, var(--sky-blue), var(--deep-red));
+        border-top-left-radius: 24px;
+        border-top-right-radius: 24px;
+    }
+
+    .form-panel h3 {
+        color: var(--dark-black);
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-panel h3::before {
+        content: '';
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        background: var(--deep-red);
+        border-radius: 50%;
+    }
+
+    /* Form Inputs */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-panel label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--light-gray);
+        font-size: 0.9rem;
+    }
+
     .form-panel input[type="text"],
     .form-panel input[type="url"],
     .form-panel input[type="file"],
-    .form-panel select,
-    .form-panel textarea {
+    .form-panel select {
         width: 100%;
-        padding: 0.95rem 1.15rem;
-        border: 1.5px solid var(--border);
+        padding: 14px 16px;
+        border: 2px solid var(--border);
         border-radius: 12px;
-        background: #FAFBFC;
-        font-size: 1rem;
-        color: var(--black);
+        background: #F8FAFC;
         transition: var(--transition);
+        font-family: inherit;
+        font-size: 1rem;
+        box-sizing: border-box;
     }
+
     .form-panel input:focus,
-    .form-panel select:focus,
-    .form-panel textarea:focus {
-        outline: none;
-        border-color: var(--blue);
-        box-shadow: 0 0 0 4px rgba(167,210,219,0.2);
+    .form-panel select:focus {
+        border-color: var(--sky-blue);
         background: var(--white);
+        outline: none;
+        box-shadow: 0 0 0 4px var(--sky-blue-light);
     }
-    .form-panel label, .form-panel .form-label {
-        font-weight: 600;
-        color: var(--black);
-        font-size: 0.95rem;
-        margin-bottom: 0.5rem;
+
+    .form-panel small {
+        color: var(--light-gray);
+        font-size: 0.8rem;
+        margin-top: 5px;
         display: block;
     }
-    .form-panel .form-check-label { font-weight: 500; cursor: pointer; }
-    .form-panel .form-check-input:checked {
-        background-color: var(--red);
-        border-color: var(--red);
-        box-shadow: none;
-    }
 
-    /* Buttons */
-    .btn-save-primary {
-        background: var(--red);
-        color: var(--white);
+    /* Buttons in Form */
+    .btn-save {
+        background: var(--deep-red);
+        color: white;
         border: none;
-        padding: 0.95rem 2rem;
+        padding: 14px 32px;
         border-radius: 12px;
         font-weight: 600;
         font-size: 1rem;
         cursor: pointer;
         transition: var(--transition);
+        box-shadow: 0 4px 12px rgba(171, 29, 29, 0.3);
     }
-    .btn-save-primary:hover { background: #8A1616; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(171,29,29,0.3); color: var(--white); }
-    .btn-cancel-secondary {
-        background: transparent;
-        border: 1.5px solid var(--gray);
-        color: var(--black);
-        padding: 0.95rem 2rem;
+
+    .btn-save:hover {
+        background: var(--deep-red-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(171, 29, 29, 0.4);
+    }
+
+    .btn-cancel-edit {
+        background: var(--bg-light);
+        color: var(--light-gray);
+        border: 2px solid var(--border);
+        padding: 12px 32px;
         border-radius: 12px;
         font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition);
         text-decoration: none;
         display: inline-flex;
         align-items: center;
-    }
-    .btn-cancel-secondary:hover { border-color: var(--black); background: #F5F5F5; }
-
-    /* Client Grid */
-    .client-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-        gap: 1.25rem;
-    }
-    .client-card {
-        background: var(--white);
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        padding: 1.35rem 1rem;
-        text-align: center;
-        box-shadow: var(--shadow-sm);
         transition: var(--transition);
-        position: relative;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        min-height: 165px;
     }
-    .client-card::after {
+
+    .btn-cancel-edit:hover {
+        background: #E2E8F0;
+        color: var(--dark-black);
+    }
+
+    /* --- Client Grid & Cards --- */
+    .section-title {
+        color: var(--dark-black);
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 0 auto 35px;
+        padding-left: 0;
+        position: relative;
+        display: block;
+        text-align: center;
+    }
+
+    .section-title::after {
         content: '';
         position: absolute;
-        bottom: 0; left: 0; right: 0;
-        height: 3px;
-        background: var(--blue);
-        transform: scaleX(0);
-        transform-origin: left;
-        transition: transform 0.3s var(--transition);
-        z-index: 1;
+        left: 50%;
+        bottom: -8px;
+        width: 30%;
+        height: 4px;
+        background: var(--sky-blue);
+        border-radius: 2px;
+        transform: translateX(-50%);
     }
-    .client-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: rgba(167,210,219,0.3); }
-    .client-card:hover::after { transform: scaleX(1); }
 
-    .client-logo-box {
-        width: 100%;
-        height: 65px;
+    .section-title.alt::after {
+        background: var(--deep-red);
+    }
+
+    .clients-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 30px;
+        margin-bottom: 60px;
+    }
+
+    .client-card {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 30px 20px;
+        text-align: center;
+        border: 1px solid var(--border);
+        transition: var(--transition);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .client-card:hover {
+        transform: translateY(-8px);
+        border-color: var(--sky-blue-light);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .client-card .logo-wrapper {
+        height: 90px;
+        width: 90px;
+        margin: 0 auto 20px auto;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 0.85rem;
-        background: linear-gradient(145deg, #f8f9fa, #eef1f5);
-        border-radius: 10px;
-        padding: 0.5rem;
-        transition: background 0.3s ease;
-    }
-    .client-card:hover .client-logo-box { background: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    .client-logo { max-height: 100%; max-width: 90%; object-fit: contain; filter: grayscale(0.8); transition: var(--transition); }
-    .client-card:hover .client-logo { filter: grayscale(0); transform: scale(1.06); }
-
-    .client-name {
-        font-weight: 700;
-        color: var(--black);
-        font-size: 0.88rem;
-        line-height: 1.35;
-        margin-bottom: 0.65rem;
-    }
-    .client-actions { 
-        display: flex; 
-        gap: 0.5rem; 
-        width: 100%; 
-        margin-top: auto; 
-        position: relative; 
-        z-index: 10;
-    }
-    .btn-action-sm {
-        flex: 1;
-        padding: 0.45rem;
-        font-size: 0.75rem;
-        border-radius: 8px;
-        border: none;
-        cursor: pointer !important;
-        font-weight: 600;
+        background: var(--bg-light);
+        border-radius: 50%;
+        padding: 15px;
         transition: var(--transition);
+    }
+
+    .client-card:hover .logo-wrapper {
+        background: var(--sky-blue-light);
+        transform: scale(1.05);
+    }
+
+    .client-card img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+        border-radius: 50%;
+    }
+
+    .client-card h4 {
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin: 0 0 20px 0;
+        color: var(--dark-black);
+    }
+
+    /* Action Buttons */
+    .card-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-top: auto;
+    }
+
+    .btn-action {
+        padding: 10px;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 600;
         text-decoration: none;
-        text-align: center;
-        display: inline-flex;
+        border: none;
+        cursor: pointer;
+        transition: var(--transition);
+        flex: 1;
+        display: flex;
         align-items: center;
         justify-content: center;
-        pointer-events: auto !important;
+        gap: 6px;
     }
-    .btn-edit-sm { background: var(--blue); color: var(--black); }
-    .btn-edit-sm:hover { background: #8CC0CA; }
-    .btn-delete-sm { background: var(--pink); color: var(--black); }
-    .btn-delete-sm:hover { background: #C58D8F; color: var(--white); }
+
+    /* Edit Button */
+    .btn-edit {
+        background: var(--sky-blue-light);
+        color: #0369A1;
+    }
+
+    .btn-edit:hover {
+        background: var(--sky-blue);
+        color: white;
+    }
+
+    /* Delete Button */
+    .btn-delete {
+        background: var(--soft-pink-light);
+        color: #BE123C;
+    }
+
+    .btn-delete:hover {
+        background: var(--soft-pink);
+        color: white;
+    }
+
+    /* --- FIXED MODAL DESIGN --- */
+    .custom-modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(15, 23, 42, 0.4);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(8px);
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--transition);
+    }
+
+    .custom-modal-backdrop.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .custom-modal-content {
+        background: var(--white);
+        width: 90%;
+        max-width: 420px;
+        border-radius: 24px;
+        padding: 0;
+        overflow: hidden;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+        transform: scale(0.95) translateY(10px);
+        transition: var(--transition);
+    }
+
+    .custom-modal-backdrop.show .custom-modal-content {
+        transform: scale(1) translateY(0);
+    }
+
+    .modal-header {
+        padding: 24px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--dark-black);
+        margin: 0;
+    }
+
+    .modal-close {
+        background: var(--bg-light);
+        border: none;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: var(--light-gray);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+    }
+
+    .modal-close:hover {
+        background: #E2E8F0;
+        color: var(--dark-black);
+    }
+
+    .modal-body {
+        padding: 30px 24px;
+        color: var(--light-gray);
+        font-size: 1rem;
+        line-height: 1.6;
+        text-align: center;
+    }
+
+    .modal-body .warning-icon {
+        font-size: 3rem;
+        color: var(--soft-pink);
+        margin-bottom: 15px;
+    }
+
+    .modal-footer {
+        padding: 20px 24px;
+        background: #F8FAFC;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: stretch;
+        gap: 12px;
+    }
+
+    .modal-btn {
+        flex: 1;
+        padding: 12px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        border: none;
+        transition: var(--transition);
+    }
+
+    .modal-btn-cancel {
+        background: var(--white);
+        color: var(--dark-black);
+        border: 1px solid var(--border);
+    }
+
+    .modal-btn-cancel:hover {
+        background: #F1F5F9;
+    }
+
+    .modal-btn-delete {
+        background: var(--soft-pink);
+        color: var(--white);
+        box-shadow: 0 4px 10px rgba(244, 63, 94, 0.3);
+    }
+
+    .modal-btn-delete:hover {
+        background: #E11D48;
+        transform: translateY(-2px);
+    }
+
+    /* --- TOGGLE SWITCH CSS --- */
+    .toggle-wrapper {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        margin: 20px 0;
+        cursor: pointer;
+        background: #F8FAFC;
+        padding: 12px 20px;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 52px;
+        height: 28px;
+        margin: 0;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #CBD5E1;
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    input:checked+.slider {
+        background-color: var(--sky-blue);
+    }
+
+    input:checked+.slider:before {
+        transform: translateX(24px);
+    }
+
+    .toggle-label {
+        font-weight: 600;
+        color: var(--dark-black);
+        font-size: 0.95rem;
+        user-select: none;
+    }
 
     /* Empty State */
     .empty-state {
         grid-column: 1 / -1;
         text-align: center;
-        padding: 2.5rem 1rem;
-        color: var(--gray);
-        font-weight: 500;
-        background: rgba(158,158,162,0.05);
-        border-radius: 14px;
-        border: 2px dashed rgba(158,158,162,0.2);
+        padding: 40px;
+        background: var(--white);
+        border-radius: 20px;
+        border: 1px dashed var(--light-gray);
+        color: var(--light-gray);
+        font-size: 1.1rem;
     }
 
-    /* Modal Styling to Match Premium Theme */
-    .modal-content {
-        border-radius: 16px;
-        border: none;
-        box-shadow: 0 20px 50px rgba(18,18,18,0.15);
-    }
-    .modal-header { border-bottom: 1px solid var(--border); padding: 1.5rem; }
-    .modal-body { padding: 1.5rem; color: var(--black); }
-    .modal-footer { border-top: 1px solid var(--border); padding: 1.25rem 1.5rem; }
-    .modal-title { font-weight: 700; color: var(--dark-black); }
-    .btn-close:focus { box-shadow: none; }
+    /* --- Responsive Adjustments --- */
+    @media (min-width: 769px) {
+        .form-row {
+            display: flex;
+            gap: 24px;
+        }
 
-    /* Touch Device Optimizations */
-    @media (hover: none) and (pointer: coarse) {
-        .client-card::after { transform: scaleX(1); opacity: 0.5; }
-        .client-card { box-shadow: var(--shadow-md); }
-        .client-logo { filter: grayscale(0); }
-        .client-card:active { transform: scale(0.97); }
-        .btn-action-sm:active { opacity: 0.8; transform: scale(0.95); }
-        .btn-save-primary:active { transform: translateY(0) scale(0.97); }
+        .form-col {
+            flex: 1;
+        }
     }
 
-    /* Responsive Breakpoints */
-    @media (max-width: 991px) {
-        .clients-layout::before { height: 280px; clip-path: polygon(0 0, 100% 0, 100% 75%, 0 100%); }
-        .layout-header { padding: 3.5rem 0 2rem; }
-        .client-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+    @media (max-width: 768px) {
+        .page-hero {
+            padding: 50px 20px;
+            border-radius: 16px;
+        }
+
+        .page-hero h1 {
+            font-size: 2.2rem;
+        }
+
+        .form-panel {
+            padding: 25px;
+            border-radius: 16px;
+        }
+
+        .clients-grid {
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+        }
+
+        .client-card {
+            padding: 20px 15px;
+        }
+
+        .client-card .logo-wrapper {
+            height: 70px;
+            width: 70px;
+        }
+
+        .client-card h4 {
+            font-size: 1rem;
+        }
+
+        .card-actions {
+            flex-direction: column;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+        }
     }
-    @media (max-width: 575px) {
-        .form-panel { padding: 1.5rem; }
-        .client-grid { grid-template-columns: repeat(2, 1fr); gap: 0.85rem; }
-        .client-card { min-height: 145px; padding: 1rem; }
-        .client-logo-box { height: 50px; }
-        .client-actions { flex-direction: column; }
-        .btn-save-primary, .btn-cancel-secondary { width: 100%; margin-bottom: 0.5rem; }
+
+    @media (max-width: 480px) {
+        .clients-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .btn-save,
+        .btn-cancel-edit {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .form-actions {
+            flex-direction: column;
+            gap: 10px;
+        }
     }
 </style>
 
-<div class="clients-layout">
-    <div class="content-container">
-        <div class="layout-header">
-            <h1>Our Clients & Partners</h1>
-            <p>Trusted by industry leaders worldwide</p>
-        </div>
+<div class="clients-page-wrapper">
 
-        {% if perms.hin.add_client or perms.hin.change_client %}
-        <div class="form-panel">
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            {{ form.company_name.label_tag }}
-                            {{ form.company_name }}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            {{ form.company_type.label_tag }}
-                            {{ form.company_type }}
-                        </div>
-                    </div>
+    <!-- Hero Section -->
+    <section class="page-hero">
+        <h1>Our Clients & Partners</h1>
+        <p>Proudly collaborating with industry leaders and trusted organizations worldwide to deliver excellence.</p>
+    </section>
+
+    {% if perms.hin.add_client or perms.hin.change_client %}
+    <!-- Management Form -->
+    <div class="form-panel">
+        <h3>{% if editing_client %}Edit Client Details{% else %}Register New Client{% endif %}</h3>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group form-col">
+                    {{ form.company_name.label_tag }}
+                    {{ form.company_name }}
                 </div>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            {{ form.logo.label_tag }}
-                            {{ form.logo }}
-                            {% if editing_client and editing_client.logo %}
-                            <small class="d-block mt-2" style="color: var(--gray);">Current: {{ editing_client.logo.name }}</small>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            {{ form.website_url.label_tag }}
-                            {{ form.website_url }}
-                        </div>
-                    </div>
+                <div class="form-group form-col">
+                    {{ form.company_type.label_tag }}
+                    {{ form.company_type }}
                 </div>
-                <div class="form-check mb-4">
-                    {{ form.is_active }}
-                    <label class="form-check-label" for="{{ form.is_active.id_for_label }}">Active (visible on website)</label>
-                </div>
-                <div class="d-flex flex-wrap gap-3">
-                    <button type="submit" class="btn-save-primary">Save Client</button>
-                    {% if editing_client %}
-                    <a href="{% url 'hin:client_manage' %}" class="btn-cancel-secondary">Cancel Edit</a>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group form-col">
+                    {{ form.logo.label_tag }}
+                    {{ form.logo }}
+                    {% if editing_client and editing_client.logo %}
+                    <small>Current file: {{ editing_client.logo.name }}</small>
                     {% endif %}
                 </div>
+                <div class="form-group form-col">
+                    {{ form.website_url.label_tag }}
+                    {{ form.website_url }}
+                </div>
+            </div>
+
+            <!-- Toggle Switch -->
+            <label class="toggle-wrapper">
+                <div class="switch">
+                    {{ form.is_active }}
+                    <span class="slider"></span>
+                </div>
+                <span class="toggle-label">Active (Visible on public website)</span>
+            </label>
+
+            <!-- Buttons -->
+            <div class="form-actions" style="display: flex; gap: 15px; margin-top: 10px;">
+                <button type="submit" class="btn-save">
+                    {% if editing_client %}Update Client{% else %}Save Client{% endif %}
+                </button>
+                {% if editing_client %}
+                <a href="{% url 'hin:client_manage' %}" class="btn-cancel-edit">Cancel</a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+    {% endif %}
+
+    {% if is_management %}
+    <h2 class="section-title">Manage Clients</h2>
+    {% endif %}
+    <br>
+    <!-- Hiring Partners -->
+    <h2 class="section-title">Our Hiring Partners</h2>
+    <div class="clients-grid">
+        {% for partner in hiring_partners %}
+        <div class="client-card">
+            <div class="logo-wrapper">
+                {% if partner.logo %}
+                <img src="{{ partner.logo.url }}" alt="{{ partner.company_name }} Logo">
+                {% else %}
+                <div style="color: var(--light-gray); font-size: 2.5rem;">🏢</div>
+                {% endif %}
+            </div>
+            <h4>{{ partner.company_name }}</h4>
+
+            {% if perms.hin.change_client or perms.hin.delete_client %}
+            <div class="card-actions">
+                <a href="?edit={{ partner.id }}" class="btn-action btn-edit">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                        </path>
+                    </svg>
+                    Edit
+                </a>
+                <button class="btn-action btn-delete" onclick="openDeleteModal(this)"
+                    data-delete-url="{% url 'hin:client_delete' pk=partner.id %}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                        </path>
+                    </svg>
+                    Delete
+                </button>
+            </div>
+            {% endif %}
+        </div>
+        {% empty %}
+        <div class="empty-state">No hiring partners have been added to the system yet.</div>
+        {% endfor %}
+    </div>
+
+    <!-- Corporate Clients -->
+    <h2 class="section-title alt">Companies That Trust Us</h2>
+    <div class="clients-grid">
+        {% for client in corporate_clients %}
+        <div class="client-card">
+            <div class="logo-wrapper">
+                {% if client.logo %}
+                <img src="{{ client.logo.url }}" alt="{{ client.company_name }} Logo">
+                {% else %}
+                <div style="color: var(--light-gray); font-size: 2.5rem;">🏢</div>
+                {% endif %}
+            </div>
+            <h4>{{ client.company_name }}</h4>
+
+            {% if perms.hin.change_client or perms.hin.delete_client %}
+            <div class="card-actions">
+                <a href="?edit={{ client.id }}" class="btn-action btn-edit">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                        </path>
+                    </svg>
+                    Edit
+                </a>
+                <button class="btn-action btn-delete" onclick="openDeleteModal(this)"
+                    data-delete-url="{% url 'hin:client_delete' pk=client.id %}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                        </path>
+                    </svg>
+                    Delete
+                </button>
+            </div>
+            {% endif %}
+        </div>
+        {% empty %}
+        <div class="empty-state">No corporate clients have been added to the system yet.</div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- FIXED DELETE MODAL -->
+<div class="custom-modal-backdrop" id="deleteModalOverlay">
+    <div class="custom-modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Confirm Deletion</h5>
+            <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="warning-icon">
+                <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                    </path>
+                </svg>
+            </div>
+            Are you sure you want to delete this client? <br><strong>This action cannot be undone.</strong>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn modal-btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+            <form id="deleteForm" method="POST" style="flex: 1; margin: 0;">
+                {% csrf_token %}
+                <button type="submit" class="modal-btn modal-btn-delete" style="width: 100%;">Yes, Delete</button>
             </form>
         </div>
-        {% endif %}
-
-        {% if is_management %}
-        <h2 class="section-label">Manage Clients</h2>
-        {% endif %}
-
-        <h2 class="section-label">Our Hiring Partners</h2>
-        <div class="client-grid">
-            {% for partner in hiring_partners %}
-            <div class="client-card">
-                {% if partner.logo %}
-                <div class="client-logo-box">
-                    <img src="{{ partner.logo.url }}" class="client-logo" alt="{{ partner.company_name }}">
-                </div>
-                {% else %}
-                <div class="client-logo-box">
-                    <span style="color: var(--gray); font-size: 0.8rem; font-weight: 600;">No Logo</span>
-                </div>
-                {% endif %}
-                <div class="client-name">{{ partner.company_name }}</div>
-                {% if perms.hin.change_client or perms.hin.delete_client %}
-                <div class="client-actions">
-                    <a href="?edit={{ partner.id }}" class="btn-action-sm btn-edit-sm">Edit</a>
-                    <button type="button" class="btn-action-sm btn-delete-sm" 
-                            data-bs-toggle="modal" 
-                            data-bs-target="#deleteModal" 
-                            data-delete-url="{% url 'hin:client_delete' pk=partner.id %}">Delete</button>
-                </div>
-                {% endif %}
-            </div>
-            {% empty %}
-            <div class="empty-state">No hiring partners added yet.</div>
-            {% endfor %}
-        </div>
-
-        <h2 class="section-label alt">Companies That Trust Us</h2>
-        <div class="client-grid">
-            {% for client in corporate_clients %}
-            <div class="client-card">
-                {% if client.logo %}
-                <div class="client-logo-box">
-                    <img src="{{ client.logo.url }}" class="client-logo" alt="{{ client.company_name }}">
-                </div>
-                {% else %}
-                <div class="client-logo-box">
-                    <span style="color: var(--gray); font-size: 0.8rem; font-weight: 600;">No Logo</span>
-                </div>
-                {% endif %}
-                <div class="client-name">{{ client.company_name }}</div>
-                {% if perms.hin.change_client or perms.hin.delete_client %}
-                <div class="client-actions">
-                    <a href="?edit={{ client.id }}" class="btn-action-sm btn-edit-sm">Edit</a>
-                    <button type="button" class="btn-action-sm btn-delete-sm" 
-                            data-bs-toggle="modal" 
-                            data-bs-target="#deleteModal" 
-                            data-delete-url="{% url 'hin:client_delete' pk=client.id %}">Delete</button>
-                </div>
-                {% endif %}
-            </div>
-            {% empty %}
-            <div class="empty-state">No corporate clients added yet.</div>
-            {% endfor %}
-        </div>
     </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Are you sure you want to delete this client? This action cannot be undone.
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 10px; font-weight: 600;">Cancel</button>
-        <form id="deleteForm" method="POST">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-danger" style="border-radius: 10px; font-weight: 600; background: var(--red); border: none;">Yes, Delete</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal Script -->
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var deleteModalEl = document.getElementById('deleteModal');
-    deleteModalEl.addEventListener('show.bs.modal', function (event) {
-      var button = event.relatedTarget;
-      var deleteUrl = button.getAttribute('data-delete-url');
-      var form = document.getElementById('deleteForm');
-      if (form && deleteUrl) {
+    // Function to open the modal with animation
+    function openDeleteModal(btn) {
+        var deleteUrl = btn.getAttribute('data-delete-url');
+        var form = document.getElementById('deleteForm');
         form.action = deleteUrl;
-      }
-    });
-  });
+
+        // Show modal
+        var modal = document.getElementById('deleteModalOverlay');
+        modal.classList.add('show');
+    }
+
+    // Function to close the modal with animation
+    function closeDeleteModal() {
+        var modal = document.getElementById('deleteModalOverlay');
+        modal.classList.remove('show');
+    }
+
+    // Close modal if user clicks outside the modal content
+    window.onclick = function (event) {
+        var modal = document.getElementById('deleteModalOverlay');
+        if (event.target == modal) {
+            closeDeleteModal();
+        }
+    }
 </script>
 {% endblock %}
