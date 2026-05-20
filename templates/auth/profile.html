@@ -1,88 +1,811 @@
 {% extends 'base.html' %}
 
-{% block title %}My Profile - HIN Technologies{% endblock %}
+{% block title %}My Profile - HINT Technologies{% endblock %}
+{% load static %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header bg-primary text-white text-center">
-                    <i class="fas fa-user-circle fa-4x"></i>
-                    <h5 class="mt-2">{{ user.get_full_name|default:user.username }}</h5>
+<style>
+    /* ============================================
+       PROFESSIONAL PROFILE PAGE - BLUE & RED THEME
+       Balanced colors, NO extra gaps after cards
+    ============================================ */
+    
+    @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap');
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    .profile-wrapper {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px 36px 0 36px;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        background: #ffffff;
+        min-height: auto;
+    }
+    
+    /* Main Container - No bottom gap */
+    .profile-container {
+        background: #ffffff;
+        border-radius: 40px 40px 0 0;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    }
+    
+    /* ========== PROFILE SECTION WITH BACKGROUND IMAGE ========== */
+    .profile-cover {
+        position: relative;
+        height: 280px;
+        overflow: hidden;
+    }
+    
+    .profile-cover::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url('{% static "images/profile.png" %}');
+        background-size: cover;
+        background-position: center 30%;
+        background-repeat: no-repeat;
+        pointer-events: none;
+    }
+    
+    /* Gradient overlay with red and blue blend */
+    .profile-cover::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 80px;
+        background: linear-gradient(to top, #ffffff, rgba(255,255,255,0.8), transparent);
+        pointer-events: none;
+    }
+    
+    /* Avatar positioned over cover */
+    .profile-avatar-area {
+        position: relative;
+        padding: 0 40px;
+        margin-top: -60px;
+        z-index: 10;
+    }
+    
+    .avatar-frame {
+        display: flex;
+        align-items: flex-end;
+        gap: 25px;
+        flex-wrap: wrap;
+    }
+    
+    .avatar-large {
+        width: 130px;
+        height: 130px;
+        background: linear-gradient(135deg, #2563eb, #c40000);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 4px solid white;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .avatar-large i {
+        font-size: 4.2rem;
+        color: white;
+    }
+    
+    .user-title-info {
+        flex: 1;
+        padding-bottom: 15px;
+    }
+    
+    .user-title-info h2 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 8px;
+    }
+    
+    .user-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #c40000, #e63946);
+        color: white;
+        padding: 5px 18px;
+        border-radius: 30px;
+        font-size: 0.7rem;
+        font-weight: 700;
+    }
+    
+    /* ========== TWO COLUMN LAYOUT - NO BOTTOM GAP ========== */
+    .profile-two-columns {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 32px;
+        padding: 40px 40px 0 40px;
+        margin-bottom: 0;
+    }
+    
+    /* LEFT COLUMN - Info Cards */
+    .profile-left {
+        flex: 1;
+        min-width: 280px;
+        margin-bottom: 0;
+    }
+    
+    .info-card {
+        background: #f8fafc;
+        border-radius: 28px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid #eef2f6;
+        transition: all 0.3s ease;
+    }
+    
+    .info-card:last-child {
+        margin-bottom: 0;
+    }
+    
+    .info-card:hover {
+        border-color: #c40000;
+        box-shadow: 0 10px 25px rgba(196, 0, 0, 0.08);
+        transform: translateY(-2px);
+    }
+    
+    .info-card-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 1.2rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 2px solid #eef2f6;
+    }
+    
+    .info-icon-bg {
+        width: 48px;
+        height: 48px;
+        background: #fef2f2;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .info-icon-bg i {
+        font-size: 1.3rem;
+        color: #c40000;
+    }
+    
+    .info-card-title {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #64748b;
+    }
+    
+    .info-card-value {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-top: 4px;
+    }
+    
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #eef2f6;
+    }
+    
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+    
+    .detail-label {
+        font-size: 0.8rem;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .detail-label i {
+        color: #c40000;
+        width: 20px;
+    }
+    
+    .detail-value {
+        font-weight: 600;
+        color: #0f172a;
+        font-size: 0.85rem;
+    }
+    
+    /* Permissions Card - Blue & Red Theme */
+    .permissions-card {
+        background: linear-gradient(135deg, #1e3a8a, #2563eb, #c40000);
+        border-radius: 28px;
+        padding: 1.5rem;
+        color: white;
+        margin-bottom: 0;
+    }
+    
+    .permissions-card h6 {
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-bottom: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .perm-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .perm-tag {
+        background: rgba(255, 255, 255, 0.15);
+        padding: 6px 14px;
+        border-radius: 30px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
+    }
+    
+    .perm-tag:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-1px);
+    }
+    
+    .perm-tag i {
+        font-size: 0.65rem;
+    }
+    
+    /* RIGHT COLUMN - Form Card */
+    .profile-right {
+        flex: 1.2;
+        min-width: 350px;
+        margin-bottom: 0;
+    }
+    
+    .form-card {
+        background: #ffffff;
+        border-radius:28px 28px 0 0;
+        padding: 1.8rem;
+        border: 1px solid #eef2f6;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+        height: 100%;
+    }
+    
+    .form-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 1.8rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #eef2f6;
+    }
+    
+    .form-header-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #c40000, #e63946);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .form-header-icon i {
+        font-size: 1.4rem;
+        color: white;
+    }
+    
+    .form-header h4 {
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+    }
+    
+    .form-header p {
+        font-size: 0.7rem;
+        color: #64748b;
+        margin: 0;
+    }
+    
+    .form-group {
+        margin-bottom: 1.3rem;
+    }
+    
+    .form-group label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #5b6e8c;
+        display: block;
+        margin-bottom: 8px;
+    }
+    
+    .form-group label i {
+        margin-right: 6px;
+        color: #c40000;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 13px 18px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-family: 'Inter', sans-serif;
+        transition: all 0.2s;
+        background: #ffffff;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #c40000;
+        box-shadow: 0 0 0 4px rgba(196, 0, 0, 0.08);
+    }
+    
+    .row-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+    
+    .btn-update {
+        background: linear-gradient(135deg, #c40000, #e63946);
+        color: white;
+        border: none;
+        padding: 14px 32px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        justify-content: center;
+        margin-top: 10px;
+    }
+    
+    .btn-update:hover {
+        background: linear-gradient(135deg, #a00000, #c40000);
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(196, 0, 0, 0.25);
+    }
+    
+    /* Remove any extra spacing at the bottom */
+    body {
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    
+    /* Responsive */
+    @media (max-width: 1000px) {
+        .profile-wrapper {
+            padding: 30px 20px 0 20px;
+        }
+        .profile-two-columns {
+            flex-direction: column;
+            padding: 25px 25px 0 25px;
+            gap: 25px;
+        }
+        .profile-right {
+            min-width: auto;
+        }
+        .form-card {
+            height: auto;
+        }
+    }
+    
+    @media (max-width: 700px) {
+        .avatar-frame {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .profile-avatar-area {
+            padding: 0 20px;
+            margin-top: -70px;
+        }
+        .avatar-large {
+            width: 100px;
+            height: 100px;
+        }
+        .avatar-large i {
+            font-size: 3.2rem;
+        }
+        .user-title-info {
+            text-align: center;
+        }
+        .user-title-info h2 {
+            font-size: 1.4rem;
+        }
+        .row-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        .profile-two-columns {
+            padding: 20px 20px 0 20px;
+        }
+        .info-card {
+            padding: 1.2rem;
+        }
+        .permissions-card {
+            padding: 1.2rem;
+        }
+        .form-card {
+            padding: 1.3rem;
+        }
+    }
+    
+     /* Mobile View */
+    @media (max-width: 600px) {
+        .profile-wrapper {
+            padding: 15px 15px 0 15px;
+        }
+        
+        .profile-cover {
+            height: 150px;
+        }
+        
+        .profile-avatar-area {
+            padding: 0 16px;
+            margin-top: -45px;
+        }
+        
+        .avatar-frame {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+        }
+        
+        .avatar-large {
+            width: 80px;
+            height: 80px;
+        }
+        
+        .avatar-large i {
+            font-size: 2.5rem;
+        }
+        
+        .user-title-info {
+            text-align: center;
+            padding-bottom: 5px;
+        }
+        
+        .user-title-info h2 {
+            font-size: 1.2rem;
+        }
+        
+        .user-badge {
+            font-size: 0.6rem;
+            padding: 3px 12px;
+        }
+        
+        .profile-two-columns {
+            padding: 16px 16px 0 16px;
+            gap: 16px;
+        }
+        
+        .info-card {
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .info-card-header {
+            gap: 10px;
+            margin-bottom: 0.8rem;
+        }
+        
+        .info-icon-bg {
+            width: 36px;
+            height: 36px;
+        }
+        
+        .info-icon-bg i {
+            font-size: 0.9rem;
+        }
+        
+        .info-card-title {
+            font-size: 0.6rem;
+        }
+        
+        .info-card-value {
+            font-size: 0.85rem;
+        }
+        
+        .detail-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+            padding: 8px 0;
+        }
+        
+        .detail-label {
+            font-size: 0.7rem;
+        }
+        
+        .detail-value {
+            font-size: 0.75rem;
+            text-align: left;
+            word-break: break-all;
+        }
+        
+        .permissions-card {
+            padding: 1rem;
+        }
+        
+        .permissions-card h6 {
+            font-size: 0.75rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .perm-tags {
+            gap: 6px;
+        }
+        
+        .perm-tag {
+            padding: 4px 10px;
+            font-size: 0.6rem;
+        }
+        
+        .form-card {
+            padding: 1rem;
+        }
+        
+        .form-header {
+            gap: 10px;
+            margin-bottom: 1.2rem;
+        }
+        
+        .form-header-icon {
+            width: 38px;
+            height: 38px;
+        }
+        
+        .form-header-icon i {
+            font-size: 1rem;
+        }
+        
+        .form-header h4 {
+            font-size: 1rem;
+        }
+        
+        .form-header p {
+            font-size: 0.6rem;
+        }
+        
+        .form-group {
+            margin-bottom: 0.8rem;
+        }
+        
+        .form-group label {
+            font-size: 0.6rem;
+        }
+        
+        .form-control {
+            padding: 10px 14px;
+            font-size: 0.8rem;
+            border-radius: 16px;
+        }
+        
+        .row-grid {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        
+        .btn-update {
+            padding: 10px 20px;
+            font-size: 0.75rem;
+        }
+    }
+    
+    /* Small Mobile View */
+    @media (max-width: 380px) {
+        .profile-wrapper {
+            padding: 10px 10px 0 10px;
+        }
+        
+        .profile-cover {
+            height: 120px;
+        }
+        
+        .profile-avatar-area {
+            margin-top: -35px;
+        }
+        
+        .avatar-large {
+            width: 65px;
+            height: 65px;
+        }
+        
+        .avatar-large i {
+            font-size: 2rem;
+        }
+        
+        .user-title-info h2 {
+            font-size: 1rem;
+        }
+        
+        .profile-two-columns {
+            padding: 12px 12px 0 12px;
+        }
+        
+        .info-card {
+            padding: 0.8rem;
+        }
+        
+        .perm-tag {
+            padding: 3px 8px;
+            font-size: 0.55rem;
+        }
+        
+        .form-card {
+            padding: 0.8rem;
+        }
+    }
+    
+    /* Remove any extra spacing at the bottom */
+    body {
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+</style>
+
+<div class="profile-wrapper">
+    <div class="profile-container">
+        
+        <!-- PROFILE SECTION WITH BACKGROUND IMAGE -->
+        <div class="profile-cover"></div>
+        
+        <div class="profile-avatar-area">
+            <div class="avatar-frame">
+                <div class="avatar-large">
+                    <i class="fas fa-user-circle"></i>
                 </div>
-                <div class="card-body">
-                    <p><strong><i class="fas fa-user"></i> Username:</strong> {{ user.username }}</p>
-                    <p><strong><i class="fas fa-envelope"></i> Email:</strong> {{ user.email }}</p>
-                    <p><strong><i class="fas fa-calendar"></i> Joined:</strong> {{ user.date_joined|date:"d M Y" }}</p>
-                    <p><strong><i class="fas fa-clock"></i> Last Login:</strong> {{ user.last_login|date:"d M Y h:i A"|default:"Never" }}</p>
-                    
-                    <hr>
-                    
-                    <h6>Your Permissions:</h6>
-                    <ul class="small">
+                <div class="user-title-info">
+                    <h2>{{ user.get_full_name|default:user.username }}</h2>
+                    <span class="user-badge">
                         {% if user.is_superuser %}
-                            <li>✅ Super Administrator (full access)</li>
+                            <i class="fas fa-crown"></i> Super Administrator
                         {% elif user.is_staff %}
-                            <li>✅ Staff Access</li>
+                            <i class="fas fa-star"></i> Staff Member
                         {% else %}
-                            <li>✅ Basic User Access</li>
+                            <i class="fas fa-user"></i> Registered User
                         {% endif %}
-                        
-                        {% if perms.hin.view_contactenquiry %}
-                            <li>✅ Can view enquiries</li>
-                        {% endif %}
-                        {% if perms.hin.add_service %}
-                            <li>✅ Can add services</li>
-                        {% endif %}
-                        {% if perms.hin.add_blog %}
-                            <li>✅ Can write blogs</li>
-                        {% endif %}
-                    </ul>
+                    </span>
                 </div>
             </div>
         </div>
         
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="fas fa-edit"></i> Edit Profile</h5>
+        <!-- TWO COLUMN CONTENT - NO BOTTOM GAP -->
+        <div class="profile-two-columns">
+            
+            <!-- LEFT COLUMN - Information Cards -->
+            <div class="profile-left">
+                
+                <!-- Account Details Card -->
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <div class="info-icon-bg">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        <div>
+                            <div class="info-card-title">ACCOUNT INFORMATION</div>
+                            <div class="info-card-value">{{ user.username }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label"><i class="fas fa-envelope"></i> Email Address</span>
+                        <span class="detail-value">{{ user.email }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label"><i class="fas fa-calendar-alt"></i> Member Since</span>
+                        <span class="detail-value">{{ user.date_joined|date:"d M Y" }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label"><i class="fas fa-clock"></i> Last Login</span>
+                        <span class="detail-value">{{ user.last_login|date:"d M Y h:i A"|default:"Never" }}</span>
+                    </div>
                 </div>
-                <div class="card-body">
+                
+                <!-- Permissions Card - Blue & Red Theme -->
+                <div class="permissions-card">
+                    <h6><i class="fas fa-shield-alt"></i> Your Permissions</h6>
+                    <div class="perm-tags">
+                        {% if user.is_superuser %}
+                            <span class="perm-tag"><i class="fas fa-crown"></i> Super Admin</span>
+                            <span class="perm-tag"><i class="fas fa-database"></i> Full Access</span>
+                            <span class="perm-tag"><i class="fas fa-users"></i> User Management</span>
+                            <span class="perm-tag"><i class="fas fa-chart-line"></i> Analytics</span>
+                        {% elif user.is_staff %}
+                            <span class="perm-tag"><i class="fas fa-star"></i> Staff Access</span>
+                            <span class="perm-tag"><i class="fas fa-tachometer-alt"></i> Dashboard</span>
+                        {% else %}
+                            <span class="perm-tag"><i class="fas fa-user"></i> Basic Access</span>
+                            <span class="perm-tag"><i class="fas fa-eye"></i> Read Only</span>
+                        {% endif %}
+                        
+                        {% if perms.hin.view_contactenquiry %}
+                            <span class="perm-tag"><i class="fas fa-eye"></i> View Enquiries</span>
+                        {% endif %}
+                        {% if perms.hin.add_service %}
+                            <span class="perm-tag"><i class="fas fa-plus-circle"></i> Add Services</span>
+                        {% endif %}
+                        {% if perms.hin.add_blog %}
+                            <span class="perm-tag"><i class="fas fa-pen-fancy"></i> Write Blogs</span>
+                        {% endif %}
+                        {% if perms.hin.add_client %}
+                            <span class="perm-tag"><i class="fas fa-building"></i> Manage Clients</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- RIGHT COLUMN - Edit Profile Form -->
+            <div class="profile-right">
+                <div class="form-card">
+                    <div class="form-header">
+                        <div class="form-header-icon">
+                            <i class="fas fa-user-edit"></i>
+                        </div>
+                        <div>
+                            <h4>Edit Profile</h4>
+                            <p>Update your personal information</p>
+                        </div>
+                    </div>
+                    
                     <form method="post">
                         {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="id_username" class="form-label">Username</label>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> Username</label>
                             {{ form.username }}
                         </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="id_first_name" class="form-label">First Name</label>
+                        
+                        <div class="row-grid">
+                            <div class="form-group">
+                                <label><i class="fas fa-user"></i> First Name</label>
                                 {{ form.first_name }}
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="id_last_name" class="form-label">Last Name</label>
+                            <div class="form-group">
+                                <label><i class="fas fa-user"></i> Last Name</label>
                                 {{ form.last_name }}
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="id_email" class="form-label">Email Address</label>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-envelope"></i> Email Address</label>
                             {{ form.email }}
                         </div>
-                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                        
+                        <button type="submit" class="btn-update">
+                            <i class="fas fa-save"></i> Update Profile
+                        </button>
                     </form>
                 </div>
             </div>
             
-            <div class="card mt-4">
-                <div class="card-header bg-warning text-dark">
-                    <h5 class="mb-0"><i class="fas fa-key"></i> Account Security</h5>
-                </div>
-                <div class="card-body">
-                    <p>To change your password, please use the <a href="/admin/password_change/">Django admin password change page</a>.</p>
-                    <a href="/admin/password_change/" class="btn btn-warning">Change Password</a>
-                </div>
-            </div>
         </div>
     </div>
 </div>
