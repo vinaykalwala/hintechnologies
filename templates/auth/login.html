@@ -1,35 +1,676 @@
-{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
 
-{% block title %}Login - HIN Technologies{% endblock %}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-{% block content %}
-<div class="container py-5">
-    <div class="row">
-        <div class="col-md-6 mx-auto">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white text-center">
-                    <h3 class="mb-0"><i class="fas fa-sign-in-alt"></i> Login to Your Account</h3>
+<title>HIN Technologies | Training Portal Login</title>
+
+<link rel="icon" href="{% static 'images/favicon.png' %}">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+
+<style>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f0f4fc 0%, #e8edf6 100%);
+    position: relative;
+}
+
+/* ============================================ */
+/* SPLIT SCREEN LAYOUT - WITH BACKGROUND IMAGE */
+/* ============================================ */
+
+.login-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* LEFT SIDE - BRAND SECTION WITH BACKGROUND IMAGE */
+.brand-side {
+    flex: 1.2;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px;
+    overflow: hidden;
+    background-image: url('https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1600');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Dark overlay for better text readability */
+.brand-side::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(5, 52, 135, 0.88) 0%, rgba(10,45,110,0.85) 100%);
+    z-index: 1;
+}
+
+/* Subtle pattern background */
+.pattern-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px);
+    background-size: 35px 35px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Floating soft circles (KEPT FROM ORIGINAL) */
+.soft-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    z-index: 2;
+}
+
+.circle-1 {
+    width: 350px;
+    height: 350px;
+    top: -150px;
+    right: -100px;
+}
+
+.circle-2 {
+    width: 250px;
+    height: 250px;
+    bottom: -80px;
+    left: -80px;
+}
+
+.circle-3 {
+    width: 150px;
+    height: 150px;
+    top: 50%;
+    left: 20%;
+}
+
+.brand-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.brand-logo {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.brand-logo img {
+    width: 200px;
+    transition: transform 0.3s;
+}
+
+.brand-logo img:hover {
+    transform: scale(1.02);
+}
+
+.brand-quote {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.brand-quote h1 {
+    color: white;
+    font-size: 40px;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+.brand-quote h1 span {
+    color: #ff5e5e;
+}
+
+.brand-quote p {
+    color: rgba(255,255,255,0.88);
+    font-size: 16px;
+    line-height: 1.6;
+    max-width: 450px;
+    margin: 0 auto;
+}
+
+/* 3 CARDS - CENTERED IN ROW */
+.cards-row {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.feature-card {
+    flex: 1;
+    min-width: 140px;
+    max-width: 160px;
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 24px 16px;
+    text-align: center;
+    transition: all 0.3s;
+    border: 1px solid rgba(255,255,255,0.18);
+}
+
+.feature-card:hover {
+    transform: translateY(-6px);
+    background: rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,0.3);
+}
+
+.card-icon {
+    width: 55px;
+    height: 55px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px auto;
+}
+
+.card-icon i {
+    font-size: 26px;
+    color: #ff5e5e;
+}
+
+.feature-card h3 {
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.feature-card p {
+    color: rgba(255,255,255,0.75);
+    font-size: 12px;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* RIGHT SIDE - LOGIN FORM */
+.form-side {
+    flex: 0.8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    padding: 40px;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-header {
+    margin-bottom: 35px;
+    text-align: center;
+}
+
+.login-header h2 {
+    font-size: 32px;
+    font-weight: 800;
+    color: #0B3D91;
+    margin-bottom: 10px;
+}
+
+.login-header p {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* Form Styles */
+.input-group {
+    margin-bottom: 24px;
+}
+
+.input-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #1f2937;
+}
+
+.input-field {
+    position: relative;
+}
+
+.input-field i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #0B3D91;
+    font-size: 16px;
+}
+
+.input-field input {
+    width: 100%;
+    padding: 14px 18px 14px 46px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+    background: #fafbfc;
+    font-family: 'Inter', sans-serif;
+}
+
+.input-field input:focus {
+    outline: none;
+    border-color: #C62828;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(198,40,40,0.08);
+}
+
+.input-field input::placeholder {
+    color: #a0aec0;
+    font-weight: 400;
+}
+
+/* Login Button */
+.login-button {
+    width: 100%;
+    padding: 14px;
+    background: #C62828;
+    border: none;
+    border-radius: 14px;
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 8px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 12px rgba(198,40,40,0.25);
+}
+
+.login-button:hover {
+    background: #a51b1b;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(198,40,40,0.3);
+}
+
+.login-button i {
+    transition: transform 0.3s;
+}
+
+.login-button:hover i {
+    transform: translateX(4px);
+}
+
+/* Help Section */
+.help-section {
+    text-align: center;
+    margin-top: 16px;
+}
+
+.help-link {
+    color: #0B3D91;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.help-link:hover {
+    color: #C62828;
+}
+
+/* Footer */
+.footer-text {
+    text-align: center;
+    margin-top: 35px;
+    padding-top: 20px;
+    border-top: 1px solid #eef2f8;
+    font-size: 11px;
+    color: #a0aec0;
+}
+
+.footer-text i {
+    color: #C62828;
+    margin: 0 4px;
+}
+
+.footer-text strong {
+    color: #0B3D91;
+    font-weight: 600;
+}
+
+/* ============================================ */
+/* FULLY RESPONSIVE                            */
+/* ============================================ */
+
+@media (max-width: 1100px) {
+    .brand-side {
+        padding: 50px 30px;
+    }
+    
+    .brand-quote h1 {
+        font-size: 34px;
+    }
+    
+    .feature-card {
+        min-width: 130px;
+        padding: 20px 12px;
+    }
+    
+    .card-icon {
+        width: 48px;
+        height: 48px;
+    }
+    
+    .card-icon i {
+        font-size: 22px;
+    }
+    
+    .feature-card h3 {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 900px) {
+    .login-container {
+        flex-direction: column;
+    }
+    
+    .brand-side {
+        padding: 50px 40px;
+        min-height: auto;
+    }
+    
+    .brand-quote h1 {
+        font-size: 36px;
+    }
+    
+    .cards-row {
+        gap: 20px;
+    }
+    
+    .form-side {
+        padding: 50px 30px;
+    }
+    
+    .brand-logo img {
+        width: 170px;
+    }
+}
+
+@media (max-width: 650px) {
+    .cards-row {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .feature-card {
+        min-width: 140px;
+        max-width: 150px;
+    }
+    
+    .brand-quote h1 {
+        font-size: 30px;
+    }
+    
+    .brand-quote p {
+        font-size: 14px;
+    }
+    
+    .brand-side {
+        padding: 40px 24px;
+    }
+    
+    .form-side {
+        padding: 40px 20px;
+    }
+    
+    .login-header h2 {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 500px) {
+    .cards-row {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .feature-card {
+        min-width: 200px;
+        max-width: 220px;
+        display: flex;
+        align-items: center;
+        text-align: left;
+        gap: 16px;
+        padding: 16px 20px;
+    }
+    
+    .card-icon {
+        margin: 0;
+        width: 50px;
+        height: 50px;
+    }
+    
+    .feature-card h3 {
+        margin-bottom: 4px;
+    }
+    
+    .feature-card p {
+        font-size: 11px;
+    }
+    
+    .brand-quote h1 {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 380px) {
+    .brand-side {
+        padding: 30px 20px;
+    }
+    
+    .brand-quote h1 {
+        font-size: 24px;
+    }
+    
+    .form-side {
+        padding: 30px 16px;
+    }
+    
+    .login-header h2 {
+        font-size: 24px;
+    }
+}
+
+/* Loading state */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Animation */
+.login-card {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="login-container">
+    
+    <!-- LEFT SIDE - BRANDING WITH BACKGROUND IMAGE + SHAPES -->
+    <div class="brand-side">
+        <!-- Pattern overlay -->
+        <div class="pattern-bg"></div>
+        
+        <!-- Floating circles (ORIGINAL SHAPES) -->
+        <div class="soft-circle circle-1"></div>
+        <div class="soft-circle circle-2"></div>
+        <div class="soft-circle circle-3"></div>
+        
+        <div class="brand-content">
+            <div class="brand-logo">
+                <img src="{% static 'images/hintlogo.jpg' %}" alt="HIN Technologies">
+            </div>
+            
+            <div class="brand-quote">
+                <h1>
+                    <span>Upskill</span> Yourself<br>
+                    With Industry Experts
+                </h1>
+                <p>
+                    Join our professional training programs and get certified 
+                    in cutting-edge technologies. Learn from the best, grow faster.
+                </p>
+            </div>
+            
+            <!-- 3 CARDS - CENTERED IN ROW -->
+            <div class="cards-row">
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <i class="fa-brands fa-python"></i>
+                    </div>
+                    <div>
+                        <h3>Full Stack Dev</h3>
+                        <p>MERN, Python, Java</p>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="id_username" class="form-label">Username</label>
-                            {{ form.username }}
-                        </div>
-                        <div class="mb-3">
-                            <label for="id_password" class="form-label">Password</label>
-                            {{ form.password }}
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Login</button>
-                    </form>
-                    
-                    <hr>
-                    
-                  
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <i class="fa-solid fa-shield"></i>
+                    </div>
+                    <div>
+                        <h3>Cybersecurity</h3>
+                        <p>Ethical Hacking</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <h3>Data Science</h3>
+                        <p>AI & ML</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    
+    <!-- RIGHT SIDE - LOGIN FORM -->
+    <div class="form-side">
+        <div class="login-card">
+            
+            <div class="login-header">
+                <h2>Welcome Back!</h2>
+                <p>Sign in to continue your Dashboard Panel</p>
+            </div>
+            
+            {% if messages %}
+                {% for message in messages %}
+                    <div style="background: #fff0f0; border-left: 4px solid #C62828; padding: 12px 16px; border-radius: 12px; margin-bottom: 24px; font-size: 13px; color: #a51b1b;">
+                        <i class="fas fa-exclamation-circle"></i> {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            <form method="post" id="loginForm">
+                {% csrf_token %}
+                
+                <div class="input-group">
+                    <label class="input-label">Username</label>
+                    <div class="input-field">
+                        <i class="fa-regular fa-user"></i>
+                        {{ form.username }}
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-label">Password</label>
+                    <div class="input-field">
+                        <i class="fa-solid fa-lock"></i>
+                        {{ form.password }}
+                    </div>
+                </div>
+                
+                <button type="submit" class="login-button" id="loginBtn">
+                    <span>Access Portal</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+            
+            <div class="help-section">
+                <a href="#" class="help-link">Need help? Contact support</a>
+            </div>
+            
+            <div class="footer-text">
+                <i class="fa-solid fa-shield-haltered"></i> Secure Training Portal
+                <i class="fa-regular fa-circle" style="font-size: 3px; vertical-align: middle;"></i>
+                <strong>HIN Technologies</strong> Learning Division
+            </div>
+            
+        </div>
+    </div>
+    
 </div>
-{% endblock %}
+
+<script>
+    const loginForm = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+    
+    if (loginForm) {
+        loginForm.addEventListener('submit', function() {
+            loginBtn.innerHTML = '<span><i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...</span>';
+            loginBtn.disabled = true;
+            loginBtn.classList.add('loading');
+        });
+    }
+</script>
+
+</body>
+</html>

@@ -10,7 +10,7 @@
     <!-- Google Fonts + Font Awesome -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <link rel="icon" type="image/jpg" href="{% static 'images/hintlogo.jpg' %}">
     <style>
         /* =========================
            RESET & GLOBAL
@@ -401,7 +401,6 @@
             background: #172447;
             color: #94a3b8;
             padding-top: 64px;
-            margin-top: 80px;
             position: relative;
             overflow: hidden;
         }
@@ -825,12 +824,12 @@
             <div class="footer-col">
                 <h4>Our Websites</h4>
                 <ul class="websites-list">
-                    <li><a href="#"><i class="fas fa-globe"></i> HINT Technologies (Global)</a></li>
-                    <li><a href="#"><i class="fas fa-cloud"></i> HINT CloudHub</a></li>
-                    <li><a href="#"><i class="fas fa-chalkboard-teacher"></i> HINT Academy</a></li>
-                    <li><a href="#"><i class="fas fa-shield-alt"></i> HINT Security Portal</a></li>
-                    <li><a href="#"><i class="fas fa-chart-line"></i> HINT DevOps Insights</a></li>
-                    <li><a href="#"><i class="fas fa-headset"></i> HINT Support Central</a></li>
+                    <li><a href="#"><i class="fas fa-globe"></i> HINTech Services</a></li>
+                    <li><a href="#"><i class="fas fa-cloud"></i>TTS Foods</a></li>
+                    <li><a href="#"><i class="fas fa-chalkboard-teacher"></i>HungerFresh</a></li>
+                    <li><a href="#"><i class="fas fa-shield-alt"></i>ChickenDrop</a></li>
+                    <li><a href="#"><i class="fas fa-chart-line"></i>Mr HungryBird Cafe</a></li>
+                    <li><a href="#"><i class="fas fa-headset"></i>Club Chicken</a></li>
                 </ul>
             </div>
             
@@ -872,7 +871,7 @@
 
         <!-- Police & Terms - EXACTLY TWO links -->
         <div class="legal-double">
-            <a href="#"><i class="fas fa-shield-hawk"></i> Privacy Police & Data Protection</a>
+            <a href="{% url 'hin:privacy' %}"><i class="fas fa-shield-hawk"></i> Privacy Police & Data Protection</a>
             <a href="#"><i class="fas fa-file-contract"></i> Terms of Service & Use</a>
         </div>
 

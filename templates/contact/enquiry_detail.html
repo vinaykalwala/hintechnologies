@@ -1,40 +1,562 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Enquiry Details{% endblock %}
+{% block title %}Enquiry Details - HINT Technologies{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <div class="card">
-                <div class="card-header bg-primary text-white d-flex justify-content-between">
-                    <h3 class="mb-0">Enquiry from {{ enquiry.first_name }} {{ enquiry.last_name }}</h3>
-                    <a href="{% url 'hin:enquiry_toggle_read' pk=enquiry.pk %}" class="btn btn-sm btn-light">
-                        {% if enquiry.is_read %}Mark Unread{% else %}Mark Read{% endif %}
-                    </a>
+<style>
+
+    .detail-page {
+        background: #f3f6fc;
+        min-height: 100vh;
+        padding: 45px 35px;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    .detail-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* Back Button */
+    .back-nav {
+        margin-bottom: 28px;
+    }
+
+    .back-nav a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: white;
+        padding: 8px 22px;
+        border-radius: 50px;
+        text-decoration: none;
+        color: #4b5563;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all 0.2s;
+        border: 1px solid #e2e8f0;
+    }
+
+    .back-nav a:hover {
+        background: #2563eb;
+        color: white;
+        border-color: #2563eb;
+        transform: translateX(-3px);
+    }
+
+    /* Main Card */
+    .detail-card {
+        background: white;
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Header - BLUE SECTION */
+    .card-header-blue {
+        background: #1e40af;
+        padding: 28px 32px;
+        position: relative;
+    }
+
+    .card-header-blue::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: #c40000;
+    }
+
+    .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .title-info h2 {
+        font-size: 22px;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 6px;
+    }
+
+    .title-info p {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .status-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 14px;
+        border-radius: 40px;
+        font-size: 11px;
+        font-weight: 600;
+        margin-left: 12px;
+    }
+
+    .chip-read {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .chip-unread {
+        background: #fef3c7;
+        color: #b45309;
+    }
+
+    /* Toggle Button */
+    .toggle-btn {
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 9px 24px;
+        border-radius: 40px;
+        font-size: 12px;
+        font-weight: 600;
+        color: white;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+    .toggle-btn:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+    }
+
+    /* Body Content */
+    .card-body {
+        padding: 32px;
+    }
+
+    /* Stats Grid - 3x2 Layout */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-bottom: 0;
+    }
+
+    .stat-item {
+        background: #f8fafc;
+        border-radius: 20px;
+        padding: 18px 20px;
+        border: 1px solid #eef2f6;
+        transition: all 0.2s;
+    }
+
+    .stat-item:hover {
+        border-color: #c40000;
+        transform: translateY(-3px);
+    }
+
+    .stat-icon {
+        width: 44px;
+        height: 44px;
+        background: #fef2f2;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 14px;
+    }
+
+    .stat-icon i {
+        font-size: 20px;
+        color: #c40000;
+    }
+
+    .stat-label {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #64748b;
+        letter-spacing: 0.6px;
+        margin-bottom: 6px;
+    }
+
+    .stat-value {
+        font-size: 15px;
+        font-weight: 700;
+        color: #0f172a;
+        word-break: break-word;
+    }
+
+    .stat-value a {
+        color: #2563eb;
+        text-decoration: none;
+    }
+
+    .stat-value a:hover {
+        text-decoration: underline;
+    }
+
+    /* Action Buttons */
+    .action-section {
+        margin-top: 32px;
+        padding-top: 24px;
+        border-top: 1px solid #eef2f6;
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .btn-back {
+        background: #f1f5f9;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+        padding: 10px 26px;
+        border-radius: 40px;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+    .btn-back:hover {
+        background: #e2e8f0;
+        transform: translateY(-2px);
+    }
+
+    .btn-delete {
+        background: #fef2f2;
+        color: #c40000;
+        border: 1px solid #fecaca;
+        padding: 10px 26px;
+        border-radius: 40px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+    .btn-delete:hover {
+        background: #c40000;
+        color: white;
+        border-color: #c40000;
+        transform: translateY(-2px);
+    }
+
+    /* Modal */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-overlay.active {
+        display: flex;
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: 24px;
+        max-width: 380px;
+        width: 90%;
+        padding: 28px;
+        text-align: center;
+    }
+
+    .modal-content i {
+        font-size: 48px;
+        color: #c40000;
+        margin-bottom: 12px;
+    }
+
+    .modal-content h3 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .modal-content p {
+        color: #64748b;
+        font-size: 13px;
+        margin-bottom: 22px;
+    }
+
+    .modal-buttons {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+    }
+
+    .modal-confirm {
+        background: #c40000;
+        color: white;
+        border: none;
+        padding: 9px 22px;
+        border-radius: 40px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .modal-cancel {
+        background: #f1f5f9;
+        color: #475569;
+        border: none;
+        padding: 9px 22px;
+        border-radius: 40px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    /* Toast */
+    .toast-msg {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: white;
+        border-radius: 12px;
+        padding: 12px 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 1100;
+        animation: slideIn 0.3s ease;
+        border-left: 4px solid;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateX(100px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .toast-success {
+        border-left-color: #10b981;
+    }
+    .toast-success i { color: #10b981; }
+
+    .toast-error {
+        border-left-color: #c40000;
+    }
+    .toast-error i { color: #c40000; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+        .detail-page { padding: 30px 20px; }
+        .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .header-row { flex-direction: column; align-items: flex-start; }
+        .card-body { padding: 24px; }
+        .card-header-blue { padding: 20px 24px; }
+    }
+
+    @media (max-width: 550px) {
+        .stats-grid { grid-template-columns: 1fr; }
+        .action-section { justify-content: center; }
+        .title-info h2 { font-size: 18px; }
+    }
+</style>
+
+<div class="detail-page">
+    <div class="detail-container">
+        
+        <!-- Back Navigation -->
+        <div class="back-nav">
+            <a href="{% url 'hin:enquiry_list' %}">
+                <i class="fas fa-arrow-left"></i> Back to Enquiries
+            </a>
+        </div>
+        
+        <!-- Main Detail Card -->
+        <div class="detail-card">
+            
+            <!-- Header - BLUE SECTION -->
+            <div class="card-header-blue">
+                <div class="header-row">
+                    <div class="title-info">
+                        <h2>
+                            Enquiry Details
+                            {% if enquiry.is_read %}
+                                <span class="status-chip chip-read"><i class="fas fa-check-circle"></i> Read</span>
+                            {% else %}
+                                <span class="status-chip chip-unread"><i class="fas fa-circle"></i> Unread</span>
+                            {% endif %}
+                        </h2>
+                        <p><i class="fas fa-user"></i> {{ enquiry.first_name }} {{ enquiry.last_name }} • ID: #{{ enquiry.id }}</p>
+                    </div>
+                   
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><strong>📧 Email:</strong> {{ enquiry.email }}</p>
-                            <p><strong>📱 Mobile:</strong> {{ enquiry.mobile_no }}</p>
-                            <p><strong>💼 Experience:</strong> {{ enquiry.get_experience_level_display }}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><strong>📅 Submitted:</strong> {{ enquiry.created_at|date:"d M Y h:i A" }}</p>
-                            <p><strong>🔄 Last Updated:</strong> {{ enquiry.updated_at|date:"d M Y h:i A" }}</p>
-                        </div>
+            </div>
+            
+            <!-- Body Content -->
+            <div class="card-body">
+                
+                <!-- Stats Grid - Clean Information Boxes -->
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-envelope"></i></div>
+                        <div class="stat-label">Email Address</div>
+                        <div class="stat-value"><a href="mailto:{{ enquiry.email }}">{{ enquiry.email }}</a></div>
                     </div>
                     
-                    <div class="mt-4">
-                        <a href="{% url 'hin:enquiry_list' %}" class="btn btn-secondary">Back to List</a>
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-delete-url="{% url 'hin:enquiry_delete' pk=enquiry.pk %}">
-                            Delete Enquiry
-                        </button>
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-phone-alt"></i></div>
+                        <div class="stat-label">Mobile Number</div>
+                        <div class="stat-value"><a href="tel:{{ enquiry.mobile_no }}">{{ enquiry.mobile_no }}</a></div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="stat-label">Experience Level</div>
+                        <div class="stat-value">{{ enquiry.get_experience_level_display }}</div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="stat-label">Submitted On</div>
+                        <div class="stat-value">{{ enquiry.created_at|date:"d M Y, h:i A" }}</div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-history"></i></div>
+                        <div class="stat-label">Last Updated</div>
+                        <div class="stat-value">{{ enquiry.updated_at|date:"d M Y, h:i A" }}</div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-id-card"></i></div>
+                        <div class="stat-label">Enquiry ID</div>
+                        <div class="stat-value">#{{ enquiry.id }}</div>
                     </div>
                 </div>
+                
+                <!-- Action Buttons -->
+                <div class="action-section">
+                    <a href="{% url 'hin:enquiry_list' %}" class="btn-back">
+                        <i class="fas fa-list-ul"></i> All Enquiries
+                    </a>
+                    <button onclick="openDeleteModal()" class="btn-delete">
+                        <i class="fas fa-trash-alt"></i> Delete Enquiry
+                    </button>
+                </div>
+                
             </div>
         </div>
     </div>
 </div>
+
+<!-- Delete Modal -->
+<div id="deleteModal" class="modal-overlay">
+    <div class="modal-content">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>Delete Enquiry</h3>
+        <p>Are you sure you want to delete this enquiry? This action cannot be undone.</p>
+        <div class="modal-buttons">
+            <button id="confirmDeleteBtn" class="modal-confirm">Yes, Delete</button>
+            <button onclick="closeModal()" class="modal-cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let deleteId = {{ enquiry.pk }};
+    
+    function openDeleteModal() {
+        document.getElementById('deleteModal').classList.add('active');
+    }
+    
+    function closeModal() {
+        document.getElementById('deleteModal').classList.remove('active');
+    }
+    
+    function showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `toast-msg toast-${type}`;
+        toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i><span>${message}</span>`;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.animation = 'slideOut 0.3s ease forwards';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+    
+    document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
+        const btn = this;
+        btn.disabled = true;
+        btn.textContent = 'Deleting...';
+        
+        try {
+            const response = await fetch(`/enquiries/${deleteId}/delete/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json',
+                },
+            });
+            const data = await response.json();
+            
+            if (response.ok && data.success) {
+                showToast(data.message, 'success');
+                setTimeout(() => {
+                    window.location.href = "{% url 'hin:enquiry_list' %}";
+                }, 1000);
+            } else {
+                showToast(data.message || 'Failed to delete', 'error');
+            }
+        } catch (err) {
+            showToast('An error occurred', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Yes, Delete';
+            closeModal();
+        }
+    });
+    
+    function getCookie(name) {
+        let value = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    value = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return value;
+    }
+    
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+    
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && document.getElementById('deleteModal').classList.contains('active')) {
+            closeModal();
+        }
+    });
+</script>
+
 {% endblock %}

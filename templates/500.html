@@ -1,17 +1,312 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block title %}Server Error - 500{% endblock %}
+<head>
 
-{% block content %}
-<div class="container py-5 text-center">
-    <div class="row">
-        <div class="col-md-6 mx-auto">
-            <h1 class="display-1 text-danger">500</h1>
-            <h2>Internal Server Error</h2>
-            <p class="lead">Something went wrong on our end. Please try again later.</p>
-            <p>Our team has been notified. If the problem persists, please contact us.</p>
-            <a href="{% url 'hin:home' %}" class="btn btn-primary">Return to Home</a>
-        </div>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="500 Internal Server Error - HIN Technologies">
+
+    <meta
+        name="robots"
+        content="noindex, nofollow">
+
+    <title>
+        500 - Internal Server Error | HIN Technologies
+    </title>
+
+    <!-- Favicon -->
+{% load static %}
+    <link
+        rel="icon"
+        type="image/jpg"
+        href="{% static 'images/hintlogo.jpg' %}">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+}
+
+.error-page{
+    min-height:100vh;
+    background:#020617;
+    overflow:hidden;
+    position:relative;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:Segoe UI,sans-serif;
+}
+
+/* Moving Grid */
+
+.grid-bg{
+    position:absolute;
+    inset:0;
+    background:
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+    background-size:55px 55px;
+    transform:perspective(800px) rotateX(75deg);
+    animation:gridMove 12s linear infinite;
+    opacity:.7;
+}
+
+@keyframes gridMove{
+    from{
+        transform:
+        perspective(800px)
+        rotateX(75deg)
+        translateY(0);
+    }
+    to{
+        transform:
+        perspective(800px)
+        rotateX(75deg)
+        translateY(55px);
+    }
+}
+
+/* Glow */
+
+.glow{
+    position:absolute;
+    width:600px;
+    height:600px;
+    border-radius:50%;
+    background:
+    radial-gradient(
+        circle,
+        rgba(59,130,246,.35),
+        transparent 70%
+    );
+    animation:pulse 6s ease infinite;
+}
+
+@keyframes pulse{
+    0%,100%{
+        transform:scale(1);
+        opacity:.6;
+    }
+    50%{
+        transform:scale(1.15);
+        opacity:1;
+    }
+}
+
+/* Huge 500 */
+
+.bg-number{
+    position:absolute;
+    font-size:380px;
+    font-weight:900;
+    color:rgba(255,255,255,.06);
+    letter-spacing:-20px;
+    user-select:none;
+    z-index:1;
+}
+
+/* Main Content */
+
+.content{
+    position:relative;
+    z-index:5;
+    text-align:center;
+    max-width:760px;
+    padding:60px 40px;
+}
+
+/* Orb */
+
+.orb{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    margin:auto;
+    margin-bottom:35px;
+    background:
+    radial-gradient(circle at 30% 30%,
+    #60a5fa,
+    #2563eb,
+    #1e3a8a);
+    box-shadow:
+    0 0 45px rgba(59,130,246,.55);
+    animation:float 4s ease infinite;
+}
+
+@keyframes float{
+    0%,100%{
+        transform:translateY(0);
+    }
+    50%{
+        transform:translateY(-14px);
+    }
+}
+
+.small-title{
+    color:#60a5fa;
+    font-size:13px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    margin-bottom:18px;
+    font-weight:700;
+}
+
+.main-title{
+    font-size:68px;
+    line-height:1;
+    font-weight:800;
+    color:white;
+    margin-bottom:25px;
+}
+
+.main-title span{
+    color:#60a5fa;
+}
+
+.desc{
+    color:#94a3b8;
+    font-size:17px;
+    line-height:2;
+    margin-bottom:40px;
+}
+
+/* Button */
+
+.home-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:18px 36px;
+    border-radius:60px;
+    text-decoration:none;
+    color:white;
+    background:#2563eb;
+    font-weight:600;
+    transition:.35s;
+    box-shadow:
+    0 15px 35px rgba(37,99,235,.28);
+}
+
+.home-btn:hover{
+    transform:translateY(-4px);
+    background:#1d4ed8;
+    box-shadow:
+    0 24px 45px rgba(37,99,235,.4);
+}
+
+/* Particles */
+
+.particle{
+    position:absolute;
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#60a5fa;
+    opacity:.5;
+    animation:particleMove 10s linear infinite;
+}
+
+.p1{top:18%;left:15%;}
+.p2{top:30%;right:20%;}
+.p3{bottom:20%;left:22%;}
+.p4{bottom:15%;right:14%;}
+
+@keyframes particleMove{
+    0%{
+        transform:translateY(0);
+    }
+    50%{
+        transform:translateY(-40px);
+    }
+    100%{
+        transform:translateY(0);
+    }
+}
+
+/* Mobile */
+
+@media(max-width:768px){
+
+    .bg-number{
+        font-size:200px;
+    }
+
+    .main-title{
+        font-size:44px;
+    }
+
+    .desc{
+        font-size:15px;
+    }
+
+    .content{
+        padding:35px 22px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="error-page">
+
+    <div class="grid-bg"></div>
+    <div class="glow"></div>
+
+    <div class="particle p1"></div>
+    <div class="particle p2"></div>
+    <div class="particle p3"></div>
+    <div class="particle p4"></div>
+
+    <div class="bg-number">
+        500
     </div>
+
+    <div class="content">
+
+        <div class="orb"></div>
+
+        <div class="small-title">
+            INTERNAL SERVER ERROR
+        </div>
+
+        <div class="main-title">
+            System <span>Interruption</span>
+        </div>
+
+        <div class="desc">
+            Something unexpected interrupted the experience.
+            Our system is already working behind the scenes
+            to restore everything back to normal.
+        </div>
+
+        <a
+            href="{% url 'hin:home' %}"
+            class="home-btn">
+
+            ← Back to Home
+
+        </a>
+
+    </div>
+
 </div>
-{% endblock %}
+
+</body>
+</html>

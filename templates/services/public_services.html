@@ -716,6 +716,467 @@ body{
         flex:0 0 300px;
     }
 }
+/* SECTION */
+
+.org-chart-section{
+    position:relative;
+    padding:60px 7%;
+    overflow:hidden;
+    background:
+    radial-gradient(circle at top left,
+    rgba(13,61,145,.10), transparent 30%),
+
+    radial-gradient(circle at bottom right,
+    rgba(198,40,40,.08), transparent 30%),
+
+    linear-gradient(
+    135deg,
+    #ffffff,
+    #f5f9ff 60%,
+    #eef5ff);
+}
+
+/* GRID */
+
+.bg-grid{
+    position:absolute;
+    inset:0;
+    background-image:
+    linear-gradient(rgba(13,61,145,.04) 1px,
+    transparent 1px),
+    linear-gradient(90deg,
+    rgba(13,61,145,.04) 1px,
+    transparent 1px);
+
+    background-size:45px 45px;
+}
+
+/* SHAPES */
+
+.bg-shape{
+    position:absolute;
+    border-radius:28px;
+    animation:float 8s ease-in-out infinite;
+}
+
+.bg1{
+    width:260px;
+    height:260px;
+    background:rgba(13,61,145,.08);
+    left:-70px;
+    top:-70px;
+    transform:rotate(25deg);
+}
+
+.bg2{
+    width:180px;
+    height:180px;
+    background:rgba(198,40,40,.07);
+    right:40px;
+    top:100px;
+    transform:rotate(25deg);
+}
+
+.bg3{
+    width:110px;
+    height:110px;
+    border:2px solid rgba(13,61,145,.14);
+    right:120px;
+    bottom:80px;
+    transform:rotate(25deg);
+}
+
+@keyframes float{
+    50%{
+        transform:
+        translateY(-15px)
+        rotate(25deg);
+    }
+}
+
+/* TITLE */
+
+.org-title{
+    text-align:center;
+    margin-bottom:75px;
+    position:relative;
+    z-index:2;
+}
+
+.title-tag{
+    display:inline-block;
+    background:#ffe8e8;
+    color:#C62828;
+    padding:10px 18px;
+    border-radius:50px;
+    font-weight:700;
+    margin-bottom:20px;
+}
+
+.org-title h2{
+    font-size:46px;
+    font-weight:800;
+    color:#0B3D91;
+    margin-bottom:14px;
+}
+
+.org-title h2 span{
+    color:#C62828;
+}
+
+.org-title p{
+    color:#6b7280;
+    font-size:18px;
+    line-height:1.8;
+}
+
+/* ========== SCROLLABLE TREE CONTAINER (NEW) ========== */
+.tree-scroll-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    position: relative;
+    z-index: 2;
+    padding-bottom: 20px; /* space for scrollbar */
+}
+
+.tree-scroll-wrapper::-webkit-scrollbar {
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+
+.tree-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: #0B3D91;
+    border-radius: 10px;
+}
+
+.tree-wrapper {
+    min-width: 900px;      /* prevents collapse on small devices, ensures horizontal scroll */
+    width: max-content;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+/* TREE STRUCTURE */
+.tree-row{
+    display:flex;
+    justify-content:center;
+    gap:45px;
+    flex-wrap:nowrap;      /* no wrap inside scroll area */
+}
+
+.level2{
+    justify-content:space-between;
+}
+
+.tree-column{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+.child-row{
+    display:flex;
+    gap:25px;
+    flex-wrap:nowrap;
+    justify-content:center;
+}
+
+/* LINES */
+
+.line-v{
+    width:3px;
+    height:50px;
+    margin:auto;
+    background:
+    linear-gradient(#0B3D91,#3b82f6);
+    border-radius:20px;
+}
+
+.small{
+    height:35px;
+}
+
+.line-h{
+    height:3px;
+    background:
+    linear-gradient(90deg,#0B3D91,#3b82f6);
+    border-radius:20px;
+}
+
+.top-line{
+    width:60%;
+    margin:0 auto 25px;
+}
+
+.child-line{
+    width:220px;
+    margin-bottom:30px;
+}
+
+/* NODE */
+
+.tree-node{
+    width:270px;
+    background:
+    rgba(255,255,255,.72);
+    backdrop-filter:blur(18px);
+    border-radius:22px;
+    padding:16px 18px;
+    cursor:pointer;
+    transition:.45s;
+    position:relative;
+    overflow:hidden;
+
+    border:
+    1px solid rgba(255,255,255,.55);
+
+    box-shadow:
+    0 10px 30px rgba(13,61,145,.08);
+
+    transform-origin:center;
+}
+
+.small-node{
+    width:250px;
+}
+
+.root-node{
+    width:300px;
+}
+
+.tree-node::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    padding:1px;
+    border-radius:22px;
+
+    background:
+    linear-gradient(
+    135deg,
+    rgba(198,40,40,.35),
+    rgba(13,110,253,.35));
+
+    -webkit-mask:
+    linear-gradient(#fff 0 0)
+    content-box,
+    linear-gradient(#fff 0 0);
+
+    -webkit-mask-composite:xor;
+            mask-composite:exclude;
+}
+
+.tree-node:hover{
+    transform:
+    translateY(-10px)
+    scale(1.02);
+
+    box-shadow:
+    0 28px 55px rgba(13,110,253,.16);
+}
+
+/* HEADER */
+
+.node-header{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.node-logo{
+    width:62px;
+    height:62px;
+    border-radius:18px;
+    overflow:hidden;
+    background:
+    linear-gradient(
+    135deg,
+    #0B3D91,
+    #2563eb);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:
+    0 10px 22px rgba(13,61,145,.22);
+}
+
+/* LOGO BOX */
+
+.node-logo{
+    width:62px;
+    height:62px;
+    border-radius:18px;
+    overflow:hidden;
+    background:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:8px;
+    box-shadow:
+    0 10px 22px rgba(13,61,145,.18);
+    border:1px solid rgba(13,61,145,.08);
+}
+
+/* LOGO IMAGE */
+
+.node-logo img{
+    width:100%;
+    height:100%;
+    object-fit:contain;   /* prevents cutting */
+    object-position:center;
+}
+
+/* ICON */
+
+.node-logo i{
+    font-size:26px;
+    color:#0B3D91;
+}
+
+/* CONTENT */
+
+.node-content{
+    max-height:0;
+    overflow:hidden;
+    transition:.45s;
+}
+
+.tree-node.active .node-content{
+    max-height:220px;
+    margin-top:18px;
+}
+
+.node-content p{
+    color:#6b7280;
+    line-height:1.8;
+    margin-bottom:18px;
+}
+
+.node-content a{
+    display:inline-block;
+    text-decoration:none;
+    padding:12px 24px;
+    border-radius:14px;
+    color:white;
+    font-weight:600;
+
+    background:
+    linear-gradient(
+    135deg,
+    #C62828,
+    #ef4444);
+
+    transition:.35s;
+}
+
+.node-content a:hover{
+    background:
+    linear-gradient(
+    135deg,
+    #0B3D91,
+    #2563eb);
+
+    transform:translateY(-2px);
+}
+
+/* ========== RESPONSIVE UPDATES ========== */
+@media(max-width:992px){
+    /* Keep scroll wrapper active */
+    .tree-wrapper {
+        min-width: 800px;
+    }
+    .tree-node,
+    .small-node,
+    .root-node{
+        width: 260px;
+    }
+    .child-line{
+        width: 180px;
+    }
+}
+
+@media(max-width:768px){
+    .org-chart-section {
+        padding: 40px 5%;
+    }
+    .org-title h2 {
+        font-size: 36px;
+    }
+    .org-title p {
+        font-size: 16px;
+    }
+    .tree-wrapper {
+        min-width: 720px;
+    }
+    .tree-node,
+    .small-node,
+    .root-node{
+        width: 240px;
+    }
+    .node-header {
+        gap: 10px;
+    }
+    .node-logo {
+        width: 52px;
+        height: 52px;
+    }
+    .node-logo i {
+        font-size: 22px;
+    }
+    .child-line {
+        width: 150px;
+    }
+}
+
+@media(max-width:640px){
+    .org-chart-section {
+        padding: 30px 16px;
+    }
+    .org-title h2 {
+        font-size: 28px;
+    }
+    .org-title p {
+        font-size: 14px;
+    }
+    .tree-wrapper {
+        min-width: 660px;
+    }
+    .tree-node,
+    .small-node,
+    .root-node{
+        width: 220px;
+        padding: 12px 14px;
+    }
+    .node-header h3 {
+        font-size: 15px;
+    }
+    .node-logo {
+        width: 44px;
+        height: 44px;
+        padding: 6px;
+    }
+    .node-logo i {
+        font-size: 20px;
+    }
+    .child-row {
+        gap: 16px;
+    }
+    .child-line {
+        width: 120px;
+    }
+    .line-v {
+        height: 30px;
+    }
+    .small {
+        height: 25px;
+    }
+}
 </style>
 
 <!-- HERO SECTION with TECH DOTS & ELEMENTS -->
@@ -775,6 +1236,210 @@ body{
         </div>
     </div>
 </section>
+
+<!-- =========================
+OUR PRODUCTS & BRANDS SECTION (SCROLLABLE TREE)
+========================= -->
+
+<section class="org-chart-section">
+
+    <!-- BACKGROUND SHAPES -->
+    <div class="bg-shape bg1"></div>
+    <div class="bg-shape bg2"></div>
+    <div class="bg-shape bg3"></div>
+    <div class="bg-grid"></div>
+
+    <!-- HEADING -->
+    <div class="org-title">
+        <div class="title-tag">
+            OUR PRODUCTS
+        </div>
+        <h2>
+            Explore Our
+            <span>Products & Brands</span>
+        </h2>
+        <p>
+            Discover our expanding ecosystem of
+            technology, food and innovation-driven ventures.
+        </p>
+    </div>
+
+    <!-- SCROLLABLE WRAPPER FOR HORIZONTAL SCROLL ON SMALL DEVICES -->
+    <div class="tree-scroll-wrapper">
+        <div class="tree-wrapper">
+
+            <!-- ROOT -->
+            <div class="tree-row root-row">
+                <div class="tree-node root-node"
+                     onclick="toggleNode(this)">
+                    <div class="node-header">
+                        <div class="node-logo">
+                            <img src="{% static 'images/hintlogo.jpg' %}">
+                        </div>
+                        <h3>HINTechnologies</h3>
+                    </div>
+                    <div class="node-content">
+                        <p>
+                            Parent innovation ecosystem driving
+                            digital and business growth.
+                        </p>
+                        <a href="#">
+                            Read More
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONNECT -->
+            <div class="line-v"></div>
+            <div class="line-h top-line"></div>
+
+            <!-- LEVEL 2 -->
+            <div class="tree-row level2">
+
+                <!-- LEFT SIDE -->
+                <div class="tree-column">
+                    <div class="tree-node"
+                         onclick="toggleNode(this)">
+                        <div class="node-header">
+                            <div class="node-logo icon-box">
+                                <i class="fas fa-laptop-code"></i>
+                            </div>
+                            <h3>HINTech Services</h3>
+                        </div>
+                        <div class="node-content">
+                            <p>
+                                Web, software and IT solutions
+                                for modern businesses.
+                            </p>
+                            <a href="#">
+                                Read More
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="line-v small"></div>
+                    <div class="line-h child-line"></div>
+
+                    <div class="child-row">
+                        <!-- HungerFresh -->
+                        <div class="tree-node small-node"
+                             onclick="toggleNode(this)">
+                            <div class="node-header">
+                                <div class="node-logo">
+                                    <img src="{% static 'images/hungfresh.jpg' %}">
+                                </div>
+                                <h3>HungerFresh</h3>
+                            </div>
+                            <div class="node-content">
+                                <p>
+                                    Fresh delivery services.
+                                </p>
+                                <a href="#">
+                                    Read More
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Chicken -->
+                        <div class="tree-node small-node"
+                             onclick="toggleNode(this)">
+                            <div class="node-header">
+                                <div class="node-logo">
+                                    <img src="{% static 'images/chicken drop.jpg' %}">
+                                </div>
+                                <h3>ChickenDrop</h3>
+                            </div>
+                            <div class="node-content">
+                                <p>
+                                    Reliable chicken delivery.
+                                </p>
+                                <a href="#">
+                                    Read More
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT SIDE -->
+                <div class="tree-column">
+                    <div class="tree-node"
+                         onclick="toggleNode(this)">
+                        <div class="node-header">
+                            <div class="node-logo icon-box">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <h3>TTS Foods</h3>
+                        </div>
+                        <div class="node-content">
+                            <p>
+                                Hospitality and food ventures.
+                            </p>
+                            <a href="#">
+                                Read More
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="line-v small"></div>
+                    <div class="line-h child-line"></div>
+
+                    <div class="child-row">
+                        <!-- Cafe -->
+                        <div class="tree-node small-node"
+                             onclick="toggleNode(this)">
+                            <div class="node-header">
+                                <div class="node-logo">
+                                    <img src="{% static 'images/cafehungrybird.jpg' %}">
+                                </div>
+                                <h3>Mr HungryBird</h3>
+                            </div>
+                            <div class="node-content">
+                                <p>
+                                    Premium cafe experience.
+                                </p>
+                                <a href="#">
+                                    Read More
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Club -->
+                        <div class="tree-node small-node"
+                             onclick="toggleNode(this)">
+                            <div class="node-header">
+                                <div class="node-logo icon-box">
+                                    <i class="fas fa-store"></i>
+                                </div>
+                                <h3>ClubChicken</h3>
+                            </div>
+                            <div class="node-content">
+                                <p>
+                                    Restaurant and food brand.
+                                </p>
+                                <a href="#">
+                                    Read More
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+function toggleNode(node){
+    document.querySelectorAll('.tree-node').forEach(item=>{
+        if(item!==node){
+            item.classList.remove('active');
+        }
+    });
+    node.classList.toggle('active');
+}
+</script>
 
 {% if services %}
 <section class="services-section" id="servicesSection">

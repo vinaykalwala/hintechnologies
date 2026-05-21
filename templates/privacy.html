@@ -1,35 +1,911 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Privacy Policy - HIN Technologies{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <h1>Privacy Policy</h1>
-            <p class="text-muted">Last updated: June 2026</p>
-            
-            <h2>Information We Collect</h2>
-            <p>We collect personal information including name, email, phone number, and experience level when you submit a contact enquiry or register for our courses.</p>
-            
-            <h2>How We Use Your Information</h2>
-            <p>We use your information to respond to enquiries, process enrollments, send course updates, and improve our services. We do not sell your personal data to third parties.</p>
-            
-            <h2>Data Security</h2>
-            <p>We implement industry-standard security measures to protect your personal information from unauthorized access or disclosure.</p>
-            
-            <h2>Cookies</h2>
-            <p>Our website uses cookies to enhance user experience and analyze site traffic. You can disable cookies in your browser settings.</p>
-            
-            <h2>Third-Party Links</h2>
-            <p>Our website may contain links to external sites. We are not responsible for the privacy practices of those sites.</p>
-            
-            <h2>Your Rights</h2>
-            <p>You may request access to, correction of, or deletion of your personal data by contacting info@hintechnologies.in.</p>
-            
-            <h2>Updates to This Policy</h2>
-            <p>We may update this privacy policy periodically. Changes will be posted on this page with an updated revision date.</p>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(145deg, #f5f7fc 0%, #eef2f8 100%);
+        color: #1a1a2e;
+    }
+
+    /* ============================================ */
+    /* ATTRACTIVE CURVED HERO WITH SHAPES - KEPT   */
+    /* ============================================ */
+    .hero-section {
+        background: linear-gradient(135deg, #0B3D91 0%, #0a2d6e 100%);
+        padding: 100px 7% 120px;
+        position: relative;
+        text-align: center;
+        overflow: hidden;
+        clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+    }
+
+    .floating-shape {
+        position: absolute;
+        z-index: 1;
+    }
+
+    .shape-blob {
+        top: 10%;
+        right: 5%;
+        width: 200px;
+        height: 200px;
+        background: rgba(198,40,40,0.12);
+        border-radius: 62% 38% 72% 28% / 45% 55% 45% 55%;
+        animation: morph 12s ease-in-out infinite;
+    }
+
+    .shape-circle {
+        bottom: 15%;
+        left: 3%;
+        width: 150px;
+        height: 150px;
+        background: rgba(255,255,255,0.06);
+        border-radius: 50%;
+        animation: pulse 6s ease-in-out infinite;
+    }
+
+    .shape-diamond {
+        top: 50%;
+        left: 10%;
+        width: 80px;
+        height: 80px;
+        background: rgba(198,40,40,0.1);
+        transform: rotate(45deg);
+        animation: float 8s ease-in-out infinite;
+    }
+
+    .shape-ring {
+        bottom: 25%;
+        right: 12%;
+        width: 120px;
+        height: 120px;
+        border: 2px solid rgba(255,255,255,0.08);
+        border-radius: 50%;
+        animation: rotate 20s linear infinite;
+    }
+
+    .shape-ring::before {
+        content: '';
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 80px;
+        height: 80px;
+        border: 2px solid rgba(198,40,40,0.15);
+        border-radius: 50%;
+    }
+
+    .shape-dots {
+        top: 30%;
+        right: 20%;
+        width: 100px;
+        height: 100px;
+        background-image: radial-gradient(rgba(255,255,255,0.15) 2px, transparent 2px);
+        background-size: 12px 12px;
+        animation: spin 30s linear infinite;
+    }
+
+    @keyframes morph {
+        0%, 100% { border-radius: 62% 38% 72% 28% / 45% 55% 45% 55%; transform: translateY(0) rotate(0deg); }
+        50% { border-radius: 48% 52% 38% 62% / 55% 45% 55% 45%; transform: translateY(-20px) rotate(10deg); }
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 0.3; transform: scale(1); }
+        50% { opacity: 0.6; transform: scale(1.1); }
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0) rotate(45deg); }
+        50% { transform: translateY(-15px) rotate(50deg); }
+    }
+
+    @keyframes rotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .dot-pattern {
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+        background-size: 25px 25px;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 10;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .hero-tag {
+        display: inline-block;
+        background: rgba(255,255,255,0.12);
+        backdrop-filter: blur(8px);
+        padding: 6px 18px;
+        border-radius: 30px;
+        font-size: 12px;
+        font-weight: 500;
+        color: rgba(255,255,255,0.9);
+        margin-bottom: 25px;
+        letter-spacing: 1px;
+    }
+
+    .hero-tag i {
+        color: #C62828;
+        margin-right: 6px;
+    }
+
+    .hero-section h1 {
+        font-size: 56px;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 18px;
+        letter-spacing: -1px;
+    }
+
+    .hero-section h1 span {
+        color: #C62828;
+        position: relative;
+    }
+
+    .hero-section p {
+        color: rgba(255,255,255,0.85);
+        font-size: 17px;
+        line-height: 1.6;
+    }
+
+    .hero-meta {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255,255,255,0.08);
+        backdrop-filter: blur(8px);
+        padding: 8px 22px;
+        border-radius: 40px;
+        margin-top: 35px;
+    }
+
+    .hero-meta i {
+        color: #C62828;
+        font-size: 13px;
+    }
+
+    .hero-meta span {
+        color: rgba(255,255,255,0.75);
+        font-size: 13px;
+    }
+
+    /* ============================================ */
+    /* BRAND NEW CREATIVE CONTENT DESIGN           */
+    /* ============================================ */
+    .content-wrapper {
+        max-width: 1300px;
+        margin: -60px auto 80px;
+        padding: 0 7%;
+        position: relative;
+        z-index: 20;
+    }
+
+    /* Creative Stats Banner - WITH DIVIDING LINE */
+    .stats-banner {
+        background: white;
+        border-radius: 28px;
+        padding: 35px 25px;
+        margin-bottom: 35px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 15px;
+        border: 1px solid rgba(11,61,145,0.08);
+    }
+
+    .stat-item {
+        text-align: center;
+        flex: 1;
+        min-width: 110px;
+        position: relative;
+    }
+
+    /* Vertical dividing line between stats */
+    .stat-item:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        right: -8px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 1px;
+        height: 50px;
+        background: linear-gradient(180deg, transparent, #e0e4e8, #e0e4e8, transparent);
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #eef2ff, #ffffff);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 12px;
+        border: 1px solid #eef2f8;
+    }
+
+    .stat-icon i {
+        font-size: 24px;
+        color: #0B3D91;
+    }
+
+    .stat-value {
+        font-size: 28px;
+        font-weight: 800;
+        color: #C62828;
+        line-height: 1.2;
+    }
+
+    .stat-label {
+        font-size: 12px;
+        color: #6b7280;
+        font-weight: 500;
+        margin-top: 5px;
+    }
+
+    /* Creative Grid Layout */
+    .creative-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 25px;
+        margin-bottom: 35px;
+    }
+
+    .info-card {
+        background: white;
+        border-radius: 24px;
+        padding: 30px;
+        transition: all 0.3s;
+        border: 1px solid #eef2f8;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+    }
+
+    .info-card:hover {
+        transform: translateY(-8px);
+        border-color: #C62828;
+        box-shadow: 0 20px 35px rgba(198,40,40,0.08);
+    }
+
+    .card-icon-large {
+        width: 65px;
+        height: 65px;
+        background: linear-gradient(135deg, #0B3D91, #1a4fa8);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 22px;
+    }
+
+    .card-icon-large i {
+        font-size: 30px;
+        color: white;
+    }
+
+    .info-card h3 {
+        font-size: 20px;
+        font-weight: 700;
+        color: #0B3D91;
+        margin-bottom: 12px;
+    }
+
+    .info-card p {
+        color: #5b6e8c;
+        font-size: 14px;
+        line-height: 1.65;
+        margin-bottom: 18px;
+    }
+
+    .chip-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .chip-mini {
+        background: #f0f2f5;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 500;
+        color: #2d3748;
+        transition: all 0.2s;
+    }
+
+    .chip-mini i {
+        color: #C62828;
+        margin-right: 5px;
+        font-size: 9px;
+    }
+
+    .chip-mini:hover {
+        background: #C62828;
+        color: white;
+    }
+
+    .chip-mini:hover i {
+        color: white;
+    }
+
+    /* Highlight Box */
+    .highlight-box {
+        background: linear-gradient(135deg, #fff5f5, #fef0f0);
+        border-radius: 20px;
+        padding: 22px 28px;
+        margin-bottom: 35px;
+        border-left: 4px solid #C62828;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .highlight-icon {
+        width: 55px;
+        height: 55px;
+        background: #C62828;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .highlight-icon i {
+        font-size: 26px;
+        color: white;
+    }
+
+    .highlight-text {
+        flex: 1;
+    }
+
+    .highlight-text p {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 500;
+        color: #2d3748;
+    }
+
+    .highlight-text strong {
+        color: #C62828;
+    }
+
+    /* Two Column Layout for remaining items */
+    .two-col-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+        margin-bottom: 35px;
+    }
+
+    /* Contact Section Premium */
+    .contact-premium {
+        background: linear-gradient(135deg, #0B3D91, #0a2d6e);
+        border-radius: 28px;
+        padding: 45px 50px;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 30px;
+    }
+
+    .contact-premium::before {
+        content: '';
+        position: absolute;
+        top: -40%;
+        right: -10%;
+        width: 280px;
+        height: 280px;
+        background: radial-gradient(circle, rgba(198,40,40,0.2), transparent);
+        border-radius: 50%;
+    }
+
+    .contact-premium::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -5%;
+        width: 220px;
+        height: 220px;
+        background: radial-gradient(circle, rgba(255,255,255,0.05), transparent);
+        border-radius: 50%;
+    }
+
+    .contact-premium h3 {
+        color: white;
+        font-size: 26px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .contact-premium h3 i {
+        color: #C62828;
+        font-size: 30px;
+    }
+
+    .contact-premium p {
+        color: rgba(255,255,255,0.85);
+        font-size: 15px;
+        margin-bottom: 28px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .contact-links-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 18px;
+        position: relative;
+        z-index: 2;
+        justify-content: center;
+    }
+
+    .contact-link-premium {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(8px);
+        padding: 12px 28px;
+        border-radius: 60px;
+        text-decoration: none;
+        color: white;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s;
+        border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .contact-link-premium i {
+        font-size: 15px;
+    }
+
+    .contact-link-premium:hover {
+        background: #C62828;
+        transform: translateY(-3px);
+    }
+
+    /* Footer */
+    .footer-creative {
+        text-align: center;
+        padding: 28px 40px 35px;
+        background: white;
+        border-radius: 24px;
+        border: 1px solid #eef2f8;
+    }
+
+    .footer-creative p {
+        color: #8a9cc0;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .footer-creative i {
+        color: #C62828;
+        margin: 0 5px;
+    }
+
+    /* ============================================ */
+    /* IMPROVED RESPONSIVE                         */
+    /* ============================================ */
+    @media (max-width: 1000px) {
+        .creative-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .stats-banner {
+            padding: 25px 20px;
+        }
+        
+        .stat-item {
+            min-width: 100px;
+        }
+        
+        .stat-item:not(:last-child)::after {
+            right: -5px;
+            height: 40px;
+        }
+        
+        .contact-premium {
+            padding: 35px 35px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .content-wrapper {
+            padding: 0 5%;
+        }
+        
+        .stats-banner {
+            flex-direction: column;
+            gap: 20px;
+            padding: 25px;
+        }
+        
+        /* Remove vertical lines on mobile, add horizontal divider instead */
+        .stat-item:not(:last-child)::after {
+            display: none;
+        }
+        
+        .stat-item {
+            border-bottom: 1px solid #eef2f8;
+            padding-bottom: 15px;
+        }
+        
+        .stat-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+        }
+        
+        .stat-icon i {
+            font-size: 20px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+        }
+        
+        .creative-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .two-col-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .highlight-box {
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .contact-premium {
+            padding: 30px 25px;
+        }
+        
+        .contact-premium h3 {
+            font-size: 22px;
+            flex-direction: column;
+            text-align: center;
+            gap: 10px;
+        }
+        
+        .contact-links-group {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .contact-link-premium {
+            justify-content: center;
+        }
+        
+        .hero-section h1 {
+            font-size: 38px;
+        }
+        
+        .floating-shape {
+            display: none;
+        }
+        
+        .info-card {
+            padding: 25px;
+        }
+    }
+
+    @media (max-width: 550px) {
+        .hero-section h1 {
+            font-size: 32px;
+        }
+        
+        .hero-section p {
+            font-size: 15px;
+        }
+        
+        .hero-tag {
+            font-size: 11px;
+            padding: 5px 14px;
+        }
+        
+        .hero-meta {
+            padding: 6px 18px;
+            font-size: 12px;
+        }
+        
+        .stats-banner {
+            padding: 20px;
+        }
+        
+        .info-card {
+            padding: 20px;
+        }
+        
+        .card-icon-large {
+            width: 50px;
+            height: 50px;
+        }
+        
+        .card-icon-large i {
+            font-size: 22px;
+        }
+        
+        .info-card h3 {
+            font-size: 18px;
+        }
+        
+        .info-card p {
+            font-size: 13px;
+        }
+        
+        .chip-mini {
+            padding: 4px 10px;
+            font-size: 10px;
+        }
+        
+        .highlight-box {
+            padding: 18px;
+        }
+        
+        .highlight-icon {
+            width: 48px;
+            height: 48px;
+        }
+        
+        .highlight-icon i {
+            font-size: 22px;
+        }
+        
+        .highlight-text p {
+            font-size: 13px;
+        }
+        
+        .contact-premium {
+            padding: 25px 20px;
+        }
+        
+        .contact-premium h3 {
+            font-size: 20px;
+        }
+        
+        .contact-premium p {
+            font-size: 13px;
+        }
+        
+        .contact-link-premium {
+            padding: 10px 20px;
+            font-size: 13px;
+        }
+        
+        .footer-creative {
+            padding: 20px 20px 25px;
+        }
+        
+        .footer-creative p {
+            font-size: 11px;
+        }
+    }
+
+    @media (max-width: 380px) {
+        .hero-section h1 {
+            font-size: 28px;
+        }
+        
+        .stat-value {
+            font-size: 22px;
+        }
+        
+        .stat-label {
+            font-size: 10px;
+        }
+        
+        .contact-link-premium {
+            font-size: 12px;
+            padding: 8px 16px;
+        }
+    }
+</style>
+
+<!-- HERO SECTION - UNCHANGED -->
+<section class="hero-section">
+    <div class="dot-pattern"></div>
+    
+    <div class="floating-shape shape-blob"></div>
+    <div class="floating-shape shape-circle"></div>
+    <div class="floating-shape shape-diamond"></div>
+    <div class="floating-shape shape-ring"></div>
+    <div class="floating-shape shape-dots"></div>
+    
+    <div class="hero-content">
+        <div class="hero-tag">
+            <i class="fas fa-shield-alt"></i> PRIVACY POLICY
+        </div>
+        <h1>Your Privacy <span>Matters</span></h1>
+        <p>We are committed to protecting your personal information with transparency, integrity, and care.</p>
+        <div class="hero-meta">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Last Updated: 20 February 2026</span>
         </div>
     </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<div class="content-wrapper">
+    
+    <!-- Stats Banner WITH DIVIDING LINES -->
+    <div class="stats-banner">
+        <div class="stat-item">
+            <div class="stat-icon"><i class="fas fa-database"></i></div>
+            <div class="stat-value">100%</div>
+            <div class="stat-label">Data Protected</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-icon"><i class="fas fa-shield-alt"></i></div>
+            <div class="stat-value">GDPR</div>
+            <div class="stat-label">Compliant</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-icon"><i class="fas fa-lock"></i></div>
+            <div class="stat-value">256-bit</div>
+            <div class="stat-label">SSL Encryption</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+            <div class="stat-value">24/7</div>
+            <div class="stat-label">Monitoring</div>
+        </div>
+    </div>
+    
+    <!-- Creative Grid - 3 Cards Row 1 -->
+    <div class="creative-grid">
+        <div class="info-card">
+            <div class="card-icon-large"><i class="fas fa-database"></i></div>
+            <h3>Information We Collect</h3>
+            <p>When you interact with our website or contact us, we collect essential information to provide you with the best possible service experience.</p>
+            <div class="chip-wrap">
+                <span class="chip-mini"><i class="fas fa-user"></i> Full Name</span>
+                <span class="chip-mini"><i class="fas fa-chart-line"></i> Experience</span>
+                <span class="chip-mini"><i class="fas fa-envelope"></i> Email</span>
+                <span class="chip-mini"><i class="fas fa-phone"></i> Mobile</span>
+                <span class="chip-mini"><i class="fas fa-laptop"></i> Technical Data</span>
+            </div>
+        </div>
+        
+        <div class="info-card">
+            <div class="card-icon-large"><i class="fas fa-cogs"></i></div>
+            <h3>How We Use Your Info</h3>
+            <p>Your information enables us to deliver exceptional service, respond to your enquiries, and continuously improve our platform.</p>
+            <div class="chip-wrap">
+                <span class="chip-mini"><i class="fas fa-reply"></i> Respond</span>
+                <span class="chip-mini"><i class="fas fa-bullhorn"></i> Updates</span>
+                <span class="chip-mini"><i class="fas fa-headset"></i> Support</span>
+                <span class="chip-mini"><i class="fas fa-chart-line"></i> Improve</span>
+                <span class="chip-mini"><i class="fas fa-shield"></i> Security</span>
+            </div>
+        </div>
+        
+        <div class="info-card">
+            <div class="card-icon-large"><i class="fas fa-share-alt"></i></div>
+            <h3>Information Sharing</h3>
+            <p>We only share your information when necessary to operate our services or when required by law. All providers are bound by confidentiality.</p>
+            <div class="chip-wrap">
+                <span class="chip-mini"><i class="fas fa-server"></i> Hosting</span>
+                <span class="chip-mini"><i class="fas fa-envelope"></i> Email</span>
+                <span class="chip-mini"><i class="fas fa-chart-simple"></i> Analytics</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Highlight Box -->
+    <div class="highlight-box">
+        <div class="highlight-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="highlight-text">
+            <p><strong>We never sell your personal information</strong> to third parties. Your trust is our highest priority. All data is handled with strict confidentiality and security measures.</p>
+        </div>
+    </div>
+    
+    <!-- Two Column Grid - Data Security & Retention -->
+    <div class="two-col-grid">
+        <div class="info-card">
+            <div class="card-icon-large"><i class="fas fa-shield-alt"></i></div>
+            <h3>Data Security</h3>
+            <p>We implement enterprise-grade security measures to protect your information from unauthorized access, misuse, or disclosure.</p>
+            <div class="chip-wrap">
+                <span class="chip-mini"><i class="fas fa-lock"></i> SSL Encryption</span>
+                <span class="chip-mini"><i class="fas fa-firewall"></i> Firewalls</span>
+                <span class="chip-mini"><i class="fas fa-clipboard-list"></i> Audits</span>
+                <span class="chip-mini"><i class="fas fa-key"></i> Access Control</span>
+            </div>
+        </div>
+        
+        <div class="info-card">
+            <div class="card-icon-large"><i class="fas fa-clock"></i></div>
+            <h3>Data Retention</h3>
+            <p>We retain your personal information only for as long as necessary to fulfill the purposes outlined in this policy, including responding to enquiries and legal obligations.</p>
+            <p style="margin-top: 10px; font-size: 13px;">You may request deletion of your information by contacting us at any time.</p>
+        </div>
+    </div>
+    
+    <!-- Two Column Grid - Your Rights & Changes -->
+    <div class="two-col-grid">
+        <div class="info-card">
+            <div class="card-icon-large"><i class="fas fa-gavel"></i></div>
+            <h3>Your Rights</h3>
+            <p>As a user, you have comprehensive rights regarding your personal information:</p>
+            <div class="chip-wrap">
+                <span class="chip-mini"><i class="fas fa-eye"></i> Access</span>
+                <span class="chip-mini"><i class="fas fa-pen"></i> Correction</span>
+                <span class="chip-mini"><i class="fas fa-trash"></i> Deletion</span>
+                <span class="chip-mini"><i class="fas fa-question-circle"></i> Clarification</span>
+                <span class="chip-mini"><i class="fas fa-ban"></i> Opt-out</span>
+            </div>
+        </div>
+        
+        <div class="info-card">
+            <div class="card-icon-large"><i class="fas fa-edit"></i></div>
+            <h3>Changes to This Policy</h3>
+            <p>We may update this Privacy Policy from time to time to reflect changes in our practices or legal requirements. Updated versions will be posted on this page with a revised "Last Updated" date.</p>
+            <p style="margin-top: 10px; font-size: 13px;">We encourage you to review this policy periodically to stay informed.</p>
+        </div>
+    </div>
+    
+    <!-- Contact Section Premium -->
+    <div class="contact-premium">
+        <h3><i class="fas fa-headset"></i> Have Questions? We're Here to Help</h3>
+        <p>Our privacy team is available to answer any questions about how we handle your data.</p>
+        <div class="contact-links-group">
+            <a href="#" class="contact-link-premium"><i class="fas fa-map-marker-alt"></i> Hyderabad, India</a>
+            <a href="mailto:info@hintechnologies.in" class="contact-link-premium"><i class="fas fa-envelope"></i> info@hintechnologies.in</a>
+            <a href="tel:+919949959501" class="contact-link-premium"><i class="fas fa-phone-alt"></i> +91-9949959501</a>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="footer-creative">
+        <p><i class="fas fa-shield-haltered"></i> HIN Technologies — Your Privacy, Our Priority <i class="fas fa-heart"></i></p>
+    </div>
+    
 </div>
+
 {% endblock %}
