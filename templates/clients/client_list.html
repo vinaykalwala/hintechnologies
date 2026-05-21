@@ -215,13 +215,127 @@
         width: 350px;
         height: 350px;
         border-radius: 50%;
-        background: radial-gradient(circle at top left, rgba(255,255,255,0.9), rgba(255,255,255,0.2));
+        background: radial-gradient(
+            circle at top left,
+            rgba(255,255,255,0.9),
+            rgba(255,255,255,0.25)
+        );
         border: 1px solid rgba(255,255,255,0.6);
-        backdrop-filter: blur(12px);
-        box-shadow: 0 30px 60px rgba(11, 61, 145, 0.1);
+        backdrop-filter: blur(18px);
+        overflow: hidden;
+        box-shadow:
+            0 30px 60px rgba(11, 61, 145, 0.12),
+            inset 0 0 30px rgba(255,255,255,0.35);
         z-index: 1;
         animation: levitate 8s infinite ease-in-out;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
+
+    .glass-circle-bg img {
+        width: 92%;
+        height: 92%;
+        object-fit: cover;
+        border-radius: 50%;
+        filter: drop-shadow(0 10px 20px rgba(0,0,0,0.12));
+    }
+    /* =========================
+   RESPONSIVE HERO IMAGE
+========================= */
+
+@media (max-width: 1024px) {
+    .glass-circle-bg {
+        width: 300px;
+        height: 300px;
+    }
+
+    .glass-circle-bg img {
+        width: 90%;
+        height: 90%;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-visuals {
+        min-height: 300px;
+    }
+
+    .glass-circle-bg {
+        width: 240px;
+        height: 240px;
+    }
+
+    .glass-circle-bg img {
+        width: 88%;
+        height: 88%;
+    }
+
+    .fc-1 {
+        top: 5%;
+        right: 10px;
+    }
+
+    .fc-2 {
+        bottom: 5%;
+        left: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    /* KEEP HERO VISIBLE ON MOBILE */
+    .hero-visuals {
+        display: flex !important;
+        min-height: 260px;
+        margin-top: 20px;
+    }
+
+    .glass-circle-bg {
+        width: 190px;
+        height: 190px;
+    }
+
+    .glass-circle-bg img {
+        width: 86%;
+        height: 86%;
+    }
+
+    .floating-card {
+        padding: 10px 14px;
+        gap: 10px;
+        border-radius: 14px;
+    }
+
+    .fc-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 14px;
+    }
+
+    .fc-text h4 {
+        font-size: 0.8rem;
+    }
+
+    .fc-text p {
+        font-size: 0.7rem;
+    }
+
+    .fc-1 {
+        top: 0;
+        right: 0;
+    }
+
+    .fc-2 {
+        bottom: 0;
+        left: 0;
+    }
+
+    .tech-dots {
+        opacity: 0.15;
+    }
+}
 
     .floating-card {
         position: absolute;
@@ -890,7 +1004,10 @@
             <div class="tech-dots td-top"></div>
             <div class="tech-dots td-bottom"></div>
             
-            <div class="glass-circle-bg"></div>
+            <div class="glass-circle-bg">
+                <img src="{% static 'images/Our_Clients_Partners.png' %}" 
+                    alt="Global Business Partnership">
+            </div>
             
             <div class="floating-card fc-1">
                 <div class="fc-icon"><i class="fas fa-handshake"></i></div>
