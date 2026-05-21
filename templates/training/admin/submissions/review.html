@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Review Submission - Training{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Review Project Submission</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h6>Project: {{ submission.project.title }}</h6>
+                        <p class="mb-0">{{ submission.project.description }}</p>
+                    </div>
+                    
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">Student Submission Details</h6>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Student:</strong> {{ submission.student.user.get_full_name }}</p>
+                            <p><strong>Submitted On:</strong> {{ submission.submitted_at|date:"F d, Y H:i" }}</p>
+                            
+                            {% if submission.github_link %}
+                                <p><strong>GitHub Link:</strong> <a href="{{ submission.github_link }}" target="_blank">{{ submission.github_link }}</a></p>
+                            {% endif %}
+                            
+                            {% if submission.live_link %}
+                                <p><strong>Live Demo:</strong> <a href="{{ submission.live_link }}" target="_blank">{{ submission.live_link }}</a></p>
+                            {% endif %}
+                            
+                            {% if submission.zip_file %}
+                                <p><strong>Zip File:</strong> <a href="{{ submission.zip_file.url }}" target="_blank">Download Project Files</a></p>
+                            {% endif %}
+                            
+                            {% if submission.remarks %}
+                                <p><strong>Student Remarks:</strong></p>
+                                <div class="border rounded p-3 bg-light">
+                                    {{ submission.remarks|linebreaks }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.status.id_for_label }}" class="form-label">Review Status *</label>
+                            {{ form.status }}
+                            {% if form.status.errors %}
+                                <div class="text-danger small">{{ form.status.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.admin_feedback.id_for_label }}" class="form-label">Feedback for Student</label>
+                            {{ form.admin_feedback }}
+                            {% if form.admin_feedback.errors %}
+                                <div class="text-danger small">{{ form.admin_feedback.errors.0 }}</div>
+                            {% endif %}
+                            <small class="text-muted">Provide constructive feedback to help the student improve</small>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'training:project_submissions' %}" class="btn btn-secondary">Back to Submissions</a>
+                            <button type="submit" class="btn btn-primary">Submit Review</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Manage Sessions - Training{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Manage Daily Sessions</h2>
+                <a href="{% url 'training:session_create' %}" class="btn btn-primary">
+                    + Create Session
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" name="search" class="form-control" placeholder="Search sessions..." value="{{ search_query }}">
+                </div>
+                <div class="col-md-3">
+                    <select name="batch" class="form-select">
+                        <option value="">All Batches</option>
+                        {% for batch in batches %}
+                            <option value="{{ batch.id }}" {% if batch_filter == batch.id|stringformat:"s" %}selected{% endif %}>{{ batch.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                </div>
+                <div class="col-md-3">
+                    <a href="{% url 'training:session_list' %}" class="btn btn-secondary w-100">Clear Filters</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Sessions Table -->
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Batch</th>
+                            <th>Day</th>
+                            <th>Title</th>
+                            <th>Topic</th>
+                            <th>Date</th>
+                            <th>Recording</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for session in sessions %}
+                            <tr>
+                                <td>{{ session.batch.name }}</td>
+                                <td><strong>Day {{ session.day_number }}</strong></td>
+                                <td>{{ session.title }}</td>
+                                <td>{{ session.topic }}</td>
+                                <td>{{ session.session_date|date:"M d, Y" }}</td>
+                                <td>
+                                    {% if session.recording_link %}
+                                        <a href="{{ session.recording_link }}" target="_blank" class="btn btn-sm btn-outline-info">Watch</a>
+                                    {% else %}
+                                        <span class="text-muted">No link</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'training:session_edit' session.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center py-5">
+                                    <i class="bi bi-calendar-x" style="font-size: 48px;"></i>
+                                    <h5 class="mt-3">No sessions found</h5>
+                                    <p class="text-muted">Create your first session to get started.</p>
+                                    <a href="{% url 'training:session_create' %}" class="btn btn-primary">Create Session</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            {% if sessions.has_other_pages %}
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        {% if sessions.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ sessions.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if batch_filter %}&batch={{ batch_filter }}{% endif %}">Previous</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                        {% endif %}
+                        
+                        {% for num in sessions.paginator.page_range %}
+                            {% if sessions.number == num %}
+                                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                            {% elif num > sessions.number|add:'-3' and num < sessions.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if batch_filter %}&batch={{ batch_filter }}{% endif %}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if sessions.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ sessions.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if batch_filter %}&batch={{ batch_filter }}{% endif %}">Next</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link">Next</span></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

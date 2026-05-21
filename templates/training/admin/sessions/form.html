@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - Training{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">{{ title }}</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="sessionForm">
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Batch Selection -->
+                        <div class="mb-3">
+                            <label for="{{ form.batch.id_for_label }}" class="form-label">Select Batch *</label>
+                            {{ form.batch }}
+                            {% if form.batch.errors %}
+                                <div class="text-danger small">{{ form.batch.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Day Number Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.day_number.id_for_label }}" class="form-label">
+                                {{ form.day_number.label }}
+                                <span class="badge bg-success ms-2">Auto</span>
+                            </label>
+                            {{ form.day_number }}
+                            {% if form.day_number.help_text %}
+                                <small class="text-muted">{{ form.day_number.help_text }}</small>
+                            {% endif %}
+                            {% if form.day_number.errors %}
+                                <div class="text-danger small">{{ form.day_number.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Session Title -->
+                        <div class="mb-3">
+                            <label for="{{ form.title.id_for_label }}" class="form-label">Session Title *</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="text-danger small">{{ form.title.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Topic -->
+                        <div class="mb-3">
+                            <label for="{{ form.topic.id_for_label }}" class="form-label">Topic *</label>
+                            {{ form.topic }}
+                            {% if form.topic.errors %}
+                                <div class="text-danger small">{{ form.topic.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Session Date -->
+                        <div class="mb-3">
+                            <label for="{{ form.session_date.id_for_label }}" class="form-label">Session Date *</label>
+                            {{ form.session_date }}
+                            {% if form.session_date.errors %}
+                                <div class="text-danger small">{{ form.session_date.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Notes -->
+                        <div class="mb-3">
+                            <label for="{{ form.notes.id_for_label }}" class="form-label">Notes</label>
+                            {{ form.notes }}
+                            {% if form.notes.errors %}
+                                <div class="text-danger small">{{ form.notes.errors.0 }}</div>
+                            {% endif %}
+                            <small class="text-muted">Any additional notes or resources for this session</small>
+                        </div>
+                        
+                        <!-- Recording Link -->
+                        <div class="mb-3">
+                            <label for="{{ form.recording_link.id_for_label }}" class="form-label">Recording Link</label>
+                            {{ form.recording_link }}
+                            {% if form.recording_link.errors %}
+                                <div class="text-danger small">{{ form.recording_link.errors.0 }}</div>
+                            {% endif %}
+                            <small class="text-muted">YouTube, Google Drive, or any video hosting link</small>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'training:session_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Save Session</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const batchSelect = document.getElementById('id_batch');
+    const dayNumberField = document.getElementById('id_day_number');
+    
+    // Function to fetch and display next day number
+    async function updateDayNumber() {
+        const batchId = batchSelect.value;
+        
+        if (!batchId) {
+            dayNumberField.value = '';
+            dayNumberField.placeholder = 'Select a batch first';
+            return;
+        }
+        
+        // Show loading state
+        dayNumberField.style.backgroundColor = '#fff3cd';
+        dayNumberField.placeholder = 'Calculating...';
+        
+        try {
+            // Fetch next day number from server
+            const response = await fetch(`/training/admin/sessions/next-day/${batchId}/`);
+            const data = await response.json();
+            
+            if (data.next_day) {
+                // Display the calculated day number
+                dayNumberField.value = data.next_day;
+                dayNumberField.style.backgroundColor = '#d4edda';
+                
+                // Optional: Show success message
+                setTimeout(() => {
+                    dayNumberField.style.backgroundColor = '';
+                }, 1000);
+            } else {
+                dayNumberField.value = '';
+                dayNumberField.placeholder = 'Error calculating';
+                dayNumberField.style.backgroundColor = '#f8d7da';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            dayNumberField.value = '';
+            dayNumberField.placeholder = 'Error loading day number';
+            dayNumberField.style.backgroundColor = '#f8d7da';
+        }
+    }
+    
+    // Update day number when batch changes
+    if (batchSelect) {
+        batchSelect.addEventListener('change', updateDayNumber);
+        
+        // Also update if batch is pre-selected (when page loads)
+        if (batchSelect.value) {
+            updateDayNumber();
+        }
+    }
+});
+</script>
+{% endblock %}

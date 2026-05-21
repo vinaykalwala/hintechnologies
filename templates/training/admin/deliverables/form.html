@@ -1,0 +1,273 @@
+<!-- templates/training/admin/deliverables/form.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - Training{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">{{ title }}</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" id="deliverableForm">
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Title -->
+                        <div class="mb-3">
+                            <label for="{{ form.title.id_for_label }}" class="form-label">Title *</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="text-danger small">{{ form.title.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">Description *</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger small">{{ form.description.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Deliverable Type -->
+                        <div class="mb-3">
+                            <label for="{{ form.deliverable_type.id_for_label }}" class="form-label">Deliverable Type *</label>
+                            {{ form.deliverable_type }}
+                            {% if form.deliverable_type.errors %}
+                                <div class="text-danger small">{{ form.deliverable_type.errors.0 }}</div>
+                            {% endif %}
+                            <small class="text-muted">{{ form.deliverable_type.help_text }}</small>
+                        </div>
+                        
+                        <!-- Batch Field -->
+                        <div class="mb-3" id="batchField">
+                            <label for="{{ form.batch.id_for_label }}" class="form-label">
+                                <span id="batchLabel">Select Batch</span>
+                                <span id="batchRequired" class="text-danger" style="display: none;"> *</span>
+                            </label>
+                            {{ form.batch }}
+                            {% if form.batch.help_text %}
+                                <small class="text-muted">{{ form.batch.help_text }}</small>
+                            {% endif %}
+                            {% if form.batch.errors %}
+                                <div class="text-danger small">{{ form.batch.errors.0 }}</div>
+                            {% endif %}
+                            <div id="batchInfo" class="mt-1"></div>
+                        </div>
+                        
+                        <!-- Individual Student Field -->
+                        <div class="mb-3" id="studentField" style="display: none;">
+                            <label for="{{ form.assigned_student.id_for_label }}" class="form-label">
+                                Select Student <span class="text-danger">*</span>
+                            </label>
+                            {{ form.assigned_student }}
+                            {% if form.assigned_student.errors %}
+                                <div class="text-danger small">{{ form.assigned_student.errors.0 }}</div>
+                            {% endif %}
+                            <div id="studentInfo" class="mt-1"></div>
+                        </div>
+                        
+                        <!-- File Upload -->
+                        <div class="mb-3">
+                            <label for="{{ form.file.id_for_label }}" class="form-label">File *</label>
+                            {{ form.file }}
+                            {% if form.file.errors %}
+                                <div class="text-danger small">{{ form.file.errors.0 }}</div>
+                            {% endif %}
+                            <small class="text-muted">{{ form.file.help_text }}</small>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>Instructions:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li><strong>Batch-wide:</strong> Select a batch - all students in that batch will receive this deliverable</li>
+                                <li><strong>Individual:</strong> Select a batch first to filter students, then select a specific student</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'training:deliverable_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Upload Deliverable</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const typeSelect = document.getElementById('id_deliverable_type');
+    const batchSelect = document.getElementById('id_batch');
+    const studentSelect = document.getElementById('id_assigned_student');
+    const studentField = document.getElementById('studentField');
+    const batchField = document.getElementById('batchField');
+    const batchLabel = document.getElementById('batchLabel');
+    const batchRequired = document.getElementById('batchRequired');
+    const batchInfo = document.getElementById('batchInfo');
+    const studentInfo = document.getElementById('studentInfo');
+    
+    // Function to load students for a batch
+    async function loadStudentsForBatch(batchId) {
+        if (!batchId) {
+            // Clear student dropdown
+            studentSelect.innerHTML = '<option value="">---------</option>';
+            if (studentInfo) {
+                studentInfo.innerHTML = '<small class="text-muted">Select a batch first to see students</small>';
+            }
+            studentSelect.disabled = false;
+            return;
+        }
+        
+        // Show loading state
+        studentSelect.innerHTML = '<option value="">Loading students...</option>';
+        studentSelect.disabled = true;
+        
+        try {
+            const response = await fetch(`/training/admin/deliverables/get-students/${batchId}/`);
+            const data = await response.json();
+            
+            if (data.success && data.students) {
+                // Clear and repopulate student dropdown
+                studentSelect.innerHTML = '<option value="">---------</option>';
+                
+                if (data.students.length === 0) {
+                    studentSelect.innerHTML = '<option value="">No active students in this batch</option>';
+                    if (studentInfo) {
+                        studentInfo.innerHTML = '<small class="text-warning">⚠️ No active students found in this batch.</small>';
+                    }
+                } else {
+                    data.students.forEach(student => {
+                        const option = document.createElement('option');
+                        option.value = student.id;
+                        option.textContent = `${student.name} (${student.email})`;
+                        studentSelect.appendChild(option);
+                    });
+                    
+                    if (studentInfo) {
+                        studentInfo.innerHTML = `<small class="text-success">✓ ${data.count} student(s) available in this batch</small>`;
+                    }
+                }
+                studentSelect.disabled = false;
+            } else {
+                studentSelect.innerHTML = '<option value="">Error loading students</option>';
+                if (studentInfo) {
+                    studentInfo.innerHTML = '<small class="text-danger">❌ Error loading students. Please refresh the page.</small>';
+                }
+                studentSelect.disabled = false;
+            }
+        } catch (error) {
+            console.error('Error loading students:', error);
+            studentSelect.innerHTML = '<option value="">Error loading students</option>';
+            if (studentInfo) {
+                studentInfo.innerHTML = '<small class="text-danger">❌ Network error. Please refresh the page.</small>';
+            }
+            studentSelect.disabled = false;
+        }
+    }
+    
+    // Function to toggle fields based on deliverable type
+    function toggleFields() {
+        const selectedType = typeSelect.value;
+        
+        if (selectedType === 'batch') {
+            // Batch-wide deliverable
+            batchField.style.display = 'block';
+            studentField.style.display = 'none';
+            batchSelect.required = true;
+            studentSelect.required = false;
+            studentSelect.value = '';
+            batchLabel.textContent = 'Select Batch *';
+            batchRequired.style.display = 'inline';
+            
+            if (batchInfo) {
+                batchInfo.innerHTML = '<small class="text-info">📦 This deliverable will be sent to all students in the selected batch</small>';
+            }
+            
+        } else if (selectedType === 'individual') {
+            // Individual deliverable
+            batchField.style.display = 'block';
+            studentField.style.display = 'block';
+            batchSelect.required = false;
+            studentSelect.required = true;
+            batchLabel.textContent = 'Select Batch (to filter students)';
+            batchRequired.style.display = 'none';
+            
+            if (batchInfo) {
+                batchInfo.innerHTML = '<small class="text-info">👥 Select a batch to see its students</small>';
+            }
+            
+            // If a batch is already selected, load its students
+            if (batchSelect.value) {
+                loadStudentsForBatch(batchSelect.value);
+            } else {
+                // Clear student dropdown
+                studentSelect.innerHTML = '<option value="">---------</option>';
+                if (studentInfo) {
+                    studentInfo.innerHTML = '<small class="text-muted">Select a batch first to see students</small>';
+                }
+            }
+        }
+    }
+    
+    // Handle batch change
+    function onBatchChange() {
+        const selectedType = typeSelect.value;
+        const batchId = batchSelect.value;
+        
+        if (selectedType === 'individual') {
+            if (batchId) {
+                loadStudentsForBatch(batchId);
+            } else {
+                studentSelect.innerHTML = '<option value="">---------</option>';
+                if (studentInfo) {
+                    studentInfo.innerHTML = '<small class="text-muted">Select a batch first to see students</small>';
+                }
+            }
+        }
+    }
+    
+    // Add event listeners
+    if (typeSelect) {
+        typeSelect.addEventListener('change', toggleFields);
+        toggleFields(); // Initial call
+    }
+    
+    if (batchSelect) {
+        batchSelect.addEventListener('change', onBatchChange);
+        
+        // Trigger change if batch is pre-selected
+        if (batchSelect.value) {
+            onBatchChange();
+        }
+    }
+});
+</script>
+
+<style>
+    select:disabled {
+        background-color: #e9ecef;
+        cursor: not-allowed;
+    }
+    
+    #studentInfo, #batchInfo {
+        font-size: 0.875em;
+        margin-top: 0.25rem;
+    }
+</style>
+{% endblock %}

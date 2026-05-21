@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Batch - HIN{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">My Batch Details</h2>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Batch Information -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">{{ batch.name }}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ batch.description }}</p>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h6>Batch Information</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>Status:</th>
+                                    <td>
+                                        <span class="badge 
+                                            {% if batch.status == 'running' %}bg-success
+                                            {% elif batch.status == 'upcoming' %}bg-info
+                                            {% elif batch.status == 'completed' %}bg-secondary
+                                            {% elif batch.status == 'paused' %}bg-warning
+                                            {% else %}bg-danger{% endif %}">
+                                            {{ batch.get_status_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Start Date:</th>
+                                    <td>{{ batch.start_date }}</td>
+                                </tr>
+                                <tr>
+                                    <th>End Date:</th>
+                                    <td>{{ batch.end_date }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Total Days:</th>
+                                    <td>{{ batch.total_days }} days</td>
+                                </tr>
+                                <tr>
+                                    <th>Enrolled On:</th>
+                                    <td>{{ student_batch.enrolled_on|date:"F d, Y" }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Progress</h6>
+                            <div class="mb-3">
+                                <label>Projects Completed: {{ completed_projects }}/{{ total_projects }}</label>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" style="width: {{ project_progress }}%">
+                                        {{ project_progress }}%
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label>Deliverables Downloaded: {{ downloaded_deliverables }}/{{ total_deliverables }}</label>
+                                <div class="progress">
+                                    <div class="progress-bar bg-info" style="width: {{ deliverable_progress }}%">
+                                        {{ deliverable_progress }}%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Batch Students -->
+            <div class="card shadow">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Batch Students ({{ batch.students.count }})</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student_batch in batch.students.all|slice:":10" %}
+                                    <tr>
+                                        <td>{{ student_batch.student.user.get_full_name }}</td>
+                                        <td>{{ student_batch.student.user.email }}</td>
+                                        <td>{{ student_batch.student.phone }}</td>
+                                        <td>
+                                            <span class="badge 
+                                                {% if student_batch.student.status == 'active' %}bg-success
+                                                {% elif student_batch.student.status == 'on_hold' %}bg-warning
+                                                {% else %}bg-secondary{% endif %}">
+                                                {{ student_batch.student.get_status_display }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% if batch.students.count > 10 %}
+                        <div class="text-center mt-3">
+                            <small class="text-muted">Showing 10 of {{ batch.students.count }} students</small>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Quick Links -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Quick Links</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'training:student_sessions' %}" class="btn btn-outline-primary">View All Sessions</a>
+                        <a href="{% url 'training:student_projects' %}" class="btn btn-outline-success">View All Projects</a>
+                        <a href="{% url 'training:student_deliverables' %}" class="btn btn-outline-info">View Deliverables</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Upcoming Sessions -->
+            <div class="card shadow">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Upcoming Sessions</h5>
+                </div>
+                <div class="card-body">
+                    {% with next_sessions=batch.sessions.all|slice:":5" %}
+                        {% if next_sessions %}
+                            <div class="list-group">
+                                {% for session in next_sessions %}
+                                    <div class="list-group-item">
+                                        <h6 class="mb-1">Day {{ session.day_number }}: {{ session.title }}</h6>
+                                        <small class="text-muted">{{ session.session_date }}</small>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted text-center mb-0">No upcoming sessions scheduled.</p>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

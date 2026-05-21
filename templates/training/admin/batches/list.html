@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Manage Batches - Training{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Manage Batches</h2>
+                <a href="{% url 'training:batch_create' %}" class="btn btn-primary">
+                    + Create New Batch
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" name="search" class="form-control" placeholder="Search batches..." value="{{ search_query }}">
+                </div>
+                <div class="col-md-3">
+                    <select name="status" class="form-select">
+                        <option value="">All Status</option>
+                        {% for value, label in status_choices %}
+                            <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                </div>
+                <div class="col-md-3">
+                    <a href="{% url 'training:batch_list' %}" class="btn btn-secondary w-100">Clear Filters</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Batches Table -->
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Batch Name</th>
+                            <th>Duration</th>
+                            <th>Students</th>
+                            <th>Capacity</th>
+                            <th>Projects</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for batch in batches %}
+                            <tr>
+                                <td>
+                                    <strong>{{ batch.name }}</strong>
+                                    <br>
+                                    <small class="text-muted">{{ batch.description|truncatechars:50 }}</small>
+                                </td>
+                                <td>
+                                    {{ batch.start_date|date:"M d, Y" }}<br>
+                                    <small>to {{ batch.end_date|date:"M d, Y" }}</small>
+                                </td>
+                                <td>{{ batch.student_count }}/{{ batch.batch_capacity }}</td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar {% if batch.student_count >= batch.batch_capacity %}bg-danger{% else %}bg-success{% endif %}" 
+                                             style="width: {% widthratio batch.student_count batch.batch_capacity 100 %}%">
+                                            {% widthratio batch.student_count batch.batch_capacity 100 %}%
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ batch.number_of_projects }}</td>
+                                <td>
+                                    <span class="badge 
+                                        {% if batch.status == 'running' %}bg-success
+                                        {% elif batch.status == 'upcoming' %}bg-info
+                                        {% elif batch.status == 'completed' %}bg-secondary
+                                        {% elif batch.status == 'paused' %}bg-warning
+                                        {% else %}bg-danger{% endif %}">
+                                        {{ batch.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>{{ batch.created_at|date:"M d, Y" }}</td>
+                                <td>
+                                    <a href="{% url 'training:batch_edit' batch.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center py-5">
+                                    <i class="bi bi-calendar-x" style="font-size: 48px;"></i>
+                                    <h5 class="mt-3">No batches found</h5>
+                                    <p class="text-muted">Create your first batch to get started.</p>
+                                    <a href="{% url 'training:batch_create' %}" class="btn btn-primary">Create Batch</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            {% if batches.has_other_pages %}
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        {% if batches.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ batches.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Previous</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                        {% endif %}
+                        
+                        {% for num in batches.paginator.page_range %}
+                            {% if batches.number == num %}
+                                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                            {% elif num > batches.number|add:'-3' and num < batches.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if batches.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ batches.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Next</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link">Next</span></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

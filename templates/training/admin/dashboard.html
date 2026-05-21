@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard - Training{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">Training Management Dashboard</h2>
+        </div>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Students</h5>
+                    <h2 class="mb-0">{{ total_students }}</h2>
+                    <small>{{ active_students }} Active</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Batches</h5>
+                    <h2 class="mb-0">{{ total_batches }}</h2>
+                    <small>{{ running_batches }} Running</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Projects</h5>
+                    <h2 class="mb-0">{{ total_projects }}</h2>
+                    <small>{{ pending_submissions }} Pending Review</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Deliverables</h5>
+                    <h2 class="mb-0">{{ total_deliverables }}</h2>
+                    <small>Uploaded Documents</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Recent Students -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Students</h5>
+                    <a href="{% url 'training:student_list' %}" class="btn btn-sm btn-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if recent_students %}
+                        <div class="list-group">
+                            {% for student in recent_students %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">{{ student.user.get_full_name }}</h6>
+                                            <small class="text-muted">{{ student.user.email }}</small>
+                                            <br>
+                                            <small class="text-muted">{{ student.phone }}</small>
+                                        </div>
+                                        <div>
+                                            <span class="badge 
+                                                {% if student.status == 'active' %}bg-success
+                                                {% elif student.status == 'on_hold' %}bg-warning
+                                                {% elif student.status == 'completed' %}bg-info
+                                                {% elif student.status == 'placed' %}bg-primary
+                                                {% else %}bg-secondary{% endif %}">
+                                                {{ student.get_status_display }}
+                                            </span>
+                                            <a href="{% url 'training:student_detail' student.id %}" class="btn btn-sm btn-outline-primary ms-2">View</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center">No students registered yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Batches -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Batches</h5>
+                    <a href="{% url 'training:batch_list' %}" class="btn btn-sm btn-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if recent_batches %}
+                        <div class="list-group">
+                            {% for batch in recent_batches %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">{{ batch.name }}</h6>
+                                            <small class="text-muted">{{ batch.start_date|date:"M d, Y" }} - {{ batch.end_date|date:"M d, Y" }}</small>
+                                        </div>
+                                        <div>
+                                            <span class="badge 
+                                                {% if batch.status == 'running' %}bg-success
+                                                {% elif batch.status == 'upcoming' %}bg-info
+                                                {% elif batch.status == 'completed' %}bg-secondary
+                                                {% else %}bg-danger{% endif %}">
+                                                {{ batch.get_status_display }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center">No batches created yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pending Reviews -->
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Pending Project Reviews</h5>
+                    <a href="{% url 'training:project_submissions' %}" class="btn btn-sm btn-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if pending_reviews %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Project</th>
+                                        <th>Submitted On</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for submission in pending_reviews %}
+                                        <tr>
+                                            <td>{{ submission.student.user.get_full_name }}</td>
+                                            <td>{{ submission.project.title }}</td>
+                                            <td>{{ submission.submitted_at|date:"M d, Y H:i" }}</td>
+                                            <td>
+                                                <a href="{% url 'training:review_submission' submission.id %}" class="btn btn-sm btn-primary">Review</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center">No pending submissions for review.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

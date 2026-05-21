@@ -1,0 +1,101 @@
+<!-- templates/training/student/submit_project.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Submit Project - HIN{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Submit Project: {{ project.title }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <strong>Project Details:</strong>
+                        <p class="mb-0 mt-2">{{ project.description }}</p>
+                        <hr>
+                        <small>Due Date: {{ project.due_date|date:"F d, Y" }}</small>
+                        {% if project.due_date < now %}
+                            <span class="badge bg-danger ms-2">Overdue</span>
+                        {% endif %}
+                    </div>
+                    
+                    {% if submission and submission.status == 'rejected' and submission.admin_feedback %}
+                        <div class="alert alert-danger">
+                            <strong>Previous Submission Rejected:</strong>
+                            <p class="mb-0 mt-2">{{ submission.admin_feedback }}</p>
+                            <small>Please resubmit your project with the suggested improvements.</small>
+                        </div>
+                    {% endif %}
+                    
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.github_link.id_for_label }}" class="form-label">GitHub Repository Link</label>
+                            {{ form.github_link }}
+                            {% if form.github_link.errors %}
+                                <div class="text-danger small">{{ form.github_link.errors.0 }}</div>
+                            {% endif %}
+                            <small class="text-muted">Provide the URL to your GitHub repository</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.live_link.id_for_label }}" class="form-label">Live Demo Link</label>
+                            {{ form.live_link }}
+                            {% if form.live_link.errors %}
+                                <div class="text-danger small">{{ form.live_link.errors.0 }}</div>
+                            {% endif %}
+                            <small class="text-muted">If your project is deployed online, provide the URL</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.zip_file.id_for_label }}" class="form-label">Project Zip File</label>
+                            {{ form.zip_file }}
+                            {% if form.zip_file.errors %}
+                                <div class="text-danger small">{{ form.zip_file.errors.0 }}</div>
+                            {% endif %}
+                            <small class="text-muted">Upload your project files as a zip archive (max 50MB)</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.remarks.id_for_label }}" class="form-label">Remarks (Optional)</label>
+                            {{ form.remarks }}
+                            {% if form.remarks.errors %}
+                                <div class="text-danger small">{{ form.remarks.errors.0 }}</div>
+                            {% endif %}
+                            <small class="text-muted">Any additional information you want to share with the reviewer</small>
+                        </div>
+                        
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>Note:</strong> You must provide at least one of the following:
+                            <ul class="mb-0 mt-2">
+                                <li>GitHub Repository Link</li>
+                                <li>Live Demo Link</li>
+                                <li>Project Zip File</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'training:student_projects' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Submit Project</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

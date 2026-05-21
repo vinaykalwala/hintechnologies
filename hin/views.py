@@ -387,7 +387,8 @@ def is_admin_or_staff(user):
 
 def user_login(request):
     if request.user.is_authenticated:
-        return redirect('hin:dashboard')
+        # Redirect based on user type if already logged in
+        return redirect_based_on_user_type(request.user)
     
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
@@ -399,10 +400,14 @@ def user_login(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, f'Welcome back, {username}!')
+                
+                # Check for next URL parameter
                 next_url = request.GET.get('next')
                 if next_url:
                     return redirect(next_url)
-                return redirect('hin:dashboard')
+                
+                # Redirect based on user type
+                return redirect_based_on_user_type(user)
             else:
                 messages.error(request, 'Invalid username or password.')
         else:
@@ -411,6 +416,31 @@ def user_login(request):
         form = LoginForm()
     
     return render(request, 'auth/login.html', {'form': form})
+
+def redirect_based_on_user_type(user):
+    """
+    Helper function to redirect users based on their role
+    """
+    # Check if user is admin/staff
+    if user.is_superuser or user.is_staff:
+        # Check if training app is available and user has admin access
+        try:
+            from training.models import StudentProfile
+            # Admin goes to training admin dashboard
+            return redirect('hin:dashboard')
+        except ImportError:
+            # If training app not installed, go to regular dashboard
+            return redirect('hin:dashboard')
+    
+    # Check if user is a student
+    try:
+        from training.models import StudentProfile
+        student_profile = user.student_profile
+        # Student goes to student dashboard
+        return redirect('training:student_dashboard')
+    except (ImportError, StudentProfile.DoesNotExist):
+        # Regular user (not student and not admin) goes to regular dashboard
+        return redirect('hin:dashboard')
 
 def user_logout(request):
     from django.contrib.auth import logout

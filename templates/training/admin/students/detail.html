@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Student Details - Training{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Student Details: {{ student.user.get_full_name }}</h2>
+                <a href="{% url 'training:student_list' %}" class="btn btn-secondary">Back to List</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Student Information -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Profile Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-person-circle" style="font-size: 64px;"></i>
+                    </div>
+                    <table class="table table-sm">
+                        <tr>
+                            <th>Full Name:</th>
+                            <td>{{ student.user.get_full_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Username:</th>
+                            <td>{{ student.user.username }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email:</th>
+                            <td>{{ student.user.email }}</td>
+                        </tr>
+                        <tr>
+                            <th>Phone:</th>
+                            <td>{{ student.phone }}</td>
+                        </tr>
+                        <tr>
+                            <th>Qualification:</th>
+                            <td>{{ student.qualification }}</td>
+                        </tr>
+                        <tr>
+                            <th>Experience:</th>
+                            <td>{{ student.experience|default:"N/A" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Joined:</th>
+                            <td>{{ student.joined_at|date:"F d, Y" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Status:</th>
+                            <td>
+                                <form method="post" action="{% url 'training:update_student_status' student.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <select name="status" class="form-select form-select-sm d-inline w-auto" onchange="this.form.submit()">
+                                        {% for value, label in student.STATUS_CHOICES %}
+                                            <option value="{{ value }}" {% if student.status == value %}selected{% endif %}>
+                                                {{ label }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </form>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Batch Assignments -->
+        <div class="col-md-8 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Batch Assignments</h5>
+                    {% if available_batches %}
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#assignBatchModal">
+                            + Assign to Batch
+                        </button>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if student_batches %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Batch Name</th>
+                                        <th>Enrolled On</th>
+                                        <th>Status</th>
+                                        <th>Progress</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for sb in student_batches %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ sb.batch.name }}</strong><br>
+                                                <small class="text-muted">{{ sb.batch.start_date|date:"M d, Y" }} - {{ sb.batch.end_date|date:"M d, Y" }}</small>
+                                            </td>
+                                            <td>{{ sb.enrolled_on|date:"M d, Y" }}</td>
+                                            <td>
+                                                {% if sb.is_active %}
+                                                    <span class="badge bg-success">Active</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">Inactive</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% with submissions=student.project_submissions.all %}
+                                                    {% with completed=submissions|dictsort:"status" %}
+                                                        {% with approved=completed|length %}
+                                                            {{ approved }}/{{ sb.batch.projects.count }} Projects
+                                                        {% endwith %}
+                                                    {% endwith %}
+                                                {% endwith %}
+                                            </td>
+                                            <td>
+                                                {% if sb.is_active %}
+                                                    <form method="post" action="{% url 'training:remove_student_from_batch' sb.id %}" class="d-inline" onsubmit="return confirm('Remove student from this batch?')">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                                                    </form>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-3">No batch assignments yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Recent Submissions -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Recent Project Submissions</h5>
+                </div>
+                <div class="card-body">
+                    {% if submissions %}
+                        <div class="list-group">
+                            {% for submission in submissions %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">{{ submission.project.title }}</h6>
+                                            <small class="text-muted">Submitted: {{ submission.submitted_at|date:"M d, Y" }}</small>
+                                        </div>
+                                        <div>
+                                            <span class="badge 
+                                                {% if submission.status == 'approved' %}bg-success
+                                                {% elif submission.status == 'submitted' %}bg-info
+                                                {% elif submission.status == 'rejected' %}bg-danger
+                                                {% else %}bg-secondary{% endif %}">
+                                                {{ submission.get_status_display }}
+                                            </span>
+                                            <a href="{% url 'training:review_submission' submission.id %}" class="btn btn-sm btn-outline-primary ms-2">Review</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-3">No project submissions yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Deliverables -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Deliverables Status</h5>
+                </div>
+                <div class="card-body">
+                    {% if deliverables %}
+                        <div class="list-group">
+                            {% for sd in deliverables %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">Stage {{ sd.deliverable.stage_number }}: {{ sd.deliverable.title }}</h6>
+                                            <small class="text-muted">Batch: {{ sd.deliverable.batch.name }}</small>
+                                        </div>
+                                        <div>
+                                            {% if sd.is_downloaded %}
+                                                <span class="badge bg-success">Downloaded</span>
+                                                <small class="text-muted d-block">{{ sd.downloaded_at|date:"M d, Y" }}</small>
+                                            {% else %}
+                                                <span class="badge bg-warning">Not Downloaded</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-3">No deliverables assigned yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Assign Batch Modal -->
+<div class="modal fade" id="assignBatchModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Assign Student to Batch</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    {{ form.as_p }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Assign</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
