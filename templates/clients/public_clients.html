@@ -4,678 +4,865 @@
 {% block title %}Our Clients & Partners - HIN Technologies{% endblock %}
 
 {% block content %}
-<!-- Google Fonts for Premium Typography -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
 <style>
-    :root {
-        /* Brand Colors */
-        --brand-red: #AB1D1D;
-        --brand-red-dark: #8A1616;
-        --brand-red-light: #FFEDED;
-        --brand-dark: #0F172A;
-        --brand-darker: #020617;
-        --brand-blue: #A7D2DB;
-        --brand-pink: #D8A4A6;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        /* Neutral Colors */
-        --surface-white: #FFFFFF;
-        --surface-light: #F8FAFC;
-        --text-main: #334155;
-        --text-muted: #64748B;
-        --border-color: #E2E8F0;
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f7fafe;
+    color: #1a1a2e;
+    overflow-x: hidden;
+}
 
-        /* Effects */
-        --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-        --shadow-md: 0 10px 25px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
-        --shadow-lg: 0 25px 50px -12px rgba(171, 29, 29, 0.15);
-        --radius-lg: 24px;
-        --radius-md: 16px;
-        --transition-smooth: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+/* HERO SECTION */
+.hero {
+    position: relative;
+    overflow: hidden;
+    padding: 60px 5% 100px;
+    background: linear-gradient(135deg, #ffffff 0%, #f5f9ff 45%, #eef7ff 100%);
+}
 
-    /* Base Styling */
-    .clients-public-page {
-        font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-        background-color: var(--surface-light);
-        color: var(--text-main);
-        overflow-x: hidden;
-        position: relative;
-    }
+.hero::before {
+    content: '';
+    position: absolute;
+    width: clamp(250px, 40vw, 430px);
+    height: clamp(250px, 40vw, 430px);
+    right: -10%;
+    top: -10%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(13,110,253,.12), transparent 70%);
+}
 
-    /* --- Immersive Background --- */
-    .ambient-background {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 0;
-        pointer-events: none;
-        overflow: hidden;
-        background: radial-gradient(circle at top right, rgba(167, 210, 219, 0.15) 0%, transparent 40%),
-            radial-gradient(circle at bottom left, rgba(216, 164, 166, 0.15) 0%, transparent 40%);
-    }
+.hero::after {
+    content: '';
+    position: absolute;
+    width: clamp(200px, 30vw, 300px);
+    height: clamp(200px, 30vw, 300px);
+    left: -10%;
+    bottom: -10%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(198,40,40,.08), transparent 70%);
+}
 
-    .blob {
-        position: absolute;
-        filter: blur(80px);
-        opacity: 0.4;
-        z-index: -1;
-        animation: float 20s infinite ease-in-out alternate;
-    }
+.tech-dots-1 {
+    position: absolute;
+    top: 15%;
+    left: 3%;
+    width: 80px;
+    height: 80px;
+    background-image: radial-gradient(#0B3D91 2px, transparent 2px);
+    background-size: 12px 12px;
+    opacity: 0.4;
+    z-index: 1;
+    pointer-events: none;
+}
 
-    .blob-1 {
-        top: -10%;
-        left: -10%;
-        width: 50vw;
-        height: 50vw;
-        background: var(--brand-blue);
-        animation-delay: 0s;
-    }
+.tech-dots-2 {
+    position: absolute;
+    bottom: 12%;
+    right: 5%;
+    width: 120px;
+    height: 120px;
+    background-image: radial-gradient(#C62828 2px, transparent 2px);
+    background-size: 15px 15px;
+    opacity: 0.3;
+    z-index: 1;
+    pointer-events: none;
+}
 
-    .blob-2 {
-        bottom: -20%;
-        right: -10%;
-        width: 60vw;
-        height: 60vw;
-        background: var(--brand-pink);
-        animation-delay: -5s;
-    }
+.circuit-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, #0B3D91, #C62828, #0B3D91, transparent);
+    opacity: 0.4;
+    z-index: 1;
+}
 
-    @keyframes float {
-        0% {
-            transform: translate(0, 0) scale(1);
-        }
+.tech-glow {
+    position: absolute;
+    top: 20%;
+    right: 8%;
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, rgba(13,110,253,0.08), transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+}
 
-        50% {
-            transform: translate(5%, 10%) scale(1.1);
-        }
+.hero-container {
+    max-width: 1300px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 50px;
+    position: relative;
+    z-index: 2;
+}
 
-        100% {
-            transform: translate(-5%, -5%) scale(0.9);
-        }
-    }
+.hero-left {
+    flex: 1;
+    max-width: 650px;
+}
 
-    /* --- Hero Section --- */
-    .hero-section {
-        position: relative;
-        z-index: 1;
-        padding: clamp(8rem, 15vh, 12rem) 1.5rem clamp(4rem, 10vh, 8rem);
-        background: var(--brand-darker);
-        background-image:
-            radial-gradient(circle at 15% 50%, rgba(171, 29, 29, 0.4) 0%, transparent 50%),
-            radial-gradient(circle at 85% 30%, rgba(167, 210, 219, 0.15) 0%, transparent 50%);
-        text-align: center;
-        border-radius: 0 0 40px 40px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-        margin-bottom: clamp(3rem, 6vw, 5rem);
-    }
+.hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    padding: 10px 18px;
+    border-radius: 50px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.06);
+    color: #C62828;
+    font-size: clamp(11px, 2vw, 13px);
+    font-weight: 700;
+    margin-bottom: 25px;
+}
 
-    .hero-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 16px;
-        border-radius: 100px;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        color: var(--brand-blue);
-        font-weight: 600;
-        font-size: 0.9rem;
-        margin-bottom: 1.5rem;
-        animation: slideUpFade 0.8s ease-out;
-    }
+.hero h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.1;
+    font-weight: 800;
+    color: #0B3D91;
+    margin-bottom: 20px;
+}
 
-    .hero-title {
-        font-size: clamp(2.5rem, 6vw, 4.5rem);
-        font-weight: 800;
-        color: #FFFFFF;
-        line-height: 1.1;
-        letter-spacing: -0.03em;
-        margin-bottom: 1.5rem;
-        max-width: 900px;
-        margin-inline: auto;
-        animation: slideUpFade 1s ease-out 0.1s backwards;
-    }
+.hero h1 span {
+    color: #C62828;
+}
 
-    .hero-title span {
-        background: linear-gradient(135deg, #FF6B6B, var(--brand-red));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
+.hero p {
+    color: #5b6475;
+    line-height: 1.8;
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    margin-bottom: 35px;
+}
 
-    .hero-subtitle {
-        font-size: clamp(1.1rem, 2vw, 1.25rem);
-        color: rgba(255, 255, 255, 0.7);
-        max-width: 600px;
-        margin-inline: auto;
-        animation: slideUpFade 1s ease-out 0.2s backwards;
-    }
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
 
-    /* --- Section Headers --- */
-    .section-header {
-        text-align: center;
-        margin-bottom: clamp(2.5rem, 5vw, 4rem);
-        position: relative;
-        z-index: 1;
-    }
+.hero-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px 30px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: .35s;
+    font-size: clamp(14px, 2vw, 16px);
+}
 
-    .section-header h2 {
-        font-size: clamp(2rem, 4vw, 2.75rem);
-        font-weight: 800;
-        color: var(--brand-dark);
-        letter-spacing: -0.02em;
-        margin-bottom: 1rem;
-    }
+.hero-btn.primary {
+    background: #0B3D91;
+    color: white;
+    box-shadow: 0 12px 25px rgba(13,61,145,.22);
+}
 
-    .section-header p {
-        font-size: 1.15rem;
-        color: var(--text-muted);
-        max-width: 600px;
-        margin: 0 auto;
-    }
+.hero-btn.primary:hover {
+    background: #C62828;
+    transform: translateY(-3px);
+}
 
-    .accent-line {
-        width: 60px;
-        height: 4px;
-        margin: 1.5rem auto 0;
-        background: linear-gradient(90deg, var(--brand-red), var(--brand-pink));
-        border-radius: 4px;
-    }
+.hero-btn.secondary {
+    border: 2px solid #0B3D91;
+    color: #0B3D91;
+    background: white;
+}
 
-    /* --- Modern Grid & Cards --- */
-    .partner-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 2rem;
-        position: relative;
-        z-index: 1;
-    }
+.hero-btn.secondary:hover {
+    background: #0B3D91;
+    color: white;
+}
 
-    .partner-card {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.8);
-        border-radius: var(--radius-lg);
-        padding: 2.5rem 1.5rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        box-shadow: var(--shadow-sm);
-        transition: var(--transition-smooth);
-        position: relative;
-        overflow: hidden;
-        height: 100%;
-    }
+.hero-right {
+    flex: 1;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+}
 
-    .partner-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 4px;
-        background: linear-gradient(90deg, var(--brand-red), var(--brand-pink), var(--brand-blue));
-        transform: scaleX(0);
-        transform-origin: left;
-        transition: var(--transition-smooth);
-    }
+.hero-right::before,
+.hero-right::after {
+    content: '';
+    position: absolute;
+    border-radius: 22px;
+    z-index: 1;
+    opacity: .95;
+}
 
-    .partner-card:hover {
-        transform: translateY(-8px);
-        box-shadow: var(--shadow-lg);
-        background: #FFFFFF;
-        border-color: rgba(171, 29, 29, 0.1);
-    }
+.hero-right::before {
+    width: clamp(140px, 30vw, 190px);
+    height: clamp(150px, 30vw, 200px);
+    background: #C62828;
+    top: 5%;
+    right: 5%;
+}
 
-    .partner-card:hover::before {
-        transform: scaleX(1);
-    }
+.hero-right::after {
+    width: clamp(130px, 28vw, 180px);
+    height: clamp(150px, 30vw, 200px);
+    background: #0B3D91;
+    bottom: 5%;
+    right: -2%;
+}
 
-    .logo-container {
-        height: 80px;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 1.5rem;
-    }
+.hero-image-box {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    aspect-ratio: 1 / 1;
+    border-radius: 28px;
+    overflow: hidden;
+    z-index: 3;
+    background: white;
+    box-shadow: 0 30px 60px rgba(13,61,145,.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-    .partner-logo {
-        max-height: 100%;
-        max-width: 80%;
-        object-fit: contain;
-        filter: grayscale(1) opacity(0.5);
-        transition: var(--transition-smooth);
-    }
+.hero-image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
-    .partner-card:hover .partner-logo {
-        filter: grayscale(0) opacity(1);
-        transform: scale(1.05);
-    }
+.hero-floating-card {
+    position: absolute;
+    left: -5%;
+    bottom: 10%;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 15px;
+    width: clamp(200px, 40vw, 250px);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 5;
+    box-shadow: 0 18px 35px rgba(0,0,0,.10);
+}
 
-    .partner-logo-placeholder {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        background: var(--surface-light);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--text-muted);
-        font-size: 2rem;
-    }
+.hero-floating-icon {
+    width: clamp(40px, 8vw, 58px);
+    height: clamp(40px, 8vw, 58px);
+    background: #0B3D91;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: clamp(18px, 4vw, 24px);
+    flex-shrink: 0;
+}
 
-    .company-name {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--brand-dark);
-        margin-bottom: 1.5rem;
-    }
+.hero-floating-card h4 {
+    font-size: clamp(14px, 3vw, 18px);
+    color: #0B3D91;
+    margin-bottom: 2px;
+}
 
-    .btn-outline {
-        margin-top: auto;
-        padding: 0.75rem 1.5rem;
-        border-radius: 100px;
-        font-weight: 600;
-        font-size: 0.9rem;
-        color: var(--brand-dark);
-        background: transparent;
-        border: 2px solid var(--border-color);
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        transition: var(--transition-smooth);
-    }
+.hero-floating-card p {
+    margin: 0;
+    font-size: clamp(11px, 2vw, 13px);
+    color: #6b7280;
+    line-height: 1.4;
+}
 
-    .btn-outline:hover {
-        border-color: var(--brand-red);
-        color: var(--brand-red);
-        background: var(--brand-red-light);
-    }
+.square1, .square2 {
+    position: absolute;
+    border-radius: 14px;
+    z-index: 0;
+}
 
-    /* --- Features Section --- */
-    .feature-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        position: relative;
-        z-index: 1;
-    }
+.square1 {
+    width: clamp(40px, 10vw, 70px);
+    height: clamp(40px, 10vw, 70px);
+    background: #0d6efd15;
+    top: 15%;
+    left: 5%;
+}
 
-    .feature-card {
-        background: var(--surface-white);
-        border-radius: var(--radius-lg);
-        padding: 2.5rem;
-        box-shadow: var(--shadow-sm);
-        border: 1px solid var(--border-color);
-        transition: var(--transition-smooth);
-        text-align: left;
-    }
+.square2 {
+    width: clamp(30px, 8vw, 45px);
+    height: clamp(30px, 8vw, 45px);
+    background: #C6282815;
+    bottom: 20%;
+    left: 15%;
+}
 
-    .feature-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-md);
-    }
+/* SECTIONS */
+.content-section {
+    width: 100%;
+    max-width: 1400px;
+    margin: clamp(50px, 8vw, 80px) auto;
+    padding: 0 5%;
+}
 
-    .icon-box {
-        width: 64px;
-        height: 64px;
-        border-radius: 16px;
-        background: var(--brand-red-light);
-        color: var(--brand-red);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.75rem;
-        margin-bottom: 1.5rem;
-        transition: var(--transition-smooth);
-    }
+.section-header {
+    text-align: center;
+    margin-bottom: clamp(35px, 6vw, 55px);
+}
 
-    .feature-card:hover .icon-box {
-        background: var(--brand-red);
-        color: white;
-        transform: rotate(-10deg) scale(1.1);
-    }
+.section-header h2 {
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    font-weight: 800;
+    color: #0B3D91;
+    margin-bottom: 15px;
+    line-height: 1.2;
+}
 
-    .feature-card h4 {
-        font-size: 1.25rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-        color: var(--brand-dark);
-    }
+.section-header h2 span {
+    color: #C62828;
+}
 
-    .feature-card p {
-        color: var(--text-muted);
-        line-height: 1.6;
-        margin: 0;
-    }
+.section-header p {
+    color: #5b6475;
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
 
-    /* --- Unified CTA Section --- */
-    .cta-banner {
-        background: linear-gradient(135deg, var(--brand-dark), var(--brand-darker));
-        border-radius: var(--radius-lg);
-        padding: clamp(3rem, 6vw, 5rem);
-        position: relative;
-        overflow: hidden;
-        z-index: 1;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 3rem;
-        margin-top: 5rem;
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
-    }
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: clamp(20px, 4vw, 30px);
+    align-items: stretch;
+}
 
-    .cta-banner::before {
-        content: '';
-        position: absolute;
-        right: -10%;
-        top: -50%;
-        width: 50%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(171, 29, 29, 0.3) 0%, transparent 60%);
-        pointer-events: none;
-    }
+/* PARTNER & FEATURE CARDS */
+.partner-card, .feature-card {
+    background: #fff;
+    border-radius: 26px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #edf2f7;
+    box-shadow: 0 10px 30px rgba(0,0,0,.05);
+    transition: .35s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-    .cta-content {
-        flex: 1;
-        max-width: 600px;
-    }
+.partner-card {
+    padding: 40px 24px;
+    text-align: center;
+}
 
-    .cta-content h3 {
-        font-size: clamp(2rem, 4vw, 2.75rem);
-        font-weight: 800;
-        color: white;
-        margin-bottom: 1rem;
-        line-height: 1.2;
-    }
+.feature-card {
+    min-width: 100%;
+}
 
-    .cta-content p {
-        font-size: 1.15rem;
-        color: rgba(255, 255, 255, 0.7);
-        margin-bottom: 2rem;
-        line-height: 1.6;
-    }
+.partner-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, #C62828, #0B3D91);
+}
 
-    .cta-actions {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-    }
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, #0B3D91, #C62828);
+}
 
-    .btn-primary {
-        background: var(--brand-red);
-        color: white;
-        border: none;
-        padding: 1rem 2rem;
-        border-radius: 100px;
-        font-weight: 700;
-        font-size: 1rem;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        text-decoration: none;
-        transition: var(--transition-smooth);
-        box-shadow: 0 8px 20px rgba(171, 29, 29, 0.4);
-    }
+.partner-card:hover, .feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(13,61,145,.12);
+}
 
-    .btn-primary:hover {
-        background: #E02424;
-        transform: translateY(-3px);
-        box-shadow: 0 12px 25px rgba(171, 29, 29, 0.5);
-        color: white;
-    }
+/* Partner Specific */
+.logo-container {
+    height: 80px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 25px;
+}
 
-    .btn-secondary {
-        background: rgba(255, 255, 255, 0.1);
-        color: white;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        padding: 1rem 2rem;
-        border-radius: 100px;
-        font-weight: 600;
-        font-size: 1rem;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        text-decoration: none;
-        transition: var(--transition-smooth);
-        backdrop-filter: blur(10px);
-    }
+.partner-logo {
+    max-height: 100%;
+    max-width: 80%;
+    object-fit: contain;
+    /* filter: grayscale(1) opacity(0.7); */
+    transition: .35s ease;
+}
 
-    .btn-secondary:hover {
-        background: rgba(255, 255, 255, 0.2);
-        transform: translateY(-3px);
-        color: white;
-    }
+.partner-card:hover .partner-logo {
+    filter: grayscale(0) opacity(1);
+    transform: scale(1.05);
+}
 
-    /* --- Scroll Animation Classes --- */
-    .reveal {
+.partner-logo-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #f7fafe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0B3D91;
+    font-size: 32px;
+}
+
+.company-name {
+    font-size: clamp(1.1rem, 2vw, 1.25rem);
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 20px;
+}
+
+.view-btn {
+    margin-top: auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    background: transparent;
+    color: #0B3D91;
+    border: 2px solid #edf2f7;
+    padding: 12px 20px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: .3s;
+}
+
+.view-btn:hover {
+    background: #0B3D91;
+    border-color: #0B3D91;
+    color: white;
+}
+
+/* Feature Specific */
+.f-card-header {
+    position: relative;
+    padding: 35px 20px 45px;
+    background: #f9fbff;
+    text-align: center;
+    width: 100%;
+}
+
+.f-round-icon {
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: #0B3D91;
+    border: 4px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    box-shadow: 0 8px 22px rgba(13,61,145,.15);
+    transition: .3s;
+}
+
+.feature-card:hover .f-round-icon {
+    background: #C62828;
+    transform: translateX(-50%) scale(1.1);
+}
+
+.f-card-content {
+    padding: 55px 24px 30px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.f-card-content h4 {
+    font-size: clamp(1.1rem, 2vw, 1.25rem);
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 15px;
+}
+
+.f-card-content p {
+    color: #5b6475;
+    line-height: 1.7;
+    font-size: 15px;
+    margin: 0;
+}
+
+/* CTA BANNER */
+.cta-banner {
+    width: 100%;
+    max-width: 1300px;
+    margin: clamp(40px, 8vw, 60px) auto;
+    background: linear-gradient(135deg, #0B3D91, #1a1a2e);
+    border-radius: 26px;
+    padding: clamp(30px, 6vw, 60px) clamp(20px, 5vw, 50px);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    box-shadow: 0 25px 50px rgba(11, 61, 145, 0.2);
+}
+
+.cta-banner::before {
+    content: '';
+    position: absolute;
+    right: -10%;
+    top: -50%;
+    width: 50%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(198, 40, 40, 0.4) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.cta-content {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    max-width: 650px;
+}
+
+.cta-content h3 {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 800;
+    color: white;
+    margin-bottom: 15px;
+    line-height: 1.2;
+}
+
+.cta-content p {
+    font-size: clamp(1rem, 2vw, 1.1rem);
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.cta-actions {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* EMPTY STATES */
+.empty-state {
+    grid-column: 1 / -1;
+    background: #fff;
+    border-radius: 26px;
+    border: 2px dashed #edf2f7;
+    padding: clamp(40px, 6vw, 60px) 20px;
+    text-align: center;
+}
+.empty-state i {
+    font-size: 48px;
+    color: rgba(13, 110, 253, 0.25);
+    margin-bottom: 15px;
+}
+.empty-state h4 {
+    font-size: 22px;
+    color: #1a1a2e;
+    margin-bottom: 10px;
+}
+.empty-state p {
+    color: #6b7280;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+    from {
         opacity: 0;
         transform: translateY(40px);
-        transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
     }
-
-    .reveal.active {
+    to {
         opacity: 1;
         transform: translateY(0);
     }
+}
+.reveal {
+    opacity: 0;
+}
+.reveal.active {
+    animation: fadeUp 0.6s ease forwards;
+}
 
-    /* --- Mobile Optimizations --- */
-    @media (max-width: 991px) {
-        .cta-banner {
-            flex-direction: column;
-            text-align: center;
-        }
-
-        .cta-content {
-            max-width: 100%;
-        }
-
-        .cta-actions {
-            justify-content: center;
-        }
-
-        .partner-grid {
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        }
+/* --- RESPONSIVE BREAKPOINTS --- */
+@media(max-width: 1024px) {
+    .hero-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 60px;
     }
-
-    @media (max-width: 576px) {
-        .hero-section {
-            border-radius: 0 0 24px 24px;
-        }
-
-        .cta-actions {
-            flex-direction: column;
-            width: 100%;
-        }
-
-        .btn-primary,
-        .btn-secondary {
-            width: 100%;
-            justify-content: center;
-        }
-
-        .partner-card {
-            padding: 2rem 1.5rem;
-        }
+    .hero-left {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-width: 800px;
     }
-
-    @keyframes slideUpFade {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .hero-buttons {
+        justify-content: center;
     }
+    .hero-right {
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    .hero-floating-card {
+        left: 5%;
+        bottom: 5%;
+    }
+    .cta-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+    .cta-content {
+        max-width: 100%;
+    }
+    .cta-actions {
+        justify-content: center;
+    }
+}
+
+@media(max-width: 640px) {
+    .hero-floating-card {
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -20px;
+        width: 90%;
+        justify-content: center;
+    }
+    .hero-right::before {
+        top: -10px;
+        right: 0;
+    }
+    .hero-right::after {
+        bottom: -10px;
+        right: 0;
+    }
+    .cta-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    .hero-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+    .hero-btn {
+        width: 100%;
+    }
+    .tech-dots-1, .tech-dots-2 {
+        display: none; /* Clean up extreme small screens */
+    }
+}
 </style>
 
-<div class="clients-public-page">
-    <!-- Ambient Background Blobs -->
-    <div class="ambient-background">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
+<!-- HERO SECTION -->
+<section class="hero">
+    <div class="tech-dots-1"></div>
+    <div class="tech-dots-2"></div>
+    <div class="circuit-line"></div>
+    <div class="tech-glow"></div>
+    
+    <div class="hero-container">
+        <!-- LEFT -->
+        <div class="hero-left">
+            <div class="hero-tag">
+                <i class="fas fa-handshake"></i>
+                Trusted Global Network
+            </div>
+            <h1>
+                Our <span>Clients</span> & Partners
+            </h1>
+            <p>
+                Trusted by leading companies and hiring partners worldwide. We connect top-tier talent with industry pioneers to drive technological excellence.
+            </p>
+            <div class="hero-buttons">
+                <a href="#hiringPartners" class="hero-btn primary">
+                    View Partners
+                    <i class="fas fa-arrow-down"></i>
+                </a>
+                <a href="{% url 'hin:contact' %}" class="hero-btn secondary">
+                    Become a Partner
+                </a>
+            </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="hero-right">
+            <div class="square1"></div>
+            <div class="square2"></div>
+            <div class="hero-image-box">
+                <img src="{% static 'images/Our_Clients_Partners.png' %}" alt="Clients and Partners">
+            </div>
+            <div class="hero-floating-card">
+                <div class="hero-floating-icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <div>
+                    <h4>Global Reach</h4>
+                    <p>Connecting with industry leaders</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- HIRING PARTNERS SECTION -->
+<section class="content-section" id="hiringPartners">
+    <div class="section-header reveal">
+        <h2>Our <span>Hiring Partners</span></h2>
+        <p>Top tech companies that actively recruit our trained, production-ready professionals.</p>
     </div>
 
-    <!-- Stunning Hero Section -->
-    <section class="hero-section">
-        <div class="container">
-            <h1 class="hero-title">Our Clients <span>& Partners</span></h1>
-            <p class="hero-subtitle">Trusted by leading companies and hiring partners worldwide.</p>
+    <div class="cards-grid">
+        {% for client in hiring_partners %}
+        <div class="partner-card reveal" style="animation-delay: {{ forloop.counter0 }}00ms;">
+            <div class="logo-container">
+                {% if client.logo %}
+                <img src="{{ client.logo.url }}" class="partner-logo" alt="{{ client.company_name }} Logo">
+                {% else %}
+                <div class="partner-logo-placeholder">
+                    <i class="fas fa-building"></i>
+                </div>
+                {% endif %}
+            </div>
+            <h3 class="company-name">{{ client.company_name }}</h3>
+            {% if client.website_url %}
+            <a href="{{ client.website_url }}" target="_blank" class="view-btn">
+                Visit Website <i class="fas fa-arrow-right"></i>
+            </a>
+            {% endif %}
         </div>
-    </section>
-
-    <!-- Hiring Partners -->
-    <section class="py-5">
-        <div class="container">
-            <div class="section-header reveal">
-                <h2>Our Hiring Partners</h2>
-                <p>Top tech companies that actively recruit our trained, production-ready professionals.</p>
-                <div class="accent-line"></div>
-            </div>
-
-            <div class="partner-grid">
-                {% for client in hiring_partners %}
-                <div class="partner-card reveal" style="transition-delay: {{ forloop.counter0|add:1 }}00ms;">
-                    <div class="logo-container">
-                        {% if client.logo %}
-                        <img src="{{ client.logo.url }}" class="partner-logo" alt="{{ client.company_name }} Logo">
-                        {% else %}
-                        <div class="partner-logo-placeholder">
-                            <i class="fa-solid fa-building"></i>
-                        </div>
-                        {% endif %}
-                    </div>
-                    <h3 class="company-name">{{ client.company_name }}</h3>
-                    {% if client.website_url %}
-                    <a href="{{ client.website_url }}" target="_blank" class="btn-outline">
-                        Visit Website <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                    {% endif %}
-                </div>
-                {% empty %}
-                <div class="col-12" style="grid-column: 1 / -1;">
-                    <div class="text-center p-5 reveal"
-                        style="background: white; border-radius: 24px; border: 1px dashed var(--border-color);">
-                        <i class="fa-solid fa-building fa-3x text-muted mb-3"></i>
-                        <h4 class="fw-bold">No Partners Listed Yet</h4>
-                        <p class="text-muted">We are currently updating our partner list. Check back soon.</p>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
+        {% empty %}
+        <div class="empty-state reveal">
+            <i class="fas fa-building"></i>
+            <h4>No Partners Listed Yet</h4>
+            <p>We are currently updating our partner list. Check back soon.</p>
         </div>
-    </section>
-    <br> <br>
-    <!-- Corporate Clients -->
-    <section class="py-5 mt-4">
-        <div class="container">
-            <div class="section-header reveal">
-                <h2>Companies That Trust Us</h2>
-                <p>Organizations who chose HIN Technologies to upskill their teams and transform their infrastructure.
-                </p>
-                <div class="accent-line"></div>
-            </div>
+        {% endfor %}
+    </div>
+</section>
 
-            <div class="partner-grid">
-                {% for client in corporate_clients %}
-                <div class="partner-card reveal" style="transition-delay: {{ forloop.counter0|add:1 }}00ms;">
-                    <div class="logo-container">
-                        {% if client.logo %}
-                        <img src="{{ client.logo.url }}" class="partner-logo" alt="{{ client.company_name }} Logo">
-                        {% else %}
-                        <div class="partner-logo-placeholder">
-                            <i class="fa-solid fa-briefcase"></i>
-                        </div>
-                        {% endif %}
-                    </div>
-                    <h3 class="company-name">{{ client.company_name }}</h3>
-                    {% if client.website_url %}
-                    <a href="{{ client.website_url }}" target="_blank" class="btn-outline">
-                        Visit Website <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                    {% endif %}
+<!-- CORPORATE CLIENTS SECTION -->
+<section class="content-section">
+    <div class="section-header reveal">
+        <h2>Companies That <span>Trust Us</span></h2>
+        <p>Organizations who chose HIN Technologies to upskill their teams and transform their infrastructure.</p>
+    </div>
+
+    <div class="cards-grid">
+        {% for client in corporate_clients %}
+        <div class="partner-card reveal" style="animation-delay: {{ forloop.counter0 }}00ms;">
+            <div class="logo-container">
+                {% if client.logo %}
+                <img src="{{ client.logo.url }}" class="partner-logo" alt="{{ client.company_name }} Logo">
+                {% else %}
+                <div class="partner-logo-placeholder">
+                    <i class="fas fa-briefcase"></i>
                 </div>
-                {% empty %}
-                <div class="col-12" style="grid-column: 1 / -1;">
-                    <div class="text-center p-5 reveal"
-                        style="background: white; border-radius: 24px; border: 1px dashed var(--border-color);">
-                        <i class="fa-solid fa-briefcase fa-3x text-muted mb-3"></i>
-                        <h4 class="fw-bold">No Clients Listed Yet</h4>
-                        <p class="text-muted">We are currently updating our corporate client list. Check back soon.</p>
-                    </div>
-                </div>
-                {% endfor %}
+                {% endif %}
+            </div>
+            <h3 class="company-name">{{ client.company_name }}</h3>
+            {% if client.website_url %}
+            <a href="{{ client.website_url }}" target="_blank" class="view-btn">
+                Visit Website <i class="fas fa-arrow-right"></i>
+            </a>
+            {% endif %}
+        </div>
+        {% empty %}
+        <div class="empty-state reveal">
+            <i class="fas fa-briefcase"></i>
+            <h4>No Clients Listed Yet</h4>
+            <p>We are currently updating our corporate client list. Check back soon.</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- WHY PARTNER WITH US SECTION -->
+<section class="content-section">
+    <div class="section-header reveal">
+        <h2>Why <span>Partner With Us</span>?</h2>
+        <p>We deliver elite, quality-trained professionals ready to tackle real-world production environments.</p>
+    </div>
+
+    <div class="cards-grid">
+        <div class="feature-card reveal" style="animation-delay: 100ms;">
+            <div class="f-card-header">
+                <div class="f-round-icon"><i class="fas fa-laptop-code"></i></div>
+            </div>
+            <div class="f-card-content">
+                <h4>Industry-Ready Talent</h4>
+                <p>Our graduates work on real CI/CD projects, Kubernetes clusters, and cloud setups, making them ready to deploy on day one.</p>
             </div>
         </div>
-    </section>
-    <br> <br>
-    <!-- Why Partner With Us (Features) -->
-    <section class="py-5 mt-5">
-        <div class="container">
-            <div class="section-header reveal">
-                <h2>Why Partner With HIN Technologies?</h2>
-                <p>We deliver elite, quality-trained professionals ready to tackle real-world production environments.
-                </p>
-                <div class="accent-line"></div>
-            </div>
 
-            <div class="feature-grid">
-                <div class="feature-card reveal" style="transition-delay: 100ms;">
-                    <div class="icon-box"><i class="fa-solid fa-laptop-code"></i></div>
-                    <h4>Industry-Ready Talent</h4>
-                    <p>Our graduates work on real CI/CD projects, Kubernetes clusters, and cloud setups, making them
-                        ready to deploy on day one.</p>
-                </div>
-                <div class="feature-card reveal" style="transition-delay: 200ms;">
-                    <div class="icon-box"><i class="fas fa-certificate"></i></div>
-                    <h4>Certified Professionals</h4>
-                    <p>Every student undergoes rigorous testing and hands-on evaluations to earn their certification
-                        before entering the talent pool.</p>
-                </div>
-                <div class="feature-card reveal" style="transition-delay: 300ms;">
-                    <div class="icon-box"><i class="fa-solid fa-rocket"></i></div>
-                    <h4>Continuous Upskilling</h4>
-                    <p>We constantly update our curriculum to align with the latest industry standards, ensuring our
-                        talent remains cutting-edge.</p>
-                </div>
+        <div class="feature-card reveal" style="animation-delay: 200ms;">
+            <div class="f-card-header">
+                <div class="f-round-icon"><i class="fas fa-certificate"></i></div>
+            </div>
+            <div class="f-card-content">
+                <h4>Certified Professionals</h4>
+                <p>Every student undergoes rigorous testing and hands-on evaluations to earn their certification before entering the talent pool.</p>
             </div>
         </div>
-    </section>
 
-    <!-- Unified CTA Banner -->
-    <section class="pb-5">
-        <div class="container">
-            <div class="cta-banner reveal">
-                <div class="cta-content">
-                    <h3>Ready to transform your workforce?</h3>
-                    <p>Whether you want to hire top-tier DevOps talent or upskill your existing engineering teams, we
-                        have a custom solution for you.</p>
-                    <div class="cta-actions">
-                        <a href="{% url 'hin:contact' %}" class="btn-primary">
-                            Become a Partner <i class="fa-solid fa-handshake"></i>
-                        </a>
-                        <a href="mailto:corporate@hintechnologies.in" class="btn-secondary">
-                            Email Us <i class="fa-solid fa-envelope"></i>
-                        </a>
-                    </div>
-                </div>
+        <div class="feature-card reveal" style="animation-delay: 300ms;">
+            <div class="f-card-header">
+                <div class="f-round-icon"><i class="fas fa-rocket"></i></div>
+            </div>
+            <div class="f-card-content">
+                <h4>Continuous Upskilling</h4>
+                <p>We constantly update our curriculum to align with the latest industry standards, ensuring our talent remains cutting-edge.</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
+
+<!-- UNIFIED CTA BANNER -->
+<div class="content-section" style="margin-top: 0;">
+    <div class="cta-banner reveal">
+        <div class="cta-content">
+            <h3>Ready to transform your workforce?</h3>
+            <p>Whether you want to hire top-tier DevOps talent or upskill your existing engineering teams, we have a custom solution for you.</p>
+            <div class="cta-actions">
+                <a href="{% url 'hin:contact' %}" class="hero-btn primary">
+                    Become a Partner <i class="fas fa-handshake"></i>
+                </a>
+                <a href="mailto:corporate@hintechnologies.in" class="hero-btn secondary" style="border-color: rgba(255,255,255,0.3); color: white; background: rgba(255,255,255,0.1);">
+                    Email Us <i class="fas fa-envelope"></i>
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Scroll Reveal Script -->
@@ -687,12 +874,12 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add("active");
-                    observer.unobserve(entry.target); // Run once
+                    observer.unobserve(entry.target); 
                 }
             });
         }, {
             root: null,
-            threshold: 0.1,
+            threshold: 0.15,
             rootMargin: "0px 0px -50px 0px"
         });
 
@@ -701,4 +888,5 @@
         });
     });
 </script>
+
 {% endblock %}

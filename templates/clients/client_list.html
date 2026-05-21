@@ -1,126 +1,307 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Our Clients & Partners{% endblock %}
+{% block title %}Manage Clients & Partners - HIN Technologies{% endblock %}
 
 {% block content %}
-<!-- Google Fonts for Modern Typography -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<!-- Custom CSS for Colors & Design -->
 <style>
     :root {
-        /* Color Palette */
-        --deep-red: #AB1D1D;
-        --deep-red-dark: #8A1616;
-        --deep-red-light: #F4D5D5;
-        --dark-black: #0F172A;
-        --sky-blue: #0EA5E9;
-        --sky-blue-light: #E0F2FE;
-        --soft-pink: #F43F5E;
-        --soft-pink-light: #FFE4E6;
-        --light-gray: #64748B;
-        --white: #FFFFFF;
-        --bg-light: #F8FAFC;
-        --border: #E2E8F0;
-
-        /* Shadows & Transitions */
+        /* HIN Technologies Brand Colors */
+        --hin-blue: #0B3D91;
+        --hin-blue-light: #eef5ff;
+        --hin-blue-hover: #082d6b;
+        --hin-red: #C62828;
+        --hin-red-light: #fef2f2;
+        --hin-red-hover: #a12020;
+        
+        /* Neutrals */
+        --dark-text: #1a1a2e;
+        --muted-text: #5b6475;
+        --bg-main: #f4f7fc;
+        --white: #ffffff;
+        --border-color: rgba(255, 255, 255, 0.6); 
+        
+        /* Glassmorphism */
+        --glass-bg: rgba(255, 255, 255, 0.75);
+        --glass-blur: blur(16px);
+        
+        /* UI Elements */
         --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
-        --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --shadow-md: 0 10px 20px -3px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 20px 40px rgba(11, 61, 145, 0.12);
+        --radius-lg: 24px;
+        --radius-md: 16px;
+        --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
     }
 
     body {
-        background: var(--bg-light);
+        background-color: var(--bg-main);
         font-family: 'Inter', system-ui, sans-serif;
-        margin: 0;
-        color: var(--dark-black);
-    }
-
-    /* --- Page Layout & Animations --- */
-    .clients-page-wrapper {
-        max-width: 1280px;
-        margin: 0 auto;
-        padding: 30px 20px;
-        animation: fadeIn 0.6s ease-out;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* --- Header / Hero --- */
-    .page-hero {
-        background: linear-gradient(135deg, var(--deep-red) 0%, #D93838 100%);
-        color: var(--white);
-        padding: 80px 30px;
-        border-radius: 24px;
-        text-align: center;
-        margin-bottom: 50px;
-        box-shadow: 0 20px 40px rgba(171, 29, 29, 0.2);
+        color: var(--dark-text);
+        overflow-x: hidden;
         position: relative;
+    }
+
+    /* --- DYNAMIC AMBIENT BACKGROUND --- */
+    .ambient-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
         overflow: hidden;
+        pointer-events: none;
+    }
+
+    .ambient-blob {
+        position: absolute;
+        filter: blur(90px);
+        border-radius: 50%;
+        opacity: 0.6;
+        animation: floatBlob 20s infinite alternate ease-in-out;
+    }
+
+    .blob-1 {
+        background: rgba(11, 61, 145, 0.35);
+        width: 45vw;
+        height: 45vw;
+        top: -10%;
+        left: -10%;
+    }
+
+    .blob-2 {
+        background: rgba(198, 40, 40, 0.25);
+        width: 50vw;
+        height: 50vw;
+        bottom: -20%;
+        right: -10%;
+        animation-delay: -5s;
+    }
+
+    .blob-3 {
+        background: rgba(14, 165, 233, 0.25);
+        width: 35vw;
+        height: 35vw;
+        top: 30%;
+        left: 40%;
+        animation-delay: -10s;
+    }
+
+    .ambient-grid {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: radial-gradient(var(--hin-blue) 1.5px, transparent 1.5px);
+        background-size: 35px 35px;
+        opacity: 0.05;
+    }
+
+    @keyframes floatBlob {
+        0% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(6%, 12%) scale(1.1); }
+        100% { transform: translate(-6%, -8%) scale(0.9); }
+    }
+
+    @keyframes levitate {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-15px); }
+        100% { transform: translateY(0px); }
+    }
+
+    @keyframes levitateReverse {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(15px); }
+        100% { transform: translateY(0px); }
+    }
+
+    .page-container {
+        max-width: 1350px;
+        margin: 0 auto;
+        padding: 0 20px 80px;
+        position: relative;
         z-index: 1;
     }
 
-    /* Decorative Shapes in Hero */
-    .page-hero::before {
-        content: '';
-        position: absolute;
-        top: -20%;
-        left: -5%;
-        width: 300px;
-        height: 300px;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
-        border-radius: 50%;
-        z-index: -1;
+    /* --- PREMIUM HERO SECTION --- */
+    .premium-hero {
+        position: relative;
+        padding: 80px 40px;
+        margin-bottom: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 60px;
+        border-radius: 0 0 40px 40px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.2) 100%);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255,255,255,0.8);
+        box-shadow: 0 20px 40px rgba(11, 61, 145, 0.05);
     }
 
-    .page-hero::after {
-        content: '';
-        position: absolute;
-        bottom: -40%;
-        right: -10%;
-        width: 400px;
-        height: 400px;
-        background: radial-gradient(circle, rgba(14, 165, 233, 0.2) 0%, transparent 70%);
-        border-radius: 50%;
-        z-index: -1;
+    .hero-content {
+        flex: 1;
+        max-width: 600px;
+        animation: slideUpFade 0.8s ease backwards;
     }
 
-    .page-hero h1 {
-        font-size: 3rem;
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 10px 20px;
+        border-radius: 50px;
+        box-shadow: 0 8px 20px rgba(198, 40, 40, 0.1);
+        color: var(--hin-red);
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 25px;
+        border: 1px solid rgba(198, 40, 40, 0.15);
+    }
+
+    .hero-badge i {
+        background: var(--hin-red-light);
+        padding: 6px;
+        border-radius: 50%;
+    }
+
+    .premium-hero h1 {
+        font-size: clamp(3rem, 5vw, 4.5rem);
         font-weight: 800;
-        margin: 0 0 15px 0;
+        color: var(--hin-blue);
+        margin-bottom: 20px;
+        line-height: 1.1;
         letter-spacing: -1px;
     }
 
-    .page-hero p {
-        font-size: 1.25rem;
-        opacity: 0.9;
-        font-weight: 300;
-        max-width: 600px;
-        margin: 0 auto;
+    .premium-hero h1 span {
+        background: linear-gradient(135deg, var(--hin-red), #ff6b6b);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
 
-    /* --- Form Panel --- */
+    .premium-hero p {
+        font-size: 1.25rem;
+        color: var(--muted-text);
+        line-height: 1.7;
+        margin-bottom: 30px;
+    }
+
+    /* Hero Visual Composition */
+    .hero-visuals {
+        flex: 1;
+        position: relative;
+        min-height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .glass-circle-bg {
+        position: absolute;
+        width: 350px;
+        height: 350px;
+        border-radius: 50%;
+        background: radial-gradient(circle at top left, rgba(255,255,255,0.9), rgba(255,255,255,0.2));
+        border: 1px solid rgba(255,255,255,0.6);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 30px 60px rgba(11, 61, 145, 0.1);
+        z-index: 1;
+        animation: levitate 8s infinite ease-in-out;
+    }
+
+    .floating-card {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(16px);
+        border-radius: 20px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        border: 1px solid rgba(255,255,255,1);
+        z-index: 2;
+    }
+
+    .fc-1 {
+        top: 15%;
+        right: 0;
+        animation: levitateReverse 6s infinite ease-in-out;
+    }
+
+    .fc-2 {
+        bottom: 10%;
+        left: 0;
+        animation: levitate 7s infinite ease-in-out;
+    }
+
+    .fc-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: white;
+    }
+
+    .fc-1 .fc-icon { background: linear-gradient(135deg, var(--hin-blue), #1e5dd6); }
+    .fc-2 .fc-icon { background: linear-gradient(135deg, var(--hin-red), #e63946); }
+
+    .fc-text h4 {
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: var(--dark-text);
+        margin-bottom: 4px;
+    }
+
+    .fc-text p {
+        font-size: 0.85rem;
+        color: var(--muted-text);
+        margin: 0;
+    }
+
+    .tech-dots {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        background-image: radial-gradient(var(--hin-blue) 2px, transparent 2px);
+        background-size: 15px 15px;
+        opacity: 0.3;
+        z-index: 0;
+    }
+
+    .td-top { top: 0; right: 20%; }
+    .td-bottom { bottom: 0; left: 15%; }
+
+    /* --- FORM PANEL --- */
     .form-panel {
-        background: var(--white);
-        border-radius: 24px;
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border-radius: var(--radius-lg);
         padding: 40px;
         margin-bottom: 60px;
-        border: 1px solid var(--border);
+        border: 1px solid var(--border-color);
         box-shadow: var(--shadow-md);
         position: relative;
+        overflow: hidden;
+        animation: slideUpFade 0.6s ease forwards;
     }
 
     .form-panel::before {
@@ -129,181 +310,285 @@
         top: 0;
         left: 0;
         width: 100%;
-        height: 6px;
-        background: linear-gradient(90deg, var(--sky-blue), var(--deep-red));
-        border-top-left-radius: 24px;
-        border-top-right-radius: 24px;
+        height: 5px;
+        background: linear-gradient(90deg, var(--hin-red), var(--hin-blue));
     }
 
     .form-panel h3 {
-        color: var(--dark-black);
+        color: var(--hin-blue);
         font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 25px;
+        font-weight: 800;
+        margin-bottom: 30px;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
     }
 
-    .form-panel h3::before {
-        content: '';
-        display: inline-block;
-        width: 12px;
-        height: 12px;
-        background: var(--deep-red);
-        border-radius: 50%;
+    .form-panel h3 i {
+        color: var(--hin-red);
+        background: var(--hin-red-light);
+        padding: 10px;
+        border-radius: 12px;
+        font-size: 1.2rem;
     }
 
-    /* Form Inputs */
-    .form-group {
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
         margin-bottom: 20px;
     }
 
-    .form-panel label {
+    .form-group label {
         display: block;
         font-weight: 600;
         margin-bottom: 8px;
-        color: var(--light-gray);
-        font-size: 0.9rem;
+        color: var(--dark-text);
+        font-size: 0.95rem;
     }
 
-    .form-panel input[type="text"],
-    .form-panel input[type="url"],
-    .form-panel input[type="file"],
-    .form-panel select {
+    .form-group input[type="text"],
+    .form-group input[type="url"],
+    .form-group input[type="file"],
+    .form-group select {
         width: 100%;
         padding: 14px 16px;
-        border: 2px solid var(--border);
+        border: 2px solid rgba(255, 255, 255, 0.8);
         border-radius: 12px;
-        background: #F8FAFC;
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(5px);
         transition: var(--transition);
         font-family: inherit;
         font-size: 1rem;
-        box-sizing: border-box;
+        color: var(--dark-text);
     }
 
-    .form-panel input:focus,
-    .form-panel select:focus {
-        border-color: var(--sky-blue);
+    .form-group input:focus,
+    .form-group select:focus {
+        border-color: var(--hin-blue);
         background: var(--white);
         outline: none;
-        box-shadow: 0 0 0 4px var(--sky-blue-light);
+        box-shadow: 0 0 0 4px rgba(11, 61, 145, 0.1);
     }
 
-    .form-panel small {
-        color: var(--light-gray);
-        font-size: 0.8rem;
-        margin-top: 5px;
+    .form-group small {
+        color: var(--muted-text);
+        font-size: 0.85rem;
+        margin-top: 6px;
         display: block;
     }
 
-    /* Buttons in Form */
+    /* Toggle Switch */
+    .toggle-wrapper {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        margin: 10px 0 30px;
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.5);
+        padding: 12px 24px;
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        transition: var(--transition);
+    }
+
+    .toggle-wrapper:hover {
+        background: var(--white);
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 26px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #cbd5e1;
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    input:checked + .slider {
+        background-color: var(--hin-blue);
+    }
+
+    input:checked + .slider:before {
+        transform: translateX(24px);
+    }
+
+    .toggle-label {
+        font-weight: 600;
+        color: var(--dark-text);
+        font-size: 0.95rem;
+        user-select: none;
+    }
+
+    /* Form Buttons */
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
     .btn-save {
-        background: var(--deep-red);
-        color: white;
+        background: var(--hin-blue);
+        color: var(--white);
         border: none;
         padding: 14px 32px;
-        border-radius: 12px;
+        border-radius: 50px;
         font-weight: 600;
         font-size: 1rem;
         cursor: pointer;
         transition: var(--transition);
-        box-shadow: 0 4px 12px rgba(171, 29, 29, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 8px 20px rgba(11, 61, 145, 0.2);
     }
 
     .btn-save:hover {
-        background: var(--deep-red-dark);
+        background: var(--hin-blue-hover);
         transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(171, 29, 29, 0.4);
+        box-shadow: 0 12px 25px rgba(11, 61, 145, 0.3);
     }
 
     .btn-cancel-edit {
-        background: var(--bg-light);
-        color: var(--light-gray);
-        border: 2px solid var(--border);
+        background: rgba(255, 255, 255, 0.5);
+        color: var(--muted-text);
+        border: 2px solid rgba(255, 255, 255, 0.8);
         padding: 12px 32px;
-        border-radius: 12px;
+        border-radius: 50px;
         font-weight: 600;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         transition: var(--transition);
+        backdrop-filter: blur(5px);
     }
 
     .btn-cancel-edit:hover {
-        background: #E2E8F0;
-        color: var(--dark-black);
+        background: var(--white);
+        color: var(--dark-text);
     }
 
-    /* --- Client Grid & Cards --- */
-    .section-title {
-        color: var(--dark-black);
-        font-size: 2rem;
-        font-weight: 800;
-        margin: 0 auto 35px;
-        padding-left: 0;
-        position: relative;
-        display: block;
+    /* --- SECTION HEADERS --- */
+    .section-header {
         text-align: center;
+        margin-bottom: 40px;
+        position: relative;
     }
 
-    .section-title::after {
-        content: '';
-        position: absolute;
-        left: 50%;
-        bottom: -8px;
-        width: 30%;
+    .section-header h2 {
+        font-size: clamp(1.8rem, 3vw, 2.5rem);
+        font-weight: 800;
+        color: var(--hin-blue);
+    }
+
+    .section-header h2 span {
+        color: var(--hin-red);
+    }
+
+    .accent-line {
+        width: 60px;
         height: 4px;
-        background: var(--sky-blue);
-        border-radius: 2px;
-        transform: translateX(-50%);
+        margin: 15px auto 0;
+        background: linear-gradient(90deg, var(--hin-red), var(--hin-blue));
+        border-radius: 4px;
     }
 
-    .section-title.alt::after {
-        background: var(--deep-red);
-    }
-
+    /* --- CLIENT GRID & CARDS --- */
     .clients-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: 30px;
-        margin-bottom: 60px;
+        margin-bottom: 70px;
     }
 
     .client-card {
-        background: var(--white);
-        border-radius: 20px;
-        padding: 30px 20px;
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border-radius: var(--radius-lg);
+        padding: 35px 25px 25px;
         text-align: center;
-        border: 1px solid var(--border);
+        border: 1px solid var(--border-color);
         transition: var(--transition);
         position: relative;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        animation: slideUpFade 0.6s ease backwards;
+    }
+
+    .client-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--hin-red), var(--hin-blue));
+        opacity: 0;
+        transition: var(--transition);
+        border-top-left-radius: var(--radius-lg);
+        border-top-right-radius: var(--radius-lg);
     }
 
     .client-card:hover {
         transform: translateY(-8px);
-        border-color: var(--sky-blue-light);
         box-shadow: var(--shadow-lg);
+        background: rgba(255, 255, 255, 0.95);
     }
 
-    .client-card .logo-wrapper {
-        height: 90px;
-        width: 90px;
-        margin: 0 auto 20px auto;
+    .client-card:hover::before {
+        opacity: 1;
+    }
+
+    .logo-wrapper {
+        height: 100px;
+        width: 100px;
+        margin: 0 auto 20px;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: var(--bg-light);
+        background: rgba(255, 255, 255, 0.5);
         border-radius: 50%;
         padding: 15px;
         transition: var(--transition);
+        border: 2px solid rgba(255, 255, 255, 0.8);
     }
 
     .client-card:hover .logo-wrapper {
-        background: var(--sky-blue-light);
+        background: var(--white);
+        border-color: var(--hin-blue-light);
+        box-shadow: 0 10px 20px rgba(11, 61, 145, 0.1);
         transform: scale(1.05);
     }
 
@@ -311,75 +596,108 @@
         max-height: 100%;
         max-width: 100%;
         object-fit: contain;
-        border-radius: 50%;
+    }
+
+    .placeholder-icon {
+        font-size: 2.5rem;
+        color: #cbd5e1;
     }
 
     .client-card h4 {
-        font-size: 1.15rem;
+        font-size: 1.2rem;
         font-weight: 700;
-        margin: 0 0 20px 0;
-        color: var(--dark-black);
+        color: var(--dark-text);
+        margin-bottom: 25px;
+        width: 100%;
+        word-wrap: break-word;
     }
 
-    /* Action Buttons */
+    /* Card Action Buttons */
     .card-actions {
         display: flex;
         gap: 12px;
-        justify-content: center;
+        width: 100%;
         margin-top: auto;
     }
 
     .btn-action {
+        flex: 1;
         padding: 10px;
-        border-radius: 10px;
+        border-radius: 12px;
         font-size: 0.9rem;
         font-weight: 600;
         text-decoration: none;
         border: none;
         cursor: pointer;
         transition: var(--transition);
-        flex: 1;
-        display: flex;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 6px;
     }
 
-    /* Edit Button */
     .btn-edit {
-        background: var(--sky-blue-light);
-        color: #0369A1;
+        background: var(--hin-blue-light);
+        color: var(--hin-blue);
     }
 
     .btn-edit:hover {
-        background: var(--sky-blue);
-        color: white;
+        background: var(--hin-blue);
+        color: var(--white);
     }
 
-    /* Delete Button */
     .btn-delete {
-        background: var(--soft-pink-light);
-        color: #BE123C;
+        background: var(--hin-red-light);
+        color: var(--hin-red);
     }
 
     .btn-delete:hover {
-        background: var(--soft-pink);
-        color: white;
+        background: var(--hin-red);
+        color: var(--white);
     }
 
-    /* --- FIXED MODAL DESIGN --- */
+    /* --- EMPTY STATE --- */
+    .empty-state {
+        grid-column: 1 / -1;
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-blur);
+        border-radius: var(--radius-lg);
+        border: 2px dashed rgba(203, 213, 225, 0.8);
+        padding: 60px 20px;
+        text-align: center;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        color: #a0aec0;
+        margin-bottom: 15px;
+    }
+
+    .empty-state h4 {
+        font-size: 1.25rem;
+        color: var(--dark-text);
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+
+    .empty-state p {
+        color: var(--muted-text);
+    }
+
+    /* --- MODAL DESIGN --- */
     .custom-modal-backdrop {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(15, 23, 42, 0.4);
+        background: rgba(26, 26, 46, 0.4);
         z-index: 9999;
         display: flex;
         align-items: center;
         justify-content: center;
         backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         opacity: 0;
         visibility: hidden;
         transition: var(--transition);
@@ -391,13 +709,13 @@
     }
 
     .custom-modal-content {
-        background: var(--white);
+        background: rgba(255, 255, 255, 0.95);
         width: 90%;
         max-width: 420px;
-        border-radius: 24px;
+        border-radius: var(--radius-lg);
         padding: 0;
         overflow: hidden;
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+        box-shadow: 0 25px 50px rgba(0,0,0,0.2);
         transform: scale(0.95) translateY(10px);
         transition: var(--transition);
     }
@@ -408,7 +726,7 @@
 
     .modal-header {
         padding: 24px;
-        border-bottom: 1px solid var(--border);
+        border-bottom: 1px solid rgba(226, 232, 240, 0.8);
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -417,19 +735,19 @@
     .modal-title {
         font-size: 1.25rem;
         font-weight: 700;
-        color: var(--dark-black);
+        color: var(--dark-text);
         margin: 0;
     }
 
     .modal-close {
-        background: var(--bg-light);
+        background: transparent;
         border: none;
         width: 32px;
         height: 32px;
         border-radius: 50%;
         font-size: 1.2rem;
         cursor: pointer;
-        color: var(--light-gray);
+        color: var(--muted-text);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -437,30 +755,39 @@
     }
 
     .modal-close:hover {
-        background: #E2E8F0;
-        color: var(--dark-black);
+        background: var(--hin-red-light);
+        color: var(--hin-red);
     }
 
     .modal-body {
         padding: 30px 24px;
-        color: var(--light-gray);
+        color: var(--muted-text);
         font-size: 1rem;
         line-height: 1.6;
         text-align: center;
     }
 
-    .modal-body .warning-icon {
-        font-size: 3rem;
-        color: var(--soft-pink);
-        margin-bottom: 15px;
+    .warning-icon-wrapper {
+        width: 70px;
+        height: 70px;
+        background: var(--hin-red-light);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+    }
+
+    .warning-icon-wrapper i {
+        font-size: 2rem;
+        color: var(--hin-red);
     }
 
     .modal-footer {
         padding: 20px 24px;
-        background: #F8FAFC;
-        border-top: 1px solid var(--border);
+        background: #f8fafc;
+        border-top: 1px solid rgba(226, 232, 240, 0.8);
         display: flex;
-        justify-content: stretch;
         gap: 12px;
     }
 
@@ -477,214 +804,141 @@
 
     .modal-btn-cancel {
         background: var(--white);
-        color: var(--dark-black);
-        border: 1px solid var(--border);
+        color: var(--dark-text);
+        border: 1px solid #cbd5e1;
     }
 
     .modal-btn-cancel:hover {
-        background: #F1F5F9;
+        background: #e2e8f0;
     }
 
     .modal-btn-delete {
-        background: var(--soft-pink);
+        background: var(--hin-red);
         color: var(--white);
-        box-shadow: 0 4px 10px rgba(244, 63, 94, 0.3);
+        box-shadow: 0 4px 10px rgba(198, 40, 40, 0.2);
     }
 
     .modal-btn-delete:hover {
-        background: #E11D48;
+        background: var(--hin-red-hover);
         transform: translateY(-2px);
     }
 
-    /* --- TOGGLE SWITCH CSS --- */
-    .toggle-wrapper {
-        display: inline-flex;
-        align-items: center;
-        gap: 12px;
-        margin: 20px 0;
-        cursor: pointer;
-        background: #F8FAFC;
-        padding: 12px 20px;
-        border-radius: 16px;
-        border: 1px solid var(--border);
+    /* --- ANIMATIONS --- */
+    @keyframes slideUpFade {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
-    .switch {
-        position: relative;
-        display: inline-block;
-        width: 52px;
-        height: 28px;
-        margin: 0;
-    }
-
-    .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-    }
-
-    .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #CBD5E1;
-        transition: .4s;
-        border-radius: 34px;
-    }
-
-    .slider:before {
-        position: absolute;
-        content: "";
-        height: 20px;
-        width: 20px;
-        left: 4px;
-        bottom: 4px;
-        background-color: white;
-        transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
-        border-radius: 50%;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
-
-    input:checked+.slider {
-        background-color: var(--sky-blue);
-    }
-
-    input:checked+.slider:before {
-        transform: translateX(24px);
-    }
-
-    .toggle-label {
-        font-weight: 600;
-        color: var(--dark-black);
-        font-size: 0.95rem;
-        user-select: none;
-    }
-
-    /* Empty State */
-    .empty-state {
-        grid-column: 1 / -1;
-        text-align: center;
-        padding: 40px;
-        background: var(--white);
-        border-radius: 20px;
-        border: 1px dashed var(--light-gray);
-        color: var(--light-gray);
-        font-size: 1.1rem;
-    }
-
-    /* --- Responsive Adjustments --- */
-    @media (min-width: 769px) {
-        .form-row {
-            display: flex;
-            gap: 24px;
-        }
-
-        .form-col {
-            flex: 1;
-        }
+    /* --- RESPONSIVE MEDIA QUERIES --- */
+    @media (max-width: 1024px) {
+        .page-container { padding: 0 20px 60px; }
+        .premium-hero { flex-direction: column; text-align: center; padding: 60px 30px; border-radius: 0 0 30px 30px; gap: 40px;}
+        .hero-content { max-width: 100%; }
+        .hero-visuals { min-height: 350px; width: 100%; }
+        .clients-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
     }
 
     @media (max-width: 768px) {
-        .page-hero {
-            padding: 50px 20px;
-            border-radius: 16px;
-        }
-
-        .page-hero h1 {
-            font-size: 2.2rem;
-        }
-
-        .form-panel {
-            padding: 25px;
-            border-radius: 16px;
-        }
-
-        .clients-grid {
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 15px;
-        }
-
-        .client-card {
-            padding: 20px 15px;
-        }
-
-        .client-card .logo-wrapper {
-            height: 70px;
-            width: 70px;
-        }
-
-        .client-card h4 {
-            font-size: 1rem;
-        }
-
-        .card-actions {
-            flex-direction: column;
-        }
-
-        .section-title {
-            font-size: 1.6rem;
-        }
+        .ambient-blob { filter: blur(60px); }
+        .blob-1 { width: 70vw; height: 70vw; }
+        .blob-2 { width: 80vw; height: 80vw; }
+        .premium-hero { padding: 40px 20px; margin-bottom: 50px; }
+        .glass-circle-bg { width: 280px; height: 280px; }
+        .floating-card { padding: 15px; }
+        .fc-text h4 { font-size: 1rem; }
+        .form-panel { padding: 25px; }
+        .clients-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+        .client-card { padding: 25px 20px 20px; }
+        .logo-wrapper { height: 80px; width: 80px; }
+        .form-actions { flex-direction: column; }
+        .btn-save, .btn-cancel-edit { width: 100%; justify-content: center; }
     }
 
     @media (max-width: 480px) {
-        .clients-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .btn-save,
-        .btn-cancel-edit {
-            width: 100%;
-            justify-content: center;
-        }
-
-        .form-actions {
-            flex-direction: column;
-            gap: 10px;
-        }
+        .clients-grid { grid-template-columns: 1fr; }
+        .hero-visuals { display: none; /* Hide complex visuals on very small screens to save space */ }
+        .premium-hero { margin-bottom: 40px; }
+        .card-actions { flex-direction: column; }
+        .btn-action { width: 100%; padding: 12px; }
+        .form-row { grid-template-columns: 1fr; gap: 15px; }
+        .modal-footer { flex-direction: column; }
     }
 </style>
 
-<div class="clients-page-wrapper">
+<!-- AMBIENT BACKGROUND EFFECTS -->
+<div class="ambient-bg">
+    <div class="ambient-blob blob-1"></div>
+    <div class="ambient-blob blob-2"></div>
+    <div class="ambient-blob blob-3"></div>
+    <div class="ambient-grid"></div>
+</div>
 
-    <!-- Hero Section -->
-    <section class="page-hero">
-        <h1>Our Clients & Partners</h1>
-        <p>Proudly collaborating with industry leaders and trusted organizations worldwide to deliver excellence.</p>
+<div class="page-container">
+
+    <!-- PREMIUM HERO SECTION -->
+    <section class="premium-hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-certificate"></i>
+                Trusted Global Network
+            </div>
+            <h1>Our Clients <span>& Partners</span></h1>
+            <p>Empowering businesses globally. We proudly collaborate with industry leaders, visionary enterprises, and top-tier hiring partners to deliver unparalleled technological excellence.</p>
+        </div>
+        
+        <div class="hero-visuals">
+            <div class="tech-dots td-top"></div>
+            <div class="tech-dots td-bottom"></div>
+            
+            <div class="glass-circle-bg"></div>
+            
+            <div class="floating-card fc-1">
+                <div class="fc-icon"><i class="fas fa-handshake"></i></div>
+                <div class="fc-text">
+                    <h4>100+ Partners</h4>
+                    <p>Worldwide Reach</p>
+                </div>
+            </div>
+            
+            <div class="floating-card fc-2">
+                <div class="fc-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="fc-text">
+                    <h4>Proven Success</h4>
+                    <p>Industry Leaders</p>
+                </div>
+            </div>
+        </div>
     </section>
 
     {% if perms.hin.add_client or perms.hin.change_client %}
     <!-- Management Form -->
     <div class="form-panel">
-        <h3>{% if editing_client %}Edit Client Details{% else %}Register New Client{% endif %}</h3>
+        <h3>
+            <i class="fas {% if editing_client %}fa-edit{% else %}fa-plus{% endif %}"></i>
+            {% if editing_client %}Edit Client Details{% else %}Register New Client{% endif %}
+        </h3>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-row">
-                <div class="form-group form-col">
+                <div class="form-group">
                     {{ form.company_name.label_tag }}
                     {{ form.company_name }}
                 </div>
-                <div class="form-group form-col">
+                <div class="form-group">
                     {{ form.company_type.label_tag }}
                     {{ form.company_type }}
                 </div>
             </div>
 
             <div class="form-row">
-                <div class="form-group form-col">
+                <div class="form-group">
                     {{ form.logo.label_tag }}
                     {{ form.logo }}
                     {% if editing_client and editing_client.logo %}
                     <small>Current file: {{ editing_client.logo.name }}</small>
                     {% endif %}
                 </div>
-                <div class="form-group form-col">
+                <div class="form-group">
                     {{ form.website_url.label_tag }}
                     {{ form.website_url }}
                 </div>
@@ -700,8 +954,9 @@
             </label>
 
             <!-- Buttons -->
-            <div class="form-actions" style="display: flex; gap: 15px; margin-top: 10px;">
+            <div class="form-actions">
                 <button type="submit" class="btn-save">
+                    <i class="fas fa-check"></i>
                     {% if editing_client %}Update Client{% else %}Save Client{% endif %}
                 </button>
                 {% if editing_client %}
@@ -713,19 +968,25 @@
     {% endif %}
 
     {% if is_management %}
-    <h2 class="section-title">Manage Clients</h2>
+    <div class="section-header">
+        <h2>Manage <span>Clients</span></h2>
+        <div class="accent-line"></div>
+    </div>
     {% endif %}
-    <br>
+
     <!-- Hiring Partners -->
-    <h2 class="section-title">Our Hiring Partners</h2>
+    <div class="section-header" style="margin-top: 40px;">
+        <h2>Our <span>Hiring Partners</span></h2>
+        <div class="accent-line"></div>
+    </div>
     <div class="clients-grid">
         {% for partner in hiring_partners %}
-        <div class="client-card">
+        <div class="client-card" style="animation-delay: {{ forloop.counter0 }}00ms;">
             <div class="logo-wrapper">
                 {% if partner.logo %}
                 <img src="{{ partner.logo.url }}" alt="{{ partner.company_name }} Logo">
                 {% else %}
-                <div style="color: var(--light-gray); font-size: 2.5rem;">🏢</div>
+                <i class="fas fa-building placeholder-icon"></i>
                 {% endif %}
             </div>
             <h4>{{ partner.company_name }}</h4>
@@ -733,40 +994,36 @@
             {% if perms.hin.change_client or perms.hin.delete_client %}
             <div class="card-actions">
                 <a href="?edit={{ partner.id }}" class="btn-action btn-edit">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                        </path>
-                    </svg>
-                    Edit
+                    <i class="fas fa-pen"></i> Edit
                 </a>
-                <button class="btn-action btn-delete" onclick="openDeleteModal(this)"
-                    data-delete-url="{% url 'hin:client_delete' pk=partner.id %}">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                        </path>
-                    </svg>
-                    Delete
+                <button class="btn-action btn-delete" onclick="openDeleteModal(this)" data-delete-url="{% url 'hin:client_delete' pk=partner.id %}">
+                    <i class="fas fa-trash"></i> Delete
                 </button>
             </div>
             {% endif %}
         </div>
         {% empty %}
-        <div class="empty-state">No hiring partners have been added to the system yet.</div>
+        <div class="empty-state">
+            <i class="fas fa-users-slash"></i>
+            <h4>No Partners Found</h4>
+            <p>No hiring partners have been added to the system yet.</p>
+        </div>
         {% endfor %}
     </div>
 
     <!-- Corporate Clients -->
-    <h2 class="section-title alt">Companies That Trust Us</h2>
+    <div class="section-header">
+        <h2>Companies That <span>Trust Us</span></h2>
+        <div class="accent-line"></div>
+    </div>
     <div class="clients-grid">
         {% for client in corporate_clients %}
-        <div class="client-card">
+        <div class="client-card" style="animation-delay: {{ forloop.counter0 }}00ms;">
             <div class="logo-wrapper">
                 {% if client.logo %}
                 <img src="{{ client.logo.url }}" alt="{{ client.company_name }} Logo">
                 {% else %}
-                <div style="color: var(--light-gray); font-size: 2.5rem;">🏢</div>
+                <i class="fas fa-briefcase placeholder-icon"></i>
                 {% endif %}
             </div>
             <h4>{{ client.company_name }}</h4>
@@ -774,27 +1031,20 @@
             {% if perms.hin.change_client or perms.hin.delete_client %}
             <div class="card-actions">
                 <a href="?edit={{ client.id }}" class="btn-action btn-edit">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                        </path>
-                    </svg>
-                    Edit
+                    <i class="fas fa-pen"></i> Edit
                 </a>
-                <button class="btn-action btn-delete" onclick="openDeleteModal(this)"
-                    data-delete-url="{% url 'hin:client_delete' pk=client.id %}">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                        </path>
-                    </svg>
-                    Delete
+                <button class="btn-action btn-delete" onclick="openDeleteModal(this)" data-delete-url="{% url 'hin:client_delete' pk=client.id %}">
+                    <i class="fas fa-trash"></i> Delete
                 </button>
             </div>
             {% endif %}
         </div>
         {% empty %}
-        <div class="empty-state">No corporate clients have been added to the system yet.</div>
+        <div class="empty-state">
+            <i class="fas fa-briefcase"></i>
+            <h4>No Clients Found</h4>
+            <p>No corporate clients have been added to the system yet.</p>
+        </div>
         {% endfor %}
     </div>
 </div>
@@ -807,18 +1057,15 @@
             <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
         </div>
         <div class="modal-body">
-            <div class="warning-icon">
-                <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
-                    </path>
-                </svg>
+            <div class="warning-icon-wrapper">
+                <i class="fas fa-exclamation-triangle"></i>
             </div>
-            Are you sure you want to delete this client? <br><strong>This action cannot be undone.</strong>
+            <p>Are you sure you want to delete this client?</p>
+            <p><strong>This action cannot be undone.</strong></p>
         </div>
         <div class="modal-footer">
             <button class="modal-btn modal-btn-cancel" onclick="closeDeleteModal()">Cancel</button>
-            <form id="deleteForm" method="POST" style="flex: 1; margin: 0;">
+            <form id="deleteForm" method="POST" style="flex: 1; margin: 0; display: flex;">
                 {% csrf_token %}
                 <button type="submit" class="modal-btn modal-btn-delete" style="width: 100%;">Yes, Delete</button>
             </form>
@@ -827,24 +1074,20 @@
 </div>
 
 <script>
-    // Function to open the modal with animation
     function openDeleteModal(btn) {
         var deleteUrl = btn.getAttribute('data-delete-url');
         var form = document.getElementById('deleteForm');
         form.action = deleteUrl;
 
-        // Show modal
         var modal = document.getElementById('deleteModalOverlay');
         modal.classList.add('show');
     }
 
-    // Function to close the modal with animation
     function closeDeleteModal() {
         var modal = document.getElementById('deleteModalOverlay');
         modal.classList.remove('show');
     }
 
-    // Close modal if user clicks outside the modal content
     window.onclick = function (event) {
         var modal = document.getElementById('deleteModalOverlay');
         if (event.target == modal) {
