@@ -38,7 +38,7 @@ def contact(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Thank you! Your enquiry has been submitted. We will contact you within 24 hours.')
-            return redirect('contact')
+            return redirect('hin:contact')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
@@ -94,18 +94,39 @@ def enquiry_toggle_read(request, pk):
     enquiry.is_read = not enquiry.is_read
     enquiry.save()
     messages.success(request, f'Enquiry marked as {"read" if enquiry.is_read else "unread"}')
-    return redirect('enquiry_detail', pk=enquiry.pk)
+    return redirect('hin:enquiry_detail', pk=enquiry.pk)
+
+from django.http import JsonResponse
+from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required, permission_required
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+import json
 
 @login_required
 @permission_required('hin.delete_contactenquiry', raise_exception=True)
+@require_http_methods(["POST"])
 def enquiry_delete(request, pk):
-    enquiry = get_object_or_404(ContactEnquiry, pk=pk)
-    if request.method == 'POST':
+    """
+    Delete an enquiry via AJAX POST request.
+    Returns JSON response with success/error message.
+    """
+    try:
+        enquiry = get_object_or_404(ContactEnquiry, pk=pk)
+        enquiry_name = f"{enquiry.first_name} {enquiry.last_name}"
         enquiry.delete()
-        messages.success(request, 'Enquiry deleted successfully.')
-        return redirect('enquiry_list')
-    return render(request, 'contact/enquiry_confirm_delete.html', {'enquiry': enquiry})
-
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'Enquiry from {enquiry_name} deleted successfully.',
+            'enquiry_id': pk
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': f'Error deleting enquiry: {str(e)}'
+        }, status=400)
 # ==================== SERVICES ====================
 
 def public_services(request):
@@ -459,7 +480,8 @@ def dashboard(request):
     total_clients = Client.objects.count()
     active_clients = Client.objects.filter(is_active=True).count()
     total_users = User.objects.count()
-    recent_enquiries = ContactEnquiry.objects.all()[:5]
+    recent_enquiries = ContactEnquiry.objects.order_by('-created_at')[:2]
+
     
     context = {
         'total_enquiries': total_enquiries,

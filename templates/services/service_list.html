@@ -5,27 +5,24 @@
 
 {% block content %}
 
-<div class="container-fluid py-5">
-
-    <div class="row">
-
-        <div class="col-lg-10 mx-auto">
+<div class="main-wrapper">
+    <div class="main-row">
+        <div class="content-area">
 
             <!-- FORM SECTION -->
 
             {% if perms.hin.add_service or perms.hin.change_service %}
-
-            <div class="card form-card mb-5">
+            <div class="card form-card">
 
                 <div class="card-header form-header">
 
                     <h3>
 
                         {% if editing_service %}
-                        <i class="fas fa-edit me-2"></i>
+                        <i class="fas fa-edit"></i>
                         Edit Service
                         {% else %}
-                        <i class="fas fa-plus-circle me-2"></i>
+                        <i class="fas fa-plus-circle"></i>
                         Add New Service
                         {% endif %}
 
@@ -38,10 +35,9 @@
                     <form method="post" enctype="multipart/form-data">
 
                         {% csrf_token %}
+                        <div class="form-grid">
 
-                        <div class="row">
-
-                            <div class="col-md-6 mb-4">
+                            <div class="field-box">
 
                                 <label class="form-label">
 
@@ -55,7 +51,7 @@
 
                             </div>
 
-                            <div class="col-md-6 mb-4">
+                            <div class="field-box">
 
                                 <label class="form-label">
 
@@ -70,8 +66,7 @@
                             </div>
 
                         </div>
-
-                        <div class="mb-4">
+                        <div class="field-section">
 
                             <label class="form-label">
 
@@ -84,8 +79,7 @@
                             {{ form.short_description }}
 
                         </div>
-
-                        <div class="mb-4">
+                        <div class="field-section">
 
                             <label class="form-label">
 
@@ -109,7 +103,7 @@
 
                         {% endif %}
 
-                        <div class="form-check mb-4">
+                        <div class="toggle-box">
 
                             {{ form.is_active }}
 
@@ -199,12 +193,11 @@
                         </form>
 
                     </div>
-
-                    <div class="row">
+                    <div class="services-grid">
 
                         {% for service in services %}
 
-                        <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="service-item">
 
                             <div class="service-card">
 
@@ -243,16 +236,11 @@
                                         {% endif %}
 
                                     </div>
-                                    <p class="service-desc">
-                                        {{ service.short_description }}
-                                    </p>
-                                    <button type="button" class="read-more-btn" data-bs-toggle="modal"
-                                        data-bs-target="#descModal{{service.id}}">
+                                    <div class="scroll-desc">
 
-                                        Read More →
+                                        {{ service.full_description }}
 
-                                    </button>
-
+                                    </div>
 
 
 
@@ -279,11 +267,13 @@
                                     {% endif %}
 
                                     {% if perms.hin.delete_service %}
-                                    <a href="{% url 'hin:service_delete' pk=service.id %}" class="delete-btn">
+                                    <button type="button" class="delete-btn" onclick="openDeleteModal(
+'deleteModal{{service.id}}'
+)">
 
                                         Delete
 
-                                    </a>
+                                    </button>
 
                                     {% endif %}
 
@@ -294,8 +284,7 @@
                         </div>
 
                         {% empty %}
-
-                        <div class="text-center py-5">
+                        <div class="empty-state">
 
                             <i class="fas fa-cogs empty-icon"></i>
 
@@ -310,43 +299,52 @@
                 </div>
                 {% for service in services %}
 
-                <div class="modal fade" id="descModal{{service.id}}" tabindex="-1">
+                <div class="delete-modal" id="deleteModal{{service.id}}">
 
-                    <div class="modal-dialog
-modal-lg
-modal-dialog-centered">
+                    <div class="delete-box">
 
-                        <div class="modal-content">
+                        <div class="delete-icon">
 
-                            <div class="modal-header">
+                            <i class="fas fa-trash-alt"></i>
 
-                                <h5>
+                        </div>
 
-                                    {{service.title}}
+                        <h3>
 
-                                </h5>
+                            Delete Service?
 
-                                <button type="button" class="btn-close" data-bs-dismiss="modal">
+                        </h3>
+
+                        <p>
+
+                            Are you sure you want to delete
+
+                            <b>{{service.title}}</b> ?
+
+                        </p>
+
+                        <div class="delete-actions">
+
+                            <button class="cancel-delete" onclick="
+closeDeleteModal(
+'deleteModal{{service.id}}'
+)
+">
+
+                                Cancel
+
+                            </button>
+                            <form method="post" action="{% url 'hin:service_delete' pk=service.id %}" style="flex:1;">
+
+                                {% csrf_token %}
+
+                                <button type="submit" class="confirm-delete">
+
+                                    Delete
 
                                 </button>
 
-                            </div>
-
-                            <div class="modal-body">
-
-                                {% if service.image %}
-
-                                <img src="{{service.image.url}}" class="modal-img">
-
-                                {% endif %}
-
-                                <p>
-
-                                    {{service.full_description}}
-
-                                </p>
-
-                            </div>
+                            </form>
 
                         </div>
 
@@ -366,24 +364,88 @@ modal-dialog-centered">
 
 <style>
     :root {
-        --primary-red: #b31217;
+        --primary-red: #C62828;
         --dark-red: #8e0e12;
-        --logo-blue: #0096c7;
-        --light-bg: #f7f9fc;
-        --dark: #111827;
-        --border: #e6e8ec;
+
+        --logo-blue: #0B3D91;
+        --light-blue: #f5f9ff;
+
+        --bg: #f7fafe;
+        --text: #1a1a2e;
+
+        --glass:
+            rgba(255, 255, 255, .75);
+    }
+
+    html,
+    body {
+
+        width: 100%;
+
+        overflow-x: hidden;
+    }
+
+    .content-area,
+    .card,
+    .service-main,
+    .form-card {
+
+        width: 100%;
+
+        max-width: 100%;
     }
 
     body {
+        background:
+            linear-gradient(135deg,
+                #ffffff 0%,
+                #f5f9ff 45%,
+                #eef7ff 100%);
+
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    body::before {
+        content: '';
+
+        position: absolute;
+
+        width: 420px;
+        height: 420px;
+
+        right: -120px;
+        top: -120px;
+
+        border-radius: 50%;
 
         background:
+            radial-gradient(circle,
+                rgba(11, 61, 145, .10),
+                transparent 70%);
 
-            linear-gradient(135deg,
+        z-index: -1;
+    }
 
-                #f7f9fc,
+    body::after {
+        content: '';
 
-                #eef5fb);
+        position: absolute;
 
+        width: 300px;
+        height: 300px;
+
+        left: -100px;
+        bottom: 0;
+
+        border-radius: 50%;
+
+        background:
+            radial-gradient(circle,
+                rgba(198, 40, 40, .08),
+                transparent 70%);
+
+        z-index: -1;
     }
 
     /* MAIN */
@@ -400,35 +462,64 @@ modal-dialog-centered">
 
             0 15px 40px rgba(0, 0, 0, .06);
 
+        background:
+            rgba(255, 255, 255, .82);
+
+        backdrop-filter:
+            blur(18px);
+
+        border:
+            1px solid rgba(255,
+                255,
+                255,
+                .6);
+
+        border-radius: 30px;
+
+        box-shadow:
+            0 25px 55px rgba(11,
+                61,
+                145,
+                .10);
     }
 
     /* HEADERS */
 
     .form-header {
+        background:
+            linear-gradient(135deg,
+                #C62828,
+                #8e0e12);
+
+        padding: 28px 35px;
+
+        position: relative;
+        overflow: hidden;
+    }
+
+    .form-header::after {
+        content: '';
+
+        position: absolute;
+
+        right: -20px;
+        top: -20px;
+
+        width: 120px;
+        height: 120px;
 
         background:
+            rgba(255, 255, 255, .08);
 
-            linear-gradient(135deg,
-
-                var(--primary-red),
-
-                var(--dark-red));
-
-        padding: 25px;
-
-        color: white;
-
+        border-radius: 50%;
     }
 
     .service-header {
-
         background:
-
             linear-gradient(135deg,
+                #0B3D91,
+                #163a75);
 
-                var(--dark),
-
-                var(--logo-blue));
 
         padding: 25px;
 
@@ -509,14 +600,18 @@ modal-dialog-centered">
     /* BUTTONS */
 
     .btn-save {
-
         background:
-
             linear-gradient(135deg,
+                #0B3D91,
+                #163a75);
 
-                var(--primary-red),
+        box-shadow:
+            0 14px 28px rgba(11,
+                61,
+                145,
+                .25);
 
-                var(--dark-red));
+        transition: .35s;
 
         color: white;
 
@@ -526,6 +621,17 @@ modal-dialog-centered">
 
         border-radius: 15px;
 
+    }
+
+    .btn-save:hover {
+
+        transform:
+            translateY(-3px);
+
+        background:
+            linear-gradient(135deg,
+                #C62828,
+                #8e0e12);
     }
 
     .btn-cancel {
@@ -554,6 +660,30 @@ modal-dialog-centered">
 
     }
 
+    .search-box input {
+
+        background: white;
+
+        border: none;
+
+        height: 60px;
+
+        padding-left: 24px;
+
+        box-shadow:
+            0 10px 20px rgba(0,
+                0,
+                0,
+                .05);
+    }
+
+    .search-box button {
+
+        width: 65px;
+
+        background: #0B3D91;
+    }
+
     .search-box button {
 
         width: 60px;
@@ -568,33 +698,71 @@ modal-dialog-centered">
 
     }
 
+    .field-section {
+        margin-bottom: 25px;
+    }
+
     .service-card {
 
         background: white;
 
-        border-radius: 25px;
+        border-radius: 28px;
 
-        overflow: visible;
+        overflow: hidden;
 
+        border:
+            1px solid #edf2f7;
+
+        position: relative;
+
+        box-shadow:
+            0 10px 30px rgba(0,
+                0,
+                0,
+                .05);
+
+        transition: .4s;
         height: 100%;
 
         display: flex;
 
         flex-direction: column;
 
-        min-height: 650px;
+    }
 
-        box-shadow:
-            0 12px 35px rgba(0, 0, 0, .06);
+    .empty-state {
+        text-align: center;
+        padding: 60px 0;
+    }
 
-        transition: .4s;
+    .service-card::before {
 
+        content: '';
+
+        position: absolute;
+
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 5px;
+
+        background:
+            linear-gradient(90deg,
+                #C62828,
+                #0B3D91);
     }
 
     .service-card:hover {
 
         transform:
-            translateY(-10px);
+            translateY(-12px);
+
+        box-shadow:
+            0 25px 45px rgba(11,
+                61,
+                145,
+                .14);
     }
 
     .service-image {
@@ -610,12 +778,15 @@ modal-dialog-centered">
 
         padding: 25px;
 
-        flex: 1;
-
         display: flex;
 
         flex-direction: column;
+
+        height: 100%;
+
     }
+
+
 
     .top-row {
 
@@ -647,19 +818,38 @@ modal-dialog-centered">
 
     .read-more-btn {
 
-        background: none;
+        display: inline-flex;
 
-        border: none;
+        align-items: center;
 
-        padding: 0;
+        gap: 8px;
 
-        margin-top: 10px;
+        background:
+            rgba(11,
+                61,
+                145,
+                .08);
 
-        font-weight: 600;
+        padding: 10px 18px;
 
-        color: var(--logo-blue);
+        border-radius: 40px;
 
-        text-align: left;
+        font-weight: 700;
+
+        color: #0B3D91;
+
+        transition: .3s;
+    }
+
+    .read-more-btn:hover {
+
+        background: #0B3D91;
+
+        color: white;
+
+        transform:
+            translateY(-2px);
+
     }
 
     .date {
@@ -682,24 +872,54 @@ modal-dialog-centered">
         margin-top: auto;
     }
 
-    .modal-content {
 
-        border-radius: 25px;
+    .modal-image-wrap {
+
+        border-radius: 20px;
 
         overflow: hidden;
+
+        margin-bottom: 25px;
     }
 
     .modal-img {
 
         width: 100%;
 
-        height: 250px;
+        height: 320px;
 
         object-fit: cover;
 
-        border-radius: 15px;
+        display: block;
+    }
 
-        margin-bottom: 20px;
+    .modal-desc {
+
+        font-size: 16px;
+
+        line-height: 1.9;
+
+        color: #555;
+    }
+
+    @keyframes popup {
+
+        from {
+
+            opacity: 0;
+
+            transform:
+                scale(.9);
+        }
+
+        to {
+
+            opacity: 1;
+
+            transform:
+                scale(1);
+        }
+
     }
 
     .image-placeholder {
@@ -850,21 +1070,6 @@ modal-dialog-centered">
 
 
 
-    .modal-content {
-
-        border: none;
-
-        border-radius: 25px;
-
-        overflow: hidden;
-
-        box-shadow:
-            0 20px 50px rgba(0, 0, 0, .12);
-
-        animation:
-            popupShow .25s ease;
-
-    }
 
     @keyframes popupShow {
 
@@ -894,29 +1099,10 @@ modal-dialog-centered">
 
         overflow-y: auto;
 
-        padding: 25px;
+        padding: 30px;
     }
 
 
-    .modal {
-
-        z-index: 99999;
-    }
-
-    .modal-dialog {
-
-        max-width: 850px;
-
-        margin: auto;
-    }
-
-    .modal-content {
-
-        position: relative;
-
-        overflow: hidden;
-
-    }
 
     .modal-body {
 
@@ -925,268 +1111,1004 @@ modal-dialog-centered">
         overflow-y: auto;
 
     }
-    /* ================= RESPONSIVE ================= */
 
-/* Large tablets */
 
-@media (max-width:992px){
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-.container-fluid{
+    .main-wrapper {
 
-padding:20px;
-}
+        max-width: 1600px;
 
-.col-lg-10{
+        margin: auto;
 
-max-width:100%;
-}
+        padding: 40px 55px;
 
-.service-card{
+        overflow-x: hidden;
 
-min-height:auto;
-}
+    }
 
-.service-image,
-.image-placeholder{
+    .content-area {
 
-height:200px;
-}
+        width: 100%;
 
-.card-body{
+        max-width: 100%;
 
-padding:25px;
-}
+        margin: 0 auto;
+    }
 
-.modal-dialog{
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+    }
 
-max-width:95%;
-}
+    .field-box {
+        width: 100%;
+    }
 
-}
 
-/* Tablets */
+    .service-item {
+        width: 100%;
+    }
 
-@media (max-width:768px){
+    .toggle-box {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 12px;
 
-.form-header,
-.service-header{
+        margin: 30px 0;
 
-padding:20px;
-}
+        padding: 15px 20px;
 
-.service-header{
+        width: fit-content;
 
-flex-direction:column;
+        background: #f8fafc;
 
-gap:15px;
+        border: 1px solid #e5e7eb;
 
-text-align:center;
-}
+        border-radius: 14px;
+    }
 
-.total-badge{
+    .toggle-box input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
 
-width:100%;
+        accent-color: #b31217;
 
-text-align:center;
-}
+        cursor: pointer;
 
-.search-box form{
+        margin: 0;
+    }
 
-flex-direction:column;
-}
+    .toggle-box label {
+        margin: 0;
 
-.search-box button{
+        font-weight: 600;
 
-width:100%;
+        font-size: 15px;
 
-height:55px;
-}
+        cursor: pointer;
+    }
 
-.action-buttons{
+    .field-box input[type="file"] {
 
-flex-direction:column;
-}
+        padding: 14px;
 
-.edit-btn,
-.delete-btn{
+        background: white;
 
-width:100%;
-}
+        border: 1px solid #e5e7eb;
 
-.service-card{
+        border-radius: 15px;
 
-min-height:auto;
-}
+        height: 56px;
 
-.service-content{
+        display: flex;
 
-padding:20px;
-}
+        align-items: center;
+    }
 
-.service-image,
-.image-placeholder{
+    .service-main,
+    .form-card {
 
-height:180px;
-}
+        width: 100%;
 
-.modal-img{
+        max-width: 100%;
+    }
 
-height:220px;
-}
+    .services-grid {
 
-.modal-body{
+        display: grid;
 
-padding:20px;
-}
+        width: 100%;
 
-.modal-dialog{
+        grid-template-columns:
+            repeat(auto-fit,
+                minmax(420px, 1fr));
 
-margin:15px;
-}
+        gap: 28px;
 
-}
+        align-items: start;
+    }
 
-/* Mobile */
+    .service-item {
 
-@media (max-width:576px){
+        width: 100%;
 
-.container-fluid{
+        height: 100%;
+    }
 
-padding:10px;
-}
+    .service-card {
 
-.card{
+        height: 100%;
 
-border-radius:18px;
-}
+        display: flex;
 
-.card-body{
+        flex-direction: column;
+    }
 
-padding:18px;
-}
+    .card {
+        background: white;
+        border-radius: 25px;
+        overflow: hidden;
+        box-shadow:
+            0 18px 45px rgba(0, 0, 0, .07);
+    }
 
-.form-header h3,
-.service-header h3{
+    .custom-modal {
 
-font-size:20px;
-}
+        position: fixed;
 
-.form-label{
+        inset: 0;
 
-font-size:14px;
-}
+        background:
+            rgba(0, 0, 0, .65);
 
-input,
-textarea{
+        backdrop-filter:
+            blur(8px);
 
-padding:12px;
+        display: none;
 
-font-size:14px;
-}
+        justify-content: center;
 
-.btn-save,
-.btn-cancel{
+        align-items: center;
 
-width:100%;
+        padding: 30px;
 
-margin-bottom:10px;
-}
+        z-index: 9999;
+    }
 
-.service-card{
+    .custom-modal-dialog {
+        width: 100%;
+        max-width: 900px;
+    }
 
-border-radius:20px;
-}
+    .custom-modal-content {
 
-.service-image,
-.image-placeholder{
+        background: white;
 
-height:160px;
-}
+        border-radius: 30px;
 
-.service-content{
+        overflow: hidden;
 
-padding:16px;
-}
+        animation: popup .3s ease;
 
-.top-row{
+        box-shadow:
+            0 30px 60px rgba(0,
+                0,
+                0,
+                .18);
+    }
 
-flex-direction:column;
+    .modal-top {
 
-gap:10px;
-}
+        display: flex;
 
-.active,
-.inactive{
+        justify-content:
+            space-between;
 
-width:fit-content;
-}
+        align-items: center;
 
-.service-desc{
+        padding: 22px 28px;
 
-min-height:auto;
+        background:
+            linear-gradient(135deg,
+                #0B3D91,
+                #163a75);
 
-font-size:14px;
-}
+        color: white;
+    }
 
-.read-more-btn{
+    .modal-top h3 {
 
-font-size:14px;
-}
+        font-size: 24px;
 
-.action-buttons{
+        margin: 0;
+    }
 
-padding:15px;
-}
+    .close-btn {
 
-.edit-btn,
-.delete-btn{
+        width: 42px;
 
-padding:10px;
-}
+        height: 42px;
 
-.modal-dialog{
+        border: none;
 
-margin:10px;
-}
+        border-radius: 50%;
 
-.modal-img{
+        background:
+            rgba(255,
+                255,
+                255,
+                .15);
 
-height:180px;
-}
+        color: white;
 
-.modal-body{
+        font-size: 18px;
 
-padding:15px;
-}
+        cursor: pointer;
+    }
 
-}
 
-/* Small mobile */
+    .delete-modal {
 
-@media (max-width:380px){
+        position: fixed;
 
-.form-header h3,
-.service-header h3{
+        inset: 0;
 
-font-size:18px;
-}
+        display: none;
 
-.total-badge{
+        justify-content: center;
 
-font-size:13px;
-}
+        align-items: center;
 
-.service-image,
-.image-placeholder{
+        background:
+            rgba(10, 15, 30, .65);
 
-height:140px;
-}
+        backdrop-filter:
+            blur(12px);
 
-.modal-img{
+        z-index: 99999;
 
-height:150px;
-}
+        padding: 20px;
+    }
 
-}
+    .delete-box {
+
+        width: 100%;
+
+        max-width: 470px;
+
+        padding: 45px 35px;
+
+        text-align: center;
+
+        border-radius: 32px;
+
+        background:
+            rgba(255, 255, 255, .92);
+
+        backdrop-filter:
+            blur(18px);
+
+        border:
+            1px solid rgba(255,
+                255,
+                255,
+                .7);
+
+        box-shadow:
+            0 35px 80px rgba(0,
+                0,
+                0,
+                .18);
+
+        position: relative;
+
+        overflow: hidden;
+
+        animation:
+            deletePop .35s ease;
+    }
+
+    .delete-box::before {
+
+        content: '';
+
+        position: absolute;
+
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 6px;
+
+        background:
+            linear-gradient(90deg,
+                #C62828,
+                #0B3D91);
+    }
+
+    .delete-icon {
+
+        width: 95px;
+
+        height: 95px;
+
+        margin: auto auto 22px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        border-radius: 50%;
+
+        background:
+            linear-gradient(135deg,
+                rgba(198, 40, 40, .12),
+                rgba(11, 61, 145, .10));
+
+        font-size: 38px;
+
+        color: #C62828;
+
+        box-shadow:
+            0 15px 35px rgba(198,
+                40,
+                40,
+                .15);
+    }
+
+    .delete-box h3 {
+
+        font-size: 32px;
+
+        margin-bottom: 12px;
+
+        color: #111827;
+    }
+
+    .delete-box p {
+
+        font-size: 16px;
+
+        line-height: 1.8;
+
+        color: #64748b;
+
+        margin-bottom: 28px;
+    }
+
+    .delete-actions {
+
+        display: flex;
+
+        gap: 16px;
+    }
+
+    .cancel-delete {
+
+        flex: 1;
+
+        padding: 16px;
+
+        border: none;
+
+        border-radius: 16px;
+
+        background: #eef2f7;
+
+        font-weight: 700;
+
+        transition: .3s;
+    }
+
+    .cancel-delete:hover {
+
+        background: #dbe4ee;
+
+        transform:
+            translateY(-2px);
+    }
+
+    .confirm-delete {
+
+        width: 100%;
+
+        padding: 16px;
+
+        border: none;
+
+        border-radius: 16px;
+
+        background:
+            linear-gradient(135deg,
+                #C62828,
+                #8e0e12);
+
+        color: white;
+
+        font-weight: 700;
+
+        box-shadow:
+            0 15px 30px rgba(198,
+                40,
+                40,
+                .28);
+
+        transition: .3s;
+    }
+
+    .confirm-delete:hover {
+
+        transform:
+            translateY(-3px);
+
+        box-shadow:
+            0 20px 35px rgba(198,
+                40,
+                40,
+                .35);
+    }
+
+    @keyframes deletePop {
+
+        from {
+
+            opacity: 0;
+
+            transform:
+                scale(.85) translateY(20px);
+        }
+
+        to {
+
+            opacity: 1;
+
+            transform:
+                scale(1) translateY(0);
+        }
+    }
+
+    .scroll-desc {
+
+        margin-top: 15px;
+
+        height: 120px;
+
+        min-height: 120px;
+
+        max-height: 120px;
+
+        overflow-y: auto;
+
+        padding: 15px 10px 0 0;
+
+        line-height: 1.8;
+
+        color: #555;
+
+        border-top: 1px solid #eee;
+
+        flex-shrink: 0;
+
+    }
+
+    /* Scroll */
+
+    .scroll-desc::-webkit-scrollbar {
+
+        width: 5px;
+
+    }
+
+    .scroll-desc::-webkit-scrollbar-thumb {
+
+        background: #0B3D91;
+
+        border-radius: 20px;
+
+    }
+
+    .scroll-desc::-webkit-scrollbar-track {
+
+        background: #edf2f7;
+
+        border-radius: 20px;
+
+    }
+
+    /* ===== LARGE DESKTOP ===== */
+
+    @media (min-width:1600px) {
+
+        .content-area {
+            max-width: 1550px;
+        }
+
+        .services-grid {
+            grid-template-columns:
+                repeat(auto-fit,
+                    minmax(420px, 1fr));
+        }
+
+        .service-image,
+        .image-placeholder {
+            height: 280px;
+        }
+
+    }
+
+    /* ===== LAPTOP ===== */
+
+    @media (max-width:1200px) {
+
+        .main-wrapper {
+            padding: 30px;
+        }
+
+        .services-grid {
+            grid-template-columns:
+                repeat(2,
+                    1fr);
+        }
+
+        .service-desc {
+            min-height: auto;
+        }
+
+    }
+
+    /* ===== TABLET ===== */
+
+    @media (max-width:992px) {
+
+        .main-wrapper {
+
+            padding: 25px;
+        }
+
+        .services-grid {
+
+            grid-template-columns: 1fr;
+        }
+
+
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+
+        .service-header {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+
+        .total-badge {
+            width: 100%;
+            text-align: center;
+        }
+
+        .modal-img {
+            height: 240px;
+        }
+
+    }
+
+    /* ===== MOBILE ===== */
+
+    @media (max-width:768px) {
+
+        .main-wrapper {
+            padding: 18px;
+        }
+
+        .services-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .search-box form {
+            flex-direction: column;
+        }
+
+        .search-box button {
+            width: 100%;
+            height: 55px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .edit-btn,
+        .delete-btn {
+            width: 100%;
+        }
+
+        .service-image,
+        .image-placeholder {
+            height: 210px;
+        }
+
+        .top-row {
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .active,
+        .inactive {
+            width: fit-content;
+        }
+
+        .modal-top {
+            padding: 18px;
+        }
+
+        .modal-top h3 {
+            font-size: 20px;
+        }
+
+        .modal-img {
+            height: 200px;
+        }
+
+        .delete-actions {
+            flex-direction: column;
+        }
+
+    }
+
+    /* ===== SMALL MOBILE ===== */
+
+    @media (max-width:576px) {
+
+        .main-wrapper {
+            padding: 12px;
+        }
+
+        .card {
+            border-radius: 20px;
+        }
+
+        .card-body {
+            padding: 18px;
+        }
+
+        .form-header,
+        .service-header {
+            padding: 18px;
+        }
+
+        .form-header h3,
+        .service-header h3 {
+            font-size: 18px;
+        }
+
+        .service-image,
+        .image-placeholder {
+            height: 180px;
+        }
+
+        .service-content {
+            padding: 16px;
+        }
+
+        .read-more-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-save,
+        .btn-cancel {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .toggle-box {
+            width: 100%;
+        }
+
+        .custom-modal {
+            padding: 12px;
+        }
+
+        .custom-modal-content {
+            border-radius: 20px;
+        }
+
+        .modal-body {
+            padding: 18px;
+        }
+
+        .modal-img {
+            height: 170px;
+        }
+
+        .delete-box {
+            padding: 30px 20px;
+            border-radius: 24px;
+        }
+
+        .delete-box h3 {
+            font-size: 24px;
+        }
+
+        .delete-icon {
+            width: 75px;
+            height: 75px;
+            font-size: 30px;
+        }
+
+    }
+
+    /* ===== VERY SMALL PHONES ===== */
+
+    @media (max-width:380px) {
+
+        .main-wrapper {
+            padding: 8px;
+        }
+
+        .service-image,
+        .image-placeholder {
+            height: 150px;
+        }
+
+        .total-badge {
+            font-size: 12px;
+            padding: 8px 12px;
+        }
+
+        .modal-img {
+            height: 140px;
+        }
+
+        .delete-box {
+            padding: 22px 15px;
+        }
+
+    }
+
+    /* ===== LANDSCAPE ===== */
+
+    @media (max-height:700px) {
+
+        .custom-modal,
+        .delete-modal {
+            align-items: flex-start;
+            overflow-y: auto;
+            padding-top: 40px;
+        }
+
+        .modal-body {
+            max-height: none;
+        }
+
+    }
+
+    /* ===== RESPONSIVE ===== */
+
+    @media(max-width:1200px) {
+
+        .main-wrapper {
+            padding: 28px;
+        }
+
+        .services-grid {
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+        }
+
+    }
+
+    @media(max-width:992px) {
+
+        .main-wrapper {
+            padding: 22px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .services-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .service-header {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+
+        .total-badge {
+            width: 100%;
+        }
+
+        .search-box form {
+            flex-direction: column;
+        }
+
+        .search-box button {
+            width: 100%;
+            height: 55px;
+        }
+
+    }
+
+    @media(max-width:768px) {
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .top-row {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .edit-btn,
+        .delete-btn {
+            width: 100%;
+        }
+
+        .service-image,
+        .image-placeholder {
+            height: 200px;
+        }
+
+        .modal-img {
+            height: 200px;
+        }
+
+        .delete-actions {
+            flex-direction: column;
+        }
+
+    }
+
+    @media(max-width:576px) {
+
+        .main-wrapper {
+            padding: 12px;
+        }
+
+        .card {
+            border-radius: 20px;
+        }
+
+        .form-header,
+        .service-header {
+            padding: 18px;
+        }
+
+        .form-header h3,
+        .service-header h3 {
+            font-size: 18px;
+        }
+
+        .card-body {
+            padding: 16px;
+        }
+
+        input,
+        textarea {
+            font-size: 14px;
+            padding: 12px;
+        }
+
+        .btn-save,
+        .btn-cancel {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .toggle-box {
+            width: 100%;
+        }
+
+        .read-more-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .service-image,
+        .image-placeholder {
+            height: 170px;
+        }
+
+        .modal-img {
+            height: 160px;
+        }
+
+        .delete-box {
+            padding: 25px 18px;
+        }
+
+    }
+
+    @media(max-width:380px) {
+
+        .main-wrapper {
+            padding: 8px;
+        }
+
+        .service-image,
+        .image-placeholder {
+            height: 140px;
+        }
+
+        .modal-img {
+            height: 130px;
+        }
+
+        .total-badge {
+            font-size: 12px;
+        }
+
+    }
+
+    @media(max-height:700px) {
+
+        .custom-modal,
+        .delete-modal {
+
+            align-items: flex-start;
+
+            overflow-y: auto;
+
+            padding-top: 30px;
+        }
+
+    }
 </style>
+<script>
+
+
+    window.onclick = function (e) {
+
+        document
+            .querySelectorAll(
+                '.custom-modal'
+            )
+
+            .forEach(modal => {
+
+                if (e.target === modal) {
+
+                    modal.style.display = 'none';
+
+                    document.body.style.overflow = 'auto';
+
+                }
+
+            });
+
+    }
+    function openDeleteModal(id) {
+
+        document.getElementById(id)
+            .style.display = 'flex';
+
+    }
+
+    function closeDeleteModal(id) {
+
+        document.getElementById(id)
+            .style.display = 'none';
+
+    }
+</script>
 {% endblock %}

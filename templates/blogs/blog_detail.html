@@ -4,54 +4,740 @@
 {% block title %}{{ blog.title }}{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <article>
-                <h1 class="mb-3">{{ blog.title }}</h1>
-                <p class="text-muted">
-                    By {{ blog.author }} | {{ blog.created_at|date:"d M Y" }} | Category: {{ blog.category }}
-                </p>
-                
-                {% if blog.featured_image %}
-                <img src="{{ blog.featured_image.url }}" class="img-fluid rounded mb-4" alt="{{ blog.title }}">
-                {% endif %}
-                
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #f6f8fc;
+        color: #1a1a2e;
+    }
+
+    :root {
+        --primary-red: #C62828;
+        --dark-red: #8e0e12;
+        --logo-blue: #0B3D91;
+        --light-blue: #f5f9ff;
+        --bg: #f7fafe;
+        --text: #1a1a2e;
+        --border-radius-card: 35px;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+
+    /* Navigation Bar */
+    .hint-navbar {
+        background: white;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        padding: 18px 0;
+        border-bottom: 1px solid #eef2f8;
+    }
+
+    .nav-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .logo-area h1 {
+        font-size: 28px;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--logo-blue), var(--primary-red));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        letter-spacing: -0.5px;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 28px;
+        font-weight: 600;
+    }
+
+    .nav-links a {
+        text-decoration: none;
+        color: #2c3e58;
+        font-size: 16px;
+        transition: 0.2s;
+    }
+
+    .nav-links a:hover {
+        color: var(--primary-red);
+    }
+
+    /* Hero Section */
+    .blog-hero {
+        position: relative;
+        height: 520px;
+        border-radius: 0 0 50px 50px;
+        overflow: hidden;
+        margin-bottom: 0;
+    }
+
+    .blog-hero img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.78));
+    }
+
+    .hero-content {
+        position: absolute;
+        bottom: 60px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 85%;
+        max-width: 1200px;
+        z-index: 10;
+    }
+
+    .category-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 22px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(12px);
+        color: white;
+        border-radius: 50px;
+        margin-bottom: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .hero-title {
+        color: white;
+        font-size: 54px;
+        font-weight: 800;
+        line-height: 1.2;
+        max-width: 850px;
+        letter-spacing: -0.02em;
+    }
+
+    .meta-row {
+        display: flex;
+        gap: 28px;
+        margin-top: 25px;
+        flex-wrap: wrap;
+    }
+
+    .meta-item {
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+        backdrop-filter: blur(4px);
+    }
+
+    /* Article Card */
+    .article-box {
+        background: white;
+        margin-top: -90px;
+        position: relative;
+        z-index: 20;
+        border-radius: 35px;
+        padding: 55px;
+        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.08);
+    }
+
+    .author-box {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 25px 30px;
+        background: var(--light-blue);
+        border-radius: 20px;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .author-left {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+    }
+
+    .author-icon {
+        width: 65px;
+        height: 65px;
+        background: linear-gradient(135deg, var(--logo-blue), var(--primary-red));
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 26px;
+    }
+
+    .author-left h5 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .author-left span {
+        color: #5a687c;
+        font-size: 0.85rem;
+    }
+
+    .detail-badge {
+        background: rgba(11, 61, 145, 0.08);
+        padding: 8px 20px;
+        border-radius: 40px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .blog-content {
+        font-size: 18px;
+        line-height: 1.85;
+        color: #2c3e50;
+    }
+
+    .blog-content p {
+        margin-bottom: 28px;
+    }
+
+    .blog-content h3 {
+        font-weight: 700;
+        margin: 35px 0 15px;
+        color: var(--logo-blue);
+    }
+
+    .blog-content ul {
+        margin-bottom: 30px;
+        list-style-type: none;
+        padding-left: 0;
+    }
+
+    .blog-content li {
+        margin-bottom: 12px;
+    }
+
+    .blog-content li i {
+        color: var(--primary-red);
+        margin-right: 12px;
+    }
+
+    /* Article Details Box */
+    .article-details-box {
+        background: #f8fafc;
+        padding: 25px 28px;
+        border-radius: 28px;
+        margin: 45px 0 20px;
+        border-left: 6px solid var(--primary-red);
+    }
+
+    .article-details-box h4 {
+        font-weight: 800;
+        margin-bottom: 20px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 12px;
+        font-size: 1rem;
+    }
+
+    .details-grid span:first-child {
+        font-weight: 700;
+    }
+
+    .share-link {
+        margin-top: 20px;
+        border-top: 1px solid #e2e8f0;
+        padding-top: 15px;
+    }
+
+    .share-link a {
+        color: var(--logo-blue);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    /* Action Buttons */
+    .action-area {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 45px;
+        padding-top: 30px;
+        border-top: 1px solid #e9edf2;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .btn-custom {
+        padding: 14px 32px;
+        border-radius: 40px;
+        text-decoration: none;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.95rem;
+    }
+
+    .back-btn {
+        background: var(--logo-blue);
+        color: white;
+        box-shadow: 0 5px 12px rgba(11, 61, 145, 0.2);
+    }
+
+    .edit-btn {
+        background: linear-gradient(90deg, var(--primary-red), var(--dark-red));
+        color: white;
+    }
+
+    .btn-custom:hover {
+        transform: translateY(-4px);
+        color: white;
+        filter: brightness(1.02);
+        box-shadow: 0 15px 25px -10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Recent Articles */
+    .recent-title {
+        font-size: 34px;
+        font-weight: 800;
+        margin: 70px 0 30px;
+        letter-spacing: -0.5px;
+        background: linear-gradient(120deg, #1a2a3a, var(--logo-blue));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .post-card {
+        display: flex;
+        background: white;
+        border-radius: 28px;
+        overflow: hidden;
+        margin-bottom: 28px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s;
+        border: 1px solid #f0f2f5;
+        cursor: pointer;
+    }
+
+    .post-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.15);
+    }
+
+    .post-img {
+        width: 280px;
+        height: 200px;
+        overflow: hidden;
+        background: #eef2fa;
+    }
+
+    .post-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: 0.4s;
+    }
+
+    .post-card:hover .post-img img {
+        transform: scale(1.03);
+    }
+
+    .post-content {
+        padding: 28px 32px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        flex: 1;
+    }
+
+    .post-content h4 {
+        font-size: 1.45rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: #0f172a;
+    }
+
+    .read-btn {
+        display: inline-block;
+        margin-top: 15px;
+        color: var(--primary-red);
+        font-weight: 700;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: 0.2s;
+    }
+
+    .read-btn:hover {
+        color: var(--dark-red);
+        transform: translateX(5px);
+        display: inline-block;
+    }
+
+    /* Sidebar Styles */
+    .sidebar-wrapper {
+        position: sticky;
+        top: 30px;
+    }
+
+    .side-card {
+        background: white;
+        padding: 30px;
+        border-radius: 28px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+        margin-bottom: 25px;
+    }
+
+    .side-title {
+        font-size: 22px;
+        font-weight: 800;
+        margin-bottom: 25px;
+        position: relative;
+        color: #12213a;
+    }
+
+    .side-title:after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -10px;
+        width: 50px;
+        height: 4px;
+        background: var(--primary-red);
+        border-radius: 2px;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px 0;
+        border-bottom: 1px solid #f0f2f5;
+    }
+
+    .info-item:last-child {
+        border-bottom: none;
+    }
+
+    .info-icon {
+        width: 45px;
+        height: 45px;
+        background: linear-gradient(135deg, var(--logo-blue), var(--primary-red));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 18px;
+    }
+
+    .info-label {
+        font-size: 13px;
+        color: #6c757d;
+    }
+
+    .info-value {
+        font-weight: 700;
+        color: #12213a;
+    }
+
+    .social-share {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+
+    .social-share a {
+        width: 45px;
+        height: 45px;
+        background: #f3f6fd;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        font-size: 20px;
+        transition: all 0.3s;
+    }
+
+    .social-share a:hover {
+        transform: translateY(-3px);
+    }
+
+    .fb { color: #1877F2; }
+    .tw { color: #1DA1F2; }
+    .li { color: #0A66C2; }
+    .wh { color: #25D366; }
+
+    /* Footer */
+    footer {
+        margin-top: 90px;
+        background: #0f172a;
+        color: #94a3b8;
+        padding: 32px 0;
+        text-align: center;
+        font-size: 0.85rem;
+        border-radius: 30px 30px 0 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .hero-title { font-size: 42px; }
+        .article-box { padding: 35px; }
+        .post-img { width: 220px; }
+    }
+
+    @media (max-width: 768px) {
+        .blog-hero { height: 420px; }
+        .hero-title { font-size: 30px; }
+        .article-box { padding: 28px; margin-top: -55px; }
+        .post-card { flex-direction: column; }
+        .post-img { width: 100%; height: 180px; }
+        .action-area { flex-direction: column; }
+        .btn-custom { justify-content: center; }
+        .author-box { flex-direction: column; align-items: flex-start; }
+        .nav-container { flex-direction: column; gap: 12px; }
+        .nav-links { gap: 20px; flex-wrap: wrap; justify-content: center; }
+        .sidebar-wrapper { position: static; margin-top: 30px; }
+    }
+
+    @media (max-width: 576px) {
+        .hero-title { font-size: 24px; }
+        .blog-hero { height: 350px; }
+        .hero-content { width: 90%; bottom: 30px; }
+        .category-pill { padding: 6px 14px; font-size: 0.75rem; }
+        .meta-row { gap: 12px; font-size: 12px; }
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .article-box, .side-card, .post-card {
+        animation: fadeInUp 0.5s ease forwards;
+    }
+</style>
+
+
+<!-- Hero Section -->
+{% if blog.featured_image %}
+<section class="blog-hero">
+    <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <div class="category-pill">
+            <i class="fa-solid fa-code"></i> {{ blog.category }}
+        </div>
+        <h1 class="hero-title">{{ blog.title }}</h1>
+        <div class="meta-row">
+            <div class="meta-item"><i class="fa-solid fa-user"></i> {{ blog.author }}</div>
+            <div class="meta-item"><i class="fa-regular fa-calendar"></i> {{ blog.created_at|date:"d M Y" }}</div>
+            <div class="meta-item"><i class="fa-regular fa-clock"></i> {{ blog.read_time|default:"5" }} min read</div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<div class="container">
+    <div class="row g-5">
+        <!-- Main Content Column -->
+        <div class="col-lg-8">
+            <div class="article-box">
+                <!-- Author Box -->
+                <div class="author-box">
+                    <div class="author-left">
+                        <div class="author-icon">
+                            <i class="fa-solid fa-user-tie"></i>
+                        </div>
+                        <div>
+                            <h5>{{ blog.author }}</h5>
+                            <span>Article Author</span>
+                        </div>
+                    </div>
+                    <div class="detail-badge">
+                        <i class="fa-regular fa-folder-open"></i> {{ blog.category }} &nbsp;|&nbsp; 
+                        <i class="fa-regular fa-newspaper"></i> {{ blog.created_at|date:"d M Y" }}
+                    </div>
+                </div>
+
+                <!-- Blog Content -->
                 <div class="blog-content">
                     {{ blog.content|linebreaks }}
                 </div>
-            </article>
-            
-            <hr class="my-5">
-            
-            <div class="d-flex justify-content-between">
-                <a href="{% url 'hin:blog_list' %}" class="btn btn-secondary">← Back to Blogs</a>
-                {% if perms.hin.change_blog %}
-                <a href="{% url 'hin:blog_manage' %}?edit={{ blog.id }}" class="btn btn-warning">Edit Blog</a>
-                {% endif %}
-            </div>
-            
-            {% if recent_blogs %}
-            <div class="mt-5">
-                <h3>Recent Posts</h3>
-                <div class="row">
-                    {% for recent in recent_blogs %}
-                    <div class="col-md-4">
-                        <div class="card">
-                            {% if recent.featured_image %}
-                            <img src="{{ recent.featured_image.url }}" class="card-img-top" alt="{{ recent.title }}" style="height: 120px; object-fit: cover;">
-                            {% endif %}
-                            <div class="card-body">
-                                <h6 class="card-title">{{ recent.title|truncatewords:5 }}</h6>
-                                <a href="{% url 'hin:blog_detail' slug=recent.slug %}" class="btn btn-sm btn-primary">Read</a>
-                            </div>
-                        </div>
+
+                <!-- Article Details Box (matches image design) -->
+                <div class="article-details-box">
+                    <h4><i class="fa-regular fa-rectangle-list"></i> Article Details</h4>
+                    <div class="details-grid">
+                        <span>Category:</span> <span>{{ blog.category }}</span>
+                        <span>Author:</span> <span>{{ blog.author }}</span>
+                        <span>Published On:</span> <span>{{ blog.created_at|date:"d M Y" }}</span>
+                        <span>Reading Time:</span> <span>{{ blog.read_time|default:"5" }} mins</span>
                     </div>
-                    {% endfor %}
+                    <div class="share-link">
+                        <a href="#" onclick="shareArticle()"><i class="fa-regular fa-share-from-square"></i> Share this article</a>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-area">
+                    <a href="{% url 'hin:blog_list' %}" class="btn-custom back-btn">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Blogs
+                    </a>
+                    {% if perms.hin.change_blog %}
+                    <a href="{% url 'hin:blog_manage' %}?edit={{ blog.id }}" class="btn-custom edit-btn">
+                        <i class="fa-regular fa-pen-to-square"></i> Edit Blog
+                    </a>
+                    {% endif %}
                 </div>
             </div>
-            {% endif %}
+        </div>
+
+        <!-- Sidebar Column -->
+        <div class="col-lg-4">
+            <div class="sidebar-wrapper">
+                <!-- Article Info Sidebar -->
+                <div class="side-card">
+                    <h4 class="side-title"><i class="fa fa-info-circle"></i> Article Info</h4>
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fa fa-tag"></i></div>
+                        <div>
+                            <div class="info-label">Category</div>
+                            <div class="info-value">{{ blog.category }}</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fa fa-user"></i></div>
+                        <div>
+                            <div class="info-label">Author</div>
+                            <div class="info-value">{{ blog.author }}</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fa fa-calendar"></i></div>
+                        <div>
+                            <div class="info-label">Published</div>
+                            <div class="info-value">{{ blog.created_at|date:"d M Y" }}</div>
+                        </div>
+                    </div>
+                    {% if blog.updated_at and blog.updated_at != blog.created_at %}
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fa fa-edit"></i></div>
+                        <div>
+                            <div class="info-label">Updated</div>
+                            <div class="info-value">{{ blog.updated_at|date:"d M Y" }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Share Article Sidebar -->
+                <div class="side-card">
+                    <h4 class="side-title"><i class="fa fa-share-alt"></i> Share Article</h4>
+                    <div class="social-share">
+                        <a href="#" class="fb" onclick="shareOnFB()"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="tw" onclick="shareOnTwitter()"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="li" onclick="shareOnLinkedIn()"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="wh" onclick="shareOnWhatsApp()"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- Recent Articles Section -->
+    {% if recent_blogs %}
+    <h2 class="recent-title">
+        <i class="fa-regular fa-newspaper"></i> Recent Articles
+    </h2>
+    {% for recent in recent_blogs %}
+    <div class="post-card" onclick="window.location.href='{% url 'hin:blog_detail' slug=recent.slug %}'">
+        {% if recent.featured_image %}
+        <div class="post-img">
+            <img src="{{ recent.featured_image.url }}" alt="{{ recent.title }}">
+        </div>
+        {% endif %}
+        <div class="post-content">
+            <h4>{{ recent.title|truncatewords:8 }}</h4>
+            <a href="{% url 'hin:blog_detail' slug=recent.slug %}" class="read-btn">Read Article →</a>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
 </div>
+
+
+<script>
+    function getCurrentUrl() {
+        return window.location.href;
+    }
+    
+    function getShareText() {
+        return "Check out this article: {{ blog.title|escapejs }}";
+    }
+    
+    function shareOnFB(e) {
+        e.preventDefault();
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(getCurrentUrl())}`, '_blank', 'width=600,height=400');
+    }
+    
+    function shareOnTwitter(e) {
+        e.preventDefault();
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(getShareText())}&url=${encodeURIComponent(getCurrentUrl())}`, '_blank', 'width=600,height=400');
+    }
+    
+    function shareOnLinkedIn(e) {
+        e.preventDefault();
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(getCurrentUrl())}`, '_blank', 'width=600,height=400');
+    }
+    
+    function shareOnWhatsApp(e) {
+        e.preventDefault();
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(getShareText() + ' ' + getCurrentUrl())}`, '_blank');
+    }
+    
+    function shareArticle(e) {
+        if (e) e.preventDefault();
+        if (navigator.share) {
+            navigator.share({
+                title: '{{ blog.title|escapejs }}',
+                text: 'Check out this article on HINTTechnologies',
+                url: getCurrentUrl()
+            });
+        } else {
+            alert('Share this article using the social media buttons above!');
+        }
+    }
+</script>
+
 {% endblock %}
