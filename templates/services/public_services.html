@@ -33,6 +33,25 @@ body{
         );
 }
 
+/* LEFT SIDE SOFT WATERCOLOR/PAINTING GRADIENT */
+.hero-paint-overlay {
+    position: absolute;
+    top: -20%;
+    left: -10%;
+    width: 60%;
+    height: 140%;
+    background: radial-gradient(ellipse at 30% 40%, 
+                rgba(198,40,40,0.05) 0%,
+                rgba(198,40,40,0.02) 25%,
+                rgba(11,61,145,0.04) 50%,
+                rgba(11,61,145,0.01) 70%,
+                transparent 100%);
+    filter: blur(40px);
+    pointer-events: none;
+    z-index: 0;
+    border-radius: 50%;
+}
+
 /* Background Blur Shapes (original preserved) */
 .hero::before{
     content:'';
@@ -130,6 +149,8 @@ body{
 /* LEFT */
 .hero-left{
     flex:1;
+    position: relative;
+    z-index: 2;
 }
 
 .hero-tag{
@@ -354,11 +375,21 @@ body{
         width:140px;
         height:170px;
     }
+    .hero-paint-overlay {
+        width: 80%;
+        left: -20%;
+    }
 }
 
 @media(max-width:900px){
     .hero{
         padding:30px 5% 70px;
+    }
+    .hero-paint-overlay {
+        width: 100%;
+        left: -30%;
+        top: -30%;
+        height: 150%;
     }
     .hero-container{
         flex-direction:column;
@@ -419,6 +450,11 @@ body{
 @media(max-width:640px){
     .hero{
         padding:20px 20px 50px;
+    }
+    .hero-paint-overlay {
+        width: 120%;
+        left: -40%;
+        top: -20%;
     }
     .hero h1{
         font-size:34px;
@@ -1179,8 +1215,11 @@ body{
 }
 </style>
 
-<!-- HERO SECTION with TECH DOTS & ELEMENTS -->
+<!-- HERO SECTION with SOFT PAINTING GRADIENT -->
 <section class="hero">
+    <!-- Soft Watercolor/Painting Gradient Overlay -->
+    <div class="hero-paint-overlay"></div>
+    
     <!-- New Tech Background Elements -->
     <div class="tech-dots-1"></div>
     <div class="tech-dots-2"></div>
