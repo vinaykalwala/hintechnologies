@@ -39,18 +39,16 @@
            HEADER - CLEAN MODERN
         ========================= */
        .hin-header {
-    position: sticky;
-    top: 0;
-    width: 100%;
-    padding: 12px 0;
-    z-index: 1000;
-    background: #ffffff;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
-
-    overflow: visible;
-}
-
+            position: sticky;
+            top: 0;
+            width: 100%;
+            padding: 12px 0;
+            z-index: 1000;
+            background: #ffffff;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+            overflow: visible;
+        }
 
         .hin-header.scrolled {
             padding: 10px 0;
@@ -92,7 +90,7 @@
             padding: 4px 20px;
             border: 1px solid #eef2f6;
             flex: 1;
-            max-width: 460px;
+            max-width: 560px;
             margin: 0 auto;
         }
         .nav-list {
@@ -208,7 +206,7 @@
             background: white;
             border-radius: 24px;
             padding: 10px 0;
-            min-width: 240px;
+            min-width: 260px;
             box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.12);
             border: 1px solid #f0f2f5;
             opacity: 0;
@@ -393,9 +391,19 @@
             visibility: visible;
         }
 
+        /* Student role badge styling */
+        .student-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
         /* =======================================================
            PREMIUM MODERN FOOTER - EQUAL GAP BETWEEN 4 COLUMNS
-           UPDATED: "Our Websites" section with 6 links instead of Support
         ======================================================= */
         .hin-footer {
             background: #172447;
@@ -425,7 +433,6 @@
             pointer-events: none;
         }
         
-        /* EQUAL GAP BETWEEN 4 COLUMNS - using grid with equal fractions and consistent gap */
         .footer-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -516,7 +523,6 @@
             transform: translateY(-3px);
         }
 
-        /* Our Websites specific styling - 6 links clean layout */
         .websites-list li {
             margin-bottom: 14px;
         }
@@ -524,7 +530,6 @@
             font-weight: 500;
         }
 
-        /* Contact details styling */
         .contact-details-footer ul li {
             display: flex;
             align-items: flex-start;
@@ -545,7 +550,6 @@
             font-weight: 600;
         }
 
-        /* Middle Add Section (centered) */
         .middle-add-section {
             margin: 32px 0 20px;
             text-align: center;
@@ -582,7 +586,6 @@
             background: rgba(255,255,255,0.2);
         }
 
-        /* Police + Terms area - EXACTLY TWO links */
         .legal-double {
             margin-top: 30px;
             padding: 16px 0 10px;
@@ -623,7 +626,6 @@
             text-decoration: none;
         }
 
-        /* Responsive Footer - maintain equal gap structure */
         @media (max-width: 992px) {
             .footer-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -657,7 +659,6 @@
             }
         }
 
-        /* RESPONSIVE HEADER */
         @media (max-width: 600px) {
             .main-nav { display: none !important; }
             .header-actions { display: none !important; }
@@ -694,44 +695,75 @@
                     <li><a href="{% url 'hin:public_services' %}" data-nav-key="services" class="nav-link">Services</a></li>
                     <li><a href="{% url 'hin:public_clients' %}" data-nav-key="clients" class="nav-link">Clients</a></li>
                     <li><a href="{% url 'hin:public_blogs' %}" data-nav-key="blogs" class="nav-link">Blogs</a></li>
+                    <li><a href="{% url 'hin:contact' %}" data-nav-key="blogs" class="nav-link">Contact</a></li>
                 </ul>
             </div>
             <div class="header-actions">
-                <a href="{% url 'hin:contact' %}" class="btn-outline" data-nav-key="contact">
-                    <i class="fas fa-headset"></i><span>Get in touch</span>
+                <a href="{% url 'training:signup' %}" class="btn-outline" data-nav-key="contact">
+                    <i class="fas fa-user-plus"></i><span>Sign Up</span>
                 </a>
                 {% if user.is_authenticated %}
                 <div class="dropdown" id="userDropdownDesktop">
                     <button class="user-menu-btn" id="desktopDropdownBtn">
                         <i class="fas fa-user-circle"></i><span>{{ user.username }}</span>
+                        {% if user.student_profile %}
+                        <span class="student-badge">Student</span>
+                        {% endif %}
                         <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i>
                     </button>
                     <ul class="dropdown-menu" id="desktopDropdownMenu">
-                        <li><a class="dropdown-item" href="{% url 'hin:dashboard' %}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                        <li><a class="dropdown-item" href="{% url 'hin:profile' %}"><i class="fas fa-user"></i> Profile</a></li>
-                        {% if perms.hin.view_contactenquiry %}
-                        <li><a class="dropdown-item" href="{% url 'hin:enquiry_list' %}"><i class="fas fa-envelope"></i> Enquiries</a></li>
+                        <!-- Check if user has a StudentProfile -->
+                        {% if user.student_profile %}
+                            <!-- Student Menu Items - Based on StudentProfile existence -->
+                            <li><a class="dropdown-item" href="{% url 'training:student_dashboard' %}"><i class="fas fa-graduation-cap"></i> Student Portal</a></li>
+                            <li><a class="dropdown-item" href="{% url 'training:my_batch' %}"><i class="fas fa-users"></i> My Batch</a></li>
+                            <li><a class="dropdown-item" href="{% url 'training:student_sessions' %}"><i class="fas fa-video"></i> Sessions</a></li>
+                            <li><a class="dropdown-item" href="{% url 'training:student_projects' %}"><i class="fas fa-project-diagram"></i> Projects</a></li>
+                            <li><a class="dropdown-item" href="{% url 'training:student_deliverables' %}"><i class="fas fa-tasks"></i> Deliverables</a></li>
+                            <li><a class="dropdown-item" href="{% url 'training:student_profile' %}"><i class="fas fa-user-edit"></i>Profile</a></li>
+                            <li><div class="dropdown-divider"></div></li>
+                            <li><a class="dropdown-item" href="{% url 'hin:logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        {% else %}
+                            <!-- Regular User Menu (Admin/Staff) -->
+                            <li><a class="dropdown-item" href="{% url 'hin:dashboard' %}"><i class="fas fa-home"></i>Home</a></li>
+                            
+                            <!-- Training Admin Dashboard Link -->
+                            {% if perms.training.view_student or user.is_superuser %}
+                            <li><a class="dropdown-item" href="{% url 'training:admin_dashboard' %}"><i class="fas fa-user-graduate"></i> Training Dashboard</a></li>
+                            {% endif %}
+                            
+                            <li><a class="dropdown-item" href="{% url 'hin:profile' %}"><i class="fas fa-user"></i> Profile</a></li>
+                            
+                            {% if perms.hin.view_contactenquiry %}
+                            <li><a class="dropdown-item" href="{% url 'hin:enquiry_list' %}"><i class="fas fa-envelope"></i> Enquiries</a></li>
+                            {% endif %}
+                            
+                            {% if perms.hin.add_service or perms.hin.change_service %}
+                            <li><a class="dropdown-item" href="{% url 'hin:service_manage' %}"><i class="fas fa-cogs"></i> Manage Services</a></li>
+                            {% endif %}
+                            
+                            {% if perms.hin.add_blog or perms.hin.change_blog %}
+                            <li><a class="dropdown-item" href="{% url 'hin:blog_manage' %}"><i class="fas fa-blog"></i> Manage Blogs</a></li>
+                            {% endif %}
+                            
+                            {% if perms.hin.add_client or perms.hin.change_client %}
+                            <li><a class="dropdown-item" href="{% url 'hin:client_manage' %}"><i class="fas fa-users"></i> Manage Clients</a></li>
+                            {% endif %}
+                            
+                           
+                            
+                            {% if user.is_superuser %}
+                            <li><a class="dropdown-item" href="{% url 'hin:user_list' %}"><i class="fas fa-user-shield"></i> Manage Users</a></li>
+                            {% endif %}
+                            
+                            <li><div class="dropdown-divider"></div></li>
+                            <li><a class="dropdown-item" href="{% url 'hin:logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                         {% endif %}
-                        {% if perms.hin.add_service or perms.hin.change_service %}
-                        <li><a class="dropdown-item" href="{% url 'hin:service_manage' %}"><i class="fas fa-cogs"></i> Manage Services</a></li>
-                        {% endif %}
-                        {% if perms.hin.add_blog or perms.hin.change_blog %}
-                        <li><a class="dropdown-item" href="{% url 'hin:blog_manage' %}"><i class="fas fa-blog"></i> Manage Blogs</a></li>
-                        {% endif %}
-                        {% if perms.hin.add_client or perms.hin.change_client %}
-                        <li><a class="dropdown-item" href="{% url 'hin:client_manage' %}"><i class="fas fa-users"></i> Manage Clients</a></li>
-                        {% endif %}
-                        {% if user.is_superuser %}
-                        <li><div class="dropdown-divider"></div></li>
-                        <li><a class="dropdown-item" href="{% url 'hin:user_list' %}"><i class="fas fa-user-shield"></i> Manage Users</a></li>
-                        {% endif %}
-                        <li><div class="dropdown-divider"></div></li>
-                        <li><a class="dropdown-item" href="{% url 'hin:logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                     </ul>
                 </div>
                 {% else %}
                 <a href="{% url 'hin:login' %}" class="btn-primary">
-                    <i class="fas fa-lock"></i><span>Sign in</span>
+                    <i class="fas fa-lock"></i><span>LogIn</span>
                 </a>
                 {% endif %}
             </div>
@@ -754,10 +786,11 @@
         <li><a href="{% url 'hin:public_services' %}" data-mobile-key="services" class="mobile-nav-link"><i class="fas fa-cogs"></i> Services</a></li>
         <li><a href="{% url 'hin:public_clients' %}" data-mobile-key="clients" class="mobile-nav-link"><i class="fas fa-building"></i> Clients</a></li>
         <li><a href="{% url 'hin:public_blogs' %}" data-mobile-key="blogs" class="mobile-nav-link"><i class="fas fa-blog"></i> Blogs</a></li>
+        <li><a href="{% url 'hin:contact' %}" data-mobile-key="blogs" class="mobile-nav-link"><i class="fas fa-headset"></i>Contact</a></li>
     </ul>
     <div class="sidebar-actions">
-        <a href="{% url 'hin:contact' %}" class="mobile-action-btn mobile-contact" data-mobile-key="contact">
-            <i class="fas fa-headset"></i> Get in touch
+        <a href="{% url 'training:signup' %}" class="mobile-action-btn mobile-contact" data-mobile-key="contact">
+           <i class="fas fa-user-plus"></i> Sign Up
         </a>
         {% if user.is_authenticated %}
             <div class="mobile-user-info">
@@ -765,28 +798,59 @@
                 <div>
                     <div style="font-weight: 700;">{{ user.username }}</div>
                     <div style="font-size: 0.7rem; color:#475569;">{{ user.email|default:"user@hint.com" }}</div>
+                    {% if user.student_profile %}
+                    <div style="font-size: 0.7rem; color:#c40000; margin-top: 4px;">Student Account</div>
+                    {% endif %}
                 </div>
             </div>
-            <a href="{% url 'hin:dashboard' %}" class="mobile-action-btn mobile-login" style="background:#1e293b;"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-            <a href="{% url 'hin:profile' %}" class="mobile-action-btn mobile-login" style="background:#334155;"><i class="fas fa-user"></i> Profile</a>
-            {% if perms.hin.view_contactenquiry %}
-            <a href="{% url 'hin:enquiry_list' %}" class="mobile-action-btn mobile-login" style="background:#475569;"><i class="fas fa-envelope"></i> Enquiries</a>
+            
+            {% if user.student_profile %}
+                <!-- Student Mobile Menu - Based on StudentProfile existence -->
+                <a href="{% url 'training:student_dashboard' %}" class="mobile-action-btn mobile-login" style="background:#667eea;"><i class="fas fa-graduation-cap"></i> Student Portal</a>
+                <a href="{% url 'training:my_batch' %}" class="mobile-action-btn mobile-login" style="background:#334155;"><i class="fas fa-users"></i> My Batch</a>
+                <a href="{% url 'training:student_sessions' %}" class="mobile-action-btn mobile-login" style="background:#475569;"><i class="fas fa-video"></i> Sessions</a>
+                <a href="{% url 'training:student_projects' %}" class="mobile-action-btn mobile-login" style="background:#475569;"><i class="fas fa-project-diagram"></i> Projects</a>
+                <a href="{% url 'training:student_deliverables' %}" class="mobile-action-btn mobile-login" style="background:#475569;"><i class="fas fa-tasks"></i> Deliverables</a>
+                <a href="{% url 'hin:profile' %}" class="mobile-action-btn mobile-login" style="background:#475569;"><i class="fas fa-user-edit"></i>Profile</a>
+                <div style="margin-top: 10px; text-align:center;">
+                    <a href="{% url 'hin:logout' %}" style="color:#c40000; font-weight:600; text-decoration:none;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            {% else %}
+                <!-- Regular User Mobile Menu (Admin/Staff) -->
+                <a href="{% url 'hin:dashboard' %}" class="mobile-action-btn mobile-login" style="background:#1e293b;"><i class="fas fa-home"></i>Home</a>
+                
+                {% if perms.training.view_student or user.is_superuser %}
+                <a href="{% url 'training:admin_dashboard' %}" class="mobile-action-btn mobile-login" style="background:#764ba2;"><i class="fas fa-user-graduate"></i> Training Dashboard</a>
+                {% endif %}
+                
+                <a href="{% url 'hin:profile' %}" class="mobile-action-btn mobile-login" style="background:#334155;"><i class="fas fa-user"></i> Profile</a>
+                
+                {% if perms.hin.view_contactenquiry %}
+                <a href="{% url 'hin:enquiry_list' %}" class="mobile-action-btn mobile-login" style="background:#475569;"><i class="fas fa-envelope"></i> Enquiries</a>
+                {% endif %}
+                
+                {% if perms.hin.add_service or perms.hin.change_service %}
+                <a href="{% url 'hin:service_manage' %}" class="mobile-action-btn mobile-login" style="background:#475569;"><i class="fas fa-cogs"></i> Manage Services</a>
+                {% endif %}
+                
+                {% if perms.hin.add_blog or perms.hin.change_blog %}
+                <a href="{% url 'hin:blog_manage' %}" class="mobile-action-btn mobile-login" style="background:#475569;"><i class="fas fa-blog"></i> Manage Blogs</a>
+                {% endif %}
+                
+                {% if perms.hin.add_client or perms.hin.change_client %}
+                <a href="{% url 'hin:client_manage' %}" class="mobile-action-btn mobile-login" style="background:#475569;"><i class="fas fa-users"></i> Manage Clients</a>
+                {% endif %}
+                
+              
+                
+                {% if user.is_superuser %}
+                <a href="{% url 'hin:user_list' %}" class="mobile-action-btn mobile-login" style="background:#c40000;"><i class="fas fa-user-shield"></i> Manage Users</a>
+                {% endif %}
+                
+                <div style="margin-top: 10px; text-align:center;">
+                    <a href="{% url 'hin:logout' %}" style="color:#c40000; font-weight:600; text-decoration:none;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
             {% endif %}
-            {% if perms.hin.add_service or perms.hin.change_service %}
-            <a href="{% url 'hin:service_manage' %}" class="mobile-action-btn mobile-login" style="background:#475569;"><i class="fas fa-cogs"></i> Manage Services</a>
-            {% endif %}
-            {% if perms.hin.add_blog or perms.hin.change_blog %}
-            <a href="{% url 'hin:blog_manage' %}" class="mobile-action-btn mobile-login" style="background:#475569;"><i class="fas fa-blog"></i> Manage Blogs</a>
-            {% endif %}
-            {% if perms.hin.add_client or perms.hin.change_client %}
-            <a href="{% url 'hin:client_manage' %}" class="mobile-action-btn mobile-login" style="background:#475569;"><i class="fas fa-users"></i> Manage Clients</a>
-            {% endif %}
-            {% if user.is_superuser %}
-            <a href="{% url 'hin:user_list' %}" class="mobile-action-btn mobile-login" style="background:#c40000;"><i class="fas fa-user-shield"></i> Manage Users</a>
-            {% endif %}
-            <div style="margin-top: 10px; text-align:center;">
-                <a href="{% url 'hin:logout' %}" style="color:#c40000; font-weight:600; text-decoration:none;"><i class="fas fa-sign-out-alt"></i> Logout</a>
-            </div>
         {% else %}
             <a href="{% url 'hin:login' %}" class="mobile-action-btn mobile-login"><i class="fas fa-lock"></i> Sign in</a>
         {% endif %}
@@ -802,12 +866,10 @@
     {% endblock %}
 </main>
 
-<!-- =========== PREMIUM FOOTER - EQUAL GAP 4 COLUMNS | OUR WEBSITES WITH 6 LINKS =========== -->
+<!-- FOOTER -->
 <footer class="hin-footer">
     <div class="container">
-        <!-- First row: 4 columns with equal gap -->
         <div class="footer-grid">
-            <!-- Column 1: Brand + Social -->
             <div class="footer-col">
                 <img class="footer-logo-img" src="{% static 'images/hintlogo.jpg' %}" alt="HINT">
                 <p>Delivering innovative DevOps, cloud solutions, and digital transformation services to empower businesses globally.</p>
@@ -820,7 +882,6 @@
                 </div>
             </div>
             
-            <!-- Column 2: Our Websites (replaced 24/7 Priority Support) - with 6 links -->
             <div class="footer-col">
                 <h4>Our Websites</h4>
                 <ul class="websites-list">
@@ -833,7 +894,6 @@
                 </ul>
             </div>
             
-            <!-- Column 3: Company Links -->
             <div class="footer-col">
                 <h4>Company</h4>
                 <ul>
@@ -845,7 +905,6 @@
                 </ul>
             </div>
             
-            <!-- Column 4: Contact Details -->
             <div class="footer-col contact-details-footer">
                 <h4>Contact Details</h4>
                 <ul>
@@ -856,7 +915,6 @@
             </div>
         </div>
 
-        <!-- MIDDLE ADD SECTION (centered badge area) -->
         <div class="middle-add-section">
             <div class="badge-container">
                 <div class="badge-item"><i class="fas fa-award"></i> ISO 27001 Certified</div>
@@ -869,7 +927,6 @@
             </div>
         </div>
 
-        <!-- Police & Terms - EXACTLY TWO links -->
         <div class="legal-double">
             <a href="{% url 'hin:privacy' %}"><i class="fas fa-shield-hawk"></i> Privacy Police & Data Protection</a>
             <a href="#"><i class="fas fa-file-contract"></i> Terms of Service & Use</a>
