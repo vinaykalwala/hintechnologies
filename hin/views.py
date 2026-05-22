@@ -655,3 +655,139 @@ def public_blogs(request):
         'total_blogs': blogs.count(),
     }
     return render(request, 'blogs/public_blogs.html', context)
+
+import random
+from django.core.mail import send_mail
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import PasswordResetOTP
+
+def forgot_password(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+
+        try:
+            user = User.objects.get(email=email)
+
+            PasswordResetOTP.objects.filter(user=user).delete()
+
+            otp = str(random.randint(100000, 999999))
+
+            PasswordResetOTP.objects.create(
+                user=user,
+                otp=otp
+            )
+
+            send_mail(
+                'Password Reset OTP',
+                f'Your OTP is {otp}',
+                'yourmail@gmail.com',
+                [email],
+                fail_silently=False,
+            )
+
+            request.session['reset_user_id'] = user.id
+
+            messages.success(request, 'OTP sent to your email')
+            return redirect('hin:verify_otp')
+
+        except User.DoesNotExist:
+            messages.error(request, 'Email not found')
+
+    return render(request, 'auth/forgot_password.html')
+
+def verify_otp(request):
+    user_id = request.session.get('reset_user_id')
+
+    if not user_id:
+        return redirect('hin:forgot_password')
+
+    if request.method == 'POST':
+        entered_otp = request.POST.get('otp')
+
+        try:
+            otp_obj = PasswordResetOTP.objects.get(user_id=user_id)
+
+            if otp_obj.is_expired():
+                messages.error(request, 'OTP expired')
+                otp_obj.delete()
+                return redirect('hin:forgot_password')
+
+            if otp_obj.otp == entered_otp:
+                otp_obj.is_verified = True
+                otp_obj.save()
+                return redirect('hin:reset_password')
+
+            else:
+                messages.error(request, 'Invalid OTP')
+
+        except PasswordResetOTP.DoesNotExist:
+            messages.error(request, 'OTP not found')
+
+    return render(request, 'auth/verify_otp.html')
+
+def reset_password(request):
+    user_id = request.session.get('reset_user_id')
+
+    if not user_id:
+        return redirect('hin:forgot_password')
+
+    try:
+        otp_obj = PasswordResetOTP.objects.get(
+            user_id=user_id,
+            is_verified=True
+        )
+    except PasswordResetOTP.DoesNotExist:
+        return redirect('hin:forgot_password')
+
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if password != confirm_password:
+            messages.error(request, 'Passwords do not match')
+            return redirect('hin:reset_password')
+
+        user = User.objects.get(id=user_id)
+        user.password = make_password(password)
+        user.save()
+
+        otp_obj.delete()
+        del request.session['reset_user_id']
+
+        messages.success(request, 'Password reset successful')
+        return redirect('hin:login')
+
+    return render(request, 'auth/reset_password.html')
+
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.shortcuts import render, redirect
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        old_password = request.POST.get('old_password')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+
+        user = request.user
+
+        if not user.check_password(old_password):
+            messages.error(request, 'Old password is incorrect')
+            return redirect('hin:change_password')
+
+        if new_password != confirm_password:
+            messages.error(request, 'Passwords do not match')
+            return redirect('hin:change_password')
+
+        user.set_password(new_password)
+        user.save()
+
+        messages.success(request, 'Password changed successfully')
+        return redirect('hin:login')
+
+    return render(request, 'auth/change_password.html')
+

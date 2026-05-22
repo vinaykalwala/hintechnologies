@@ -50,6 +50,10 @@ urlpatterns = [
     path('clientlist/', views.client_list, name='client_list'),
     path('clients/manage/', views.client_manage, name='client_manage'),
     path('clients/<int:pk>/delete/', views.client_delete, name='client_delete'),
+    path('forgot-password/', views.forgot_password, name='forgot_password'),
+    path('verify-otp/', views.verify_otp, name='verify_otp'),
+    path('reset-password/', views.reset_password, name='reset_password'),
+    path('change-password/', views.change_password, name='change_password'),
 ]
 
 if settings.DEBUG:
