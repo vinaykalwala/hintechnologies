@@ -671,6 +671,66 @@
         margin-bottom: 0;
         padding-bottom: 0;
     }
+    .user-title-info{
+    flex:1;
+    padding-bottom:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    width:100%;
+    gap:20px;
+}
+/* Change Password Button */
+.btn-password{
+    background: linear-gradient(135deg,#2563eb,#1d4ed8);
+    color:#fff;
+    padding:12px 22px;
+    border-radius:14px;
+    text-decoration:none;
+    font-size:0.85rem;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    min-width:170px;
+    box-shadow:0 8px 20px rgba(37,99,235,.25);
+    transition:all .35s ease;
+    border:1px solid rgba(255,255,255,.15);
+}
+
+.btn-password i{
+    font-size:0.9rem;
+}
+
+.btn-password:hover{
+    background:linear-gradient(135deg,#1d4ed8,#1e40af);
+    color:#fff;
+    transform:translateY(-3px);
+    box-shadow:0 12px 25px rgba(37,99,235,.35);
+}
+
+.btn-password:active{
+    transform:scale(.97);
+}
+/* Mobile Responsive */
+@media (max-width:768px){
+
+    .user-title-info{
+        flex-direction:column;
+        align-items:center;
+        text-align:center;
+        gap:12px;
+    }
+
+    .btn-password{
+        width:100%;
+        max-width:220px;
+        padding:10px 18px;
+        font-size:0.8rem;
+        border-radius:12px;
+    }
+}
 </style>
 
 {% if messages %}
@@ -737,18 +797,27 @@
                 <div class="avatar-large">
                     <i class="fas fa-user-circle"></i>
                 </div>
-                <div class="user-title-info">
-                    <h2>{{ user.get_full_name|default:user.username }}</h2>
-                    <span class="user-badge">
-                        {% if user.is_superuser %}
-                            <i class="fas fa-crown"></i> Super Administrator
-                        {% elif user.is_staff %}
-                            <i class="fas fa-star"></i> Staff Member
-                        {% else %}
-                            <i class="fas fa-user"></i> Registered User
-                        {% endif %}
-                    </span>
-                </div>
+               <div class="user-title-info">
+
+    <div>
+        <h2>{{ user.get_full_name|default:user.username }}</h2>
+
+        <span class="user-badge">
+            {% if user.is_superuser %}
+                <i class="fas fa-crown"></i> Super Administrator
+            {% elif user.is_staff %}
+                <i class="fas fa-star"></i> Staff Member
+            {% else %}
+                <i class="fas fa-user"></i> Registered User
+            {% endif %}
+        </span>
+    </div>
+
+    <a href="{% url 'hin:change_password' %}" class="btn-password">
+        <i class="fas fa-key"></i> Change Password
+    </a>
+
+</div>
             </div>
         </div>
         

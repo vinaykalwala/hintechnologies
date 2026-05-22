@@ -1,163 +1,177 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}My Batch - HIN{% endblock %}
+{% block title %}My Batch Details - HIN Technologies{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row">
-        <div class="col-12">
-            <h2 class="mb-4">My Batch Details</h2>
-        </div>
-    </div>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    :root {
+        --hin-blue: #0B3D91;
+        --hin-red: #C62828;
+        --bg-main: #f4f7fc;
+        --card-bg: #ffffff;
+        --text-dark: #1a1a2e;
+        --text-muted: #5b6475;
+        --glass-bg: rgba(255, 255, 255, 0.7);
+        --glass-blur: blur(20px);
+        --radius-lg: 24px;
+        --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .batch-details-wrapper {
+        min-height: 100vh;
+        padding: 60px 20px;
+        background: var(--bg-main);
+        font-family: 'Inter', sans-serif;
+    }
+
+    .container-max { max-width: 1300px; margin: 0 auto; }
+
+    .page-title {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: var(--hin-blue);
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin-bottom: 30px;
+        display: flex; align-items: center; gap: 12px;
+    }
+
+    /* --- BENTO GRID --- */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 20px;
+    }
+
+    .col-span-12 { grid-column: span 12; }
+    .col-span-8 { grid-column: span 12; }
+    .col-span-4 { grid-column: span 12; }
     
-    <div class="row">
-        <div class="col-lg-8">
-            <!-- Batch Information -->
-            <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">{{ batch.name }}</h5>
-                </div>
-                <div class="card-body">
-                    <p class="card-text">{{ batch.description }}</p>
-                    
-                    <div class="row mt-3">
-                        <div class="col-md-6">
-                            <h6>Batch Information</h6>
-                            <table class="table table-sm">
-                                <tr>
-                                    <th>Status:</th>
-                                    <td>
-                                        <span class="badge 
-                                            {% if batch.status == 'running' %}bg-success
-                                            {% elif batch.status == 'upcoming' %}bg-info
-                                            {% elif batch.status == 'completed' %}bg-secondary
-                                            {% elif batch.status == 'paused' %}bg-warning
-                                            {% else %}bg-danger{% endif %}">
-                                            {{ batch.get_status_display }}
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Start Date:</th>
-                                    <td>{{ batch.start_date }}</td>
-                                </tr>
-                                <tr>
-                                    <th>End Date:</th>
-                                    <td>{{ batch.end_date }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Total Days:</th>
-                                    <td>{{ batch.total_days }} days</td>
-                                </tr>
-                                <tr>
-                                    <th>Enrolled On:</th>
-                                    <td>{{ student_batch.enrolled_on|date:"F d, Y" }}</td>
-                                </tr>
-                            </table>
+    @media (min-width: 992px) {
+        .col-span-8 { grid-column: span 8; }
+        .col-span-4 { grid-column: span 4; }
+    }
+
+    /* Cards */
+    .bento-card {
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        padding: 30px;
+        border: 1px solid rgba(11, 61, 145, 0.08);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+    }
+
+    .card-title {
+        color: var(--hin-blue);
+        font-weight: 800;
+        margin-bottom: 25px;
+        font-size: 1.25rem;
+        display: flex; align-items: center; gap: 10px;
+    }
+
+    /* Metrics */
+    .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
+    .metric-item {
+        background: #f8fafc; padding: 20px;
+        border-radius: 16px; text-align: center;
+    }
+    .metric-value { font-size: 1.5rem; font-weight: 800; color: var(--hin-red); }
+    .metric-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* Progress */
+    .progress-wrap { margin: 25px 0; }
+    .progress-bar-hin { 
+        height: 12px; border-radius: 6px; 
+        background: linear-gradient(90deg, var(--hin-blue), var(--hin-red));
+    }
+
+    /* Quick Links */
+    .quick-link {
+        display: block; padding: 16px; border-radius: 12px;
+        border: 1px solid #edf2f7; margin-bottom: 12px;
+        color: var(--hin-blue); text-decoration: none; font-weight: 600;
+        transition: var(--transition);
+    }
+    .quick-link:hover { background: var(--hin-blue); color: white; transform: translateX(5px); }
+    .link-red:hover { background: var(--hin-red); }
+
+    /* Table */
+    .table-responsive { overflow-x: auto; }
+    .table { width: 100%; border-collapse: collapse; }
+    .table th { color: var(--text-muted); font-size: 0.8rem; padding: 12px; text-transform: uppercase; }
+    .table td { padding: 15px; border-top: 1px solid #f1f5f9; }
+
+    .status-pill {
+        padding: 5px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 700;
+    }
+</style>
+
+<div class="batch-details-wrapper">
+    <div class="container-max">
+        <h2 class="page-title"><i class="fas fa-layer-group" style="color:var(--hin-red)"></i><span style="color: var(--hin-red);">My</span> Batch Overview</h2>
+
+        <div class="dashboard-grid">
+            <!-- Batch Info -->
+            <div class="bento-card col-span-8">
+                <div class="card-title"><i class="fas fa-info-circle"></i> {{ batch.name }}</div>
+                <p class="text-muted mb-4">{{ batch.description }}</p>
+
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-value">{{ batch.total_days }}</div>
+                        <div class="metric-label">Total Days</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">{{ batch.student_count }}</div>
+                        <div class="metric-label">Enrolled</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">
+                            <span class="status-pill {% if batch.status == 'running' %}bg-success text-white{% else %}bg-warning text-dark{% endif %}">
+                                {{ batch.get_status_display }}
+                            </span>
                         </div>
-                        <div class="col-md-6">
-                            <h6>Progress</h6>
-                            <div class="mb-3">
-                                <label>Projects Completed: {{ completed_projects }}/{{ total_projects }}</label>
-                                <div class="progress">
-                                    <div class="progress-bar bg-success" style="width: {{ project_progress }}%">
-                                        {{ project_progress }}%
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label>Deliverables Downloaded: {{ downloaded_deliverables }}/{{ total_deliverables }}</label>
-                                <div class="progress">
-                                    <div class="progress-bar bg-info" style="width: {{ deliverable_progress }}%">
-                                        {{ deliverable_progress }}%
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <div class="metric-label">Status</div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Batch Students -->
-            <div class="card shadow">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Batch Students ({{ batch.students.count }})</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Phone</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for student_batch in batch.students.all|slice:":10" %}
-                                    <tr>
-                                        <td>{{ student_batch.student.user.get_full_name }}</td>
-                                        <td>{{ student_batch.student.user.email }}</td>
-                                        <td>{{ student_batch.student.phone }}</td>
-                                        <td>
-                                            <span class="badge 
-                                                {% if student_batch.student.status == 'active' %}bg-success
-                                                {% elif student_batch.student.status == 'on_hold' %}bg-warning
-                                                {% else %}bg-secondary{% endif %}">
-                                                {{ student_batch.student.get_status_display }}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+
+                <div class="progress-wrap">
+                    <div class="d-flex justify-content-between mb-2 fw-bold">
+                        <span>Project Progress</span>
+                        <span>{{ project_progress }}%</span>
                     </div>
-                    {% if batch.students.count > 10 %}
-                        <div class="text-center mt-3">
-                            <small class="text-muted">Showing 10 of {{ batch.students.count }} students</small>
-                        </div>
-                    {% endif %}
+                    <div class="progress" style="background:#edf2f7; border-radius:10px;"><div class="progress-bar-hin" style="width: {{ project_progress }}%"></div></div>
                 </div>
             </div>
-        </div>
-        
-        <div class="col-lg-4">
+
             <!-- Quick Links -->
-            <div class="card shadow mb-4">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Quick Links</h5>
-                </div>
-                <div class="card-body">
-                    <div class="d-grid gap-2">
-                        <a href="{% url 'training:student_sessions' %}" class="btn btn-outline-primary">View All Sessions</a>
-                        <a href="{% url 'training:student_projects' %}" class="btn btn-outline-success">View All Projects</a>
-                        <a href="{% url 'training:student_deliverables' %}" class="btn btn-outline-info">View Deliverables</a>
-                    </div>
-                </div>
+            <div class="bento-card col-span-4">
+                <div class="card-title"><i class="fas fa-bolt"></i> Quick Access</div>
+                <a href="{% url 'training:student_sessions' %}" class="quick-link">View Sessions</a>
+                <a href="{% url 'training:student_projects' %}" class="quick-link">View Projects</a>
+                <a href="{% url 'training:student_deliverables' %}" class="quick-link link-red">View Deliverables</a>
             </div>
-            
-            <!-- Upcoming Sessions -->
-            <div class="card shadow">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Upcoming Sessions</h5>
-                </div>
-                <div class="card-body">
-                    {% with next_sessions=batch.sessions.all|slice:":5" %}
-                        {% if next_sessions %}
-                            <div class="list-group">
-                                {% for session in next_sessions %}
-                                    <div class="list-group-item">
-                                        <h6 class="mb-1">Day {{ session.day_number }}: {{ session.title }}</h6>
-                                        <small class="text-muted">{{ session.session_date }}</small>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            <p class="text-muted text-center mb-0">No upcoming sessions scheduled.</p>
-                        {% endif %}
-                    {% endwith %}
+
+            <!-- Students Table -->
+            <div class="bento-card col-span-12">
+                <div class="card-title"><i class="fas fa-users"></i> Batch Members</div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Status</th></tr></thead>
+                        <tbody>
+                            {% for student_batch in batch.students.all|slice:":10" %}
+                            <tr>
+                                <td><strong>{{ student_batch.student.user.get_full_name }}</strong></td>
+                                <td>{{ student_batch.student.user.email }}</td>
+                                <td>{{ student_batch.student.phone }}</td>
+                                <td><span class="status-pill {% if student_batch.student.status == 'active' %}bg-success text-white{% else %}bg-secondary text-white{% endif %}">{{ student_batch.student.get_status_display }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
