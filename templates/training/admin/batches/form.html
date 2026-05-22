@@ -1,102 +1,167 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ title }} - Training{% endblock %}
+{% block title %}{{ title }} - HIN Technologies{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">{{ title }}</h5>
-                </div>
-                <div class="card-body">
-                    <form method="post">
-                        {% csrf_token %}
-                        
-                        {% if form.non_field_errors %}
-                            <div class="alert alert-danger">
-                                {% for error in form.non_field_errors %}
-                                    {{ error }}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                        
-                        <div class="mb-3">
-                            <label for="{{ form.name.id_for_label }}" class="form-label">Batch Name *</label>
-                            {{ form.name }}
-                            {% if form.name.errors %}
-                                <div class="text-danger small">{{ form.name.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="{{ form.description.id_for_label }}" class="form-label">Description *</label>
-                            {{ form.description }}
-                            {% if form.description.errors %}
-                                <div class="text-danger small">{{ form.description.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="{{ form.start_date.id_for_label }}" class="form-label">Start Date *</label>
-                                {{ form.start_date }}
-                                {% if form.start_date.errors %}
-                                    <div class="text-danger small">{{ form.start_date.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="{{ form.end_date.id_for_label }}" class="form-label">End Date *</label>
-                                {{ form.end_date }}
-                                {% if form.end_date.errors %}
-                                    <div class="text-danger small">{{ form.end_date.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="{{ form.total_days.id_for_label }}" class="form-label">Total Days *</label>
-                                {{ form.total_days }}
-                                {% if form.total_days.errors %}
-                                    <div class="text-danger small">{{ form.total_days.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="{{ form.batch_capacity.id_for_label }}" class="form-label">Batch Capacity *</label>
-                                {{ form.batch_capacity }}
-                                {% if form.batch_capacity.errors %}
-                                    <div class="text-danger small">{{ form.batch_capacity.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="{{ form.number_of_projects.id_for_label }}" class="form-label">Number of Projects</label>
-                                {{ form.number_of_projects }}
-                                {% if form.number_of_projects.errors %}
-                                    <div class="text-danger small">{{ form.number_of_projects.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="{{ form.status.id_for_label }}" class="form-label">Status</label>
-                                {{ form.status }}
-                                {% if form.status.errors %}
-                                    <div class="text-danger small">{{ form.status.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        
-                        <div class="d-flex justify-content-between">
-                            <a href="{% url 'training:batch_list' %}" class="btn btn-secondary">Cancel</a>
-                            <button type="submit" class="btn btn-primary">Save Batch</button>
-                        </div>
-                    </form>
-                </div>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    :root {
+        --hin-blue: #0B3D91;
+        --hin-blue-hover: #082d6b;
+        --hin-red: #C62828;
+        --hin-red-hover: #a12020;
+        --bg-main: #f4f7fc;
+        --glass-bg: rgba(255, 255, 255, 0.7);
+        --glass-blur: blur(20px);
+        --radius-lg: 24px;
+        --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Ambient Background Setup */
+    .batch-form-wrapper {
+        min-height: 100vh;
+        padding: 60px 20px;
+        background: var(--bg-main);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .ambient-bg {
+        position: fixed; inset: 0; z-index: 0; pointer-events: none;
+        background: radial-gradient(circle at 10% 20%, rgba(11, 61, 145, 0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 90% 80%, rgba(198, 40, 40, 0.08) 0%, transparent 50%);
+    }
+
+    .ambient-grid {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background-image: radial-gradient(var(--hin-blue) 1.5px, transparent 1.5px);
+        background-size: 35px 35px; opacity: 0.05;
+    }
+
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .glass-card {
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border-radius: var(--radius-lg);
+        padding: clamp(2rem, 5vw, 3.5rem);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 20px 40px rgba(11, 61, 145, 0.08);
+    }
+
+    .card-header-custom { text-align: center; margin-bottom: 40px; }
+    .card-header-custom h2 { color: var(--hin-blue); font-size: 2.2rem; font-weight: 800; margin-bottom: 10px; }
+    .card-header-custom p { color: var(--text-muted, #5b6475); }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+
+    .form-floating-group { position: relative; margin-bottom: 20px; }
+    .form-floating-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #1a1a2e; }
+    
+    .form-floating-group input, 
+    .form-floating-group select,
+    .form-floating-group textarea {
+        width: 100%; padding: 14px 16px; border: 2px solid #e2e8f0;
+        border-radius: 12px; background: rgba(255, 255, 255, 0.6);
+        transition: var(--transition); font-size: 1rem;
+    }
+
+    .form-floating-group input:focus,
+    .form-floating-group select:focus {
+        border-color: var(--hin-blue); outline: none;
+        background: white; box-shadow: 0 0 0 4px rgba(11, 61, 145, 0.1);
+    }
+
+    /* Buttons */
+    .btn-group { display: flex; gap: 15px; margin-top: 30px; }
+    
+    .btn-submit {
+        flex: 2; background: var(--hin-red); color: white;
+        padding: 16px; border-radius: 50px; border: none;
+        font-weight: 700; cursor: pointer; transition: var(--transition);
+    }
+    .btn-submit:hover { background: var(--hin-blue); transform: translateY(-2px); }
+
+    .btn-cancel {
+        flex: 1; background: var(--hin-blue); color: white;
+        padding: 16px; border-radius: 50px; text-align: center;
+        text-decoration: none; font-weight: 600; transition: var(--transition);
+    }
+    .btn-cancel:hover { background: var(--hin-red); transform: translateY(-2px); }
+</style>
+
+<div class="batch-form-wrapper">
+    <div class="ambient-bg"></div>
+    <div class="ambient-grid"></div>
+
+    <div class="container form-container">
+        <div class="glass-card">
+            <div class="card-header-custom">
+                <h2>{{ title }}</h2>
+                <p>Fill in the details to update your batch training program.</p>
             </div>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                
+                <div class="form-floating-group">
+                    <label>Batch Name *</label>
+                    {{ form.name }}
+                </div>
+                
+                <div class="form-floating-group">
+                    <label>Description *</label>
+                    {{ form.description }}
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-floating-group">
+                        <label>Start Date *</label>
+                        {{ form.start_date }}
+                    </div>
+                    <div class="form-floating-group">
+                        <label>End Date *</label>
+                        {{ form.end_date }}
+                    </div>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-floating-group">
+                        <label>Total Days *</label>
+                        {{ form.total_days }}
+                    </div>
+                    <div class="form-floating-group">
+                        <label>Batch Capacity *</label>
+                        {{ form.batch_capacity }}
+                    </div>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-floating-group">
+                        <label>Number of Projects</label>
+                        {{ form.number_of_projects }}
+                    </div>
+                    <div class="form-floating-group">
+                        <label>Status</label>
+                        {{ form.status }}
+                    </div>
+                </div>
+                
+                <div class="btn-group">
+                    <a href="{% url 'training:batch_list' %}" class="btn-cancel">Cancel</a>
+                    <button type="submit" class="btn-submit">Save Batch</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

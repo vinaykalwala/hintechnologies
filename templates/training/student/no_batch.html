@@ -1,34 +1,141 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}No Batch Assigned - HIN{% endblock %}
+{% block title %}No Batch Assigned - HIN Technologies{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            <div class="card shadow">
-                <div class="card-body py-5">
-                    <i class="bi bi-info-circle" style="font-size: 64px; color: #ffc107;"></i>
-                    <h3 class="mt-3">No Batch Assigned Yet</h3>
-                    <p class="text-muted mt-3">
-                        You haven't been assigned to any batch yet. Our team will review your profile and 
-                        assign you to an appropriate batch soon.
-                    </p>
-                    <p class="text-muted">
-                        In the meantime, you can update your profile information to help us understand 
-                        your background better.
-                    </p>
-                    <div class="mt-4">
-                        <a href="{% url 'training:student_profile' %}" class="btn btn-primary">
-                            Update Profile
-                        </a>
-                        <a href="{% url 'training:student_dashboard' %}" class="btn btn-outline-secondary">
-                            Back to Dashboard
-                        </a>
-                    </div>
-                </div>
-            </div>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    :root {
+        --hin-blue: #0B3D91;
+        --hin-red: #C62828;
+        --bg-main: #f4f7fc;
+        --white: #ffffff;
+        --text-dark: #1a1a2e;
+        --text-muted: #5b6475;
+        --glass-bg: rgba(255, 255, 255, 0.7);
+        --glass-blur: blur(20px);
+        --radius-lg: 32px;
+        --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .status-wrapper {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        background: var(--bg-main);
+        position: relative;
+    }
+
+    /* Ambient Background Effects */
+    .ambient-bg {
+        position: fixed; inset: 0; z-index: 0; pointer-events: none;
+        background: radial-gradient(circle at 50% 50%, rgba(11, 61, 145, 0.06) 0%, transparent 60%);
+    }
+
+    .status-card {
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border-radius: var(--radius-lg);
+        padding: clamp(2.5rem, 6vw, 4rem);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 30px 60px rgba(11, 61, 145, 0.1);
+        text-align: center;
+        max-width: 600px;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+    }
+
+    .icon-box {
+        width: 100px;
+        height: 100px;
+        background: var(--hin-blue-light, #eef5ff);
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 30px;
+        color: var(--hin-blue);
+        font-size: 3rem;
+    }
+
+    .status-card h3 {
+        color: var(--hin-blue);
+        font-size: clamp(1.8rem, 4vw, 2.5rem);
+        font-weight: 800;
+        margin-bottom: 20px;
+    }
+
+    .status-card p {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        line-height: 1.7;
+        margin-bottom: 10px;
+    }
+
+    /* Button Styling */
+    .action-group {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 40px;
+    }
+
+    @media (min-width: 576px) {
+        .action-group { flex-direction: row; justify-content: center; }
+    }
+
+    .btn-main {
+        padding: 16px 32px;
+        border-radius: 50px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-primary {
+        background: var(--hin-red);
+        color: white;
+        box-shadow: 0 10px 20px rgba(198, 40, 40, 0.2);
+    }
+    .btn-primary:hover { background: var(--hin-blue); transform: translateY(-3px); }
+
+    .btn-outline {
+        background: transparent;
+        color: var(--hin-blue);
+        border: 2px solid var(--hin-blue);
+    }
+    .btn-outline:hover { background: var(--hin-blue); color: white; transform: translateY(-3px); }
+</style>
+
+<div class="status-wrapper">
+    <div class="ambient-bg"></div>
+
+    <div class="status-card">
+        <div class="icon-box">
+            <i class="fas fa-user-clock"></i>
+        </div>
+        <h3><span style="color: var(--hin-red);">No </span>Batch Assigned Yet</h3>
+        <p>You haven't been assigned to any batch yet. Our team will review your profile and assign you to an appropriate batch soon.</p>
+        <p>In the meantime, you can update your profile information to help us understand your background better.</p>
+        
+        <div class="action-group">
+            <a href="{% url 'training:student_profile' %}" class="btn-main btn-primary">
+                <i class="fas fa-user-edit"></i> Update Profile
+            </a>
+            <a href="{% url 'training:student_dashboard' %}" class="btn-main btn-outline">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
         </div>
     </div>
 </div>

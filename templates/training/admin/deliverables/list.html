@@ -1,156 +1,184 @@
-<!-- templates/training/admin/deliverables/list.html -->
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Manage Deliverables - Training{% endblock %}
+{% block title %}Manage Deliverables - HIN Technologies{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>Manage Deliverables</h2>
-                <a href="{% url 'training:deliverable_create' %}" class="btn btn-primary">
-                    + Upload Deliverable
-                </a>
-            </div>
-        </div>
-    </div>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    :root {
+        --hin-blue: #0B3D91;
+        --hin-red: #C62828;
+        --bg-main: #F8FAFC;
+        --card-bg: #FFFFFF;
+        --text-dark: #0F172A;
+        --text-muted: #64748B;
+        --border-color: #E2E8F0;
+    }
+
+    .deliverables-wrapper {
+        min-height: 100vh;
+        background-color: var(--bg-main);
+        padding: 40px 20px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .max-w-1400 { max-width: 1400px; margin: 0 auto; }
+
+    /* --- PAGE HEADER --- */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+        background: var(--card-bg);
+        padding: 24px 32px;
+        border-radius: 20px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+
+    .page-header h2 {
+        font-family: 'Plus Jakarta Sans';
+        font-weight: 800;
+        color: var(--hin-blue);
+        margin: 0;
+    }
+
+    /* --- FILTER SECTION --- */
+    .filter-panel {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 24px;
+        margin-bottom: 30px;
+        border: 1px solid var(--border-color);
+    }
+
+    .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .filter-panel input, .filter-panel select {
+        width: 100%;
+        padding: 12px 16px;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        background: #FAFAFA;
+    }
+
+    /* --- TABLE UI --- */
+    .table-responsive {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 24px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+    }
+
+    .table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    .table thead { background: #F1F5F9; }
+    .table th { color: var(--hin-blue); font-weight: 700; padding: 16px; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em; }
+    .table td { padding: 16px; color: var(--text-dark); border-bottom: 1px solid var(--border-color); }
     
-    <!-- Filters -->
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <form method="get" class="row g-3">
-                <div class="col-md-3">
-                    <input type="text" name="search" class="form-control" placeholder="Search deliverables..." value="{{ search_query }}">
-                </div>
-                <div class="col-md-3">
-                    <select name="type" class="form-select">
-                        <option value="">All Types</option>
-                        <option value="batch" {% if type_filter == 'batch' %}selected{% endif %}>Batch-wide</option>
-                        <option value="individual" {% if type_filter == 'individual' %}selected{% endif %}>Individual</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <select name="batch" class="form-select">
-                        <option value="">All Batches</option>
-                        {% for batch in batches %}
-                            <option value="{{ batch.id }}" {% if batch_filter == batch.id|stringformat:"s" %}selected{% endif %}>{{ batch.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <button type="submit" class="btn btn-primary w-100">Filter</button>
-                </div>
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    /* --- ACTIONS --- */
+    .btn-create {
+        background: var(--hin-red);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+    .btn-create:hover { background: #961b1b; }
+
+    .btn-action {
+        color: var(--hin-blue);
+        text-decoration: none;
+        font-weight: 600;
+    }
+    .btn-action:hover { color: var(--hin-red); }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .page-header { flex-direction: column; gap: 20px; align-items: flex-start; }
+    }
+</style>
+
+<div class="deliverables-wrapper">
+    <div class="max-w-1400">
+        <!-- Header -->
+        <div class="page-header">
+            <h2>Manage Deliverables</h2>
+            <a href="{% url 'training:deliverable_create' %}" class="btn-create">
+                <i class="fas fa-plus me-2"></i> Upload Deliverable
+            </a>
+        </div>
+        
+        <!-- Filters -->
+        <div class="filter-panel">
+            <form method="get" class="filter-grid">
+                <input type="text" name="search" placeholder="Search title..." value="{{ search_query }}">
+                <select name="type">
+                    <option value="">All Types</option>
+                    <option value="batch" {% if type_filter == 'batch' %}selected{% endif %}>Batch-wide</option>
+                    <option value="individual" {% if type_filter == 'individual' %}selected{% endif %}>Individual</option>
+                </select>
+                <select name="batch">
+                    <option value="">All Batches</option>
+                    {% for batch in batches %}
+                        <option value="{{ batch.id }}" {% if batch_filter == batch.id|stringformat:"s" %}selected{% endif %}>{{ batch.name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-primary" style="background:var(--hin-blue); color:white; border:none; border-radius:10px;">Apply Filter</button>
             </form>
         </div>
-    </div>
-    
-    <!-- Deliverables Table -->
-    <div class="card shadow">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
+        
+        <!-- Table -->
+        <div class="table-card table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Stage</th>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Assigned To</th>
+                        <th>View</th>
+                        <th>Downloads</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for deliverable in deliverables %}
                         <tr>
-                            <th>Stage</th>
-                            <th>Title</th>
-                            <th>Type</th>
-                            <th>Assigned To</th>
-                            <th>File</th>
-                            <th>Downloads</th>
-                            <th>Created</th>
-                        </thead>
-                        <tbody>
-                            {% for deliverable in deliverables %}
-                                <tr>
-                                    <td>
-                                        {% if deliverable.deliverable_type == 'batch' %}
-                                            <span class="badge bg-secondary">Stage {{ deliverable.stage_number }}</span>
-                                        {% else %}
-                                            <span class="badge bg-info">Individual</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <strong>{{ deliverable.title }}</strong>
-                                        <br>
-                                        <small class="text-muted">{{ deliverable.description|truncatechars:50 }}</small>
-                                    </td>
-                                    <td>
-                                        {% if deliverable.deliverable_type == 'batch' %}
-                                            <span class="badge bg-primary">Batch-wide</span>
-                                        {% else %}
-                                            <span class="badge bg-success">Individual</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if deliverable.deliverable_type == 'batch' %}
-                                            {{ deliverable.batch.name }}
-                                        {% else %}
-                                            {{ deliverable.assigned_student.user.get_full_name }}
-                                            <br>
-                                            <small class="text-muted">{{ deliverable.assigned_student.user.email }}</small>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <a href="{{ deliverable.file.url }}" target="_blank" class="btn btn-sm btn-outline-info">View</a>
-                                    </td>
-                                    <td>
-                                        {{ deliverable.student_records.count }}
-                                        <br>
-                                        <small>
-                                            Downloaded: {{ deliverable.student_records.filter.is_downloaded.count }}
-                                        </small>
-                                    </td>
-                                    <td>{{ deliverable.created_at|date:"M d, Y" }}</td>
-                                </td>
-                            {% empty %}
-                                <tr>
-                                    <td colspan="7" class="text-center py-5">
-                                        <i class="bi bi-file-earmark-x" style="font-size: 48px;"></i>
-                                        <h5 class="mt-3">No deliverables found</h5>
-                                        <p class="text-muted">Upload your first deliverable to get started.</p>
-                                        <a href="{% url 'training:deliverable_create' %}" class="btn btn-primary">Upload Deliverable</a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                
-                <!-- Pagination -->
-                {% if deliverables.has_other_pages %}
-                    <nav aria-label="Page navigation" class="mt-4">
-                        <ul class="pagination justify-content-center">
-                            {% if deliverables.has_previous %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ deliverables.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if batch_filter %}&batch={{ batch_filter }}{% endif %}">Previous</a>
-                                </li>
-                            {% else %}
-                                <li class="page-item disabled"><span class="page-link">Previous</span></li>
-                            {% endif %}
-                            
-                            {% for num in deliverables.paginator.page_range %}
-                                {% if deliverables.number == num %}
-                                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-                                {% elif num > deliverables.number|add:'-3' and num < deliverables.number|add:'3' %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if batch_filter %}&batch={{ batch_filter }}{% endif %}">{{ num }}</a>
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-                            
-                            {% if deliverables.has_next %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ deliverables.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if batch_filter %}&batch={{ batch_filter }}{% endif %}">Next</a>
-                                </li>
-                            {% else %}
-                                <li class="page-item disabled"><span class="page-link">Next</span></li>
-                            {% endif %}
-                        </ul>
-                    </nav>
-                {% endif %}
-            </div>
+                            <td><span class="status-badge" style="background:#eef5ff; color:var(--hin-blue);">Stage {{ deliverable.stage_number }}</span></td>
+                            <td><strong>{{ deliverable.title }}</strong></td>
+                            <td>{{ deliverable.deliverable_type|title }}</td>
+                            <td>{% if deliverable.deliverable_type == 'batch' %}{{ deliverable.batch.name }}{% else %}{{ deliverable.assigned_student.user.get_full_name }}{% endif %}</td>
+                            <td><a href="{{ deliverable.file.url }}" target="_blank" class="btn-action"><i class="fas fa-file-pdf"></i> View</a></td>
+                            <td>{{ deliverable.student_records.count }}</td>
+                            <td>{{ deliverable.created_at|date:"M d, Y" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+                                <h5 class="text-muted">No deliverables found</h5>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
