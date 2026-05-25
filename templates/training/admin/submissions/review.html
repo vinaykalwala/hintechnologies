@@ -1,87 +1,552 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Review Submission - Training{% endblock %}
+{% block title %}Review Submission - HIN Technologies{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Review Project Submission</h5>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    :root {
+        /* HIN Technologies Luxury Brand Colors */
+        --hin-blue: #0B3D91;
+        --hin-blue-light: #eef5ff;
+        --hin-blue-hover: #082d6b;
+        --hin-red: #C62828;
+        --hin-red-light: #fef2f2;
+        --hin-red-hover: #a12020;
+        
+        /* Neutrals */
+        --dark-text: #1a1a2e;
+        --muted-text: #5b6475;
+        --bg-main: #f4f7fc;
+        --white: #ffffff;
+        --border-color: rgba(255, 255, 255, 0.8); 
+        
+        /* Glassmorphism Configuration */
+        --glass-bg: rgba(255, 255, 255, 0.85);
+        --glass-blur: blur(25px);
+        
+        /* UI Elements */
+        --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 10px 20px -3px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 25px 50px -12px rgba(11, 61, 145, 0.15);
+        --radius-lg: 30px;
+        --radius-md: 18px;
+        --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background-color: var(--bg-main);
+        font-family: 'Inter', system-ui, sans-serif;
+        color: var(--dark-text);
+        overflow-x: hidden;
+        position: relative;
+    }
+
+    /* --- DYNAMIC AMBIENT BACKGROUND --- */
+    .ambient-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .ambient-blob {
+        position: absolute;
+        filter: blur(100px);
+        border-radius: 50%;
+        opacity: 0.65;
+        animation: floatBlob 18s infinite alternate ease-in-out;
+    }
+
+    .blob-1 {
+        background: rgba(11, 61, 145, 0.38);
+        width: 50vw;
+        height: 50vw;
+        top: -15%;
+        left: -15%;
+    }
+
+    .blob-2 {
+        background: rgba(198, 40, 40, 0.28);
+        width: 55vw;
+        height: 55vw;
+        bottom: -25%;
+        right: -15%;
+        animation-delay: -4s;
+    }
+
+    .blob-3 {
+        background: rgba(14, 165, 233, 0.22);
+        width: 40vw;
+        height: 40vw;
+        top: 25%;
+        left: 35%;
+        animation-delay: -8s;
+    }
+
+    .ambient-grid {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: radial-gradient(var(--hin-blue) 1.5px, transparent 1.5px);
+        background-size: 32px 32px;
+        opacity: 0.06;
+    }
+
+    @keyframes floatBlob {
+        0% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(5%, 10%) scale(1.08); }
+        100% { transform: translate(-5%, -5%) scale(0.92); }
+    }
+
+    .page-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 50px 20px 100px;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* --- ARCHITECTURAL MASTER CARD --- */
+    .master-review-panel {
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border-radius: var(--radius-lg);
+        padding: clamp(2rem, 6vw, 3.5rem);
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow-lg);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Elegant Brand Accent Line at top of the card */
+    .master-review-panel::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(90deg, var(--hin-blue), var(--hin-red), var(--hin-blue));
+    }
+
+    .panel-main-header {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: var(--hin-blue);
+        font-size: clamp(1.5rem, 4vw, 2.2rem);
+        font-weight: 800;
+        margin-bottom: 35px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        border-bottom: 2px solid rgba(11, 61, 145, 0.08);
+        padding-bottom: 20px;
+        letter-spacing: -0.5px;
+    }
+
+    .panel-main-header i {
+        color: var(--hin-red);
+        background: var(--hin-red-light);
+        padding: 12px;
+        border-radius: 16px;
+        font-size: 1.5rem;
+    }
+
+    /* --- PROJECT OVERVIEW SUB-CARD --- */
+    .project-banner-box {
+        background: linear-gradient(135deg, rgba(11, 61, 145, 0.05) 0%, rgba(11, 61, 145, 0.01) 100%);
+        border: 1px solid rgba(11, 61, 145, 0.1);
+        border-left: 6px solid var(--hin-blue);
+        border-radius: var(--radius-md);
+        padding: 24px;
+        margin-bottom: 35px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .project-banner-box h6 {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: var(--hin-blue);
+        font-size: 1.3rem;
+        font-weight: 800;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .project-banner-box p {
+        font-size: 1rem;
+        color: var(--text-body, #334155);
+        line-height: 1.6;
+    }
+
+    /* --- NESTED DETAILS CONTAINER --- */
+    .details-inner-card {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        border-radius: var(--radius-md);
+        padding: 24px;
+        margin-bottom: 35px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .details-inner-card h4 {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: var(--text-dark);
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        padding-bottom: 10px;
+    }
+
+    .details-inner-card h4 i {
+        color: var(--hin-blue);
+    }
+
+    .info-stack {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .info-stack-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .info-stack-item span {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--muted-text);
+        font-weight: 700;
+    }
+
+    .info-stack-item strong {
+        color: var(--dark-text);
+        font-size: 1.05rem;
+        font-weight: 600;
+    }
+
+    /* --- RESOURCE ACTION ANCHORS --- */
+    .resource-links-flex {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 14px;
+        margin-bottom: 25px;
+    }
+
+    .resource-anchor {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 20px;
+        background: var(--white);
+        border: 1px solid rgba(11, 61, 145, 0.08);
+        border-radius: 12px;
+        text-decoration: none;
+        color: var(--dark-text);
+        font-weight: 700;
+        font-size: 0.95rem;
+        transition: var(--transition);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .resource-anchor i {
+        font-size: 1.25rem;
+        transition: var(--transition);
+    }
+
+    .resource-anchor.github-link-style i { color: #181717; }
+    .resource-anchor.live-link-style i { color: #10b981; }
+    .resource-anchor.zip-link-style i { color: #f59e0b; }
+
+    .resource-anchor:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--hin-blue);
+    }
+
+    .resource-anchor.github-link-style:hover { color: var(--hin-blue); }
+    .resource-anchor.live-link-style:hover { color: #059669; }
+    .resource-anchor.zip-link-style:hover { color: #d97706; }
+
+    /* Student Remarks Textarea Mock */
+    .remarks-display-container {
+        margin-top: 20px;
+    }
+
+    .remarks-display-container label {
+        display: block;
+        font-weight: 700;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        color: var(--muted-text);
+        margin-bottom: 8px;
+        letter-spacing: 0.05em;
+    }
+
+    .remarks-textarea-mock {
+        background: #fafafa;
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        border-radius: 12px;
+        padding: 18px;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: var(--dark-text);
+    }
+
+    /* --- ADMINISTRATIVE EVALUATION INPUTS --- */
+    .form-block-element {
+        margin-bottom: 28px;
+    }
+
+    .form-block-element label {
+        display: block;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: var(--dark-text);
+        font-size: 0.95rem;
+    }
+
+    .form-block-element select,
+    .form-block-element textarea {
+        width: 100%;
+        padding: 14px 18px;
+        border: 2px solid rgba(226, 232, 240, 0.9);
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.8);
+        transition: var(--transition);
+        font-family: inherit;
+        font-size: 1rem;
+        color: var(--dark-text);
+    }
+
+    .form-block-element select:focus,
+    .form-block-element textarea:focus {
+        border-color: var(--hin-blue);
+        background: var(--white);
+        outline: none;
+        box-shadow: 0 0 0 5px rgba(11, 61, 145, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .form-block-element textarea {
+        resize: vertical;
+        min-height: 140px;
+        line-height: 1.6;
+    }
+
+    .form-block-element small {
+        color: var(--muted-text);
+        font-size: 0.85rem;
+        margin-top: 8px;
+        display: block;
+    }
+
+    .field-error-text {
+        color: var(--hin-red);
+        font-size: 0.85rem;
+        margin-top: 6px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    /* --- STRATEGIC COMBO ACTION TRIGGER UTILS --- */
+    .action-button-alignment-wrapper {
+        display: flex;
+        gap: 18px;
+        margin-top: 40px;
+    }
+
+    /* Submit Review Trigger Button: Starts Red -> Hover scales into Blue */
+    .btn-trigger-review-submit {
+        flex: 2;
+        background-color: var(--hin-red);
+        color: var(--white);
+        border: none;
+        padding: 16px 32px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: var(--transition);
+        box-shadow: 0 6px 20px rgba(198, 40, 40, 0.2);
+    }
+
+    .btn-trigger-review-submit:hover {
+        background-color: var(--hin-blue);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(11, 61, 145, 0.3);
+    }
+
+    /* Navigation Back Button: Starts Blue -> Hover scales into Red */
+    .btn-trigger-review-cancel {
+        flex: 1;
+        background-color: var(--hin-blue);
+        color: var(--white);
+        border: none;
+        padding: 16px 32px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: var(--transition);
+        box-shadow: 0 6px 20px rgba(11, 61, 145, 0.15);
+    }
+
+    .btn-trigger-review-cancel:hover {
+        background-color: var(--hin-red);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(198, 40, 40, 0.25);
+    }
+
+    /* --- RESPONSIVE MOBILE ADJUSTMENT MATRIX --- */
+    @media (max-width: 768px) {
+        .page-container { padding: 30px 15px 60px; }
+        .master-review-panel { padding: 25px 20px; border-radius: var(--radius-md); }
+        .info-stack { grid-template-columns: 1fr; gap: 15px; }
+        .resource-links-flex { grid-template-columns: 1fr; gap: 12px; }
+        .action-button-alignment-wrapper { flex-direction: column-reverse; gap: 12px; }
+        .btn-trigger-review-submit, .btn-trigger-review-cancel { width: 100%; padding: 14px; }
+    }
+</style>
+
+<div class="ambient-bg">
+    <div class="ambient-blob blob-1"></div>
+    <div class="ambient-blob blob-2"></div>
+    <div class="ambient-blob blob-3"></div>
+    <div class="ambient-grid"></div>
+</div>
+
+<div class="page-container">
+    <div class="master-review-panel">
+        
+        <div class="panel-main-header">
+            <i class="fas fa-file-signature"></i>
+            <h2>Review Project Submission</h2>
+        </div>
+
+        <div class="project-banner-box">
+            <h6><i class="fas fa-project-diagram"></i> Project: {{ submission.project.title }}</h6>
+            <p>{{ submission.project.description }}</p>
+        </div>
+
+        <div class="details-inner-card">
+            <h4><i class="fas fa-folder-open"></i> Student Submission Details</h4>
+            
+            <div class="info-stack">
+                <div class="info-stack-item">
+                    <span>Student Contributor</span>
+                    <strong>{{ submission.student.user.get_full_name }}</strong>
                 </div>
-                <div class="card-body">
-                    <div class="alert alert-info">
-                        <h6>Project: {{ submission.project.title }}</h6>
-                        <p class="mb-0">{{ submission.project.description }}</p>
-                    </div>
-                    
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h6 class="mb-0">Student Submission Details</h6>
-                        </div>
-                        <div class="card-body">
-                            <p><strong>Student:</strong> {{ submission.student.user.get_full_name }}</p>
-                            <p><strong>Submitted On:</strong> {{ submission.submitted_at|date:"F d, Y H:i" }}</p>
-                            
-                            {% if submission.github_link %}
-                                <p><strong>GitHub Link:</strong> <a href="{{ submission.github_link }}" target="_blank">{{ submission.github_link }}</a></p>
-                            {% endif %}
-                            
-                            {% if submission.live_link %}
-                                <p><strong>Live Demo:</strong> <a href="{{ submission.live_link }}" target="_blank">{{ submission.live_link }}</a></p>
-                            {% endif %}
-                            
-                            {% if submission.zip_file %}
-                                <p><strong>Zip File:</strong> <a href="{{ submission.zip_file.url }}" target="_blank">Download Project Files</a></p>
-                            {% endif %}
-                            
-                            {% if submission.remarks %}
-                                <p><strong>Student Remarks:</strong></p>
-                                <div class="border rounded p-3 bg-light">
-                                    {{ submission.remarks|linebreaks }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    
-                    <form method="post">
-                        {% csrf_token %}
-                        
-                        {% if form.non_field_errors %}
-                            <div class="alert alert-danger">
-                                {% for error in form.non_field_errors %}
-                                    {{ error }}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                        
-                        <div class="mb-3">
-                            <label for="{{ form.status.id_for_label }}" class="form-label">Review Status *</label>
-                            {{ form.status }}
-                            {% if form.status.errors %}
-                                <div class="text-danger small">{{ form.status.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="{{ form.admin_feedback.id_for_label }}" class="form-label">Feedback for Student</label>
-                            {{ form.admin_feedback }}
-                            {% if form.admin_feedback.errors %}
-                                <div class="text-danger small">{{ form.admin_feedback.errors.0 }}</div>
-                            {% endif %}
-                            <small class="text-muted">Provide constructive feedback to help the student improve</small>
-                        </div>
-                        
-                        <div class="d-flex justify-content-between">
-                            <a href="{% url 'training:project_submissions' %}" class="btn btn-secondary">Back to Submissions</a>
-                            <button type="submit" class="btn btn-primary">Submit Review</button>
-                        </div>
-                    </form>
+                <div class="info-stack-item">
+                    <span>Submission Timestamp</span>
+                    <strong>{{ submission.submitted_at|date:"F d, Y H:i" }}</strong>
                 </div>
             </div>
+
+            <div class="resource-links-flex">
+                {% if submission.github_link %}
+                    <a href="{{ submission.github_link }}" target="_blank" class="resource-anchor github-link-style">
+                        <i class="fab fa-github"></i> GitHub Codebase
+                    </a>
+                {% endif %}
+                
+                {% if submission.live_link %}
+                    <a href="{{ submission.live_link }}" target="_blank" class="resource-anchor live-link-style">
+                        <i class="fas fa-external-link-alt"></i> Live Production Demo
+                    </a>
+                {% endif %}
+                
+                {% if submission.zip_file %}
+                    <a href="{{ submission.zip_file.url }}" target="_blank" class="resource-anchor zip-link-style">
+                        <i class="fas fa-file-archive"></i> Download Project ZIP
+                    </a>
+                {% endif %}
+            </div>
+
+            {% if submission.remarks %}
+                <div class="remarks-display-container">
+                    <label>Student Submission Remarks</label>
+                    <div class="remarks-textarea-mock">
+                        {{ submission.remarks|linebreaks }}
+                    </div>
+                </div>
+            {% endif %}
         </div>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger" style="background:#fef2f2; color:var(--hin-red); padding:16px; border-radius:14px; margin-bottom:25px; font-weight:600; border: 1px solid rgba(198,40,40,0.1);">
+                    {% for error in form.non_field_errors %}
+                        <i class="fas fa-exclamation-circle me-1"></i> {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="form-block-element">
+                <label for="{{ form.status.id_for_label }}">Review Status *</label>
+                {{ form.status }}
+                {% if form.status.errors %}
+                    <div class="field-error-text"><i class="fas fa-exclamation-triangle"></i> {{ form.status.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-block-element">
+                <label for="{{ form.admin_feedback.id_for_label }}">Feedback for Student</label>
+                {{ form.admin_feedback }}
+                {% if form.admin_feedback.errors %}
+                    <div class="field-error-text"><i class="fas fa-exclamation-triangle"></i> {{ form.admin_feedback.errors.0 }}</div>
+                {% endif %}
+                <small>Provide constructive feedback to help the student iterate and optimize their application structure</small>
+            </div>
+
+            <div class="action-button-alignment-wrapper">
+                <a href="{% url 'training:project_submissions' %}" class="btn-trigger-review-cancel">
+                    <i class="fas fa-chevron-left"></i> Back to Submissions
+                </a>
+                <button type="submit" class="btn-trigger-review-submit">
+                    <i class="fas fa-cloud-upload-alt"></i> Submit Review
+                </button>
+            </div>
+        </form>
+
     </div>
 </div>
 {% endblock %}
