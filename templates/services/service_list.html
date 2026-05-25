@@ -4,362 +4,365 @@
 {% block title %}Manage Services - HIN Technologies{% endblock %}
 
 {% block content %}
+<div class="page-bg">
 
-<div class="main-wrapper">
-    <div class="main-row">
-        <div class="content-area">
+    <div class="main-wrapper">
+        <div class="main-row">
+            <div class="content-area">
 
-            <!-- FORM SECTION -->
+                <!-- FORM SECTION -->
 
-            {% if perms.hin.add_service or perms.hin.change_service %}
-            <div class="card form-card">
+                {% if perms.hin.add_service or perms.hin.change_service %}
+                <div class="card form-card">
 
-                <div class="card-header form-header">
-
-                    <h3>
-
-                        {% if editing_service %}
-                        <i class="fas fa-edit"></i>
-                        Edit Service
-                        {% else %}
-                        <i class="fas fa-plus-circle"></i>
-                        Add New Service
-                        {% endif %}
-
-                    </h3>
-
-                </div>
-
-                <div class="card-body">
-
-                    <form method="post" enctype="multipart/form-data">
-
-                        {% csrf_token %}
-                        <div class="form-grid">
-
-                            <div class="field-box">
-
-                                <label class="form-label">
-
-                                    <i class="fas fa-layer-group"></i>
-
-                                    Service Title
-
-                                </label>
-
-                                {{ form.title }}
-
-                            </div>
-
-                            <div class="field-box">
-
-                                <label class="form-label">
-
-                                    <i class="fas fa-image"></i>
-
-                                    Service Image
-
-                                </label>
-
-                                {{ form.image }}
-
-                            </div>
-
-                        </div>
-                        <div class="field-section">
-
-                            <label class="form-label">
-
-                                <i class="fas fa-align-left"></i>
-
-                                Short Description
-
-                            </label>
-
-                            {{ form.short_description }}
-
-                        </div>
-                        <div class="field-section">
-
-                            <label class="form-label">
-
-                                <i class="fas fa-file-alt"></i>
-
-                                Full Description
-
-                            </label>
-
-                            {{ form.full_description }}
-
-                        </div>
-
-                        {% if editing_service and editing_service.image %}
-
-                        <div class="current-image">
-
-                            <img src="{{ editing_service.image.url }}">
-
-                        </div>
-
-                        {% endif %}
-
-                        <div class="toggle-box">
-
-                            {{ form.is_active }}
-
-                            <label class="form-check-label">
-
-                                Visible On Website
-
-                            </label>
-
-                        </div>
-
-                        <button class="btn btn-save">
-
-                            <i class="fas fa-save"></i>
-
-                            Save Service
-
-                        </button>
-
-                        {% if editing_service %}
-
-                        <a href="{% url 'hin:service_manage' %}" class="btn btn-cancel">
-
-                            Cancel
-
-                        </a>
-
-                        {% endif %}
-
-                    </form>
-
-                </div>
-
-            </div>
-
-            {% endif %}
-
-            <!-- SERVICES -->
-
-            <div class="card service-main">
-
-                <div class="card-header service-header">
-
-                    <div>
+                    <div class="card-header form-header">
 
                         <h3>
 
-                            <i class="fas fa-cubes"></i>
-
-                            {% if is_management %}
-                            Manage Services
+                            {% if editing_service %}
+                            <i class="fas fa-edit"></i>
+                            Edit Service
                             {% else %}
-                            Our Services
+                            <i class="fas fa-plus-circle"></i>
+                            Add New Service
                             {% endif %}
 
                         </h3>
 
                     </div>
 
-                    <span class="total-badge">
+                    <div class="card-body">
 
-                        {{ services|length }}
+                        <form method="post" enctype="multipart/form-data">
 
-                        Services
+                            {% csrf_token %}
+                            <div class="form-grid">
 
-                    </span>
+                                <div class="field-box">
 
-                </div>
+                                    <label class="form-label">
 
-                <div class="card-body">
+                                        <i class="fas fa-layer-group"></i>
 
-                    <!-- SEARCH -->
+                                        Service Title
 
-                    <div class="search-box">
+                                    </label>
 
-                        <form method="get">
-
-                            <input type="text" name="search" placeholder="Search services..."
-                                value="{{ search_query }}">
-
-                            <button>
-
-                                <i class="fas fa-search"></i>
-
-                            </button>
-
-                        </form>
-
-                    </div>
-                    <div class="services-grid">
-
-                        {% for service in services %}
-
-                        <div class="service-item">
-
-                            <div class="service-card">
-
-                                {% if service.image %}
-
-                                <img src="{{ service.image.url }}" class="service-image">
-
-                                {% else %}
-
-                                <div class="image-placeholder">
-
-                                    <i class="fas fa-laptop-code"></i>
+                                    {{ form.title }}
 
                                 </div>
 
-                                {% endif %}
+                                <div class="field-box">
 
-                                <div class="service-content">
+                                    <label class="form-label">
 
-                                    <div class="top-row">
+                                        <i class="fas fa-image"></i>
 
-                                        <h5>
+                                        Service Image
 
-                                            {{ service.title }}
+                                    </label>
 
-                                        </h5>
-
-                                        {% if service.is_active %}
-                                        <span class="active">
-                                            Active
-                                        </span>
-                                        {% else %}
-                                        <span class="inactive">
-                                            Inactive
-                                        </span>
-                                        {% endif %}
-
-                                    </div>
-                                    <div class="scroll-desc">
-
-                                        {{ service.full_description }}
-
-                                    </div>
-
-
-
-                                    <div class="date">
-
-                                        <i class="fas fa-calendar"></i>
-
-                                        {{ service.created_at|date:"d M Y" }}
-
-                                    </div>
-
-                                </div>
-
-                                <div class="action-buttons">
-
-                                    {% if perms.hin.change_service %}
-
-                                    <a href="?edit={{ service.id }}" class="edit-btn">
-
-                                        Edit
-
-                                    </a>
-
-                                    {% endif %}
-
-                                    {% if perms.hin.delete_service %}
-                                    <button type="button" class="delete-btn" onclick="openDeleteModal(
-'deleteModal{{service.id}}'
-)">
-
-                                        Delete
-
-                                    </button>
-
-                                    {% endif %}
+                                    {{ form.image }}
 
                                 </div>
 
                             </div>
+                            <div class="field-section">
 
-                        </div>
+                                <label class="form-label">
 
-                        {% empty %}
-                        <div class="empty-state">
+                                    <i class="fas fa-align-left"></i>
 
-                            <i class="fas fa-cogs empty-icon"></i>
+                                    Short Description
 
-                            <h3>No Services Found</h3>
+                                </label>
 
-                        </div>
+                                {{ form.short_description }}
 
-                        {% endfor %}
+                            </div>
+                            <div class="field-section">
+
+                                <label class="form-label">
+
+                                    <i class="fas fa-file-alt"></i>
+
+                                    Full Description
+
+                                </label>
+
+                                {{ form.full_description }}
+
+                            </div>
+
+                            {% if editing_service and editing_service.image %}
+
+                            <div class="current-image">
+
+                                <img src="{{ editing_service.image.url }}">
+
+                            </div>
+
+                            {% endif %}
+
+                            <div class="toggle-box">
+
+                                {{ form.is_active }}
+
+                                <label class="form-check-label">
+
+                                    Visible On Website
+
+                                </label>
+
+                            </div>
+
+                            <button class="btn btn-save">
+
+                                <i class="fas fa-save"></i>
+
+                                Save Service
+
+                            </button>
+
+                            {% if editing_service %}
+
+                            <a href="{% url 'hin:service_manage' %}" class="btn btn-cancel">
+
+                                Cancel
+
+                            </a>
+
+                            {% endif %}
+
+                        </form>
 
                     </div>
 
                 </div>
-                {% for service in services %}
 
-                <div class="delete-modal" id="deleteModal{{service.id}}">
+                {% endif %}
 
-                    <div class="delete-box">
+                <!-- SERVICES -->
 
-                        <div class="delete-icon">
+                <div class="card service-main">
 
-                            <i class="fas fa-trash-alt"></i>
+                    <div class="card-header service-header">
+
+                        <div>
+
+                            <h3>
+
+                                <i class="fas fa-cubes"></i>
+
+                                {% if is_management %}
+                                Manage Services
+                                {% else %}
+                                Our Services
+                                {% endif %}
+
+                            </h3>
 
                         </div>
 
-                        <h3>
+                        <span class="total-badge">
 
-                            Delete Service?
+                            {{ services|length }}
 
-                        </h3>
+                            Services
 
-                        <p>
+                        </span>
 
-                            Are you sure you want to delete
+                    </div>
 
-                            <b>{{service.title}}</b> ?
+                    <div class="card-body">
 
-                        </p>
+                        <!-- SEARCH -->
 
-                        <div class="delete-actions">
+                        <div class="search-box">
 
-                            <button class="cancel-delete" onclick="
-closeDeleteModal(
-'deleteModal{{service.id}}'
-)
-">
+                            <form method="get">
 
-                                Cancel
+                                <input type="text" name="search" placeholder="Search services..."
+                                    value="{{ search_query }}">
 
-                            </button>
-                            <form method="post" action="{% url 'hin:service_delete' pk=service.id %}" style="flex:1;">
+                                <button>
 
-                                {% csrf_token %}
-
-                                <button type="submit" class="confirm-delete">
-
-                                    Delete
+                                    <i class="fas fa-search"></i>
 
                                 </button>
 
                             </form>
 
                         </div>
+                        <div class="services-grid">
+
+                            {% for service in services %}
+
+                            <div class="service-item">
+
+                                <div class="service-card">
+
+                                    {% if service.image %}
+
+                                    <img src="{{ service.image.url }}" class="service-image">
+
+                                    {% else %}
+
+                                    <div class="image-placeholder">
+
+                                        <i class="fas fa-laptop-code"></i>
+
+                                    </div>
+
+                                    {% endif %}
+
+                                    <div class="service-content">
+
+                                        <div class="top-row">
+
+                                            <h5>
+
+                                                {{ service.title }}
+
+                                            </h5>
+
+                                            {% if service.is_active %}
+                                            <span class="active">
+                                                Active
+                                            </span>
+                                            {% else %}
+                                            <span class="inactive">
+                                                Inactive
+                                            </span>
+                                            {% endif %}
+
+                                        </div>
+                                        <div class="scroll-desc">
+
+                                            {{ service.full_description }}
+
+                                        </div>
+
+
+
+                                        <div class="date">
+
+                                            <i class="fas fa-calendar"></i>
+
+                                            {{ service.created_at|date:"d M Y" }}
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="action-buttons">
+
+                                        {% if perms.hin.change_service %}
+
+                                        <a href="?edit={{ service.id }}" class="edit-btn">
+
+                                            Edit
+
+                                        </a>
+
+                                        {% endif %}
+
+                                        {% if perms.hin.delete_service %}
+                                        <button type="button" class="delete-btn" onclick="openDeleteModal(
+'deleteModal{{service.id}}'
+)">
+
+                                            Delete
+
+                                        </button>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            {% empty %}
+                            <div class="empty-state">
+
+                                <i class="fas fa-cogs empty-icon"></i>
+
+                                <h3>No Services Found</h3>
+
+                            </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+                    {% for service in services %}
+
+                    <div class="delete-modal" id="deleteModal{{service.id}}">
+
+                        <div class="delete-box">
+
+                            <div class="delete-icon">
+
+                                <i class="fas fa-trash-alt"></i>
+
+                            </div>
+
+                            <h3>
+
+                                Delete Service?
+
+                            </h3>
+
+                            <p>
+
+                                Are you sure you want to delete
+
+                                <b>{{service.title}}</b> ?
+
+                            </p>
+
+                            <div class="delete-actions">
+
+                                <button class="cancel-delete" onclick="
+closeDeleteModal(
+'deleteModal{{service.id}}'
+)
+">
+
+                                    Cancel
+
+                                </button>
+                                <form method="post" action="{% url 'hin:service_delete' pk=service.id %}"
+                                    style="flex:1;">
+
+                                    {% csrf_token %}
+
+                                    <button type="submit" class="confirm-delete">
+
+                                        Delete
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
 
                     </div>
 
-                </div>
+                    {% endfor %}
 
-                {% endfor %}
+                </div>
 
             </div>
 
         </div>
 
     </div>
-
 </div>
 
 <style>
@@ -395,68 +398,31 @@ closeDeleteModal(
         max-width: 100%;
     }
 
-    body {
-        background:
-            linear-gradient(135deg,
-                #ffffff 0%,
-                #f5f9ff 45%,
-                #eef7ff 100%);
-
-        position: relative;
-        overflow-x: hidden;
-    }
-
-    body::before {
-        content: '';
-
-        position: absolute;
-
-        width: 420px;
-        height: 420px;
-
-        right: -120px;
-        top: -120px;
-
-        border-radius: 50%;
-
-        background:
-            radial-gradient(circle,
-                rgba(11, 61, 145, .10),
-                transparent 70%);
-
-        z-index: -1;
-    }
-
-    body::after {
-        content: '';
-
-        position: absolute;
-
-        width: 300px;
-        height: 300px;
-
-        left: -100px;
-        bottom: 0;
-
-        border-radius: 50%;
-
-        background:
-            radial-gradient(circle,
-                rgba(198, 40, 40, .08),
-                transparent 70%);
-
-        z-index: -1;
-    }
-
     /* MAIN */
+   .page-bg{
 
+background:
+linear-gradient(
+135deg,
+#ffffff 0%,
+#f5f9ff 45%,
+#eef7ff 100%
+);
+
+min-height:100vh;
+
+position:relative;
+
+overflow:visible;
+
+}
     .card {
 
         border: none;
 
         border-radius: 25px;
 
-        overflow: hidden;
+        overflow: visible;
 
         box-shadow:
 
@@ -1127,7 +1093,7 @@ closeDeleteModal(
 
         padding: 40px 55px;
 
-        overflow-x: hidden;
+        overflow: visible;
 
     }
 
@@ -1218,6 +1184,15 @@ closeDeleteModal(
         width: 100%;
 
         max-width: 100%;
+
+    }
+
+    /* gap between form and services */
+
+    .service-main {
+
+        margin-top: 45px;
+
     }
 
     .services-grid {
@@ -1251,13 +1226,6 @@ closeDeleteModal(
         flex-direction: column;
     }
 
-    .card {
-        background: white;
-        border-radius: 25px;
-        overflow: hidden;
-        box-shadow:
-            0 18px 45px rgba(0, 0, 0, .07);
-    }
 
     .custom-modal {
 

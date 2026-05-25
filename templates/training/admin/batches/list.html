@@ -1,147 +1,187 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Manage Batches - Training{% endblock %}
+{% block title %}Manage Batches - HIN Technologies{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>Manage Batches</h2>
-                <a href="{% url 'training:batch_create' %}" class="btn btn-primary">
-                    + Create New Batch
-                </a>
-            </div>
-        </div>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    :root {
+        --hin-blue: #0B3D91;
+        --hin-red: #C62828;
+        --bg-main: #f7fafe;
+        --white: #ffffff;
+        --border-color: #edf2f7;
+        --shadow-md: 0 10px 25px -5px rgba(11, 61, 145, 0.1);
+    }
+
+    .batch-page-wrapper {
+        padding: 40px 5%;
+        background: var(--bg-main);
+        min-height: 100vh;
+    }
+
+    /* --- PAGE HEADER --- */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+    }
+
+    .page-header h2 {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 2.5rem;
+        color: var(--hin-red);
+        font-weight: 800;
+    }
+
+    .btn-create {
+        background: var(--hin-blue);
+        color: white;
+        padding: 14px 28px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s;
+        box-shadow: 0 10px 15px rgba(11, 61, 145, 0.2);
+    }
+
+    .btn-create:hover { background: var(--hin-red); transform: translateY(-3px); }
+
+    /* --- MODERN FILTER CARD --- */
+    .filter-card {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: var(--shadow-md);
+        margin-bottom: 30px;
+        border: 1px solid var(--border-color);
+    }
+
+    .filter-card input, .filter-card select {
+        width: 100%;
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        background: #fcfcfc;
+    }
+
+    /* --- MODERN TABLE --- */
+    .table-responsive {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border-color);
+    }
+
+    .table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    .table th { color: var(--hin-blue); padding: 20px; border-bottom: 2px solid var(--border-color); }
+    .table td { padding: 20px; border-bottom: 1px solid var(--border-color); }
+    
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    .status-running { background: #dcfce7; color: #166534; }
+    .status-upcoming { background: #e0f2fe; color: #075985; }
+    .status-paused { background: #fef3c7; color: #92400e; }
+    .status-other { background: #f1f5f9; color: #475569; }
+
+    /* --- RESPONSIVE TABLE --- */
+    @media (max-width: 992px) {
+        .page-header { flex-direction: column; gap: 20px; }
+        .filter-card form { gap: 15px; display: grid; grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 576px) {
+        .filter-card form { grid-template-columns: 1fr; }
+    }
+</style>
+
+<div class="batch-page-wrapper">
+    <div class="page-header">
+        <h2>Manage Batches</h2>
+        <a href="{% url 'training:batch_create' %}" class="btn-create">
+            <i class="fas fa-plus"></i> Create New Batch
+        </a>
     </div>
     
-    <!-- Filters -->
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <form method="get" class="row g-3">
-                <div class="col-md-4">
-                    <input type="text" name="search" class="form-control" placeholder="Search batches..." value="{{ search_query }}">
-                </div>
-                <div class="col-md-3">
-                    <select name="status" class="form-select">
-                        <option value="">All Status</option>
-                        {% for value, label in status_choices %}
-                            <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">Filter</button>
-                </div>
-                <div class="col-md-3">
-                    <a href="{% url 'training:batch_list' %}" class="btn btn-secondary w-100">Clear Filters</a>
-                </div>
-            </form>
-        </div>
+    <div class="filter-card">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <input type="text" name="search" placeholder="Search by name..." value="{{ search_query }}">
+            </div>
+            <div class="col-md-3">
+                <select name="status">
+                    <option value="">All Statuses</option>
+                    {% for value, label in status_choices %}
+                        <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-5 d-flex gap-2">
+                <button type="submit" class="btn btn-primary" style="flex:1; border-radius:12px; background: var(--hin-blue); border:none;">Filter</button>
+                <a href="{% url 'training:batch_list' %}" class="btn btn-secondary" style="flex:1; border-radius:12px; text-decoration:none; text-align:center; padding: 10px; background: #e2e8f0; color: #64748b;">Clear</a>
+            </div>
+        </form>
     </div>
     
-    <!-- Batches Table -->
-    <div class="card shadow">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Batch Name</th>
-                            <th>Duration</th>
-                            <th>Students</th>
-                            <th>Capacity</th>
-                            <th>Projects</th>
-                            <th>Status</th>
-                            <th>Created</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for batch in batches %}
-                            <tr>
-                                <td>
-                                    <strong>{{ batch.name }}</strong>
-                                    <br>
-                                    <small class="text-muted">{{ batch.description|truncatechars:50 }}</small>
-                                </td>
-                                <td>
-                                    {{ batch.start_date|date:"M d, Y" }}<br>
-                                    <small>to {{ batch.end_date|date:"M d, Y" }}</small>
-                                </td>
-                                <td>{{ batch.student_count }}/{{ batch.batch_capacity }}</td>
-                                <td>
-                                    <div class="progress" style="height: 20px;">
-                                        <div class="progress-bar {% if batch.student_count >= batch.batch_capacity %}bg-danger{% else %}bg-success{% endif %}" 
-                                             style="width: {% widthratio batch.student_count batch.batch_capacity 100 %}%">
-                                            {% widthratio batch.student_count batch.batch_capacity 100 %}%
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>{{ batch.number_of_projects }}</td>
-                                <td>
-                                    <span class="badge 
-                                        {% if batch.status == 'running' %}bg-success
-                                        {% elif batch.status == 'upcoming' %}bg-info
-                                        {% elif batch.status == 'completed' %}bg-secondary
-                                        {% elif batch.status == 'paused' %}bg-warning
-                                        {% else %}bg-danger{% endif %}">
-                                        {{ batch.get_status_display }}
-                                    </span>
-                                </td>
-                                <td>{{ batch.created_at|date:"M d, Y" }}</td>
-                                <td>
-                                    <a href="{% url 'training:batch_edit' batch.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
-                                </td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="8" class="text-center py-5">
-                                    <i class="bi bi-calendar-x" style="font-size: 48px;"></i>
-                                    <h5 class="mt-3">No batches found</h5>
-                                    <p class="text-muted">Create your first batch to get started.</p>
-                                    <a href="{% url 'training:batch_create' %}" class="btn btn-primary">Create Batch</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Pagination -->
-            {% if batches.has_other_pages %}
-                <nav aria-label="Page navigation" class="mt-4">
-                    <ul class="pagination justify-content-center">
-                        {% if batches.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ batches.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Previous</a>
-                            </li>
-                        {% else %}
-                            <li class="page-item disabled"><span class="page-link">Previous</span></li>
-                        {% endif %}
-                        
-                        {% for num in batches.paginator.page_range %}
-                            {% if batches.number == num %}
-                                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-                            {% elif num > batches.number|add:'-3' and num < batches.number|add:'3' %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">{{ num }}</a>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                        
-                        {% if batches.has_next %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ batches.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Next</a>
-                            </li>
-                        {% else %}
-                            <li class="page-item disabled"><span class="page-link">Next</span></li>
-                        {% endif %}
-                    </ul>
-                </nav>
-            {% endif %}
-        </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Batch Name</th>
+                    <th>Dates</th>
+                    <th>Students</th>
+                    <th>Progress</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for batch in batches %}
+                <tr>
+                    <td>
+                        <strong style="color: var(--hin-blue);">{{ batch.name }}</strong><br>
+                        <small class="text-muted">{{ batch.description|truncatechars:30 }}</small>
+                    </td>
+                    <td>{{ batch.start_date|date:"d M" }} - {{ batch.end_date|date:"d M, y" }}</td>
+                    <td>{{ batch.student_count }} / {{ batch.batch_capacity }}</td>
+                    <td>
+                        {% widthratio batch.student_count batch.batch_capacity 100 as progress_width %}
+                        <div class="progress" style="width: 100px; height: 10px;">
+                            <div
+                                class="progress-bar {% if batch.student_count >= batch.batch_capacity %}bg-danger{% else %}bg-success{% endif %}"
+                                style="width: {{ progress_width }}%;">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="status-badge {% if batch.status == 'running' %}status-running{% elif batch.status == 'upcoming' %}status-upcoming{% elif batch.status == 'paused' %}status-paused{% else %}status-other{% endif %}">
+                            {{ batch.get_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{% url 'training:batch_edit' batch.id %}" style="color: var(--hin-blue);"><i class="fas fa-pen"></i></a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center py-5">
+                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <i class="fas fa-calendar-times" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 10px;"></i>
+                            <h5>No batches found</h5>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}
