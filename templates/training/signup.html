@@ -1,112 +1,1040 @@
-{% extends 'base.html' %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Student Signup - HIN Technologies</title>
+    <link rel="icon" href="{% static 'images/favicon.png' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-{% block title %}Student Signup - HIN{% endblock %}
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background-image: url('{% static "images/signupbanner.webp" %}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
 
-{% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Student Registration</h4>
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* Floating Elements */
+        .floating-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+        }
+        .orb-1 { width: 400px; height: 400px; background: rgba(255, 94, 94, 0.2); top: -150px; right: -100px; }
+        .orb-2 { width: 350px; height: 350px; background: rgba(255, 217, 102, 0.15); bottom: -100px; left: -80px; }
+        .orb-3 { width: 200px; height: 200px; background: rgba(255, 94, 94, 0.12); top: 40%; left: 20%; }
+
+        /* Main Container */
+        .signup-wrapper {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+        }
+
+        /* Dashboard Card */
+        .dashboard-card {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 48px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Top Header Bar */
+        .top-bar {
+            background: #0B3D91;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .top-logo img {
+            height: 45px;
+        }
+
+        .top-badge {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 13px;
+            color: white;
+        }
+
+        .top-badge i {
+            margin-right: 8px;
+            color: #ff5e5e;
+        }
+
+        /* Main Content - Desktop Layout */
+        .three-col-layout {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        /* Column 1 - Hero Stats */
+        .hero-col {
+            width: 300px;
+            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 40px 24px;
+            border-right: 1px solid #eef2f8;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Stats Container - Vertical on Desktop (one below another) */
+        .stats-container {
+            text-align: center;
+        }
+
+        .welcome-chip {
+            background: #fff0f0;
+            color: #C62828;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+
+        /* Stats Vertical Layout - Desktop */
+        .stats-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin: 20px 0;
+        }
+
+        .hero-stat {
+            text-align: center;
+            padding: 10px 0;
+             padding: 10px;
+             border: 1px dashed #0B3D91;
+             border-radius: 15px;
+        }
+
+        .hero-number {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0B3D91;
+            
+        }
+
+        .hero-label {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+
+        .divider {
+            height: 1px;
+            background: #eef2f8;
+           
+        }
+
+        .testimonial-item {
+            background: white;
+            padding: 14px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: all 0.3s;
+        }
+
+        .testimonial-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .testimonial-item i {
+            color: #ffd966;
+            font-size: 13px;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+
+        .testimonial-item p {
+            font-size: 11px;
+            color: #374151;
+            line-height: 1.45;
+            font-style: italic;
+        }
+
+        .testimonial-item .author {
+            font-size: 10px;
+            font-weight: 600;
+            color: #0B3D91;
+            margin-top: 6px;
+        }
+
+        /* Column 2 - Main Form */
+        .form-col {
+            flex: 1;
+            padding: 40px 36px;
+            background: white;
+        }
+
+        .form-header {
+            margin-bottom: 32px;
+        }
+
+        .form-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0B3D91;
+            margin-bottom: 8px;
+        }
+
+        .form-header p {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .input-box {
+            margin-bottom: 5px;
+        }
+
+        .input-box.full {
+            grid-column: span 2;
+        }
+
+        .input-box label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .input-box label .star {
+            color: #C62828;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #0B3D91;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .input-wrapper input,
+        .input-wrapper select,
+        .input-wrapper textarea {
+            width: 100%;
+            padding: 13px 16px 13px 44px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            background: #fafbfc;
+            transition: all 0.2s;
+        }
+
+        .input-wrapper textarea {
+            resize: vertical;
+            min-height: 80px;
+            padding-top: 13px;
+        }
+
+        .input-wrapper select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%230B3D91'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 14px;
+            cursor: pointer;
+        }
+
+        .input-wrapper input:focus,
+        .input-wrapper select:focus,
+        .input-wrapper textarea:focus {
+            outline: none;
+            border-color: #C62828;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(198,40,40,0.08);
+        }
+
+        .error-msg {
+            color: #C62828;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .helper-msg {
+            font-size: 11px;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+
+        /* Password Strength */
+        .strength-wrapper {
+            margin-top: 8px;
+            display: flex;
+            gap: 6px;
+        }
+        .strength-dot {
+            flex: 1;
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        .strength-dot.weak { background: #C62828; }
+        .strength-dot.medium { background: #ff9800; }
+        .strength-dot.strong { background: #10b981; }
+
+        .match-success {
+            color: #10b981;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+        .match-error {
+            color: #C62828;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: #C62828;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 28px 0 20px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 14px rgba(198,40,40,0.3);
+        }
+
+        .submit-btn:hover {
+            background: #a51b1b;
+            transform: translateY(-2px);
+        }
+
+        .login-redirect {
+            text-align: center;
+        }
+
+        .login-redirect a {
+            color: #0B3D91;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .login-redirect a:hover {
+            color: #C62828;
+        }
+
+        /* Column 3 - ROADMAP STYLE */
+        .progress-col {
+            width: 300px;
+            background: linear-gradient(135deg, #0B3D91 0%, #0a3480 100%);
+            padding: 40px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .roadmap-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .roadmap-title h3 {
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .roadmap-title p {
+            color: rgba(255,255,255,0.6);
+            font-size: 11px;
+        }
+
+        /* Roadmap Timeline with Connecting Line */
+        .roadmap-timeline {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 30px;
+            flex: 1;
+        }
+
+        .roadmap-timeline::before {
+            content: '';
+            position: absolute;
+            left: 12px;
+            top: 8px;
+            bottom: 8px;
+            width: 2px;
+            background: rgba(255,255,255,0.25);
+            border-radius: 2px;
+        }
+
+        .roadmap-item {
+            position: relative;
+            margin-bottom: 35px;
+        }
+
+        .roadmap-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .roadmap-dot {
+            position: absolute;
+            left: -30px;
+            top: 0;
+            width: 26px;
+            height: 26px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: white;
+            font-size: 13px;
+            z-index: 2;
+            transition: all 0.3s;
+        }
+
+        .roadmap-dot.active {
+            background: #ff5e5e;
+            box-shadow: 0 0 0 4px rgba(255,94,94,0.3);
+        }
+
+        .roadmap-content {
+            padding-left: 8px;
+        }
+
+        .roadmap-content h4 {
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .roadmap-content p {
+            color: rgba(255,255,255,0.65);
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        /* Image Container */
+        .image-fill {
+            margin-top: 20px;
+        }
+
+        .cover-image {
+            background: rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            margin-top: 20px;
+        }
+
+        .cover-image img {
+            width: 100%;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            height: 300px;
+        }
+
+        .cover-image h4 {
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .cover-image p {
+            color: rgba(255,255,255,0.7);
+            font-size: 12px;
+        }
+
+        .offer-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            margin-top: 20px;
+        }
+
+        .offer-card i {
+            font-size: 32px;
+            color: #ffd966;
+            margin-bottom: 12px;
+        }
+
+        .offer-card h4 {
+            color: white;
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .offer-card p {
+            color: rgba(255,255,255,0.7);
+            font-size: 12px;
+        }
+
+        /* Alert */
+        .alert-box {
+            background: #fef2f2;
+            border-radius: 16px;
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #991b1b;
+        }
+
+        /* ============================================ */
+        /* RESPONSIVE */
+        /* ============================================ */
+
+        @media (max-width: 1300px) {
+            .hero-col { width: 280px; padding: 35px 20px; }
+            .progress-col { width: 280px; padding: 35px 20px; }
+            .form-col { padding: 35px 28px; }
+            .hero-number { font-size: 28px; }
+        }
+
+        @media (max-width: 1100px) {
+            .three-col-layout {
+                flex-direction: column;
+            }
+            .hero-col, .progress-col {
+                width: 100%;
+            }
+            .hero-col {
+                border-right: none;
+                border-bottom: 1px solid #eef2f8;
+            }
+            
+            /* Stats become horizontal row on tablet */
+            .stats-vertical {
+                flex-direction: row;
+                justify-content: space-around;
+                gap: 20px;
+            }
+            
+            .hero-stat {
+                flex: 1;
+            }
+            
+            .progress-col {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 25px;
+                justify-content: space-between;
+                align-items: stretch;
+            }
+            .roadmap-timeline {
+                flex: 2;
+                margin-bottom: 0;
+                min-width: 250px;
+            }
+            .image-fill {
+                flex: 1;
+                min-width: 220px;
+                margin-top: 0;
+            }
+            .roadmap-title {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            .testimonials-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+            .testimonial-item {
+                flex: 1;
+                min-width: 200px;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .input-box.full {
+                grid-column: span 1;
+            }
+            .form-col {
+                padding: 30px 22px;
+            }
+            .progress-col {
+                flex-direction: column;
+                align-items: center;
+            }
+            .roadmap-timeline {
+                width: 100%;
+            }
+            .image-fill {
+                width: 100%;
+                margin-top: 20px;
+            }
+            .testimonials-container {
+                flex-direction: column;
+            }
+            .testimonial-item {
+                min-width: auto;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .signup-wrapper {
+                padding: 20px 16px;
+            }
+            .dashboard-card {
+                border-radius: 32px;
+            }
+            .top-bar {
+                padding: 12px 20px;
+                flex-direction: column;
+                text-align: center;
+            }
+            .top-logo img {
+                height: 38px;
+            }
+            .top-badge {
+                font-size: 11px;
+                padding: 6px 14px;
+            }
+            .form-header h1 {
+                font-size: 24px;
+            }
+            .hero-col {
+                padding: 25px 18px;
+            }
+            .progress-col {
+                padding: 25px 18px;
+            }
+            .stats-vertical {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            .hero-number {
+                font-size: 24px;
+            }
+            .hero-label {
+                font-size: 10px;
+            }
+            .roadmap-dot {
+                width: 24px;
+                height: 24px;
+                font-size: 12px;
+                left: -28px;
+            }
+            .roadmap-timeline {
+                padding-left: 28px;
+            }
+            .roadmap-content h4 {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-header h1 {
+                font-size: 22px;
+            }
+            .submit-btn {
+                padding: 12px;
+                font-size: 14px;
+            }
+            .cover-image {
+                padding: 16px;
+            }
+            .cover-image h4 {
+                font-size: 16px;
+            }
+            .offer-card {
+                padding: 16px;
+            }
+            .offer-card i {
+                font-size: 28px;
+            }
+            .testimonial-item p {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="floating-orb orb-1"></div>
+<div class="floating-orb orb-2"></div>
+<div class="floating-orb orb-3"></div>
+
+<div class="signup-wrapper">
+    <div class="dashboard-card">
+        
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="top-logo">
+                <img src="{% static 'images/hintlogo.jpg' %}" alt="HIN Technologies">
+            </div>
+            <div class="top-badge">
+                <i class="fa-regular fa-clock"></i> Limited Time Offer - Get 30% OFF
+            </div>
+        </div>
+        
+        <!-- 3 Column Layout -->
+        <div class="three-col-layout">
+            
+            <!-- Column 1: Hero Stats & Testimonials -->
+            <div class="hero-col">
+                <div class="stats-container">
+                    <div class="welcome-chip">
+                        <i class="fa-regular fa-hand-peace"></i> Welcome Future Leader
+                    </div>
+                    
+                    <!-- Stats VERTICAL on Desktop (one below another) -->
+                    <div class="stats-vertical">
+                        <div class="hero-stat">
+                            <div class="hero-number">10,000+</div>
+                            <div class="hero-label">Students Trained</div>
+                        </div>
+                        <div class="hero-stat">
+                            <div class="hero-number">98%</div>
+                            <div class="hero-label">Placement Rate</div>
+                        </div>
+                        <div class="hero-stat">
+                            <div class="hero-number">500+</div>
+                            <div class="hero-label">Hiring Partners</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <form method="post">
-                        {% csrf_token %}
-                        
-                        {% if form.non_field_errors %}
-                            <div class="alert alert-danger">
-                                {% for error in form.non_field_errors %}
-                                    {{ error }}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name *</label>
-                                {{ form.first_name }}
-                                {% if form.first_name.errors %}
-                                    <div class="text-danger small">{{ form.first_name.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name *</label>
-                                {{ form.last_name }}
-                                {% if form.last_name.errors %}
-                                    <div class="text-danger small">{{ form.last_name.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="{{ form.username.id_for_label }}" class="form-label">Username *</label>
-                            {{ form.username }}
-                            {% if form.username.errors %}
-                                <div class="text-danger small">{{ form.username.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="{{ form.email.id_for_label }}" class="form-label">Email *</label>
-                            {{ form.email }}
-                            {% if form.email.errors %}
-                                <div class="text-danger small">{{ form.email.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="{{ form.password.id_for_label }}" class="form-label">Password *</label>
-                                {{ form.password }}
-                                {% if form.password.errors %}
-                                    <div class="text-danger small">{{ form.password.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="{{ form.confirm_password.id_for_label }}" class="form-label">Confirm Password *</label>
-                                {{ form.confirm_password }}
-                                {% if form.confirm_password.errors %}
-                                    <div class="text-danger small">{{ form.confirm_password.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="{{ form.phone.id_for_label }}" class="form-label">Phone Number *</label>
-                            {{ form.phone }}
-                            {% if form.phone.errors %}
-                                <div class="text-danger small">{{ form.phone.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="{{ form.qualification.id_for_label }}" class="form-label">Qualification *</label>
-                            {{ form.qualification }}
-                            {% if form.qualification.errors %}
-                                <div class="text-danger small">{{ form.qualification.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="{{ form.experience.id_for_label }}" class="form-label">Experience</label>
-                            {{ form.experience }}
-                            {% if form.experience.errors %}
-                                <div class="text-danger small">{{ form.experience.errors.0 }}</div>
-                            {% endif %}
-                            <small class="text-muted">Previous work experience (if any)</small>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary w-100">Register</button>
-                        
-                        <div class="text-center mt-3">
-                            <a href="{% url 'hin:login' %}" class="text-decoration-none">Already have an account? Login</a>
-                        </div>
-                    </form>
+                
+                <div class="divider"></div>
+                
+                <!-- Testimonials -->
+                <div class="testimonials-container">
+                    <div class="testimonial-item">
+                        <i class="fa-solid fa-quote-left"></i>
+                        <p>"The training program completely transformed my career. Got placed at Amazon with 12 LPA!"</p>
+                        <div class="author">- Rahul Mehta</div>
+                    </div>
+                    <div class="testimonial-item">
+                        <i class="fa-solid fa-quote-left"></i>
+                        <p>"Excellent faculty and hands-on projects. The DevOps training helped me crack top MNCs."</p>
+                        <div class="author">- Priya Sharma</div>
+                    </div>
+                    <div class="testimonial-item">
+                        <i class="fa-solid fa-quote-left"></i>
+                        <p>"Best decision of my career. The placement team is incredible - got hired within 2 months!"</p>
+                        <div class="author">- Akash Verma</div>
+                    </div>
+                    <div class="testimonial-item">
+                        <i class="fa-solid fa-quote-left"></i>
+                        <p>"The curriculum is up-to-date with industry standards. Highly recommend to everyone!"</p>
+                        <div class="author">- Sneha Patel</div>
+                    </div>
                 </div>
             </div>
+            
+            <!-- Column 2: Main Form -->
+            <div class="form-col">
+                <div class="form-header">
+                    <h1>Create Account</h1>
+                    <p>Join the community of achievers</p>
+                </div>
+                
+                {% if form.non_field_errors %}
+                    <div class="alert-box">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+                
+                <form method="post" id="signupForm">
+                    {% csrf_token %}
+                    
+                    <div class="form-grid">
+                        <div class="input-box">
+                            <label>First Name <span class="star">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fa-regular fa-user"></i>
+                                {{ form.first_name }}
+                            </div>
+                            {% if form.first_name.errors %}<div class="error-msg">{{ form.first_name.errors.0 }}</div>{% endif %}
+                        </div>
+                        
+                        <div class="input-box">
+                            <label>Last Name <span class="star">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fa-regular fa-user"></i>
+                                {{ form.last_name }}
+                            </div>
+                            {% if form.last_name.errors %}<div class="error-msg">{{ form.last_name.errors.0 }}</div>{% endif %}
+                        </div>
+                        
+                        <div class="input-box full">
+                            <label>Username <span class="star">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fa-regular fa-circle-user"></i>
+                                {{ form.username }}
+                            </div>
+                            {% if form.username.errors %}<div class="error-msg">{{ form.username.errors.0 }}</div>{% endif %}
+                        </div>
+                        
+                        <div class="input-box full">
+                            <label>Email Address <span class="star">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fa-regular fa-envelope"></i>
+                                {{ form.email }}
+                            </div>
+                            {% if form.email.errors %}<div class="error-msg">{{ form.email.errors.0 }}</div>{% endif %}
+                        </div>
+                        
+                        <div class="input-box">
+                            <label>Password <span class="star">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-lock"></i>
+                                {{ form.password }}
+                            </div>
+                            <div class="strength-wrapper" id="strengthWrapper">
+                                <div class="strength-dot"></div>
+                                <div class="strength-dot"></div>
+                                <div class="strength-dot"></div>
+                                <div class="strength-dot"></div>
+                            </div>
+                            {% if form.password.errors %}<div class="error-msg">{{ form.password.errors.0 }}</div>{% endif %}
+                        </div>
+                        
+                        <div class="input-box">
+                            <label>Confirm Password <span class="star">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-lock"></i>
+                                {{ form.confirm_password }}
+                            </div>
+                            <div id="matchStatus"></div>
+                            {% if form.confirm_password.errors %}<div class="error-msg">{{ form.confirm_password.errors.0 }}</div>{% endif %}
+                        </div>
+                        
+                        <div class="input-box full">
+                            <label>Phone Number <span class="star">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-phone"></i>
+                                {{ form.phone }}
+                            </div>
+                            {% if form.phone.errors %}<div class="error-msg">{{ form.phone.errors.0 }}</div>{% endif %}
+                        </div>
+                        
+                        <div class="input-box full">
+                            <label>Qualification <span class="star">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                                {{ form.qualification }}
+                            </div>
+                            {% if form.qualification.errors %}<div class="error-msg">{{ form.qualification.errors.0 }}</div>{% endif %}
+                        </div>
+                        
+                        <div class="input-box full">
+                            <label>Experience (Years)</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-briefcase"></i>
+                                {{ form.experience }}
+                            </div>
+                            <div class="helper-msg"><i class="fa-regular fa-circle-question"></i> Previous work experience (if any)</div>
+                            {% if form.experience.errors %}<div class="error-msg">{{ form.experience.errors.0 }}</div>{% endif %}
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn" id="registerBtn">
+                        <span>Register Now</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    
+                    <div class="login-redirect">
+                        <a href="{% url 'hin:login' %}"><i class="fa-regular fa-circle-user"></i> Already have an account? Sign In</a>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Column 3: ROADMAP STYLE -->
+            <div class="progress-col">
+                <div>
+                    <div class="roadmap-title">
+                        <h3>Your Success Roadmap</h3>
+                        <p>3 simple steps to your dream career</p>
+                    </div>
+                    
+                    <div class="roadmap-timeline">
+                        <div class="roadmap-item">
+                            <div class="roadmap-dot active">1</div>
+                            <div class="roadmap-content">
+                                <h4>Register & Enroll</h4>
+                                <p>Create your account and choose your preferred course</p>
+                            </div>
+                        </div>
+                        <div class="roadmap-item">
+                            <div class="roadmap-dot">2</div>
+                            <div class="roadmap-content">
+                                <h4>Learn & Build</h4>
+                                <p>Access live classes, recorded sessions, and hands-on projects</p>
+                            </div>
+                        </div>
+                        <div class="roadmap-item">
+                            <div class="roadmap-dot">3</div>
+                            <div class="roadmap-content">
+                                <h4>Get Hired</h4>
+                                <p>Receive placement assistance and land your dream job</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-fill">
+                    <div class="cover-image">
+                        <img src="{% static 'images/hand.jpeg' %}" alt="Success Story">
+                        <h4>Start Your Journey</h4>
+                        <p>Join 10,000+ successful students</p>
+                        <div style="font-size: 11px; margin-top: 8px; color: #ffd966;">🚀 Limited Seats Available</div>
+                    </div>
+                    
+                    <div class="offer-card">
+                        <i class="fa-regular fa-gem"></i>
+                        <h4>Early Bird</h4>
+                        <p>Get 30% OFF on all courses</p>
+                        <div style="font-size: 11px; margin-top: 10px; color: #ffd966;">Valid for limited period</div>
+                    </div>
+                </div>
+            </div>
+            
         </div>
     </div>
 </div>
-{% endblock %}
+
+<script>
+    const form = document.getElementById('signupForm');
+    const registerBtn = document.getElementById('registerBtn');
+    const pwdField = document.querySelector('input[name="password"]');
+    const confirmPwd = document.querySelector('input[name="confirm_password"]');
+    const strengthDots = document.querySelectorAll('.strength-dot');
+    const matchStatus = document.getElementById('matchStatus');
+    
+    function checkStrength() {
+        if (!pwdField) return;
+        const pass = pwdField.value;
+        let strength = 0;
+        
+        if (pass.length >= 6) strength++;
+        if (pass.match(/[a-z]/)) strength++;
+        if (pass.match(/[A-Z]/)) strength++;
+        if (pass.match(/[0-9]/)) strength++;
+        if (pass.match(/[$@#&!]/)) strength++;
+        
+        strengthDots.forEach((dot, idx) => {
+            dot.classList.remove('weak', 'medium', 'strong');
+            if (idx < strength) {
+                if (strength <= 2) dot.classList.add('weak');
+                else if (strength <= 4) dot.classList.add('medium');
+                else dot.classList.add('strong');
+            }
+        });
+        
+        if (pass.length === 0) {
+            strengthDots.forEach(dot => dot.classList.remove('weak', 'medium', 'strong'));
+        }
+        
+        checkMatch();
+    }
+    
+    function checkMatch() {
+        if (!pwdField || !confirmPwd) return;
+        
+        if (confirmPwd.value === '') {
+            matchStatus.innerHTML = '';
+            confirmPwd.setCustomValidity('');
+            return;
+        }
+        
+        if (pwdField.value === confirmPwd.value) {
+            matchStatus.innerHTML = '<div class="match-success"><i class="fa-solid fa-check-circle"></i> Passwords match</div>';
+            confirmPwd.setCustomValidity('');
+        } else {
+            matchStatus.innerHTML = '<div class="match-error"><i class="fa-solid fa-circle-exclamation"></i> Passwords do not match</div>';
+            confirmPwd.setCustomValidity('Passwords do not match');
+        }
+    }
+    
+    if (pwdField) pwdField.addEventListener('keyup', checkStrength);
+    if (confirmPwd) confirmPwd.addEventListener('keyup', checkMatch);
+    
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            if (pwdField && confirmPwd && pwdField.value !== confirmPwd.value) {
+                e.preventDefault();
+                alert('Passwords do not match!');
+                return false;
+            }
+            registerBtn.innerHTML = '<span><i class="fa-solid fa-circle-notch fa-spin"></i> Creating Account...</span>';
+            registerBtn.disabled = true;
+        });
+    }
+</script>
+
+</body>
+</html>

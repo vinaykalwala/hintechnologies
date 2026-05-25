@@ -4,125 +4,1203 @@
 {% block title %}Manage Sessions - Training{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>Manage Daily Sessions</h2>
-                <a href="{% url 'training:session_create' %}" class="btn btn-primary">
-                    + Create Session
-                </a>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    :root {
+        --primary: #0B3D91;
+        --primary-dark: #092c6e;
+        --primary-light: #1a5bbf;
+        --primary-bg: #e8f0fe;
+        --secondary: #C62828;
+        --secondary-dark: #a51b1b;
+        --secondary-light: #ff5e5e;
+        --secondary-bg: #fee2e2;
+        --success: #10b981;
+        --success-light: #d1fae5;
+        --warning: #f59e0b;
+        --warning-light: #fed7aa;
+        --info: #0ea5e9;
+        --info-light: #dbeafe;
+        --gray-50: #f8fafc;
+        --gray-100: #f1f5f9;
+        --gray-200: #e2e8f0;
+        --gray-300: #cbd5e1;
+        --gray-400: #94a3b8;
+        --gray-500: #64748b;
+        --gray-600: #475569;
+        --gray-700: #334155;
+        --gray-800: #1e293b;
+        --gray-900: #0f172a;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 20px;
+        --radius-2xl: 24px;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #f3f6fc 100%);
+        min-height: 100vh;
+    }
+
+    /* Hero Banner */
+    .hero-banner {
+        background: linear-gradient(135deg, #0B3D91 0%, #1a4fa8 50%, #C62828 100%);
+        position: relative;
+        overflow: hidden;
+        padding: 48px 0;
+    }
+
+    .hero-banner::before {
+        content: '';
+        position: absolute;
+        top: -30%;
+        right: -5%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 70%);
+        border-radius: 50%;
+        animation: floatBanner 12s ease-in-out infinite;
+    }
+
+    .hero-banner::after {
+        content: '';
+        position: absolute;
+        bottom: -20%;
+        left: -5%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 70%);
+        border-radius: 50%;
+        animation: floatBanner2 8s ease-in-out infinite;
+    }
+
+    @keyframes floatBanner {
+        0%, 100% { transform: translateX(0) translateY(0); }
+        50% { transform: translateX(-30px) translateY(-20px); }
+    }
+
+    @keyframes floatBanner2 {
+        0%, 100% { transform: translateX(0) translateY(0); }
+        50% { transform: translateX(30px) translateY(20px); }
+    }
+
+    .hero-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 40px;
+        position: relative;
+        z-index: 2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 30px;
+    }
+
+    .hero-text {
+        flex: 1;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        padding: 5px 15px;
+        border-radius: 40px;
+        font-size: 12px;
+        font-weight: 500;
+        color: white;
+        margin-bottom: 20px;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .hero-text h1 {
+        font-size: 36px;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 12px;
+        letter-spacing: -0.5px;
+    }
+
+    .hero-text h1 span {
+        background: linear-gradient(135deg, #ff8a8a, #ff5e5e);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .hero-text p {
+        font-size: 14px;
+        color: rgba(255,255,255,0.85);
+        max-width: 500px;
+    }
+
+    .hero-stats {
+        display: flex;
+        gap: 20px;
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        padding: 20px 30px;
+        border-radius: 24px;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .hero-stat {
+        text-align: center;
+    }
+
+    .hero-stat-value {
+        font-size: 28px;
+        font-weight: 800;
+        color: white;
+    }
+
+    .hero-stat-label {
+        font-size: 11px;
+        color: rgba(255,255,255,0.75);
+        margin-top: 4px;
+    }
+
+    /* Main Container */
+    .sessions-container {
+        max-width: 1400px;
+        margin: -30px auto 0;
+        padding: 0 40px 40px;
+        position: relative;
+        z-index: 10;
+    }
+
+    /* Attractive Stats Cards */
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: var(--radius-2xl);
+        padding: 24px 20px;
+        box-shadow: var(--shadow-lg);
+        border: none;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+    }
+
+    .stat-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .stat-card-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .stat-info {
+        flex: 1;
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary-bg), white);
+        border-radius: var(--radius-lg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .stat-icon i {
+        font-size: 28px;
+        color: var(--primary);
+    }
+
+    .stat-value {
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--gray-800);
+        margin-bottom: 4px;
+    }
+
+    .stat-label {
+        font-size: 13px;
+        color: var(--gray-500);
+        font-weight: 500;
+    }
+
+    .stat-trend {
+        font-size: 11px;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--success);
+    }
+
+    /* Filter Card */
+    .filter-card {
+        background: white;
+        border-radius: var(--radius-2xl);
+        box-shadow: var(--shadow-lg);
+        padding: 24px 32px;
+        margin-bottom: 32px;
+        border: none;
+    }
+
+    .filter-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        align-items: flex-end;
+    }
+
+    .filter-group {
+        flex: 1;
+        min-width: 180px;
+    }
+
+    .filter-group label {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--gray-600);
+        margin-bottom: 6px;
+    }
+
+    .filter-group label i {
+        margin-right: 6px;
+        color: var(--primary);
+    }
+
+    .filter-group input,
+    .filter-group select {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid var(--gray-200);
+        border-radius: var(--radius-lg);
+        font-size: 14px;
+        transition: var(--transition);
+        background: var(--gray-50);
+        font-family: 'Inter', sans-serif;
+    }
+
+    .filter-group input:focus,
+    .filter-group select:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(11, 61, 145, 0.1);
+    }
+
+    .btn-filter {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        border: none;
+        padding: 12px 28px;
+        border-radius: var(--radius-lg);
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .btn-filter:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(11, 61, 145, 0.3);
+    }
+
+    .btn-clear {
+        background: var(--gray-100);
+        color: var(--gray-600);
+        border: 1px solid var(--gray-200);
+        padding: 12px 28px;
+        border-radius: var(--radius-lg);
+        font-weight: 600;
+        font-size: 14px;
+        text-decoration: none;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-clear:hover {
+        background: var(--gray-200);
+    }
+
+    /* Selected Batch Info Card */
+    .selected-batch-card {
+        background: linear-gradient(135deg, var(--primary-bg), white);
+        border-radius: var(--radius-2xl);
+        padding: 24px 32px;
+        margin-bottom: 32px;
+        border: 1px solid rgba(11, 61, 145, 0.15);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .batch-info h3 {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--gray-500);
+        margin-bottom: 4px;
+    }
+
+    .batch-info h2 {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--primary);
+        margin: 0;
+    }
+
+    .batch-info h2 i {
+        margin-right: 8px;
+    }
+
+    .batch-stats {
+        display: flex;
+        gap: 32px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .batch-stat {
+        text-align: center;
+    }
+
+    .batch-stat-value {
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--gray-800);
+    }
+
+    .batch-stat-label {
+        font-size: 11px;
+        color: var(--gray-500);
+        margin-top: 4px;
+    }
+
+    /* Progress Bar */
+    .batch-progress {
+        min-width: 180px;
+    }
+
+    .progress-label {
+        font-size: 11px;
+        color: var(--gray-500);
+        margin-bottom: 6px;
+        text-align: center;
+        font-weight: 500;
+    }
+
+    .progress-track {
+        height: 10px;
+        background: var(--gray-200);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        border-radius: 10px;
+        transition: width 0.6s ease;
+    }
+
+    /* Table Card */
+    .table-card {
+        background: white;
+        border-radius: var(--radius-2xl);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        border: none;
+    }
+
+    .table-header {
+        padding: 20px 28px;
+        background: linear-gradient(135deg, var(--gray-50), white);
+        border-bottom: 1px solid var(--gray-200);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .table-header h3 {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--gray-800);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .total-badge {
+        background: var(--primary-bg);
+        padding: 6px 16px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--primary);
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    .sessions-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .sessions-table thead tr {
+        background: var(--gray-50);
+        border-bottom: 2px solid var(--gray-200);
+    }
+
+    .sessions-table th {
+        padding: 16px 20px;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--gray-600);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .sessions-table td {
+        padding: 16px 20px;
+        font-size: 13px;
+        color: var(--gray-700);
+        border-bottom: 1px solid var(--gray-100);
+        vertical-align: middle;
+    }
+
+    .sessions-table tbody tr {
+        transition: var(--transition);
+    }
+
+    .sessions-table tbody tr:hover {
+        background: var(--gray-50);
+    }
+
+    /* Notes Cell */
+    .notes-cell {
+        max-width: 200px;
+    }
+
+    .notes-preview {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        max-width: 180px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: var(--gray-500);
+        font-size: 12px;
+    }
+
+    .notes-preview i {
+        color: var(--primary);
+        font-size: 12px;
+        flex-shrink: 0;
+    }
+
+    .notes-preview.has-note {
+        color: var(--gray-700);
+    }
+
+    /* Day Badge */
+    .day-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        border-radius: 30px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* Batch Tag */
+    .batch-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        background: var(--info-light);
+        color: var(--info);
+        border-radius: 30px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* Watch Button */
+    .watch-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        background: linear-gradient(135deg, var(--success), #059669);
+        color: white;
+        border-radius: 30px;
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+
+    .watch-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+
+    .no-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        background: var(--gray-100);
+        color: var(--gray-400);
+        border-radius: 30px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .edit-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        background: var(--primary-bg);
+        color: var(--primary);
+        border-radius: 30px;
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+
+    .edit-btn:hover {
+        background: var(--primary);
+        color: white;
+    }
+
+    /* Pagination */
+    .pagination-wrapper {
+        padding: 20px 28px;
+        border-top: 1px solid var(--gray-200);
+        display: flex;
+        justify-content: center;
+    }
+
+    .pagination {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .pagination a,
+    .pagination span {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+        height: 40px;
+        padding: 0 12px;
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-md);
+        text-decoration: none;
+        color: var(--gray-600);
+        font-size: 14px;
+        font-weight: 500;
+        transition: var(--transition);
+        background: white;
+    }
+
+    .pagination a:hover {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+    }
+
+    .pagination .active {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        border-color: var(--primary);
+        color: white;
+    }
+
+    .pagination .disabled {
+        background: var(--gray-100);
+        color: var(--gray-400);
+        cursor: not-allowed;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px 40px;
+    }
+
+    .empty-state-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 20px;
+        background: var(--gray-100);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .empty-state-icon i {
+        font-size: 40px;
+        color: var(--gray-400);
+    }
+
+    .empty-state h4 {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--gray-700);
+        margin-bottom: 8px;
+    }
+
+    .empty-state p {
+        font-size: 13px;
+        color: var(--gray-500);
+        margin-bottom: 20px;
+    }
+
+    .btn-create {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        padding: 12px 28px;
+        border-radius: var(--radius-lg);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-create:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(11, 61, 145, 0.3);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .hero-container, .sessions-container {
+            padding: 0 30px;
+        }
+        
+        .hero-text h1 {
+            font-size: 28px;
+        }
+        
+        .stats-row {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero-container {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .hero-text p {
+            margin: 0 auto;
+        }
+        
+        .hero-stats {
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .sessions-container {
+            padding: 0 20px 20px;
+        }
+        
+        .stats-row {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+        
+        .stat-card {
+            padding: 20px;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+        }
+        
+        .filter-form {
+            flex-direction: column;
+        }
+        
+        .filter-group {
+            width: 100%;
+        }
+        
+        .btn-filter, .btn-clear {
+            width: 100%;
+            text-align: center;
+            justify-content: center;
+        }
+        
+        .selected-batch-card {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .batch-stats {
+            justify-content: center;
+        }
+        
+        .table-header {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .sessions-table th,
+        .sessions-table td {
+            padding: 12px 16px;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .hero-stat-value {
+            font-size: 20px;
+        }
+        
+        .hero-stat-label {
+            font-size: 9px;
+        }
+        
+        .hero-stats {
+            padding: 15px 20px;
+        }
+        
+        .sessions-table thead {
+            display: none;
+        }
+        
+        .sessions-table tbody tr {
+            display: block;
+            margin-bottom: 16px;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+        }
+        
+        .sessions-table td {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border: none;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        
+        .sessions-table td:last-child {
+            border-bottom: none;
+        }
+        
+        .sessions-table td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: var(--gray-600);
+            font-size: 12px;
+            min-width: 100px;
+        }
+        
+        .notes-cell {
+            max-width: 100%;
+        }
+        
+        .notes-preview {
+            max-width: 100%;
+        }
+        
+        .batch-stats {
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+        }
+        
+        .batch-progress {
+            width: 100%;
+        }
+        
+        .pagination a,
+        .pagination span {
+            min-width: 36px;
+            height: 36px;
+            font-size: 12px;
+        }
+    }
+</style>
+
+<!-- Hero Banner -->
+<div class="hero-banner">
+    <div class="hero-container">
+        <div class="hero-text">
+            <div class="hero-badge">
+                <i class="fas fa-crown"></i> Training Management
             </div>
+            <h1>Manage <span>Sessions</span></h1>
+            <p>Create, organize and track all your training sessions across different batches</p>
         </div>
-    </div>
-    
-    <!-- Filters -->
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <form method="get" class="row g-3">
-                <div class="col-md-4">
-                    <input type="text" name="search" class="form-control" placeholder="Search sessions..." value="{{ search_query }}">
-                </div>
-                <div class="col-md-3">
-                    <select name="batch" class="form-select">
-                        <option value="">All Batches</option>
-                        {% for batch in batches %}
-                            <option value="{{ batch.id }}" {% if batch_filter == batch.id|stringformat:"s" %}selected{% endif %}>{{ batch.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">Filter</button>
-                </div>
-                <div class="col-md-3">
-                    <a href="{% url 'training:session_list' %}" class="btn btn-secondary w-100">Clear Filters</a>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <!-- Sessions Table -->
-    <div class="card shadow">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Batch</th>
-                            <th>Day</th>
-                            <th>Title</th>
-                            <th>Topic</th>
-                            <th>Date</th>
-                            <th>Recording</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for session in sessions %}
-                            <tr>
-                                <td>{{ session.batch.name }}</td>
-                                <td><strong>Day {{ session.day_number }}</strong></td>
-                                <td>{{ session.title }}</td>
-                                <td>{{ session.topic }}</td>
-                                <td>{{ session.session_date|date:"M d, Y" }}</td>
-                                <td>
-                                    {% if session.recording_link %}
-                                        <a href="{{ session.recording_link }}" target="_blank" class="btn btn-sm btn-outline-info">Watch</a>
-                                    {% else %}
-                                        <span class="text-muted">No link</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <a href="{% url 'training:session_edit' session.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
-                                </td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="7" class="text-center py-5">
-                                    <i class="bi bi-calendar-x" style="font-size: 48px;"></i>
-                                    <h5 class="mt-3">No sessions found</h5>
-                                    <p class="text-muted">Create your first session to get started.</p>
-                                    <a href="{% url 'training:session_create' %}" class="btn btn-primary">Create Session</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="hero-stat-value">{{ batches|length|default:0 }}</div>
+                <div class="hero-stat-label">Total Batches</div>
             </div>
-            
-            <!-- Pagination -->
-            {% if sessions.has_other_pages %}
-                <nav aria-label="Page navigation" class="mt-4">
-                    <ul class="pagination justify-content-center">
-                        {% if sessions.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ sessions.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if batch_filter %}&batch={{ batch_filter }}{% endif %}">Previous</a>
-                            </li>
-                        {% else %}
-                            <li class="page-item disabled"><span class="page-link">Previous</span></li>
-                        {% endif %}
-                        
-                        {% for num in sessions.paginator.page_range %}
-                            {% if sessions.number == num %}
-                                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-                            {% elif num > sessions.number|add:'-3' and num < sessions.number|add:'3' %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if batch_filter %}&batch={{ batch_filter }}{% endif %}">{{ num }}</a>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                        
-                        {% if sessions.has_next %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ sessions.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if batch_filter %}&batch={{ batch_filter }}{% endif %}">Next</a>
-                            </li>
-                        {% else %}
-                            <li class="page-item disabled"><span class="page-link">Next</span></li>
-                        {% endif %}
-                    </ul>
-                </nav>
-            {% endif %}
+            <div class="hero-stat">
+                <div class="hero-stat-value">{{ total_sessions|default:sessions.paginator.count|default:0 }}</div>
+                <div class="hero-stat-label">Total Sessions</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">{{ total_recordings|default:0 }}</div>
+                <div class="hero-stat-label">Recordings</div>
+            </div>
         </div>
     </div>
 </div>
+
+<div class="sessions-container">
+    <!-- Attractive Stats Cards -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-card-inner">
+                <div class="stat-info">
+                    <div class="stat-value">{{ batches|length|default:0 }}</div>
+                    <div class="stat-label">Active Batches</div>
+                    <div class="stat-trend">
+                        <i class="fas fa-arrow-up"></i> +12%
+                    </div>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-inner">
+                <div class="stat-info">
+                    <div class="stat-value">{{ total_sessions|default:sessions.paginator.count|default:0 }}</div>
+                    <div class="stat-label">Total Sessions</div>
+                    <div class="stat-trend">
+                        <i class="fas fa-calendar-check"></i> This month
+                    </div>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-video"></i>
+                </div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-inner">
+                <div class="stat-info">
+                    <div class="stat-value">{{ total_recordings|default:0 }}</div>
+                    <div class="stat-label">Recordings</div>
+                    <div class="stat-trend">
+                        <i class="fas fa-play-circle"></i> Available
+                    </div>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-inner">
+                <div class="stat-info">
+                    <div class="stat-value">{{ overall_progress|default:0 }}%</div>
+                    <div class="stat-label">Overall Progress</div>
+                    <div class="stat-trend">
+                        <i class="fas fa-chart-line"></i> On Track
+                    </div>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Card -->
+    <div class="filter-card">
+        <form method="get" id="filterForm" class="filter-form">
+            <div class="filter-group">
+                <label><i class="fas fa-search"></i> Search Session</label>
+                <input type="text" name="search" placeholder="Search by title or topic..." value="{{ search_query|default:'' }}" id="searchInput">
+            </div>
+            <div class="filter-group">
+                <label><i class="fas fa-layer-group"></i> Select Batch</label>
+                <select name="batch" id="batchSelect">
+                    <option value="">-- All Batches --</option>
+                    {% for batch in batches %}
+                        <option value="{{ batch.id }}" {% if batch_filter|stringformat:"s" == batch.id|stringformat:"s" %}selected{% endif %}>{{ batch.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-group">
+                <button type="submit" class="btn-filter"><i class="fas fa-filter"></i> Apply Filter</button>
+            </div>
+            <div class="filter-group">
+                <a href="{% url 'training:session_list' %}" class="btn-clear"><i class="fas fa-times"></i> Clear All</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Selected Batch Info Card -->
+    {% if selected_batch %}
+    <div class="selected-batch-card">
+        <div class="batch-info">
+            <h3>Currently Viewing</h3>
+            <h2><i class="fas fa-layer-group"></i> {{ selected_batch.name }}</h2>
+        </div>
+        <div class="batch-stats">
+            <div class="batch-stat">
+                <div class="batch-stat-value">{{ selected_batch_uploaded|default:0 }}</div>
+                <div class="batch-stat-label">Sessions</div>
+            </div>
+            <div class="batch-stat">
+                <div class="batch-stat-value">{{ selected_batch_total_days|default:0 }}</div>
+                <div class="batch-stat-label">Total Days</div>
+            </div>
+            <div class="batch-progress">
+                <div class="progress-label">{{ selected_batch_progress|default:0 }}% Complete</div>
+                <div class="progress-track">
+                    <div class="progress-fill" style="width: {{ selected_batch_progress|default:0 }}%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Sessions Table -->
+    <div class="table-card">
+        <div class="table-header">
+            <h3><i class="fas fa-list-ul"></i> Session List</h3>
+            <div class="total-badge">
+                <i class="fas fa-video"></i> {{ sessions|length }} Sessions
+            </div>
+        </div>
+        
+        <div class="table-wrapper">
+            <table class="sessions-table">
+                <thead>
+                    <tr>
+                        <th>Batch</th>
+                        <th>Day</th>
+                        <th>Title</th>
+                        <th>Topic</th>
+                        <th>Date</th>
+                        <th>Notes</th>
+                        <th>Recording</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for session in sessions %}
+                    <tr>
+                        <td data-label="Batch">
+                            <span class="batch-tag">
+                                <i class="fas fa-layer-group"></i> {{ session.batch.name }}
+                            </span>
+                        </td>
+                        <td data-label="Day">
+                            <span class="day-badge">
+                                <i class="fas fa-calendar-day"></i> Day {{ session.day_number }}
+                            </span>
+                        </td>
+                        <td data-label="Title">
+                            <strong>{{ session.title|truncatechars:35 }}</strong>
+                        </td>
+                        <td data-label="Topic">
+                            <span style="background: var(--gray-100); padding: 4px 10px; border-radius: 20px; font-size: 11px;">
+                                {{ session.topic|truncatechars:25 }}
+                            </span>
+                        </td>
+                        <td data-label="Date">
+                            <i class="fas fa-calendar-alt" style="color: var(--primary); margin-right: 4px;"></i>
+                            {{ session.session_date|date:"M d, Y" }}
+                        </td>
+                        <td data-label="Notes" class="notes-cell">
+                            {% if session.notes %}
+                                <span class="notes-preview has-note" title="{{ session.notes }}">
+                                    <i class="fas fa-sticky-note"></i> {{ session.notes|truncatechars:30 }}
+                                </span>
+                            {% else %}
+                                <span class="notes-preview">
+                                    <i class="fas fa-sticky-note"></i> No notes
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td data-label="Recording">
+                            {% if session.recording_link %}
+                                <a href="{{ session.recording_link }}" target="_blank" class="watch-btn">
+                                    <i class="fas fa-play"></i> Watch
+                                </a>
+                            {% else %}
+                                <span class="no-link">
+                                    <i class="fas fa-clock"></i> No link
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td data-label="Actions">
+                            <a href="{% url 'training:session_edit' session.id %}" class="edit-btn">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">
+                                    <i class="fas fa-calendar-times"></i>
+                                </div>
+                                <h4>No Sessions Found</h4>
+                                <p>Create your first session to get started with training.</p>
+                                <a href="{% url 'training:session_create' %}" class="btn-create" style="display: inline-flex;">
+                                    <i class="fas fa-plus"></i> Create Session
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        {% if sessions.has_other_pages %}
+        <div class="pagination-wrapper">
+            <div class="pagination">
+                {% if sessions.has_previous %}
+                    <a href="?page={{ sessions.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if batch_filter %}&batch={{ batch_filter }}{% endif %}">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                {% else %}
+                    <span class="disabled"><i class="fas fa-chevron-left"></i></span>
+                {% endif %}
+                
+                {% for num in sessions.paginator.page_range %}
+                    {% if sessions.number == num %}
+                        <span class="active">{{ num }}</span>
+                    {% elif num > sessions.number|add:'-3' and num < sessions.number|add:'3' %}
+                        <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if batch_filter %}&batch={{ batch_filter }}{% endif %}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if sessions.has_next %}
+                    <a href="?page={{ sessions.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if batch_filter %}&batch={{ batch_filter }}{% endif %}">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                {% else %}
+                    <span class="disabled"><i class="fas fa-chevron-right"></i></span>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<script>
+    // Auto-submit form when batch is changed
+    const batchSelect = document.getElementById('batchSelect');
+    const filterForm = document.getElementById('filterForm');
+    
+    if (batchSelect) {
+        batchSelect.addEventListener('change', function() {
+            filterForm.submit();
+        });
+    }
+    
+    // Debounce search input
+    let searchTimeout;
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                filterForm.submit();
+            }, 500);
+        });
+    }
+    
+    // Animate progress bars on load
+    document.addEventListener('DOMContentLoaded', function() {
+        const progressBars = document.querySelectorAll('.progress-fill');
+        progressBars.forEach(bar => {
+            const width = bar.style.width;
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.width = width;
+            }, 100);
+        });
+    });
+</script>
+
 {% endblock %}

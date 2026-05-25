@@ -1,38 +1,1300 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Terms of Service - HIN Technologies{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <h1>Terms of Service</h1>
-            <p class="text-muted">Last updated: June 2026</p>
-            
-            <h2>1. Acceptance of Terms</h2>
-            <p>By accessing or using the HIN Technologies website and services, you agree to be bound by these Terms of Service.</p>
-            
-            <h2>2. Training Services</h2>
-            <p>HIN Technologies provides DevOps training programs. Course schedules, curriculum, and pricing are subject to change without notice. Enrollment is confirmed only upon full payment or agreed installment.</p>
-            
-            <h2>3. Refund and Cancellation Policy</h2>
-            <p>Refund requests must be made within 7 days of course start date. No refunds will be issued after 7 days or once course materials have been accessed.</p>
-            
-            <h2>4. Code of Conduct</h2>
-            <p>Students must maintain professional conduct during training sessions. Harassment, disruptive behavior, or cheating will result in immediate dismissal without refund.</p>
-            
-            <h2>5. Intellectual Property</h2>
-            <p>All course materials, including videos, code samples, and documentation, are property of HIN Technologies. Redistribution or resale is strictly prohibited.</p>
-            
-            <h2>6. Placement Assistance</h2>
-            <p>Placement assistance is provided but not guaranteed. Success depends on individual performance, market conditions, and interview outcomes.</p>
-            
-            <h2>7. Limitation of Liability</h2>
-            <p>HIN Technologies is not liable for any indirect, incidental, or consequential damages arising from course participation or use of our services.</p>
-            
-            <h2>8. Contact Information</h2>
-            <p>For questions about these Terms, contact us at info@hintechnologies.in.</p>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #f8fafc;
+    }
+
+    /* Modern Split Hero Section - FULLY RESPONSIVE */
+    .split-hero {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        min-height: 450px;
+        background: #0B3D91;
+        position: relative;
+        overflow: hidden;
+        margin: 0 auto;
+    }
+
+    .hero-left {
+        padding: 80px 60px 80px 80px;
+        position: relative;
+        z-index: 2;
+        max-width: 900px;
+    }
+
+    .hero-left .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255,255,255,0.12);
+        padding: 6px 16px;
+        border-radius: 40px;
+        font-size: 12px;
+        font-weight: 500;
+        color: rgba(255,255,255,0.9);
+        margin-bottom: 24px;
+    }
+
+    .hero-left .badge i {
+        color: #C62828;
+    }
+
+    .hero-left h1 {
+        font-size: 56px;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 20px;
+        letter-spacing: -1px;
+        line-height: 1.2;
+    }
+
+    .hero-left h1 span {
+        color: #C62828;
+        position: relative;
+        display: inline-block;
+    }
+
+    .hero-left p {
+        color: rgba(255,255,255,0.85);
+        font-size: 16px;
+        line-height: 1.6;
+        max-width: 500px;
+        margin-bottom: 30px;
+    }
+
+    .hero-meta {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .hero-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255,255,255,0.08);
+        padding: 8px 18px;
+        border-radius: 50px;
+    }
+
+    .hero-meta-item i {
+        color: #C62828;
+        font-size: 14px;
+    }
+
+    .hero-meta-item span {
+        color: rgba(255,255,255,0.8);
+        font-size: 13px;
+    }
+
+    .hero-right {
+        background: linear-gradient(135deg, #0a2d6e, #0B3D91);
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .hero-right::before {
+        content: '';
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(198,40,40,0.15), transparent);
+        border-radius: 50%;
+        top: -100px;
+        right: -100px;
+    }
+
+    .hero-right::after {
+        content: '';
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(255,255,255,0.05), transparent);
+        border-radius: 50%;
+        bottom: -50px;
+        left: -50px;
+    }
+
+    .hero-decoration {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+    }
+
+    .hero-decoration svg {
+        width: 400px;
+        height: 400px;
+        filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));
+        animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-15px); }
+    }
+
+    /* Main Container */
+    .terms-wrapper {
+        max-width: 1400px;
+        margin: -40px auto 60px;
+        padding: 0 40px;
+        position: relative;
+        z-index: 10;
+    }
+
+    /* Stats Cards */
+    .stats-touch-container {
+        background: white;
+        border-radius: 28px;
+        margin-bottom: 50px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+
+    .stats-touch-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0;
+    }
+
+    .stat-touch-item {
+        padding: 32px 20px;
+        text-align: center;
+        position: relative;
+        background: white;
+        transition: all 0.3s;
+    }
+
+    .stat-touch-item:hover {
+        background: #fafcff;
+    }
+
+    .stat-touch-item:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 25%;
+        height: 50%;
+        width: 1px;
+        background: linear-gradient(180deg, transparent, #e2e8f0, #e2e8f0, transparent);
+    }
+
+    .stat-icon-touch {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #eef2ff, white);
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px;
+        border: 1px solid #eef2f8;
+    }
+
+    .stat-icon-touch i {
+        font-size: 28px;
+        color: #0B3D91;
+    }
+
+    .stat-number {
+        font-size: 34px;
+        font-weight: 800;
+        color: #C62828;
+        line-height: 1.2;
+    }
+
+    .stat-label {
+        font-size: 13px;
+        color: #6b7280;
+        font-weight: 500;
+        margin-top: 6px;
+    }
+
+    /* Perfect Terms Section */
+    .perfect-terms {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px 0;
+    }
+
+    /* RESPONSIVE CARD ROWS */
+    .card-row {
+        display: grid;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    /* Desktop Large: 3 cards per row */
+    @media (min-width: 1201px) {
+        .card-row {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        .card-row.row-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+
+    /* Tablet: 2 cards per row */
+    @media (min-width: 769px) and (max-width: 1200px) {
+        .card-row {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .card-row.row-4 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    /* Mobile: 1 card per row */
+    @media (max-width: 768px) {
+        .card-row {
+            grid-template-columns: 1fr;
+        }
+        .card-row.row-4 {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Perfect Card Styles */
+    .perfect-card {
+        background: white;
+        border-radius: 28px;
+        padding: 28px;
+        position: relative;
+        transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        border: 1px solid rgba(11,61,145,0.12);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+        overflow: hidden;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .perfect-card:hover {
+        transform: translateY(-8px);
+        border-color: #C62828;
+        box-shadow: 0 25px 45px rgba(198,40,40,0.12), 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .card-bg-shine {
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s ease;
+        pointer-events: none;
+    }
+
+    .perfect-card:hover .card-bg-shine {
+        left: 100%;
+    }
+
+    .perfect-card-number {
+        position: absolute;
+        top: 20px;
+        right: 24px;
+        font-size: 54px;
+        font-weight: 800;
+        color: rgba(11,61,145,0.06);
+        line-height: 1;
+        transition: all 0.3s;
+    }
+
+    .perfect-card:hover .perfect-card-number {
+        color: rgba(198,40,40,0.08);
+        transform: scale(1.05);
+    }
+
+    .perfect-card-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #eef2ff, #ffffff);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        border: 1px solid rgba(11,61,145,0.15);
+        transition: all 0.3s;
+    }
+
+    .perfect-card:hover .perfect-card-icon {
+        transform: scale(1.03) rotate(3deg);
+        border-color: #C62828;
+    }
+
+    .perfect-card-icon i {
+        font-size: 28px;
+        color: #0B3D91;
+    }
+
+    .perfect-card h3 {
+        font-size: 22px;
+        font-weight: 700;
+        color: #0B3D91;
+        margin-bottom: 15px;
+    }
+
+    .perfect-card p {
+        color: #5a6e8a;
+        font-size: 14px;
+        line-height: 1.65;
+        margin-bottom: 16px;
+    }
+
+    /* Tags */
+    .perfect-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 15px;
+    }
+
+    .perfect-tags span {
+        background: #f1f5f9;
+        padding: 5px 12px;
+        border-radius: 25px;
+        font-size: 11px;
+        font-weight: 500;
+        color: #0B3D91;
+        transition: all 0.2s;
+    }
+
+    /* Restriction Block */
+    .restriction-block {
+        background: #fffaf5;
+        border-radius: 16px;
+        padding: 14px 16px;
+        margin-top: 12px;
+        border-left: 3px solid #C62828;
+    }
+
+    .restriction-title {
+        font-size: 12px;
+        font-weight: 700;
+        color: #C62828;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .restriction-block ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .restriction-block li {
+        font-size: 12px;
+        color: #8b5e5e;
+        padding: 4px 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .restriction-block li i {
+        font-size: 10px;
+        color: #C62828;
+    }
+
+    /* Support List */
+    .support-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 12px 0;
+    }
+
+    .support-list span {
+        background: #eef2ff;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #0B3D91;
+    }
+
+    .support-list span i {
+        font-size: 9px;
+        color: #C62828;
+    }
+
+    .support-note {
+        font-size: 12px !important;
+        color: #C62828 !important;
+        background: #fee2e2;
+        padding: 8px 12px;
+        border-radius: 12px;
+        margin-top: 10px;
+    }
+
+    /* Warning Card */
+    .warning-card {
+        background: linear-gradient(145deg, #fffaf5, #fff7f0);
+        border-bottom: 3px solid #C62828;
+    }
+
+    .warning-box {
+        background: #fee2e2;
+        padding: 12px 14px;
+        border-radius: 14px;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 15px 0;
+        color: #b91c1c;
+    }
+
+    .warning-box i {
+        font-size: 18px;
+    }
+
+    .factors-text {
+        font-size: 13px;
+        font-weight: 600;
+        color: #0B3D91;
+        margin-bottom: 10px;
+    }
+
+    .factors-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .factors-grid span {
+        background: #f1f5f9;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        color: #0B3D91;
+    }
+
+    .final-note {
+        font-size: 12px;
+        color: #C62828;
+        font-style: italic;
+        margin-top: 10px;
+    }
+
+    /* Responsibility List */
+    .responsibility-list {
+        list-style: none;
+        padding: 0;
+        margin: 12px 0;
+    }
+
+    .responsibility-list li {
+        padding: 6px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        color: #4a5568;
+    }
+
+    .responsibility-list li i {
+        color: #0B3D91;
+        font-size: 12px;
+    }
+
+    .success-note {
+        background: #e8f0fe;
+        padding: 8px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        color: #0B3D91;
+    }
+
+    /* Payment Notice */
+    .payment-notice {
+        background: #f1f5f9;
+        padding: 14px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 12px;
+    }
+
+    .payment-notice i {
+        font-size: 24px;
+        color: #C62828;
+    }
+
+    .payment-notice span {
+        font-size: 13px;
+        color: #4a5568;
+    }
+
+    /* IP Warning */
+    .ip-warning {
+        background: #fff0f0;
+        padding: 12px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 12px;
+    }
+
+    .ip-warning i {
+        font-size: 20px;
+        color: #C62828;
+    }
+
+    .ip-warning span {
+        font-size: 12px;
+        color: #b91c1c;
+        font-weight: 500;
+    }
+
+    /* Scope Note */
+    .scope-note {
+        background: #eef2ff;
+        padding: 12px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 12px;
+    }
+
+    .scope-note i {
+        font-size: 18px;
+        color: #0B3D91;
+    }
+
+    .scope-note span {
+        font-size: 12px;
+        color: #4a5568;
+    }
+
+    .timeline-note {
+        font-size: 13px;
+        background: #f8fafc;
+        padding: 10px;
+        border-radius: 12px;
+        margin-top: 10px;
+    }
+
+    /* Liability Card */
+    .liability-card {
+        background: #fefefe;
+    }
+
+    .liability-list {
+        list-style: none;
+        padding: 0;
+        margin: 12px 0;
+    }
+
+    .liability-list li {
+        padding: 6px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        color: #C62828;
+    }
+
+    .liability-list li i {
+        font-size: 12px;
+    }
+
+    .liability-note {
+        background: #f1f5f9;
+        padding: 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        margin-top: 10px;
+    }
+
+    /* Privacy Note */
+    .privacy-note {
+        background: #e8f0fe;
+        padding: 14px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 12px;
+    }
+
+    .privacy-note i {
+        font-size: 24px;
+        color: #0B3D91;
+    }
+
+    .privacy-note span {
+        font-size: 12px;
+        color: #4a5568;
+    }
+
+    /* Update Badge */
+    .update-badge {
+        background: #f1f5f9;
+        padding: 8px 12px;
+        border-radius: 30px;
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 600;
+        color: #0B3D91;
+        margin-top: 12px;
+    }
+
+    .update-badge i {
+        margin-right: 6px;
+    }
+
+    /* Acceptance Card */
+    .acceptance-card {
+        background: linear-gradient(135deg, #0B3D91, #0a2d6e);
+        border: none;
+        text-align: center;
+    }
+
+    .acceptance-card h3,
+    .acceptance-card p {
+        color: white;
+    }
+
+    .acceptance-card .perfect-card-icon {
+        background: rgba(255,255,255,0.15);
+        border-color: rgba(255,255,255,0.2);
+    }
+
+    .acceptance-card .perfect-card-icon i {
+        color: white;
+    }
+
+    .acceptance-stamp {
+        background: #C62828;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 24px;
+        border-radius: 50px;
+        margin-top: 20px;
+        font-size: 13px;
+        font-weight: 700;
+        color: white;
+    }
+
+    /* ===== CREATIVE LAST SECTION - NO BOX, PURE GRADIENT ===== */
+    .creative-last-section {
+        margin-top: 30px;
+        padding: 60px 20px;
+        background: linear-gradient(135deg, #0B3D91 0%, #1a4fa8 100%);
+        border-radius: 48px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .creative-last-section::before {
+        content: '';
+        position: absolute;
+        top: -30%;
+        left: -20%;
+        width: 140%;
+        height: 140%;
+        background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+        animation: slowRotate 25s linear infinite;
+    }
+
+    .creative-last-section::after {
+        content: '';
+        position: absolute;
+        bottom: -50px;
+        right: -50px;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(198,40,40,0.15), transparent);
+        border-radius: 50%;
+    }
+
+    @keyframes slowRotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .floating-dots {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    .dot {
+        position: absolute;
+        background: rgba(255,255,255,0.1);
+        border-radius: 50%;
+        animation: floatDot 8s ease-in-out infinite;
+    }
+
+    @keyframes floatDot {
+        0%, 100% { transform: translateY(0) translateX(0); }
+        50% { transform: translateY(-20px) translateX(10px); }
+    }
+
+    .creative-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .creative-icon-wrapper {
+        width: 90px;
+        height: 90px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+        border: 1px solid rgba(255,255,255,0.3);
+        backdrop-filter: blur(8px);
+        animation: pulseIcon 2s ease-in-out infinite;
+    }
+
+    @keyframes pulseIcon {
+        0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.2); }
+        50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(255,255,255,0); }
+    }
+
+    .creative-icon-wrapper i {
+        font-size: 45px;
+        color: white;
+    }
+
+    .creative-title {
+        font-size: 36px;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 15px;
+        letter-spacing: -0.5px;
+    }
+
+    .creative-title span {
+        color: #ff9999;
+    }
+
+    .creative-description {
+        font-size: 16px;
+        color: rgba(255,255,255,0.9);
+        line-height: 1.7;
+        margin-bottom: 30px;
+    }
+
+    .creative-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .creative-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 32px;
+        border-radius: 60px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .creative-btn-primary {
+        background: #C62828;
+        color: white;
+        box-shadow: 0 8px 25px rgba(198,40,40,0.35);
+    }
+
+    .creative-btn-primary:hover {
+        background: #b71c1c;
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 15px 35px rgba(198,40,40,0.45);
+    }
+
+    .creative-btn-secondary {
+        background: rgba(255,255,255,0.12);
+        backdrop-filter: blur(10px);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .creative-btn-secondary:hover {
+        background: rgba(255,255,255,0.25);
+        transform: translateY(-3px);
+    }
+
+    .footer-copyright {
+        text-align: center;
+        margin-top: 30px;
+        padding: 20px;
+        background: transparent;
+    }
+
+    .footer-copyright p {
+        color: #8a9cc0;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .footer-copyright i {
+        color: #C62828;
+        margin: 0 4px;
+    }
+/* TABLET FIX */
+@media (min-width:769px) and (max-width:1200px){
+
+    .card-row,
+    .card-row.row-4{
+        display:grid;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:20px;
+    }
+
+    /* center last odd card */
+    .card-row .perfect-card:last-child:nth-child(odd){
+        grid-column:1 / -1;
+        width:50%;
+        justify-self:center;
+    }
+}
+    /* RESPONSIVE HERO SECTION */
+    @media (max-width: 1024px) {
+        .split-hero {
+            grid-template-columns: 1fr;
+            min-height: auto;
+            padding: 30px 0;
+        }
+        .hero-left {
+            padding: 50px 40px;
+            text-align: center;
+            max-width: 100%;
+        }
+        .hero-left p {
+            margin: 0 auto 25px;
+        }
+        .hero-meta {
+            justify-content: center;
+        }
+        .hero-right {
+            display: none;
+        }
+        .hero-left h1 {
+            font-size: 42px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .terms-wrapper {
+            padding: 0 20px;
+        }
+        .stats-touch-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .hero-left h1 {
+            font-size: 32px;
+        }
+        .hero-left {
+            padding: 40px 25px;
+        }
+        .creative-title {
+            font-size: 28px;
+        }
+        .creative-description {
+            font-size: 14px;
+        }
+        .creative-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        .creative-btn {
+            width: 80%;
+            justify-content: center;
+        }
+        .perfect-card {
+            padding: 22px;
+        }
+        .perfect-card-number {
+            font-size: 44px;
+        }
+    }
+
+    @media (max-width: 550px) {
+        .stats-touch-grid {
+            grid-template-columns: 1fr;
+        }
+        .hero-left h1 {
+            font-size: 28px;
+        }
+        .creative-title {
+            font-size: 24px;
+        }
+        .creative-icon-wrapper {
+            width: 70px;
+            height: 70px;
+        }
+        .creative-icon-wrapper i {
+            font-size: 35px;
+        }
+    }
+    /* Mobile fix for email button */
+@media (max-width:768px){
+
+    .creative-buttons{
+        width:100%;
+    }
+
+    .creative-btn{
+        width:100%;
+        max-width:100%;
+        justify-content:center;
+        text-align:center;
+        padding:14px 16px;
+        font-size:13px;
+        white-space:normal;
+        word-break:break-word;
+        overflow-wrap:break-word;
+    }
+
+    .creative-btn i{
+        flex-shrink:0;
+    }
+}
+</style>
+
+<!-- Modern Split Hero Section -->
+<div class="split-hero">
+    <div class="hero-left">
+        <div class="badge">
+            <i class="fas fa-gavel"></i> LEGAL AGREEMENT
+        </div>
+        <h1>Terms & <span>Conditions</span></h1>
+        <p>Welcome to HIN Technologies. By enrolling in our training programs, job support services, corporate training, or technology services, you agree to the following Terms & Conditions.</p>
+        <div class="hero-meta">
+            <div class="hero-meta-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Effective: 20 Feb 2026</span>
+            </div>
+            <div class="hero-meta-item">
+                <i class="fas fa-check-circle"></i>
+                <span>Legally Binding</span>
+            </div>
+        </div>
+    </div>
+    <div class="hero-right">
+        <div class="hero-decoration">
+            <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="100" cy="100" r="80" stroke="rgba(255,255,255,0.1)" stroke-width="2" fill="none"/>
+                <circle cx="100" cy="100" r="60" stroke="rgba(255,255,255,0.15)" stroke-width="2" fill="none"/>
+                <circle cx="100" cy="100" r="40" fill="rgba(255,255,255,0.05)"/>
+                <path d="M100 60 L110 90 L140 90 L116 108 L125 135 L100 118 L75 135 L84 108 L60 90 L90 90 L100 60Z" fill="#C62828" opacity="0.8"/>
+                <path d="M100 70 L107 93 L130 93 L111 105 L118 127 L100 116 L82 127 L89 105 L70 93 L93 93 L100 70Z" fill="white"/>
+            </svg>
         </div>
     </div>
 </div>
+
+<!-- Main Content -->
+<div class="terms-wrapper">
+    
+    <!-- Stats Cards -->
+    <div class="stats-touch-container">
+        <div class="stats-touch-grid">
+            <div class="stat-touch-item">
+                <div class="stat-icon-touch"><i class="fas fa-file-contract"></i></div>
+                <div class="stat-number">13</div>
+                <div class="stat-label">Comprehensive Sections</div>
+            </div>
+            <div class="stat-touch-item">
+                <div class="stat-icon-touch"><i class="fas fa-shield-alt"></i></div>
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Transparent Policies</div>
+            </div>
+            <div class="stat-touch-item">
+                <div class="stat-icon-touch"><i class="fas fa-gavel"></i></div>
+                <div class="stat-number">Legal</div>
+                <div class="stat-label">Fully Compliant</div>
+            </div>
+            <div class="stat-touch-item">
+                <div class="stat-icon-touch"><i class="fas fa-handshake"></i></div>
+                <div class="stat-number">Fair</div>
+                <div class="stat-label">For All Parties</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 13 CARDS SECTION (3,3,4,3) -->
+    <div class="perfect-terms">
+        
+        <!-- ROW 1: 3 CARDS -->
+        <div class="card-row">
+            <div class="perfect-card">
+                <div class="card-bg-shine"></div>
+                <div class="perfect-card-number">01</div>
+                <div class="perfect-card-icon"><i class="fas fa-chalkboard-user"></i></div>
+                <h3>Training & Learning</h3>
+                <p>HIN Technologies provides professional real-time practical training designed to help students and professionals gain in-depth knowledge of technologies through hands-on implementation and industry-oriented learning.</p>
+                <div class="perfect-tags">
+                    <span>Real-Time Sessions</span>
+                    <span>In-Depth Training</span>
+                    <span>Live Projects</span>
+                    <span>Hands-On Implementation</span>
+                    <span>Real-Time Troubleshooting</span>
+                    <span>Practical Assignments</span>
+                    <span>Production-Level Exposure</span>
+                    <span>Career-Oriented Guidance</span>
+                </div>
+            </div>
+            
+            <div class="perfect-card">
+                <div class="card-bg-shine"></div>
+                <div class="perfect-card-number">02</div>
+                <div class="perfect-card-icon"><i class="fas fa-user-graduate"></i></div>
+                <h3>Student Responsibilities</h3>
+                <p>Students are expected to:</p>
+                <ul class="responsibility-list">
+                    <li><i class="fas fa-check-circle"></i> Attend training sessions regularly</li>
+                    <li><i class="fas fa-check-circle"></i> Complete assignments and practice tasks</li>
+                    <li><i class="fas fa-check-circle"></i> Participate actively in practical sessions</li>
+                    <li><i class="fas fa-check-circle"></i> Maintain professional communication</li>
+                    <li><i class="fas fa-check-circle"></i> Follow training guidelines responsibly</li>
+                </ul>
+                <p class="success-note">Success in training depends on student dedication, practice, and continuous learning.</p>
+            </div>
+            
+            <div class="perfect-card">
+                <div class="card-bg-shine"></div>
+                <div class="perfect-card-number">03</div>
+                <div class="perfect-card-icon"><i class="fas fa-diagram-project"></i></div>
+                <h3>Project Support</h3>
+                <p>HIN Technologies provides project guidance and technical support as part of training and professional learning.</p>
+                <div class="support-list">
+                    <span><i class="fas fa-check"></i> Project Understanding</span>
+                    <span><i class="fas fa-check"></i> Deployment Guidance</span>
+                    <span><i class="fas fa-check"></i> Troubleshooting Assistance</span>
+                    <span><i class="fas fa-check"></i> Practical Implementation Support</span>
+                    <span><i class="fas fa-check"></i> Infrastructure & Automation Guidance</span>
+                </div>
+                <p class="support-note">Support is provided based on the training scope and project requirements.</p>
+            </div>
+        </div>
+        
+        <!-- ROW 2: 3 CARDS -->
+        <div class="card-row">
+            <div class="perfect-card warning-card">
+                <div class="card-bg-shine"></div>
+                <div class="perfect-card-number">04</div>
+                <div class="perfect-card-icon"><i class="fas fa-briefcase"></i></div>
+                <h3>Job Assistance Disclaimer</h3>
+                <p>HIN Technologies helps students improve their career opportunities through Interview Preparation, Resume Support, Mock Interviews, Real-Time Technical Guidance, and Career Mentorship.</p>
+                <div class="warning-box">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    IMPORTANT: HIN Technologies does NOT provide any 100% job guarantee or placement assurance.
+                </div>
+                <p class="factors-text">Job opportunities and selection depend on multiple factors including:</p>
+                <div class="factors-grid">
+                    <span>Student skills</span>
+                    <span>Technical knowledge</span>
+                    <span>Interview performance</span>
+                    <span>Communication skills</span>
+                    <span>Company requirements</span>
+                    <span>Market conditions</span>
+                </div>
+                <p class="final-note">Final hiring decisions are completely dependent on employers and interview performance.</p>
+            </div>
+            
+            <div class="perfect-card">
+                <div class="card-bg-shine"></div>
+                <div class="perfect-card-number">05</div>
+                <div class="perfect-card-icon"><i class="fas fa-book-open"></i></div>
+                <h3>Study Materials & Resources</h3>
+                <p>Students may receive access to learning resources including Training Materials, Technical Notes, Practice Assignments, Project Support Documents, Recorded Video Sessions, Interview Preparation Materials, Resume Guidance, and Real-Time Use Cases.</p>
+                <div class="restriction-block">
+                    <div class="restriction-title"><i class="fas fa-ban"></i> Strictly Prohibited:</div>
+                    <ul>
+                        <li><i class="fas fa-times"></i> Copy or redistribute materials</li>
+                        <li><i class="fas fa-times"></i> Share videos publicly</li>
+                        <li><i class="fas fa-times"></i> Resell training content</li>
+                        <li><i class="fas fa-times"></i> Upload content to third-party platforms</li>
+                        <li><i class="fas fa-times"></i> Use training materials for commercial purposes without permission</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="perfect-card liability-card">
+                <div class="card-bg-shine"></div>
+                <div class="perfect-card-number">06</div>
+                <div class="perfect-card-icon"><i class="fas fa-shield-alt"></i></div>
+                <h3>Limitation of Liability</h3>
+                <p>HIN Technologies shall not be held responsible for:</p>
+                <ul class="liability-list">
+                    <li><i class="fas fa-times-circle"></i> Job interview outcomes</li>
+                    <li><i class="fas fa-times-circle"></i> Employment decisions made by companies</li>
+                    <li><i class="fas fa-times-circle"></i> Market hiring conditions</li>
+                    <li><i class="fas fa-times-circle"></i> Improper implementation by users</li>
+                    <li><i class="fas fa-times-circle"></i> Third-party service issues</li>
+                </ul>
+                <p class="liability-note">Students and clients are responsible for applying learned knowledge appropriately in real-world environments.</p>
+            </div>
+        </div>
+        
+        <!-- ROW 3: 4 CARDS -->
+        <div class="card-row row-4">
+            <div class="perfect-card">
+                <div class="card-bg-shine"></div>
+                <div class="perfect-card-number">07</div>
+                <div class="perfect-card-icon"><i class="fas fa-copyright"></i></div>
+                <h3>Intellectual Property</h3>
+                <p>All training content, videos, documents, project materials, recordings, and technical resources remain the intellectual property of HIN Technologies.</p>
+                <div class="ip-warning">
+                    <i class="fas fa-lock"></i>
+                    <span>Unauthorized copying, sharing, redistribution, or commercial usage is strictly prohibited.</span>
+                </div>
+            </div>
+            
+            <div class="perfect-card">
+                <div class="card-bg-shine"></div>
+                <div class="perfect-card-number">08</div>
+                <div class="perfect-card-icon"><i class="fas fa-headset"></i></div>
+                <h3>Job Support Services</h3>
+                <p>Job support services are provided based on availability, agreed timelines, and project scope.</p>
+                <div class="scope-note">
+                    <i class="fas fa-info-circle"></i>
+                    <span>HIN Technologies reserves the right to define the scope and limitations of support services.</span>
+                </div>
+            </div>
+            
+            <div class="perfect-card">
+                <div class="card-bg-shine"></div>
+                <div class="perfect-card-number">09</div>
+                <div class="perfect-card-icon"><i class="fas fa-building"></i></div>
+                <h3>Corporate Training & Services</h3>
+                <p>Corporate training and business services are delivered based on mutually agreed requirements and timelines.</p>
+                <p class="timeline-note">Project delivery timelines may vary depending on technical complexity and business requirements.</p>
+            </div>
+            
+            <div class="perfect-card">
+                <div class="card-bg-shine"></div>
+                <div class="perfect-card-number">10</div>
+                <div class="perfect-card-icon"><i class="fas fa-coins"></i></div>
+                <h3>Fees & Payments</h3>
+                <p>All fees for training, job support, and services must be paid as per agreed terms.</p>
+                <div class="payment-notice">
+                    <i class="fas fa-receipt"></i>
+                    <span>Fees once paid are generally <strong>non-refundable</strong> unless approved by management under exceptional situations.</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ROW 4: 3 CARDS -->
+        <div class="card-row">
+            <div class="perfect-card">
+                <div class="card-bg-shine"></div>
+                <div class="perfect-card-number">11</div>
+                <div class="perfect-card-icon"><i class="fas fa-lock"></i></div>
+                <h3>Privacy & Confidentiality</h3>
+                <p>HIN Technologies respects the privacy of students and clients.</p>
+                <div class="privacy-note">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Personal information shared during training or services will be handled responsibly and will not be shared with unauthorized third parties except where required by law.</span>
+                </div>
+            </div>
+            
+            <div class="perfect-card">
+                <div class="card-bg-shine"></div>
+                <div class="perfect-card-number">12</div>
+                <div class="perfect-card-icon"><i class="fas fa-pen-to-square"></i></div>
+                <h3>Changes to Terms</h3>
+                <p>HIN Technologies reserves the right to update or modify training content, schedules, services, and Terms & Conditions at any time to improve service quality and learning experience.</p>
+                <div class="update-badge">
+                    <i class="fas fa-sync-alt"></i> Subject to change without prior notice
+                </div>
+            </div>
+            
+            <div class="perfect-card acceptance-card">
+                <div class="card-bg-shine"></div>
+                <div class="perfect-card-number">13</div>
+                <div class="perfect-card-icon"><i class="fas fa-handshake"></i></div>
+                <h3>Acceptance of Terms</h3>
+                <p>By enrolling in our training programs, job support services, corporate training, or technology services, you acknowledge that you have read, understood, and agreed to these Terms & Conditions.</p>
+                <div class="acceptance-stamp">
+                    <i class="fas fa-check-double"></i>
+                    <span>Legally Binding Agreement</span>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- ===== CREATIVE LAST SECTION - REDESIGNED ===== -->
+    <div class="creative-last-section">
+        <div class="floating-dots">
+            <div class="dot" style="width: 8px; height: 8px; top: 15%; left: 10%; animation-delay: 0s;"></div>
+            <div class="dot" style="width: 12px; height: 12px; top: 70%; left: 85%; animation-delay: 1s;"></div>
+            <div class="dot" style="width: 6px; height: 6px; top: 40%; left: 20%; animation-delay: 2s;"></div>
+            <div class="dot" style="width: 10px; height: 10px; top: 80%; left: 15%; animation-delay: 0.5s;"></div>
+            <div class="dot" style="width: 5px; height: 5px; top: 25%; left: 75%; animation-delay: 1.5s;"></div>
+            <div class="dot" style="width: 15px; height: 15px; top: 50%; left: 50%; animation-delay: 2.5s;"></div>
+        </div>
+        <div class="creative-content">
+            <div class="creative-icon-wrapper">
+                <i class="fas fa-headset"></i>
+            </div>
+            <h2 class="creative-title">Need <span>Clarification?</span></h2>
+            <p class="creative-description">Our legal and support team is available to help you understand any clause or policy. We believe in complete transparency and are just a message away.</p>
+            <div class="creative-buttons">
+                <a href="#" class="creative-btn creative-btn-primary">
+                    <i class="fas fa-envelope"></i> legal@hintechnologies.com
+                </a>
+                <a href="#" class="creative-btn creative-btn-secondary">
+                    <i class="fas fa-phone-alt"></i> +91 12345 67890
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Copyright -->
+    <div class="footer-copyright">
+        <p><i class="fas fa-gavel"></i> HIN Technologies – Empowering Tech Professionals with Integrity & Excellence <i class="fas fa-code"></i></p>
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 {% endblock %}

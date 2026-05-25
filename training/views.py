@@ -118,23 +118,86 @@ def student_dashboard(request):
         # Get sessions
         sessions = DailySession.objects.filter(batch=batch)[:5]
         
-        # Get projects
-        batch_projects = Project.objects.filter(batch=batch)
-        individual_projects = Project.objects.filter(assigned_student=student_profile)
-        projects = batch_projects | individual_projects
+        # Get projects - ONLY ACTIVE ones, exclude pending
+        batch_projects = Project.objects.filter(batch=batch, status='active')
+        individual_projects = Project.objects.filter(assigned_student=student_profile, status='active')
+        projects = list(batch_projects) + list(individual_projects)
         
         # Get deliverables
         deliverables = StudentDeliverable.objects.filter(
             student=student_profile,
             deliverable__batch=batch
-        ).select_related('deliverable')
+        ).select_related('deliverable')[:4]
         
-        # Calculate progress
-        total_projects = projects.count()
-        completed_projects = StudentProjectSubmission.objects.filter(
-            student=student_profile,
-            status='approved'
+        # Calculate progress using actual submissions
+        total_projects = len(projects)
+        
+        # Count approved submissions
+        if total_projects > 0:
+            project_ids = [p.id for p in projects]
+            completed_projects = StudentProjectSubmission.objects.filter(
+                student=student_profile,
+                project_id__in=project_ids,
+                status='approved'
+            ).count()
+        else:
+            completed_projects = 0
+        
+        # ========== NEW: SESSION PROGRESS CALCULATIONS ==========
+        # Get total sessions in this batch
+        total_sessions = DailySession.objects.filter(batch=batch).count()
+        
+        # Get total days from batch model (you have total_days field)
+        total_batch_days = batch.total_days if batch.total_days else total_sessions
+        
+        # Calculate completed sessions
+        # You need to track which sessions student has completed/watched
+        # For now, we'll count sessions that have recording_link and student has watched
+        # Option 1: If you have a StudentSessionCompletion model
+        # completed_sessions = StudentSessionCompletion.objects.filter(
+        #     student=student_profile, 
+        #     session__batch=batch,
+        #     is_completed=True
+        # ).count()
+        
+        # Option 2: Simple approach - count sessions that are in the past (already happened)
+        # This assumes student attended/completed sessions that are past their date
+        from django.utils import timezone
+        completed_sessions = DailySession.objects.filter(
+            batch=batch,
+            session_date__lt=timezone.now().date()
         ).count()
+        
+        # Or Option 3: Count sessions that have recording links (assuming they watched)
+        # completed_sessions = DailySession.objects.filter(
+        #     batch=batch,
+        #     recording_link__isnull=False
+        # ).exclude(recording_link='').count()
+        
+        # Calculate percentage
+        if total_batch_days > 0:
+            session_progress_percentage = int((completed_sessions / total_batch_days * 100))
+        else:
+            session_progress_percentage = 0
+        
+        # For projects progress
+        if total_projects > 0:
+            progress_percentage = int((completed_projects / total_projects * 100))
+        else:
+            progress_percentage = 0
+        
+        # For each project in dashboard, get submission status
+        for project in projects[:5]:
+            try:
+                submission = StudentProjectSubmission.objects.get(student=student_profile, project=project)
+                project.submission_status = submission.status
+                project.submission = submission
+                # Check if actually submitted
+                if submission.status == 'submitted' and not (submission.github_link or submission.live_link or submission.zip_file):
+                    project.submission_status = 'not_started'
+            except StudentProjectSubmission.DoesNotExist:
+                project.submission_status = 'not_started'
+                project.submission = None
         
         context.update({
             'sessions': sessions,
@@ -142,7 +205,12 @@ def student_dashboard(request):
             'deliverables': deliverables,
             'total_projects': total_projects,
             'completed_projects': completed_projects,
-            'progress_percentage': int((completed_projects / total_projects * 100)) if total_projects > 0 else 0,
+            'progress_percentage': progress_percentage,
+            # NEW session progress variables
+            'total_sessions': total_sessions,
+            'total_batch_days': total_batch_days,
+            'completed_sessions': completed_sessions,
+            'session_progress_percentage': session_progress_percentage,
         })
     
     return render(request, 'training/student/dashboard.html', context)
@@ -197,29 +265,46 @@ def my_batch(request):
 @login_required
 def student_sessions(request):
     student_profile = get_student_profile(request.user)
-    
+
     if not student_profile:
         messages.warning(request, 'Student profile not found.')
         return redirect('hin:dashboard')
-    
+
     student_batch = StudentBatch.objects.filter(
-        student=student_profile, 
+        student=student_profile,
         is_active=True
     ).select_related('batch').first()
-    
+
     if not student_batch:
         messages.info(request, 'You are not assigned to any batch yet.')
         return redirect('training:student_dashboard')
-    
-    sessions = DailySession.objects.filter(batch=student_batch.batch).order_by('day_number')
-    
+
+    batch = student_batch.batch
+    sessions = DailySession.objects.filter(
+        batch=batch
+    ).order_by('day_number')
+
+    # Progress Calculation
+    total_days = batch.total_days if batch.total_days else 0
+    uploaded_sessions = sessions.count()
+
+    if total_days > 0:
+        progress_percentage = int(
+            (uploaded_sessions / total_days) * 100
+        )
+    else:
+        progress_percentage = 0
+
     paginator = Paginator(sessions, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
+
     return render(request, 'training/student/sessions.html', {
         'sessions': page_obj,
-        'batch': student_batch.batch,
+        'batch': batch,
+        'total_days': total_days,
+        'uploaded_sessions': uploaded_sessions,
+        'progress_percentage': progress_percentage,
     })
 
 @login_required
@@ -406,6 +491,10 @@ def student_profile_update(request):
 @login_required
 @user_passes_test(is_admin)
 def admin_dashboard(request):
+    from django.utils import timezone
+    from django.db.models import Count, Q
+    import math
+    
     total_students = StudentProfile.objects.count()
     active_students = StudentProfile.objects.filter(status='active').count()
     total_batches = Batch.objects.count()
@@ -425,10 +514,60 @@ def admin_dashboard(request):
     
     total_deliverables = Deliverable.objects.count()
     
-    recent_students = StudentProfile.objects.select_related('user').all()[:5]
-    recent_batches = Batch.objects.all()[:5]
+    # Recent students
+    recent_students = StudentProfile.objects.select_related('user').order_by('-joined_at')[:5]
     
-    # Get only actual pending reviews
+    # Recent batches with annotations
+    recent_batches = Batch.objects.annotate(
+        student_count=Count('students', filter=Q(students__is_active=True), distinct=True),
+        project_count=Count('projects', distinct=True),
+        total_sessions=Count('sessions', distinct=True)
+    ).order_by('-created_at')[:4]
+    
+    # Calculate progress for each batch - BASED ON SESSIONS UPLOADED/DAYS
+    for batch in recent_batches:
+        # Get total days from batch model
+        total_batch_days = batch.total_days if batch.total_days else 0
+        
+        # Get actual sessions uploaded/created for this batch
+        uploaded_sessions = batch.sessions.count()
+        
+        # Session progress = (uploaded_sessions / total_days) * 100
+        if total_batch_days > 0:
+            batch.session_progress = int((uploaded_sessions / total_batch_days * 100))
+            batch.progress_percentage = batch.session_progress
+        else:
+            batch.session_progress = 0
+            batch.progress_percentage = 0
+        
+        # Store for display
+        batch.uploaded_sessions = uploaded_sessions
+        batch.total_batch_days = total_batch_days
+        
+        # Calculate progress ring dashoffset
+        circumference = 2 * math.pi * 36
+        batch.progress_dashoffset = circumference - (circumference * batch.progress_percentage / 100)
+        
+        # Count sessions that are completed/held (date passed)
+        completed_sessions = batch.sessions.filter(
+            session_date__lt=timezone.now().date()
+        ).count()
+        batch.completed_sessions = completed_sessions
+        
+        # For display in stats
+        batch.attendance_rate = batch.session_progress
+    
+    # Overall session progress - based on all batches
+    all_batches = Batch.objects.all()
+    total_days_overall = sum([b.total_days for b in all_batches if b.total_days])
+    total_uploaded_sessions_overall = DailySession.objects.count()
+    
+    if total_days_overall > 0:
+        overall_session_percentage = int((total_uploaded_sessions_overall / total_days_overall * 100))
+    else:
+        overall_session_percentage = 0
+    
+    # Get pending reviews
     pending_reviews = StudentProjectSubmission.objects.filter(
         status='submitted'
     ).filter(
@@ -437,7 +576,7 @@ def admin_dashboard(request):
         Q(zip_file__isnull=False)
     ).exclude(
         Q(github_link='') & Q(live_link='') & Q(zip_file='')
-    ).select_related('student', 'project')[:5]
+    ).select_related('student', 'student__user', 'project').order_by('-submitted_at')[:5]
     
     context = {
         'total_students': total_students,
@@ -450,10 +589,13 @@ def admin_dashboard(request):
         'recent_students': recent_students,
         'recent_batches': recent_batches,
         'pending_reviews': pending_reviews,
+        'total_days_overall': total_days_overall,
+        'total_uploaded_sessions_overall': total_uploaded_sessions_overall,
+        'overall_session_percentage': overall_session_percentage,
+        'now': timezone.now(),
     }
     
     return render(request, 'training/admin/dashboard.html', context)
-    
 @login_required
 @user_passes_test(is_admin)
 def student_list(request):
@@ -659,19 +801,57 @@ def batch_edit(request, batch_id):
 def session_list(request):
     sessions = DailySession.objects.select_related('batch').all()
     
-    # Filter by batch
+    # Get filter parameters
     batch_filter = request.GET.get('batch')
-    if batch_filter:
-        sessions = sessions.filter(batch_id=batch_filter)
-    
-    # Search
     search_query = request.GET.get('search')
+    
+    # Initialize selected batch variables
+    selected_batch = None
+    selected_batch_uploaded = 0
+    selected_batch_total_days = 0
+    selected_batch_progress = 0
+    
+    # Apply batch filter
+    if batch_filter and batch_filter != '':
+        sessions = sessions.filter(batch_id=batch_filter)
+        try:
+            selected_batch = Batch.objects.get(id=batch_filter)
+            selected_batch_total_days = selected_batch.total_days if selected_batch.total_days else 0
+            selected_batch_uploaded = selected_batch.sessions.count()
+            if selected_batch_total_days > 0:
+                selected_batch_progress = int((selected_batch_uploaded / selected_batch_total_days * 100))
+            else:
+                selected_batch_progress = 0
+        except Batch.DoesNotExist:
+            pass
+    
+    # Apply search filter
     if search_query:
         sessions = sessions.filter(
             Q(title__icontains=search_query) |
             Q(topic__icontains=search_query)
         )
     
+    # Calculate statistics
+    all_batches = Batch.objects.all()
+    total_sessions_count = DailySession.objects.count()
+    total_recordings = DailySession.objects.exclude(recording_link='').exclude(recording_link__isnull=True).count()
+    total_days_all = 0
+    total_uploaded_all = 0
+    
+    for batch in all_batches:
+        total_days = batch.total_days if batch.total_days else 0
+        uploaded_sessions = batch.sessions.count()
+        total_days_all += total_days
+        total_uploaded_all += uploaded_sessions
+    
+    # Overall progress
+    if total_days_all > 0:
+        overall_progress = int((total_uploaded_all / total_days_all * 100))
+    else:
+        overall_progress = 0
+    
+    # Pagination
     paginator = Paginator(sessions, 20)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -683,6 +863,14 @@ def session_list(request):
         'batch_filter': batch_filter,
         'search_query': search_query,
         'batches': batches,
+        'total_sessions': total_sessions_count,
+        'total_recordings': total_recordings,
+        'overall_progress': overall_progress,
+        # Selected batch data
+        'selected_batch': selected_batch,
+        'selected_batch_uploaded': selected_batch_uploaded,
+        'selected_batch_total_days': selected_batch_total_days,
+        'selected_batch_progress': selected_batch_progress,
     })
 
 @login_required

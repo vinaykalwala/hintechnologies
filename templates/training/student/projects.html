@@ -1,143 +1,818 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}My Projects - HIN{% endblock %}
+{% block title %}My Projects - HIN Technologies{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row">
-        <div class="col-12">
-            <h2 class="mb-4">My Projects</h2>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #f5f7fb;
+    }
+
+    /* ============================================ */
+    /* ATTRACTIVE BANNER SECTION */
+    /* ============================================ */
+    .hero-banner {
+        background: linear-gradient(135deg, #0B3D91 0%, #0a2d6e 50%, #061b4a 100%);
+        position: relative;
+        overflow: hidden;
+        padding: 4rem 4rem;
+    }
+
+    .hero-banner::before {
+        content: '';
+        position: absolute;
+        top: -30%;
+        left: -10%;
+        width: 60%;
+        height: 150%;
+        background: radial-gradient(circle, rgba(198,40,40,0.12), transparent 70%);
+        border-radius: 50%;
+        animation: floatAnim 8s ease-in-out infinite;
+    }
+
+    .hero-banner::after {
+        content: '';
+        position: absolute;
+        bottom: -20%;
+        right: -5%;
+        width: 50%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(255,255,255,0.05), transparent 70%);
+        border-radius: 50%;
+        animation: floatAnim2 10s ease-in-out infinite;
+    }
+
+    @keyframes floatAnim {
+        0%, 100% { transform: translateX(0) translateY(0); }
+        50% { transform: translateX(40px) translateY(20px); }
+    }
+
+    @keyframes floatAnim2 {
+        0%, 100% { transform: translateX(0) translateY(0); }
+        50% { transform: translateX(-30px) translateY(-20px); }
+    }
+
+    .banner-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 10;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 2rem;
+    }
+
+    .banner-content {
+        flex: 1;
+    }
+
+    .banner-content h1 {
+        font-size: 2.8rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 0.8rem;
+        letter-spacing: -0.5px;
+    }
+
+    .banner-content h1 span {
+        color: #C62828;
+        position: relative;
+    }
+
+    .banner-content p {
+        color: rgba(255,255,255,0.85);
+        font-size: 1rem;
+        line-height: 1.6;
+        max-width: 500px;
+    }
+
+    /* Stats Cards Row */
+    .stats-row {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .stats-card {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(12px);
+        border-radius: 28px;
+        padding: 1.2rem 2rem;
+        text-align: center;
+        border: 1px solid rgba(255,255,255,0.2);
+        min-width: 160px;
+        flex: 1;
+    }
+
+    .stats-card i {
+        font-size: 36px;
+        color: #C62828;
+        margin-bottom: 0.5rem;
+    }
+
+    .stats-number {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: white;
+        line-height: 1;
+    }
+
+    .stats-label {
+        font-size: 0.7rem;
+        color: rgba(255,255,255,0.7);
+        margin-top: 0.3rem;
+    }
+
+    /* ============================================ */
+    /* MAIN CONTENT */
+    /* ============================================ */
+    .main-container {
+        max-width: 1400px;
+        margin: -2rem auto 3rem;
+        padding: 0 1.5rem;
+        position: relative;
+        z-index: 20;
+    }
+
+    /* Welcome Section */
+    .welcome-section {
+        background: white;
+        border-radius: 24px;
+        padding: 1.2rem 1.8rem;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.04);
+        border: 1px solid rgba(11,61,145,0.08);
+    }
+
+    .welcome-text h3 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #0B3D91;
+        margin-bottom: 0.2rem;
+    }
+
+    .welcome-text p {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+
+    .pending-info {
+        background: #fef2f2;
+        padding: 0.5rem 1.2rem;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .pending-info i {
+        color: #C62828;
+    }
+
+    .pending-info span {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #C62828;
+    }
+
+    /* Projects Grid */
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+        gap: 1.5rem;
+    }
+
+    /* Attractive Project Card */
+    .project-card {
+        background: white;
+        border-radius: 28px;
+        overflow: hidden;
+        transition: all 0.3s;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+        border: 1px solid rgba(11,61,145,0.08);
+    }
+
+    .project-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 25px 45px -12px rgba(0,0,0,0.15);
+    }
+
+    .card-header {
+        padding: 1.2rem 1.5rem;
+        background: linear-gradient(135deg, #f8faff, #ffffff);
+        border-bottom: 1px solid #eef2f8;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .project-number {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #94a3b8;
+        background: #f0f2f5;
+        padding: 0.3rem 1rem;
+        border-radius: 50px;
+    }
+
+    .project-badge {
+        font-size: 0.65rem;
+        font-weight: 600;
+        padding: 0.3rem 1rem;
+        border-radius: 50px;
+    }
+
+    .badge-batch {
+        background: #eef2ff;
+        color: #0B3D91;
+    }
+
+    .badge-individual {
+        background: #fff3e0;
+        color: #f59e0b;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .project-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #0B3D91;
+        margin-bottom: 0.5rem;
+    }
+
+    .project-description {
+        font-size: 0.8rem;
+        color: #5b6e8c;
+        line-height: 1.5;
+        margin-bottom: 1rem;
+    }
+
+    .project-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 1px solid #eef2f8;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.7rem;
+        color: #64748b;
+    }
+
+    .meta-item i {
+        color: #C62828;
+        font-size: 0.75rem;
+    }
+
+    .due-date {
+        color: #C62828;
+        font-weight: 600;
+    }
+
+    /* Admin Feedback Section */
+    .feedback-section {
+        margin-top: 1rem;
+        padding: 0.8rem 1rem;
+        background: #f8fafc;
+        border-radius: 16px;
+        border-left: 3px solid #C62828;
+    }
+
+    .feedback-title {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #C62828;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.3rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .feedback-text {
+        font-size: 0.75rem;
+        color: #475569;
+        line-height: 1.5;
+    }
+
+    .feedback-empty {
+        color: #94a3b8;
+        font-style: italic;
+    }
+
+    /* Status Badges */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1.2rem;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-top: 1rem;
+    }
+
+    .status-approved {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .status-submitted {
+        background: #e3f2fd;
+        color: #1565c0;
+    }
+
+    .status-review {
+        background: #fff3e0;
+        color: #f57c00;
+    }
+
+    .status-rejected {
+        background: #ffebee;
+        color: #c62828;
+    }
+
+    .status-pending {
+        background: #f0f2f5;
+        color: #64748b;
+    }
+
+    /* Action Button */
+    .card-action {
+        padding: 1rem 1.5rem 1.5rem;
+        border-top: 1px solid #eef2f8;
+        background: #fafbfc;
+    }
+
+    .btn-action {
+        width: 100%;
+        padding: 0.85rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s;
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn-submit {
+        background: linear-gradient(95deg, #C62828, #a51b1b);
+        color: white;
+        box-shadow: 0 4px 12px rgba(198,40,40,0.25);
+    }
+
+    .btn-submit:hover {
+        background: linear-gradient(95deg, #b01f1f, #8a1212);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(198,40,40,0.3);
+    }
+
+    .btn-disabled {
+        background: #e2e8f0;
+        color: #94a3b8;
+        cursor: default;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 32px;
+    }
+
+    .empty-icon {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, #eef2ff, #ffffff);
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+    }
+
+    .empty-icon i {
+        font-size: 48px;
+        color: #0B3D91;
+    }
+
+    .empty-state h3 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #0B3D91;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        color: #6c757d;
+        font-size: 0.85rem;
+    }
+
+    /* Pagination */
+    .pagination-container {
+        margin-top: 2.5rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .pagination {
+        display: flex;
+        gap: 0.5rem;
+        list-style: none;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 42px;
+        height: 42px;
+        padding: 0 1rem;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        color: #0B3D91;
+        font-weight: 500;
+        font-size: 0.85rem;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .page-link:hover {
+        background: #C62828;
+        color: white;
+        border-color: #C62828;
+    }
+
+    .page-item.active .page-link {
+        background: #0B3D91;
+        color: white;
+        border-color: #0B3D91;
+    }
+
+    .page-item.disabled .page-link {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+        .banner-container {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .banner-content {
+            text-align: center;
+        }
+        
+        .banner-content p {
+            margin: 0 auto;
+        }
+        
+        .stats-row {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .projects-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .welcome-section {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+
+    @media (max-width: 650px) {
+        .stats-row {
+            flex-direction: column;
+            width: 100%;
+        }
+        
+        .stats-card {
+            min-width: auto;
+        }
+    }
+
+    @media (max-width: 550px) {
+        .main-container {
+            padding: 0 1rem;
+        }
+        
+        .hero-banner {
+            padding: 2.5rem 1.5rem;
+        }
+        
+        .banner-content h1 {
+            font-size: 1.8rem;
+        }
+        
+        .stats-card {
+            padding: 0.8rem 1rem;
+        }
+        
+        .stats-number {
+            font-size: 1.8rem;
+        }
+        
+        .card-header {
+            padding: 1rem;
+        }
+        
+        .card-body {
+            padding: 1rem;
+        }
+        
+        .card-action {
+            padding: 1rem;
+        }
+        
+        .project-title {
+            font-size: 1rem;
+        }
+        
+        .feedback-section {
+            padding: 0.6rem 0.8rem;
+        }
+    }
+</style>
+
+<!-- ATTRACTIVE BANNER SECTION -->
+<div class="hero-banner">
+    <div class="banner-container">
+        <div class="banner-content">
+            <h1>My <span>Projects</span></h1>
+            <p>Track your progress, submit your work, and get feedback from mentors. Complete all projects to earn your certification.</p>
         </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow">
-                <div class="card-header bg-white">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h5 class="mb-0">Assigned Projects</h5>
-                        </div>
-                        <div class="col-auto">
-                            <span class="badge bg-primary">{{ projects.paginator.count }} Total Projects</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    {% if projects %}
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Project #</th>
-                                        <th>Title</th>
-                                        <th>Type</th>
-                                        <th>Due Date</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for project in projects %}
-                                        <tr>
-                                            <td>{{ project.project_number }}</td>
-                                            <td>
-                                                <strong>{{ project.title }}</strong>
-                                                <br>
-                                                <small class="text-muted">{{ project.description|truncatechars:50 }}</small>
-                                            </td>
-                                            <td>
-                                                {% if project.batch %}
-                                                    <span class="badge bg-info">Batch Project</span>
-                                                {% else %}
-                                                    <span class="badge bg-warning">Individual Project</span>
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                {{ project.due_date|date:"M d, Y" }}
-                                                {% if project.due_date < now %}
-                                                    <br><small class="text-danger">Overdue</small>
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                {% if project.submission_status == 'approved' %}
-                                                    <span class="badge bg-success">✓ Approved</span>
-                                                {% elif project.submission_status == 'submitted' %}
-                                                    <span class="badge bg-info">Submitted - Under Review</span>
-                                                {% elif project.submission_status == 'under_review' %}
-                                                    <span class="badge bg-warning">Under Review</span>
-                                                {% elif project.submission_status == 'rejected' %}
-                                                    <span class="badge bg-danger">✗ Rejected</span>
-                                                {% else %}
-                                                    <span class="badge bg-secondary">Not Started</span>
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                {% if project.submission_status == 'approved' %}
-                                                    <button class="btn btn-sm btn-success" disabled>Completed</button>
-                                                {% elif project.submission_status == 'submitted' or project.submission_status == 'under_review' %}
-                                                    <button class="btn btn-sm btn-info" disabled>Pending Review</button>
-                                                {% else %}
-                                                    <a href="{% url 'training:submit_project' project.id %}" class="btn btn-sm btn-primary">
-                                                        Submit Project
-                                                    </a>
-                                                {% endif %}
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                        <!-- Pagination -->
-                        {% if projects.has_other_pages %}
-                            <nav aria-label="Page navigation" class="mt-4">
-                                <ul class="pagination justify-content-center">
-                                    {% if projects.has_previous %}
-                                        <li class="page-item">
-                                            <a class="page-link" href="?page={{ projects.previous_page_number }}">Previous</a>
-                                        </li>
-                                    {% else %}
-                                        <li class="page-item disabled">
-                                            <span class="page-link">Previous</span>
-                                        </li>
-                                    {% endif %}
-                                    
-                                    {% for num in projects.paginator.page_range %}
-                                        {% if projects.number == num %}
-                                            <li class="page-item active">
-                                                <span class="page-link">{{ num }}</span>
-                                            </li>
-                                        {% elif num > projects.number|add:'-3' and num < projects.number|add:'3' %}
-                                            <li class="page-item">
-                                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                                            </li>
-                                        {% endif %}
-                                    {% endfor %}
-                                    
-                                    {% if projects.has_next %}
-                                        <li class="page-item">
-                                            <a class="page-link" href="?page={{ projects.next_page_number }}">Next</a>
-                                        </li>
-                                    {% else %}
-                                        <li class="page-item disabled">
-                                            <span class="page-link">Next</span>
-                                        </li>
-                                    {% endif %}
-                                </ul>
-                            </nav>
-                        {% endif %}
-                    {% else %}
-                        <div class="text-center py-5">
-                            <i class="bi bi-folder-x" style="font-size: 48px;"></i>
-                            <h5 class="mt-3">No projects assigned yet</h5>
-                            <p class="text-muted">Projects will appear here once assigned by the admin.</p>
-                        </div>
-                    {% endif %}
-                </div>
+        <div class="stats-row">
+            <div class="stats-card">
+                <i class="fas fa-folder-open"></i>
+                <div class="stats-number" id="totalProjectCount">0</div>
+                <div class="stats-label">Total Projects</div>
+            </div>
+            <div class="stats-card">
+                <i class="fas fa-hourglass-half"></i>
+                <div class="stats-number" id="pendingCount">0</div>
+                <div class="stats-label">Not Submitted</div>
+            </div>
+            <div class="stats-card">
+                <i class="fas fa-check-circle"></i>
+                <div class="stats-number" id="submittedCount">0</div>
+                <div class="stats-label">Submitted</div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- MAIN CONTENT -->
+<div class="main-container">
+    
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+        <div class="welcome-text">
+            <h3>Welcome back! 👋</h3>
+            <p>Here are all the projects assigned to you. Complete them before the due date.</p>
+        </div>
+        <div class="pending-info">
+            <i class="fas fa-hourglass-half"></i>
+            <span id="pendingInfoCount">0</span>
+            <span>Projects Pending Submission</span>
+        </div>
+    </div>
+    
+    <!-- Projects Grid -->
+    <div class="projects-grid" id="projectsGrid">
+        {% if projects %}
+            {% for project in projects %}
+                <div class="project-card">
+                    <div class="card-header">
+                        <span class="project-number">#{{ project.project_number }}</span>
+                        {% if project.batch %}
+                            <span class="project-badge badge-batch"><i class="fas fa-users"></i> Batch Project</span>
+                        {% else %}
+                            <span class="project-badge badge-individual"><i class="fas fa-user"></i> Individual</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <h3 class="project-title">{{ project.title }}</h3>
+                        <p class="project-description">{{ project.description|truncatechars:80 }}</p>
+                        
+                        <div class="project-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Due: <span class="due-date">{{ project.due_date|date:"M d, Y" }}</span></span>
+                            </div>
+                            {% if project.due_date < now %}
+                                <div class="meta-item">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <span class="due-date">Overdue</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Admin Feedback Section - Fetch from submission -->
+                        <div class="feedback-section">
+                            <div class="feedback-title">
+                                <i class="fas fa-comment-dots"></i> 
+                                {% if project.submission_status == 'rejected' %}
+                                    Feedback from Reviewer
+                                {% elif project.submission_status == 'approved' %}
+                                    Reviewer's Notes
+                                {% else %}
+                                    Remarks
+                                {% endif %}
+                            </div>
+                            <div class="feedback-text">
+                                {% if project.submission and project.submission.admin_feedback %}
+                                    {{ project.submission.admin_feedback }}
+                                {% elif project.submission_status == 'approved' %}
+                                    <span class="feedback-empty">✓ Great work! Your project has been approved.</span>
+                                {% elif project.submission_status == 'submitted' %}
+                                    <span class="feedback-empty">⏳ Your submission is under review. Feedback will appear here once reviewed.</span>
+                                {% elif project.submission_status == 'under_review' %}
+                                    <span class="feedback-empty">🔍 Your project is being reviewed by the mentor. Please wait for feedback.</span>
+                                {% elif project.submission_status == 'rejected' %}
+                                    <span class="feedback-empty">❌ Your project was rejected. Please check the feedback above and resubmit.</span>
+                                {% else %}
+                                    <span class="feedback-empty">📝 No feedback yet. Submit your project to receive feedback from mentors.</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Status Badge -->
+                        <div class="status-badge 
+                            {% if project.submission_status == 'approved' %}status-approved
+                            {% elif project.submission_status == 'submitted' %}status-submitted
+                            {% elif project.submission_status == 'under_review' %}status-review
+                            {% elif project.submission_status == 'rejected' %}status-rejected
+                            {% else %}status-pending{% endif %}">
+                            <i class="
+                                {% if project.submission_status == 'approved' %}fas fa-check-circle
+                                {% elif project.submission_status == 'submitted' %}fas fa-paper-plane
+                                {% elif project.submission_status == 'under_review' %}fas fa-search
+                                {% elif project.submission_status == 'rejected' %}fas fa-times-circle
+                                {% else %}fas fa-hourglass-start{% endif %}"></i>
+                            {% if project.submission_status == 'approved' %}
+                                Approved ✓
+                            {% elif project.submission_status == 'submitted' %}
+                                Submitted - Under Review
+                            {% elif project.submission_status == 'under_review' %}
+                                Under Review
+                            {% elif project.submission_status == 'rejected' %}
+                                Rejected - Resubmit Required
+                            {% else %}
+                                Not Started
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="card-action">
+                        {% if project.submission_status == 'approved' %}
+                            <button class="btn-action btn-disabled" disabled>
+                                <i class="fas fa-check-circle"></i> Completed
+                            </button>
+                        {% elif project.submission_status == 'submitted' or project.submission_status == 'under_review' %}
+                            <button class="btn-action btn-disabled" disabled>
+                                <i class="fas fa-clock"></i> Pending Review
+                            </button>
+                        {% elif project.submission_status == 'rejected' %}
+                            <a href="{% url 'training:submit_project' project.id %}" class="btn-action btn-submit">
+                                <i class="fas fa-redo-alt"></i> Resubmit Project
+                            </a>
+                        {% else %}
+                            <a href="{% url 'training:submit_project' project.id %}" class="btn-action btn-submit">
+                                <i class="fas fa-paper-plane"></i> Submit Project
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    
+    <!-- Empty State -->
+    {% if not projects %}
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-folder-open"></i>
+            </div>
+            <h3>No Projects Assigned Yet</h3>
+            <p>Projects will appear here once assigned by the admin. Check back later!</p>
+        </div>
+    {% endif %}
+    
+    <!-- Pagination -->
+    {% if projects.has_other_pages %}
+        <div class="pagination-container">
+            <ul class="pagination">
+                {% if projects.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ projects.previous_page_number }}">
+                            <i class="fas fa-chevron-left"></i> Prev
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link"><i class="fas fa-chevron-left"></i> Prev</span>
+                    </li>
+                {% endif %}
+                
+                {% for num in projects.paginator.page_range %}
+                    {% if projects.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                    {% elif num > projects.number|add:'-3' and num < projects.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if projects.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ projects.next_page_number }}">
+                            Next <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Next <i class="fas fa-chevron-right"></i></span>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    // Calculate counts
+    function calculateCounts() {
+        const cards = document.querySelectorAll('.project-card');
+        let total = cards.length;
+        let pending = 0;
+        let submitted = 0;
+        
+        cards.forEach(card => {
+            const statusBadge = card.querySelector('.status-badge');
+            const statusText = statusBadge ? statusBadge.innerText.trim() : '';
+            
+            if (statusText === 'Not Started') {
+                pending++;
+            } else if (statusText === 'Submitted - Under Review' || statusText === 'Under Review' || statusText === 'Approved ✓') {
+                submitted++;
+            } else if (statusText === 'Rejected - Resubmit Required') {
+                pending++;
+            }
+        });
+        
+        document.getElementById('totalProjectCount').textContent = total;
+        document.getElementById('pendingCount').textContent = pending;
+        document.getElementById('submittedCount').textContent = submitted;
+        document.getElementById('pendingInfoCount').textContent = pending;
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        calculateCounts();
+    });
+</script>
+
 {% endblock %}

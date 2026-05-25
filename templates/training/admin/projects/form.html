@@ -1,145 +1,992 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ title }} - Training{% endblock %}
+{% block title %}{{ title }} - HIN Technologies{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">{{ title }}</h5>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #f3f6fc;
+    }
+
+    /* ============================================ */
+    /* PREMIUM FULL-WIDTH BANNER WITH SVG */
+    /* ============================================ */
+    .premium-banner {
+        background: linear-gradient(115deg, #0B3D91 0%, #1a4fa8 40%, #C62828 100%);
+        position: relative;
+        overflow: hidden;
+        padding: 3.5rem 4rem;
+    }
+
+    .banner-svg-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.12;
+        pointer-events: none;
+    }
+
+    .banner-svg-bg svg {
+        width: 100%;
+        height: 100%;
+    }
+
+    .premium-banner::before {
+        content: '';
+        position: absolute;
+        top: -40%;
+        left: -10%;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 70%);
+        border-radius: 50%;
+        animation: bannerWave 12s ease-in-out infinite;
+        z-index: 1;
+    }
+
+    .premium-banner::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        right: -5%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1), transparent 70%);
+        border-radius: 50%;
+        animation: bannerWave2 10s ease-in-out infinite;
+        z-index: 1;
+    }
+
+    @keyframes bannerWave {
+        0%, 100% { transform: translateX(0) translateY(0) scale(1); }
+        50% { transform: translateX(50px) translateY(25px) scale(1.05); }
+    }
+
+    @keyframes bannerWave2 {
+        0%, 100% { transform: translateX(0) translateY(0) scale(1); }
+        50% { transform: translateX(-40px) translateY(-20px) scale(1.08); }
+    }
+
+    .banner-grid {
+        max-width: 1300px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 10;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 2rem;
+    }
+
+    .banner-text {
+        flex: 1;
+        position: relative;
+        z-index: 2;
+    }
+
+    .banner-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(12px);
+        padding: 0.4rem 1.2rem;
+        border-radius: 60px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: rgba(255,255,255,0.95);
+        margin-bottom: 1.2rem;
+        border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .banner-text h1 {
+        font-size: 2.8rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 0.8rem;
+        letter-spacing: -1px;
+        line-height: 1.2;
+    }
+
+    .banner-text h1 span {
+        background: linear-gradient(135deg, #ff8a8a, #ff5e5e);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .banner-text p {
+        color: rgba(255,255,255,0.85);
+        font-size: 0.95rem;
+        max-width: 500px;
+        line-height: 1.6;
+    }
+
+    .banner-illustration {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(16px);
+        padding: 1rem 1.8rem;
+        border-radius: 32px;
+        border: 1px solid rgba(255,255,255,0.2);
+        position: relative;
+        z-index: 2;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .banner-illustration:hover {
+        transform: translateY(-5px);
+    }
+
+    .illustration-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .illustration-svg {
+        width: 80px;
+        height: 80px;
+        filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15));
+    }
+
+    .illustration-text {
+        text-align: left;
+    }
+
+    .illustration-text h3 {
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 0.3rem;
+    }
+
+    .illustration-text p {
+        color: rgba(255,255,255,0.8);
+        font-size: 0.75rem;
+        margin: 0;
+    }
+
+    /* ============================================ */
+    /* SEARCHABLE SELECT DROPDOWN STYLES */
+    /* ============================================ */
+    .searchable-select {
+        position: relative;
+        width: 100%;
+    }
+
+    .select-trigger {
+        width: 100%;
+        padding: 0.95rem 1rem;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 18px;
+        font-size: 0.9rem;
+        background: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: all 0.25s;
+    }
+
+    .select-trigger:hover {
+        border-color: #C62828;
+    }
+
+    .select-trigger.active {
+        border-color: #C62828;
+        box-shadow: 0 0 0 4px rgba(198,40,40,0.08);
+    }
+
+    .trigger-text {
+        color: #64748b;
+        flex: 1;
+    }
+
+    .trigger-text.has-value {
+        color: #1e293b;
+        font-weight: 500;
+    }
+
+    .trigger-arrow {
+        color: #94a3b8;
+        transition: transform 0.3s;
+    }
+
+    .select-trigger.active .trigger-arrow {
+        transform: rotate(180deg);
+    }
+
+    /* Clear Button */
+    .clear-selection {
+        background: none;
+        border: none;
+        color: #94a3b8;
+        cursor: pointer;
+        padding: 0 8px;
+        font-size: 14px;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .clear-selection:hover {
+        color: #C62828;
+        transform: scale(1.1);
+    }
+
+    .select-trigger .trigger-content {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+    }
+
+    .select-dropdown {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        right: 0;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 20px 35px -10px rgba(0,0,0,0.15);
+        border: 1px solid #e2e8f0;
+        z-index: 100;
+        display: none;
+        overflow: hidden;
+        animation: dropdownFade 0.2s ease;
+    }
+
+    .select-dropdown.show {
+        display: block;
+    }
+
+    @keyframes dropdownFade {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .dropdown-search {
+        padding: 12px;
+        border-bottom: 1px solid #e2e8f0;
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 1;
+    }
+
+    .dropdown-search input {
+        width: 100%;
+        padding: 10px 12px 10px 36px;
+        font-size: 13px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 12px;
+        background: #f8fafc;
+        transition: all 0.25s;
+    }
+
+    .dropdown-search input:focus {
+        outline: none;
+        border-color: #C62828;
+        background: white;
+    }
+
+    .dropdown-search i {
+        position: absolute;
+        left: 24px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 14px;
+    }
+
+    .dropdown-options {
+        max-height: 280px;
+        overflow-y: auto;
+    }
+
+    .dropdown-option {
+        padding: 12px 16px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .dropdown-option:hover {
+        background: #fef2f2;
+    }
+
+    .dropdown-option.selected {
+        background: #fef2f2;
+        color: #C62828;
+    }
+
+    .dropdown-option i {
+        width: 20px;
+        color: #C62828;
+        font-size: 14px;
+    }
+
+    .option-text {
+        flex: 1;
+        font-size: 14px;
+        color: #334155;
+    }
+
+    .dropdown-option:hover .option-text {
+        color: #C62828;
+    }
+
+    .no-results {
+        padding: 20px;
+        text-align: center;
+        color: #94a3b8;
+        font-size: 13px;
+    }
+
+    /* Hide original selects but keep them functional */
+    #id_batch, #id_assigned_student {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+        width: 0;
+        height: 0;
+    }
+
+    /* Disabled state */
+    .searchable-select.disabled .select-trigger {
+        background-color: #f1f5f9;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+
+    .searchable-select.disabled .select-trigger:hover {
+        border-color: #e2e8f0;
+    }
+
+    /* ============================================ */
+    /* FORM SECTION - PREMIUM DESIGN */
+    /* ============================================ */
+    .form-container {
+        max-width: 1100px;
+        margin: -2rem auto 3rem;
+        padding: 0 1.5rem;
+        position: relative;
+        z-index: 20;
+    }
+
+    .premium-card {
+        background: white;
+        border-radius: 32px;
+        box-shadow: 0 30px 50px -20px rgba(0,0,0,0.15);
+        overflow: hidden;
+    }
+
+    .card-head {
+        background: white;
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid #eff3f8;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .card-title {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+
+    .card-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #eef2ff, #ffffff);
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #eef2f8;
+    }
+
+    .card-icon i {
+        font-size: 24px;
+        color: #0B3D91;
+    }
+
+    .card-title h2 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #0B3D91;
+        margin-bottom: 0.1rem;
+    }
+
+    .card-title p {
+        font-size: 0.75rem;
+        color: #6c757d;
+    }
+
+    .badge-edit {
+        background: #f0f2f5;
+        padding: 0.4rem 1rem;
+        border-radius: 40px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #0B3D91;
+    }
+
+    .form-content {
+        padding: 2rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-field {
+        margin-bottom: 0;
+    }
+
+    .field-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #1e293b;
+        margin-bottom: 0.6rem;
+    }
+
+    .field-label i {
+        color: #C62828;
+        width: 18px;
+        font-size: 0.85rem;
+    }
+
+    .required {
+        color: #C62828;
+        font-size: 0.7rem;
+    }
+
+    .input-field {
+        width: 100%;
+        padding: 0.95rem 1rem;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 18px;
+        font-size: 0.9rem;
+        font-family: inherit;
+        transition: all 0.25s;
+        background: white;
+    }
+
+    .input-field:focus {
+        outline: none;
+        border-color: #C62828;
+        box-shadow: 0 0 0 4px rgba(198,40,40,0.08);
+    }
+
+    textarea.input-field {
+        resize: vertical;
+        min-height: 110px;
+    }
+
+    .field-hint {
+        font-size: 0.7rem;
+        color: #94a3b8;
+        margin-top: 0.4rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .field-error {
+        font-size: 0.7rem;
+        color: #C62828;
+        margin-top: 0.4rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .number-group {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .number-group .input-field {
+        flex: 1;
+    }
+
+    .badge-auto {
+        background: #e8f5e9;
+        color: #2e7d32;
+        padding: 0.5rem 1.2rem;
+        border-radius: 40px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .badge-locked {
+        background: #e3f2fd;
+        color: #1565c0;
+        padding: 0.5rem 1.2rem;
+        border-radius: 40px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .info-alert {
+        background: #f0f4ff;
+        border-radius: 20px;
+        padding: 1rem 1.2rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+        border-left: 4px solid #0B3D91;
+    }
+
+    .warning-alert {
+        background: #fffbeb;
+        border-radius: 20px;
+        padding: 1rem 1.2rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+        border-left: 4px solid #f59e0b;
+    }
+
+    .alert-icon-wrap {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .info-alert .alert-icon-wrap {
+        background: #0B3D91;
+        color: white;
+    }
+
+    .warning-alert .alert-icon-wrap {
+        background: #f59e0b;
+        color: white;
+    }
+
+    .alert-text-wrap {
+        flex: 1;
+    }
+
+    .alert-title {
+        font-weight: 700;
+        font-size: 0.85rem;
+        margin-bottom: 0.2rem;
+    }
+
+    .alert-desc {
+        font-size: 0.75rem;
+        color: #475569;
+        line-height: 1.5;
+    }
+
+    .action-row {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #eff3f8;
+    }
+
+    .btn-premium {
+        padding: 0.85rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.25s;
+        cursor: pointer;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+
+    .btn-save {
+        background: linear-gradient(95deg, #C62828, #a51b1b);
+        color: white;
+        box-shadow: 0 4px 12px rgba(198,40,40,0.25);
+    }
+
+    .btn-save:hover {
+        background: linear-gradient(95deg, #b01f1f, #8a1212);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(198,40,40,0.35);
+    }
+
+    .btn-cancel {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+    .btn-cancel:hover {
+        background: #e2e8f0;
+        transform: translateY(-2px);
+    }
+
+    /* Responsive */
+    @media (max-width: 850px) {
+        .form-row {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .banner-grid {
+            flex-direction: column;
+            text-align: center;
+            padding-bottom: 20px;
+        }
+        
+        .banner-text {
+            text-align: center;
+        }
+        
+        .banner-text p {
+            margin: 0 auto;
+        }
+        
+        .premium-banner {
+            padding: 2rem 1.5rem;
+        }
+        
+        .banner-text h1 {
+            font-size: 2rem;
+        }
+        
+        .form-content {
+            padding: 1.5rem;
+        }
+        
+        .card-head {
+            padding: 1.2rem 1.5rem;
+        }
+        
+        .number-group {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .badge-auto, .badge-locked {
+            text-align: center;
+            justify-content: center;
+        }
+        
+        .action-row {
+            flex-direction: column-reverse;
+        }
+        
+        .btn-premium {
+            justify-content: center;
+            width: 100%;
+        }
+
+        .illustration-text {
+            text-align: center;
+        }
+    }
+
+    @media (max-width: 550px) {
+        .form-container {
+            padding: 0 1rem;
+        }
+        
+        .form-content {
+            padding: 1rem;
+        }
+        
+        .input-field {
+            padding: 0.8rem 0.9rem;
+        }
+        
+        .illustration-svg {
+            width: 60px;
+            height: 60px;
+        }
+    }
+</style>
+
+<!-- PREMIUM FULL-WIDTH BANNER WITH SVG GLASS EFFECT -->
+<div class="premium-banner">
+    <div class="banner-svg-bg">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+            <path fill="rgba(255,255,255,0.05)" fill-opacity="1" d="M0,192L48,197.3C96,203,192,213,288,208C384,203,480,181,576,176C672,171,768,181,864,197.3C960,213,1056,235,1152,234.7C1248,235,1344,213,1392,202.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+            <path fill="rgba(255,255,255,0.03)" fill-opacity="1" d="M0,256L48,245.3C96,235,192,213,288,208C384,203,480,213,576,224C672,235,768,245,864,240C960,235,1056,213,1152,197.3C1248,181,1344,171,1392,165.3L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+        </svg>
+    </div>
+    
+    <div class="banner-grid">
+        <div class="banner-text">
+            <div class="banner-chip">
+                <i class="fas fa-crown"></i> Admin Portal
+            </div>
+            <h1>{{ title }} <span>Studio</span></h1>
+            <p>Create and manage training projects for your students with powerful tools and analytics.</p>
+        </div>
+        
+        <div class="banner-illustration">
+            <div class="illustration-wrapper">
+                <div class="illustration-svg">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/>
+                    </svg>
                 </div>
-                <div class="card-body">
-                    <form method="post" id="projectForm">
-                        {% csrf_token %}
-                        
-                        {% if form.non_field_errors %}
-                            <div class="alert alert-danger">
-                                {% for error in form.non_field_errors %}
-                                    {{ error }}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                        
-                        <!-- Batch Selection -->
-                        <div class="mb-3">
-                            <label for="{{ form.batch.id_for_label }}" class="form-label">Assign to Batch</label>
-                            {{ form.batch }}
-                            {% if form.batch.help_text %}
-                                <small class="text-muted">{{ form.batch.help_text }}</small>
-                            {% endif %}
-                            {% if form.batch.errors %}
-                                <div class="text-danger small">{{ form.batch.errors.0 }}</div>
-                            {% endif %}
-                            {% if is_edit %}
-                                <input type="hidden" name="batch" value="{{ form.batch.value|default:'' }}">
-                                <small class="text-warning d-block">⚠️ Batch cannot be changed after project creation</small>
-                            {% endif %}
-                        </div>
-                        
-                        <!-- Individual Student -->
-                        <div class="mb-3">
-                            <label for="{{ form.assigned_student.id_for_label }}" class="form-label">Assign to Individual Student</label>
-                            {{ form.assigned_student }}
-                            {% if form.assigned_student.errors %}
-                                <div class="text-danger small">{{ form.assigned_student.errors.0 }}</div>
-                            {% endif %}
-                            <small class="text-muted">Only this student will get this project</small>
-                            {% if is_edit %}
-                                <input type="hidden" name="assigned_student" value="{{ form.assigned_student.value|default:'' }}">
-                                <small class="text-warning d-block">⚠️ Assigned student cannot be changed after project creation</small>
-                            {% endif %}
-                        </div>
-                        
-                        <!-- Project Number -->
-                        <div class="mb-3">
-                            <label for="{{ form.project_number.id_for_label }}" class="form-label">
-                                Project Number
-                                {% if not is_edit %}
-                                    <span class="badge bg-success ms-2">Auto</span>
-                                {% endif %}
-                            </label>
-                            {{ form.project_number }}
-                            {% if form.project_number.help_text %}
-                                <small class="text-muted">{{ form.project_number.help_text }}</small>
-                            {% endif %}
-                            {% if form.project_number.errors %}
-                                <div class="text-danger small">{{ form.project_number.errors.0 }}</div>
-                            {% endif %}
-                            {% if is_edit %}
-                                <input type="hidden" name="project_number" value="{{ form.project_number.value }}">
-                                <small class="text-info d-block">📌 Project number is fixed and cannot be changed</small>
-                            {% endif %}
-                        </div>
-                        
-                        <!-- Project Title -->
-                        <div class="mb-3">
-                            <label for="{{ form.title.id_for_label }}" class="form-label">Project Title *</label>
-                            {{ form.title }}
-                            {% if form.title.errors %}
-                                <div class="text-danger small">{{ form.title.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <!-- Description -->
-                        <div class="mb-3">
-                            <label for="{{ form.description.id_for_label }}" class="form-label">Description *</label>
-                            {{ form.description }}
-                            {% if form.description.errors %}
-                                <div class="text-danger small">{{ form.description.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <!-- Due Date -->
-                        <div class="mb-3">
-                            <label for="{{ form.due_date.id_for_label }}" class="form-label">Due Date *</label>
-                            {{ form.due_date }}
-                            {% if form.due_date.errors %}
-                                <div class="text-danger small">{{ form.due_date.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <!-- Status -->
-                        <div class="mb-3">
-                            <label for="{{ form.status.id_for_label }}" class="form-label">Status</label>
-                            {{ form.status }}
-                            {% if form.status.errors %}
-                                <div class="text-danger small">{{ form.status.errors.0 }}</div>
-                            {% endif %}
-                            <small class="text-muted">
-                                <strong>Note:</strong> Projects with "Pending" status will NOT be visible to students.
-                                Change to "Active" when ready to assign.
-                            </small>
-                        </div>
-                        
-                        {% if not is_edit %}
-                            <div class="alert alert-info">
-                                <i class="bi bi-info-circle"></i>
-                                <strong>Project Number Auto-increment:</strong> Project numbers auto-increment per batch. 
-                                Leave empty for automatic numbering.
-                            </div>
-                        {% else %}
-                            <div class="alert alert-warning">
-                                <i class="bi bi-exclamation-triangle"></i>
-                                <strong>Edit Mode Restrictions:</strong>
-                                <ul class="mb-0 mt-2">
-                                    <li>Project number cannot be changed</li>
-                                    <li>Batch assignment cannot be changed</li>
-                                    <li>Assigned student cannot be changed</li>
-                                    <li>You can only modify title, description, due date, and status</li>
-                                </ul>
-                            </div>
-                        {% endif %}
-                        
-                        <div class="d-flex justify-content-between">
-                            <a href="{% url 'training:project_list' %}" class="btn btn-secondary">Cancel</a>
-                            <button type="submit" class="btn btn-primary">Save Project</button>
-                        </div>
-                    </form>
+                <div class="illustration-text">
+                    <h3>Smart Project Management</h3>
+                    <p>Auto-numbering • Real-time sync • Batch assignments</p>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- FORM SECTION -->
+<div class="form-container">
+    <div class="premium-card">
+        
+        <div class="card-head">
+            <div class="card-title">
+                <div class="card-icon">
+                    <i class="fas fa-pen-fancy"></i>
+                </div>
+                <div>
+                    <h2>Project Information</h2>
+                    <p>Fill in the details below to {{ title|lower }}</p>
+                </div>
+            </div>
+            {% if is_edit %}
+                <div class="badge-edit">
+                    <i class="fas fa-edit"></i> Edit Mode
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-content">
+            
+            {% if form.non_field_errors %}
+                <div class="warning-alert">
+                    <div class="alert-icon-wrap"><i class="fas fa-exclamation"></i></div>
+                    <div class="alert-text-wrap">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            
+            <form method="post" id="projectForm">
+                {% csrf_token %}
+                
+                <!-- Row 1: Batch & Individual -->
+                <div class="form-row">
+                    <div class="form-field" id="batch-field">
+                        <label class="field-label"><i class="fas fa-layer-group"></i> Batch</label>
+                        
+                        <!-- Hidden original select -->
+                        <select name="batch" id="id_batch">
+                            <option value="">---------</option>
+                            {% for batch in form.batch.field.queryset %}
+                                <option value="{{ batch.id }}" {% if form.batch.value == batch.id %}selected{% endif %}>{{ batch.name }}</option>
+                            {% endfor %}
+                        </select>
+                        
+                        <!-- Searchable Select Trigger with Clear Button -->
+                        <div class="searchable-select" id="batchSearchable">
+                            <div class="select-trigger" id="batchTrigger">
+                                <div class="trigger-content">
+                                    <i class="fas fa-layer-group" style="color: #C62828;"></i>
+                                    <span class="trigger-text" id="batchTriggerText">Select a batch...</span>
+                                </div>
+                                <button type="button" class="clear-selection" id="clearBatchBtn" style="display: none;">
+                                    <i class="fas fa-times-circle"></i>
+                                </button>
+                                <i class="fas fa-chevron-down trigger-arrow"></i>
+                            </div>
+                            <div class="select-dropdown" id="batchDropdown">
+                                <div class="dropdown-search">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" id="batchSearchInput" placeholder="Search batches..." autocomplete="off">
+                                </div>
+                                <div class="dropdown-options" id="batchOptions"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="field-hint"><i class="fas fa-info-circle"></i> Assign to all active students in this batch</div>
+                        {% if form.batch.errors %}<div class="field-error">{{ form.batch.errors.0 }}</div>{% endif %}
+                        {% if is_edit %}
+                            <input type="hidden" name="batch" value="{{ form.batch.value|default:'' }}">
+                            <div class="field-hint"><i class="fas fa-lock"></i> Cannot be changed after creation</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-field" id="student-field">
+                        <label class="field-label"><i class="fas fa-user-graduate"></i> Individual Student</label>
+                        
+                        <!-- Hidden original select -->
+                        <select name="assigned_student" id="id_assigned_student">
+                            <option value="">---------</option>
+                            {% for student in form.assigned_student.field.queryset %}
+                                <option value="{{ student.id }}" {% if form.assigned_student.value == student.id %}selected{% endif %}>{{ student.user.get_full_name|default:student.user.username }}</option>
+                            {% endfor %}
+                        </select>
+                        
+                        <!-- Searchable Select Trigger with Clear Button -->
+                        <div class="searchable-select" id="studentSearchable">
+                            <div class="select-trigger" id="studentTrigger">
+                                <div class="trigger-content">
+                                    <i class="fas fa-user-graduate" style="color: #C62828;"></i>
+                                    <span class="trigger-text" id="studentTriggerText">Select a student...</span>
+                                </div>
+                                <button type="button" class="clear-selection" id="clearStudentBtn" style="display: none;">
+                                    <i class="fas fa-times-circle"></i>
+                                </button>
+                                <i class="fas fa-chevron-down trigger-arrow"></i>
+                            </div>
+                            <div class="select-dropdown" id="studentDropdown">
+                                <div class="dropdown-search">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" id="studentSearchInput" placeholder="Search students..." autocomplete="off">
+                                </div>
+                                <div class="dropdown-options" id="studentOptions"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="field-hint"><i class="fas fa-info-circle"></i> Only this specific student will receive this project</div>
+                        {% if form.assigned_student.errors %}<div class="field-error">{{ form.assigned_student.errors.0 }}</div>{% endif %}
+                        {% if is_edit %}
+                            <input type="hidden" name="assigned_student" value="{{ form.assigned_student.value|default:'' }}">
+                            <div class="field-hint"><i class="fas fa-lock"></i> Cannot be changed after creation</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Project Number -->
+                <div class="form-field" style="margin-bottom: 1.5rem;">
+                    <label class="field-label"><i class="fas fa-hashtag"></i> Project Number</label>
+                    <div class="number-group">
+                        <input type="number" name="project_number" id="id_project_number" class="input-field" placeholder="Auto-generated" value="{{ form.project_number.value|default:'' }}">
+                        {% if not is_edit %}
+                            <span class="badge-auto"><i class="fas fa-magic"></i> Auto</span>
+                        {% else %}
+                            <span class="badge-locked"><i class="fas fa-lock"></i> Locked</span>
+                        {% endif %}
+                    </div>
+                    <div class="field-hint"><i class="fas fa-info-circle"></i> Leave empty for automatic numbering per batch</div>
+                    {% if form.project_number.errors %}<div class="field-error">{{ form.project_number.errors.0 }}</div>{% endif %}
+                    {% if is_edit %}<input type="hidden" name="project_number" value="{{ form.project_number.value }}">{% endif %}
+                </div>
+                
+                <!-- Project Title -->
+                <div class="form-field" style="margin-bottom: 1.5rem;">
+                    <label class="field-label"><i class="fas fa-heading"></i> Project Title <span class="required">*</span></label>
+                    <input type="text" name="title" id="id_title" class="input-field" placeholder="e.g., E-commerce Website Development" value="{{ form.title.value|default:'' }}">
+                    {% if form.title.errors %}<div class="field-error">{{ form.title.errors.0 }}</div>{% endif %}
+                </div>
+                
+                <!-- Description -->
+                <div class="form-field" style="margin-bottom: 1.5rem;">
+                    <label class="field-label"><i class="fas fa-align-left"></i> Description <span class="required">*</span></label>
+                    <textarea name="description" id="id_description" class="input-field" placeholder="Describe the project requirements, deliverables, and expectations...">{{ form.description.value|default:'' }}</textarea>
+                    {% if form.description.errors %}<div class="field-error">{{ form.description.errors.0 }}</div>{% endif %}
+                </div>
+                
+                <!-- Row 2: Due Date & Status -->
+                <div class="form-row">
+                    <div class="form-field">
+                        <label class="field-label"><i class="fas fa-calendar-alt"></i> Due Date <span class="required">*</span></label>
+                        <input type="date" name="due_date" id="id_due_date" class="input-field" value="{{ form.due_date.value|date:'Y-m-d'|default:'' }}">
+                        {% if form.due_date.errors %}<div class="field-error">{{ form.due_date.errors.0 }}</div>{% endif %}
+                    </div>
+                    
+                    <div class="form-field">
+                        <label class="field-label"><i class="fas fa-toggle-on"></i> Status</label>
+                        <select name="status" id="id_status" class="input-field">
+                            {% for value, label in form.status.field.choices %}
+                                <option value="{{ value }}" {% if form.status.value == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                        {% if form.status.errors %}<div class="field-error">{{ form.status.errors.0 }}</div>{% endif %}
+                        <div class="field-hint"><i class="fas fa-info-circle"></i> ⚠️ Projects with "Pending" status are hidden from students</div>
+                    </div>
+                </div>
+                
+                <!-- Info / Warning Alerts -->
+                {% if not is_edit %}
+                    <div class="info-alert">
+                        <div class="alert-icon-wrap"><i class="fas fa-magic"></i></div>
+                        <div class="alert-text-wrap">
+                            <div class="alert-title">Smart Auto-numbering</div>
+                            <div class="alert-desc">Project numbers auto-increment per batch. Select a batch to see the next available number.</div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="warning-alert">
+                        <div class="alert-icon-wrap"><i class="fas fa-edit"></i></div>
+                        <div class="alert-text-wrap">
+                            <div class="alert-title">Edit Mode Restrictions</div>
+                            <div class="alert-desc">Project number, batch, and assigned student cannot be modified. You can edit title, description, due date, and status.</div>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <!-- Action Buttons -->
+                <div class="action-row">
+                    <a href="{% url 'training:project_list' %}" class="btn-premium btn-cancel">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn-premium btn-save" id="submitBtn">
+                        <i class="fas fa-save"></i> Save Project
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -147,16 +994,186 @@
 {% if not is_edit %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const batchSelect = document.getElementById('id_batch');
+    // ============================================
+    // BATCH SEARCHABLE DROPDOWN
+    // ============================================
+    const batchOriginalSelect = document.getElementById('id_batch');
+    const batchTrigger = document.getElementById('batchTrigger');
+    const batchDropdown = document.getElementById('batchDropdown');
+    const batchTriggerText = document.getElementById('batchTriggerText');
+    const batchSearchInput = document.getElementById('batchSearchInput');
+    const batchOptions = document.getElementById('batchOptions');
+    const batchSearchable = document.getElementById('batchSearchable');
+    const clearBatchBtn = document.getElementById('clearBatchBtn');
+    
+    // Student elements
+    const studentOriginalSelect = document.getElementById('id_assigned_student');
+    const studentTrigger = document.getElementById('studentTrigger');
+    const studentDropdown = document.getElementById('studentDropdown');
+    const studentTriggerText = document.getElementById('studentTriggerText');
+    const studentSearchInput = document.getElementById('studentSearchInput');
+    const studentOptions = document.getElementById('studentOptions');
+    const studentSearchable = document.getElementById('studentSearchable');
+    const clearStudentBtn = document.getElementById('clearStudentBtn');
+    
     const projectNumberField = document.getElementById('id_project_number');
     
-    async function updateProjectNumber() {
-        const batchId = batchSelect.value;
+    let batchAllOptions = [];
+    let studentAllOptions = [];
+    
+    // ========== BATCH FUNCTIONS ==========
+    function loadBatchOptions() {
+        batchAllOptions = [];
+        const options = batchOriginalSelect.querySelectorAll('option');
+        options.forEach(option => {
+            if (option.value) {
+                batchAllOptions.push({
+                    value: option.value,
+                    text: option.text
+                });
+            }
+        });
+        renderBatchOptions(batchAllOptions);
+    }
+    
+    function renderBatchOptions(options) {
+        batchOptions.innerHTML = '';
+        if (options.length === 0) {
+            batchOptions.innerHTML = '<div class="no-results"><i class="fas fa-inbox"></i> No batches found</div>';
+            return;
+        }
+        options.forEach(option => {
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'dropdown-option';
+            if (batchOriginalSelect.value === option.value) {
+                optionDiv.classList.add('selected');
+            }
+            optionDiv.innerHTML = `<i class="fas fa-layer-group"></i><span class="option-text">${escapeHtml(option.text)}</span>`;
+            optionDiv.addEventListener('click', () => {
+                selectBatchOption(option.value, option.text);
+            });
+            batchOptions.appendChild(optionDiv);
+        });
+    }
+    
+    function selectBatchOption(value, text) {
+        // Set original select value
+        batchOriginalSelect.value = value;
+        batchTriggerText.textContent = text;
+        batchTriggerText.classList.add('has-value');
+        clearBatchBtn.style.display = 'flex';
         
-        if (!batchId) {
+        // Close dropdown
+        batchDropdown.classList.remove('show');
+        batchTrigger.classList.remove('active');
+        
+        // Clear and disable student selection
+        clearStudentSelection();
+        studentSearchable.classList.add('disabled');
+        
+        // Trigger change event for project number
+        const changeEvent = new Event('change', { bubbles: true });
+        batchOriginalSelect.dispatchEvent(changeEvent);
+    }
+    
+    function clearBatchSelection() {
+        batchOriginalSelect.value = '';
+        batchTriggerText.textContent = 'Select a batch...';
+        batchTriggerText.classList.remove('has-value');
+        clearBatchBtn.style.display = 'none';
+        batchSearchable.classList.remove('disabled');
+        
+        // Enable student dropdown
+        studentSearchable.classList.remove('disabled');
+        
+        // Clear project number
+        if (projectNumberField) {
+            projectNumberField.value = '';
+            projectNumberField.placeholder = 'Select batch first or enter manually';
+        }
+    }
+    
+    // ========== STUDENT FUNCTIONS ==========
+    function loadStudentOptions() {
+        studentAllOptions = [];
+        const options = studentOriginalSelect.querySelectorAll('option');
+        options.forEach(option => {
+            if (option.value) {
+                studentAllOptions.push({
+                    value: option.value,
+                    text: option.text
+                });
+            }
+        });
+        renderStudentOptions(studentAllOptions);
+    }
+    
+    function renderStudentOptions(options) {
+        studentOptions.innerHTML = '';
+        if (options.length === 0) {
+            studentOptions.innerHTML = '<div class="no-results"><i class="fas fa-inbox"></i> No students found</div>';
+            return;
+        }
+        options.forEach(option => {
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'dropdown-option';
+            if (studentOriginalSelect.value === option.value) {
+                optionDiv.classList.add('selected');
+            }
+            optionDiv.innerHTML = `<i class="fas fa-user-graduate"></i><span class="option-text">${escapeHtml(option.text)}</span>`;
+            optionDiv.addEventListener('click', () => {
+                selectStudentOption(option.value, option.text);
+            });
+            studentOptions.appendChild(optionDiv);
+        });
+    }
+    
+    function selectStudentOption(value, text) {
+        // Set original select value
+        studentOriginalSelect.value = value;
+        studentTriggerText.textContent = text;
+        studentTriggerText.classList.add('has-value');
+        clearStudentBtn.style.display = 'flex';
+        
+        // Close dropdown
+        studentDropdown.classList.remove('show');
+        studentTrigger.classList.remove('active');
+        
+        // Clear and disable batch selection
+        clearBatchSelection();
+        batchSearchable.classList.add('disabled');
+        
+        // Clear project number
+        if (projectNumberField) {
+            projectNumberField.value = '';
+            projectNumberField.placeholder = 'Manual entry required';
+        }
+    }
+    
+    function clearStudentSelection() {
+        studentOriginalSelect.value = '';
+        studentTriggerText.textContent = 'Select a student...';
+        studentTriggerText.classList.remove('has-value');
+        clearStudentBtn.style.display = 'none';
+        studentSearchable.classList.remove('disabled');
+    }
+    
+    // ========== HELPER FUNCTION ==========
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    // ========== AUTO PROJECT NUMBER ==========
+    async function updateProjectNumber() {
+        const batchId = batchOriginalSelect.value;
+        
+        if (!batchId || batchId === '') {
             if (projectNumberField) {
                 projectNumberField.value = '';
-                projectNumberField.placeholder = 'Select a batch first';
+                projectNumberField.placeholder = 'Select batch first';
+                projectNumberField.disabled = false;
             }
             return;
         }
@@ -167,35 +1184,112 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (data.next_number) {
                 projectNumberField.value = data.next_number;
-                projectNumberField.style.backgroundColor = '#d4edda';
-                
-                // Show remaining capacity
-                if (data.remaining_capacity !== undefined) {
-                    const helpText = document.querySelector('#id_project_number + small');
-                    if (helpText && data.remaining_capacity > 0) {
-                        helpText.innerHTML = `Auto-generated: Next available number is ${data.next_number}. ${data.remaining_capacity} project(s) remaining in this batch.`;
-                    } else if (helpText && data.remaining_capacity === 0) {
-                        helpText.innerHTML = `⚠️ This batch has reached its project limit (${data.max_projects}). Please complete or archive existing projects.`;
-                        projectNumberField.disabled = true;
-                    }
-                }
+                projectNumberField.style.borderColor = '#2e7d32';
+                projectNumberField.style.backgroundColor = '#e8f5e9';
                 
                 setTimeout(() => {
                     projectNumberField.style.backgroundColor = '';
-                }, 1000);
+                    projectNumberField.style.borderColor = '#e2e8f0';
+                }, 1500);
             }
         } catch (error) {
             console.error('Error:', error);
         }
     }
     
-    if (batchSelect) {
-        batchSelect.addEventListener('change', updateProjectNumber);
-        if (batchSelect.value) {
-            updateProjectNumber();
+    // ========== CLEAR BUTTON HANDLERS ==========
+    clearBatchBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        clearBatchSelection();
+    });
+    
+    clearStudentBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        clearStudentSelection();
+    });
+    
+    // ========== DROPDOWN EVENT HANDLERS ==========
+    // Batch dropdown
+    batchTrigger.addEventListener('click', (e) => {
+        if (e.target === clearBatchBtn || clearBatchBtn.contains(e.target)) return;
+        e.stopPropagation();
+        if (batchSearchable.classList.contains('disabled')) return;
+        batchDropdown.classList.toggle('show');
+        batchTrigger.classList.toggle('active');
+        if (batchDropdown.classList.contains('show')) {
+            batchSearchInput.value = '';
+            renderBatchOptions(batchAllOptions);
+            batchSearchInput.focus();
+        }
+    });
+    
+    batchSearchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const filtered = batchAllOptions.filter(opt => opt.text.toLowerCase().includes(searchTerm));
+        renderBatchOptions(filtered);
+    });
+    
+    // Student dropdown
+    studentTrigger.addEventListener('click', (e) => {
+        if (e.target === clearStudentBtn || clearStudentBtn.contains(e.target)) return;
+        e.stopPropagation();
+        if (studentSearchable.classList.contains('disabled')) return;
+        studentDropdown.classList.toggle('show');
+        studentTrigger.classList.toggle('active');
+        if (studentDropdown.classList.contains('show')) {
+            studentSearchInput.value = '';
+            renderStudentOptions(studentAllOptions);
+            studentSearchInput.focus();
+        }
+    });
+    
+    studentSearchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const filtered = studentAllOptions.filter(opt => opt.text.toLowerCase().includes(searchTerm));
+        renderStudentOptions(filtered);
+    });
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!batchTrigger.contains(e.target) && !batchDropdown.contains(e.target)) {
+            batchDropdown.classList.remove('show');
+            batchTrigger.classList.remove('active');
+        }
+        if (!studentTrigger.contains(e.target) && !studentDropdown.contains(e.target)) {
+            studentDropdown.classList.remove('show');
+            studentTrigger.classList.remove('active');
+        }
+    });
+    
+    // ========== INITIALIZE ==========
+    loadBatchOptions();
+    loadStudentOptions();
+    
+    // Set initial trigger text if there's a selected value
+    if (batchOriginalSelect.value) {
+        const selectedOption = batchOriginalSelect.querySelector('option:checked');
+        if (selectedOption) {
+            batchTriggerText.textContent = selectedOption.text;
+            batchTriggerText.classList.add('has-value');
+            clearBatchBtn.style.display = 'flex';
+            studentSearchable.classList.add('disabled');
         }
     }
+    if (studentOriginalSelect.value) {
+        const selectedOption = studentOriginalSelect.querySelector('option:checked');
+        if (selectedOption) {
+            studentTriggerText.textContent = selectedOption.text;
+            studentTriggerText.classList.add('has-value');
+            clearStudentBtn.style.display = 'flex';
+            batchSearchable.classList.add('disabled');
+        }
+    }
+    
+    // Add change listener for project number
+    batchOriginalSelect.addEventListener('change', updateProjectNumber);
+    if (batchOriginalSelect.value) updateProjectNumber();
 });
 </script>
 {% endif %}
+
 {% endblock %}

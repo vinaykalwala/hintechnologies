@@ -1,160 +1,810 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Manage Projects - Training{% endblock %}
+{% block title %}Manage Projects - HIN Technologies{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>Manage Projects</h2>
-                <a href="{% url 'training:project_create' %}" class="btn btn-primary">
-                    + Create Project
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #f5f7fb;
+    }
+
+    /* Container */
+    .admin-container {
+        max-width: 1400px;
+        margin:20px auto;
+        padding: 1.5rem;
+    }
+
+    /* ============================================ */
+    /* BANNER + FILTER INTEGRATED SECTION */
+    /* ============================================ */
+    .hero-section {
+        background: linear-gradient(135deg, #0B3D91 0%, #0a2d6e 50%, #061b4a 100%);
+        border-radius: 28px;
+        margin-bottom: 1.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: -30%;
+        left: -10%;
+        width: 60%;
+        height: 150%;
+        background: radial-gradient(circle, rgba(198,40,40,0.12), transparent 70%);
+        border-radius: 50%;
+        animation: bannerFloat 8s ease-in-out infinite;
+    }
+
+    .hero-section::after {
+        content: '';
+        position: absolute;
+        bottom: -20%;
+        right: -5%;
+        width: 50%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(255,255,255,0.05), transparent 70%);
+        border-radius: 50%;
+        animation: bannerFloat2 10s ease-in-out infinite;
+    }
+
+    @keyframes bannerFloat {
+        0%, 100% { transform: translateX(0) translateY(0); }
+        50% { transform: translateX(30px) translateY(15px); }
+    }
+
+    @keyframes bannerFloat2 {
+        0%, 100% { transform: translateX(0) translateY(0); }
+        50% { transform: translateX(-20px) translateY(-15px); }
+    }
+
+    /* Banner Content */
+    .banner-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        padding: 2rem 2.5rem;
+        position: relative;
+        z-index: 10;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .banner-left {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+        flex-wrap: wrap;
+    }
+
+    .banner-icon {
+        width: 55px;
+        height: 55px;
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .banner-icon i {
+        font-size: 26px;
+        color: #C62828;
+    }
+
+    .banner-text h1 {
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 0.2rem;
+        letter-spacing: -0.5px;
+    }
+
+    .banner-text p {
+        color: rgba(255,255,255,0.8);
+        font-size: 0.8rem;
+    }
+
+    .banner-stats {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .stat-pill {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 50px;
+        padding: 0.5rem 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .stat-pill .number {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: white;
+    }
+
+    .stat-pill .label {
+        font-size: 0.7rem;
+        color: rgba(255,255,255,0.7);
+    }
+
+    .create-btn {
+        background: linear-gradient(95deg, #C62828, #a51b1b);
+        color: white;
+        border: none;
+        padding: 0.7rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        box-shadow: 0 4px 12px rgba(198,40,40,0.25);
+    }
+
+    .create-btn:hover {
+        background: linear-gradient(95deg, #b01f1f, #8a1212);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(198,40,40,0.35);
+        color: white;
+    }
+
+    /* Filter Bar - Attached to Banner */
+    .filter-bar {
+        padding: 1rem 2.5rem 1.5rem;
+        position: relative;
+        z-index: 10;
+    }
+
+    .filter-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        align-items: flex-end;
+        background: rgba(255,255,255,0.08);
+        backdrop-filter: blur(8px);
+        padding: 1rem 1.2rem;
+        border-radius: 20px;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .filter-group {
+        flex: 1;
+        min-width: 160px;
+    }
+
+    .filter-label {
+        font-size: 0.65rem;
+        font-weight: 600;
+        color: rgba(255,255,255,0.7);
+        margin-bottom: 0.3rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .filter-label i {
+        font-size: 0.65rem;
+        color: #C62828;
+    }
+
+    .filter-input {
+        width: 100%;
+        padding: 0.6rem 0.9rem;
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-family: inherit;
+        transition: all 0.2s;
+        background: rgba(255,255,255,0.1);
+        color: white;
+    }
+
+    .filter-input::placeholder {
+        color: rgba(255,255,255,0.5);
+    }
+
+    .filter-input:focus {
+        outline: none;
+        border-color: #C62828;
+        background: rgba(255,255,255,0.15);
+    }
+
+    select.filter-input {
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.8rem center;
+        color: white;
+    }
+
+    select.filter-input option {
+        background: #0a2d6e;
+        color: white;
+    }
+
+    .filter-btn {
+        background: #C62828;
+        color: white;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .filter-btn:hover {
+        background: #a51b1b;
+        transform: translateY(-1px);
+    }
+
+    .reset-btn {
+        background: rgba(255,255,255,0.15);
+        color: white;
+    }
+
+    .reset-btn:hover {
+        background: rgba(255,255,255,0.25);
+        transform: translateY(-1px);
+    }
+
+    /* Table Card */
+    .table-card {
+        background: white;
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+        border: 1px solid #eef2f8;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .data-table thead {
+        background: linear-gradient(135deg, #f8faff, #ffffff);
+        border-bottom: 1px solid #eef2f8;
+    }
+
+    .data-table th {
+        padding: 1rem 1.2rem;
+        text-align: left;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .data-table td {
+        padding: 1rem 1.2rem;
+        font-size: 0.85rem;
+        color: #334155;
+        border-bottom: 1px solid #f0f2f5;
+        vertical-align: middle;
+    }
+
+    .data-table tr:hover {
+        background: #fafbff;
+    }
+
+    /* Badges */
+    .badge-type {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.25rem 0.8rem;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+
+    .badge-batch {
+        background: #eef2ff;
+        color: #0B3D91;
+    }
+
+    .badge-individual {
+        background: #fff3e0;
+        color: #f59e0b;
+    }
+
+    .badge-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.25rem 0.8rem;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+
+    .status-active {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .status-completed {
+        background: #e0e7ff;
+        color: #4338ca;
+    }
+
+    .status-pending {
+        background: #fff3e0;
+        color: #f57c00;
+    }
+
+    .badge-overdue {
+        background: #ffebee;
+        color: #c62828;
+        font-size: 0.6rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 50px;
+        margin-left: 0.3rem;
+        display: inline-block;
+    }
+
+    .submissions-count {
+        font-weight: 700;
+        color: #0B3D91;
+        font-size: 1rem;
+    }
+
+    .submissions-label {
+        font-size: 0.6rem;
+        color: #94a3b8;
+        display: block;
+    }
+
+    .project-title {
+        font-weight: 600;
+        color: #0B3D91;
+        margin-bottom: 0.2rem;
+    }
+
+    .project-desc {
+        font-size: 0.7rem;
+        color: #94a3b8;
+    }
+
+    /* Action Button */
+    .action-btn {
+        background: #f1f5f9;
+        border: none;
+        padding: 0.4rem 1rem;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #0B3D91;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .action-btn:hover {
+        background: #C62828;
+        color: white;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+    }
+
+    .empty-icon {
+        width: 80px;
+        height: 80px;
+        background: #f0f2f5;
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+    }
+
+    .empty-icon i {
+        font-size: 36px;
+        color: #94a3b8;
+    }
+
+    .empty-state h4 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 0.3rem;
+    }
+
+    .empty-state p {
+        font-size: 0.8rem;
+        color: #94a3b8;
+    }
+
+    .empty-create-btn {
+        background: linear-gradient(95deg, #C62828, #a51b1b);
+        color: white;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        margin-top: 1rem;
+    }
+
+    .empty-create-btn:hover {
+        background: linear-gradient(95deg, #b01f1f, #8a1212);
+        transform: translateY(-2px);
+        color: white;
+    }
+
+    /* Pagination */
+    .pagination-wrap {
+        padding: 1.2rem 1.5rem;
+        border-top: 1px solid #eef2f8;
+        display: flex;
+        justify-content: center;
+    }
+
+    .pagination {
+        display: flex;
+        gap: 0.4rem;
+        list-style: none;
+        flex-wrap: wrap;
+    }
+
+    .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 38px;
+        height: 38px;
+        padding: 0 0.8rem;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        color: #0B3D91;
+        font-weight: 500;
+        font-size: 0.8rem;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .page-link:hover {
+        background: #C62828;
+        color: white;
+        border-color: #C62828;
+    }
+
+    .active .page-link {
+        background: #0B3D91;
+        color: white;
+        border-color: #0B3D91;
+    }
+
+    .disabled .page-link {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+        .admin-container {
+            padding: 1rem;
+        }
+        
+        .banner-content {
+            flex-direction: column;
+            text-align: center;
+            padding: 1.5rem;
+        }
+        
+        .banner-left {
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .banner-text {
+            text-align: left;
+        }
+        
+        .banner-stats {
+            justify-content: center;
+        }
+        
+        .filter-bar {
+            padding: 0 1rem 1rem;
+        }
+        
+        .filter-form {
+            flex-direction: column;
+        }
+        
+        .filter-group {
+            width: 100%;
+        }
+        
+        .filter-btn, .reset-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 550px) {
+        .banner-left {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .banner-text {
+            text-align: center;
+        }
+        
+        .stat-pill {
+            padding: 0.4rem 1rem;
+        }
+        
+        .stat-pill .number {
+            font-size: 1.1rem;
+        }
+        
+        .data-table th, .data-table td {
+            padding: 0.7rem;
+            font-size: 0.75rem;
+        }
+        
+        .project-title {
+            font-size: 0.85rem;
+        }
+        
+        .action-btn {
+            padding: 0.3rem 0.7rem;
+            font-size: 0.65rem;
+        }
+    }
+</style>
+
+<div class="admin-container">
+    
+    <!-- Integrated Banner + Filter Section -->
+    <div class="hero-section">
+        
+        <!-- Banner Content -->
+        <div class="banner-content">
+            <div class="banner-left">
+                <div class="banner-icon">
+                    <i class="fas fa-code-branch"></i>
+                </div>
+                <div class="banner-text">
+                    <h1>Manage Projects</h1>
+                    <p>Create, edit, and manage all training projects</p>
+                </div>
+            </div>
+            <div class="banner-stats">
+                <div class="stat-pill">
+                    <span class="number">{{ projects.paginator.count|default:"0" }}</span>
+                    <span class="label">Total Projects</span>
+                </div>
+                <a href="{% url 'training:project_create' %}" class="create-btn">
+                    <i class="fas fa-plus"></i> Create Project
                 </a>
             </div>
         </div>
-    </div>
-    
-    <!-- Filters -->
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <form method="get" class="row g-3">
-                <div class="col-md-4">
-                    <input type="text" name="search" class="form-control" placeholder="Search projects..." value="{{ search_query }}">
+        
+        <!-- Filter Bar - Attached directly to banner -->
+        <div class="filter-bar">
+            <form method="get" class="filter-form">
+                <div class="filter-group">
+                    <div class="filter-label"><i class="fas fa-search"></i> Search</div>
+                    <input type="text" name="search" class="filter-input" placeholder="Project title..." value="{{ search_query }}">
                 </div>
-                <div class="col-md-3">
-                    <select name="status" class="form-select">
+                <div class="filter-group">
+                    <div class="filter-label"><i class="fas fa-tag"></i> Status</div>
+                    <select name="status" class="filter-input">
                         <option value="">All Status</option>
                         {% for value, label in status_choices %}
                             <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
                         {% endfor %}
                     </select>
                 </div>
-                <div class="col-md-3">
-                    <select name="type" class="form-select">
+                <div class="filter-group">
+                    <div class="filter-label"><i class="fas fa-layer-group"></i> Type</div>
+                    <select name="type" class="filter-input">
                         <option value="">All Types</option>
                         <option value="batch" {% if type_filter == 'batch' %}selected{% endif %}>Batch Project</option>
                         <option value="individual" {% if type_filter == 'individual' %}selected{% endif %}>Individual Project</option>
                     </select>
                 </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                <div class="filter-group">
+                    <button type="submit" class="filter-btn" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-filter"></i> Apply
+                    </button>
+                </div>
+                <div class="filter-group">
+                    <a href="{% url 'training:project_list' %}" class="filter-btn reset-btn" style="display: flex; align-items: center; justify-content: center; text-decoration: none; width: 100%;">
+                        <i class="fas fa-redo-alt"></i> Reset
+                    </a>
                 </div>
             </form>
         </div>
     </div>
     
-    <!-- Projects Table -->
-    <div class="card shadow">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
+    <!-- Table Card -->
+    <div class="table-card">
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Project Title</th>
+                        <th>Type</th>
+                        <th>Assigned To</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Submissions</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects %}
                         <tr>
-                            <th>Project #</th>
-                            <th>Title</th>
-                            <th>Type</th>
-                            <th>Assigned To</th>
-                            <th>Due Date</th>
-                            <th>Status</th>
-                            <th>Submissions</th>
-                            <th>Actions</th>
+                            <td><strong>#{{ project.project_number }}</strong></td>
+                            <td>
+                                <div class="project-title">{{ project.title }}</div>
+                                <div class="project-desc">{{ project.description|truncatechars:40 }}</div>
+                            </td>
+                            <td>
+                                {% if project.batch %}
+                                    <span class="badge-type badge-batch"><i class="fas fa-users"></i> Batch</span>
+                                {% else %}
+                                    <span class="badge-type badge-individual"><i class="fas fa-user"></i> Individual</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if project.batch %}
+                                    {{ project.batch.name }}
+                                {% else %}
+                                    {{ project.assigned_student.user.get_full_name|default:project.assigned_student.user.username }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ project.due_date|date:"M d, Y" }}
+                                {% if project.due_date < now %}
+                                    <span class="badge-overdue">Overdue</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge-status 
+                                    {% if project.status == 'active' %}status-active
+                                    {% elif project.status == 'completed' %}status-completed
+                                    {% else %}status-pending{% endif %}">
+                                    <i class="fas 
+                                        {% if project.status == 'active' %}fa-play-circle
+                                        {% elif project.status == 'completed' %}fa-check-circle
+                                        {% else %}fa-hourglass-half{% endif %}"></i>
+                                    {{ project.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="submissions-count">{{ project.submissions.count }}</span>
+                                <span class="submissions-label">submissions</span>
+                            </td>
+                            <td>
+                                <a href="{% url 'training:project_edit' project.id %}" class="action-btn">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {% for project in projects %}
-                            <tr>
-                                <td>{{ project.project_number }}</td>
-                                <td>
-                                    <strong>{{ project.title }}</strong>
-                                    <br>
-                                    <small class="text-muted">{{ project.description|truncatechars:40 }}</small>
-                                </td>
-                                <td>
-                                    {% if project.batch %}
-                                        <span class="badge bg-info">Batch Project</span>
-                                    {% else %}
-                                        <span class="badge bg-warning">Individual</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if project.batch %}
-                                        {{ project.batch.name }}
-                                    {% else %}
-                                        {{ project.assigned_student.user.get_full_name }}
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {{ project.due_date|date:"M d, Y" }}
-                                    {% if project.due_date < now %}
-                                        <br><span class="badge bg-danger">Overdue</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <span class="badge 
-                                        {% if project.status == 'active' %}bg-success
-                                        {% elif project.status == 'completed' %}bg-secondary
-                                        {% else %}bg-warning{% endif %}">
-                                        {{ project.get_status_display }}
-                                    </span>
-                                </td>
-                                <td>
-                                    {{ project.submissions.count }}
-                                    <br>
-                                    <small>submissions</small>
-                                </td>
-                                <td>
-                                    <a href="{% url 'training:project_edit' project.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
-                                </td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="8" class="text-center py-5">
-                                    <i class="bi bi-folder-x" style="font-size: 48px;"></i>
-                                    <h5 class="mt-3">No projects found</h5>
-                                    <p class="text-muted">Create your first project to get started.</p>
-                                    <a href="{% url 'training:project_create' %}" class="btn btn-primary">Create Project</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Pagination -->
-            {% if projects.has_other_pages %}
-                <nav aria-label="Page navigation" class="mt-4">
-                    <ul class="pagination justify-content-center">
-                        {% if projects.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ projects.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}">Previous</a>
-                            </li>
-                        {% else %}
-                            <li class="page-item disabled"><span class="page-link">Previous</span></li>
-                        {% endif %}
-                        
-                        {% for num in projects.paginator.page_range %}
-                            {% if projects.number == num %}
-                                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-                            {% elif num > projects.number|add:'-3' and num < projects.number|add:'3' %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}">{{ num }}</a>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                        
-                        {% if projects.has_next %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ projects.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}">Next</a>
-                            </li>
-                        {% else %}
-                            <li class="page-item disabled"><span class="page-link">Next</span></li>
-                        {% endif %}
-                    </ul>
-                </nav>
-            {% endif %}
+                    {% empty %}
+                        <tr>
+                            <td colspan="8" class="empty-state">
+                                <div class="empty-icon">
+                                    <i class="fas fa-folder-open"></i>
+                                </div>
+                                <h4>No projects found</h4>
+                                <p>Create your first project to get started.</p>
+                                <a href="{% url 'training:project_create' %}" class="empty-create-btn">
+                                    <i class="fas fa-plus"></i> Create Project
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
+        
+        <!-- Pagination -->
+        {% if projects.has_other_pages %}
+            <div class="pagination-wrap">
+                <ul class="pagination">
+                    {% if projects.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ projects.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}">
+                                <i class="fas fa-chevron-left"></i> Prev
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link"><i class="fas fa-chevron-left"></i> Prev</span></li>
+                    {% endif %}
+                    
+                    {% for num in projects.paginator.page_range %}
+                        {% if projects.number == num %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% elif num > projects.number|add:'-3' and num < projects.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if projects.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ projects.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}">
+                                Next <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">Next <i class="fas fa-chevron-right"></i></span></li>
+                    {% endif %}
+                </ul>
+            </div>
+        {% endif %}
     </div>
 </div>
+
+<script>
+    // Auto-submit when select changes
+    document.querySelectorAll('select.filter-input').forEach(select => {
+        select.addEventListener('change', () => {
+            select.closest('form').submit();
+        });
+    });
+</script>
+
 {% endblock %}

@@ -1,189 +1,1131 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Student Dashboard - HIN{% endblock %}
+{% block title %}Student Dashboard - HIN Technologies{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row">
-        <div class="col-12">
-            <h2 class="mb-4">Welcome, {{ student_profile.user.get_full_name }}!</h2>
-        </div>
-    </div>
+<style>
+    /* ============================================ */
+    /* PROFESSIONAL STUDENT DASHBOARD - VIBRANT DESIGN */
+    /* ============================================ */
     
-    <div class="row">
-        <!-- Stats Cards -->
-        <div class="col-md-3 mb-4">
-            <div class="card bg-primary text-white">
-                <div class="card-body">
-                    <h5 class="card-title">My Batch</h5>
-                    {% if current_batch %}
-                        <h3 class="mb-0">{{ current_batch.name }}</h3>
-                        <small>{{ current_batch.get_status_display }}</small>
-                    {% else %}
-                        <h3 class="mb-0">No Batch Assigned</h3>
-                        <small>Contact Admin</small>
-                    {% endif %}
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    :root {
+        --primary: #0B3D91;
+        --primary-dark: #092c6e;
+        --primary-light: #1a5bbf;
+        --secondary: #C62828;
+        --secondary-dark: #a51b1b;
+        --secondary-light: #ff5e5e;
+        --success: #10b981;
+        --success-light: #d1fae5;
+        --warning: #ff9800;
+        --warning-light: #fed7aa;
+        --info: #0ea5e9;
+        --info-light: #dbeafe;
+        --danger: #ef4444;
+        --danger-light: #fee2e2;
+        --purple: #8b5cf6;
+        --purple-light: #ede9fe;
+        --indigo: #6366f1;
+        --indigo-light: #e0e7ff;
+        --pink: #ec4899;
+        --pink-light: #fce7f3;
+        --teal: #14b8a6;
+        --teal-light: #ccfbf1;
+        --gray-50: #f8fafc;
+        --gray-100: #f1f5f9;
+        --gray-200: #e2e8f0;
+        --gray-300: #cbd5e1;
+        --gray-400: #94a3b8;
+        --gray-500: #64748b;
+        --gray-600: #475569;
+        --gray-700: #334155;
+        --gray-800: #1e293b;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --radius-sm: 8px;
+        --radius: 12px;
+        --radius-md: 16px;
+        --radius-lg: 20px;
+        --radius-xl: 24px;
+    }
+
+    .dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 24px;
+    }
+
+    .welcome-card {
+        background:
+            linear-gradient(
+                rgba(11,61,145,0.82),
+                rgba(9,44,110,0.88)
+            ),
+            url('{% static "images/loginbanner.jpeg" %}');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        border-radius: var(--radius-xl);
+        margin-bottom: 32px;
+        overflow: hidden;
+        box-shadow: var(--shadow-xl);
+        position: relative;
+    }
+
+    .welcome-card::before {
+        content: '';
+        position: absolute;
+        top: -30%;
+        right: 15%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .welcome-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        padding: 32px 40px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .welcome-text {
+        flex: 1;
+        min-width: 250px;
+    }
+
+    .welcome-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255,255,255,0.15);
+        padding: 6px 18px;
+        border-radius: 40px;
+        font-size: 12px;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 20px;
+        backdrop-filter: blur(10px);
+    }
+
+    .welcome-text h1 {
+        color: white;
+        font-size: 32px;
+        font-weight: 800;
+        margin-bottom: 10px;
+        letter-spacing: -0.3px;
+    }
+
+    .welcome-text p {
+        color: rgba(255,255,255,0.85);
+        font-size: 14px;
+        line-height: 1.5;
+        max-width: 500px;
+    }
+
+    /* NEW GLASS PROGRESS CARD - Icon and Number Side by Side */
+    .glass-progress-card {
+        flex-shrink: 0;
+        margin-left: 30px;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(16px);
+        border-radius: 32px;
+        padding: 20px 28px;
+        border: 1px solid rgba(255,255,255,0.25);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        transition: transform 0.3s, box-shadow 0.3s;
+        min-width: 280px;
+    }
+
+    .glass-progress-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+    }
+
+    .glass-progress-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        gap: 15px;
+    }
+
+    .glass-progress-icon {
+        width: 60px;
+        height: 60px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(4px);
+        flex-shrink: 0;
+    }
+
+    .glass-progress-icon i {
+        font-size: 32px;
+        color: white;
+        filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
+    }
+
+    .glass-progress-number-wrapper {
+        text-align: right;
+        flex: 1;
+    }
+
+    .glass-progress-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: rgba(255,255,255,0.8);
+        margin-bottom: 5px;
+        letter-spacing: 0.5px;
+    }
+
+    .glass-progress-number {
+        font-size: 36px;
+        font-weight: 800;
+        color: white;
+        line-height: 1;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .glass-progress-number small {
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    .glass-progress-bar-container {
+        margin: 15px 0 10px;
+    }
+
+    .glass-progress-bar-bg {
+        height: 8px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .glass-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #ff8a8a, #ff5e5e);
+        border-radius: 10px;
+        transition: width 0.6s ease;
+    }
+
+    .glass-progress-label {
+        font-size: 11px;
+        color: rgba(255,255,255,0.7);
+        margin-top: 8px;
+        text-align: center;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+
+    .stat-item {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: 22px 20px;
+        box-shadow: var(--shadow-md);
+        transition: all 0.3s;
+        border: 1px solid var(--gray-200);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-item::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        transform: scaleX(0);
+        transition: transform 0.3s;
+    }
+
+    .stat-item:hover::after {
+        transform: scaleX(1);
+    }
+
+    .stat-item:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .stat-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-bottom: 16px;
+    }
+
+    .stat-icon.blue { background: linear-gradient(135deg, rgba(11,61,145,0.1), rgba(11,61,145,0.05)); color: var(--primary); }
+    .stat-icon.green { background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(16,185,129,0.05)); color: var(--success); }
+    .stat-icon.sky { background: linear-gradient(135deg, rgba(14,165,233,0.1), rgba(14,165,233,0.05)); color: var(--info); }
+    .stat-icon.orange { background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(245,158,11,0.05)); color: var(--warning); }
+
+    .stat-value {
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--gray-800);
+        line-height: 1.2;
+        margin-bottom: 6px;
+        word-break: break-word;
+    }
+
+    .stat-label {
+        font-size: 13px;
+        color: var(--gray-500);
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
+
+    .progress-wrapper {
+        margin-top: 12px;
+    }
+
+    .progress-bar-bg {
+        height: 6px;
+        background: var(--gray-200);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--success), #34d399);
+        border-radius: 10px;
+        transition: width 0.5s ease;
+    }
+
+    .progress-fill.completed {
+        background: linear-gradient(90deg, var(--success), #34d399);
+        width: 100% !important;
+    }
+
+    .progress-fill.running {
+        background: linear-gradient(90deg, var(--info), #0ea5e9);
+    }
+
+    .progress-fill.upcoming {
+        background: linear-gradient(90deg, var(--warning), #fbbf24);
+    }
+
+    .stat-subtext {
+        font-size: 11px;
+        color: var(--gray-400);
+        margin-top: 8px;
+        display: block;
+    }
+
+    /* Batch Status Badge */
+    .batch-status {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        margin-top: 8px;
+    }
+
+    .batch-status.completed {
+        background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+        color: #065f46;
+    }
+
+    .batch-status.running {
+        background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+        color: #1e40af;
+    }
+
+    .batch-status.upcoming {
+        background: linear-gradient(135deg, #fed7aa, #fde68a);
+        color: #92400e;
+    }
+
+    /* Two Column Layout */
+    .two-columns {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 28px;
+        margin-bottom: 32px;
+    }
+
+    /* Section Cards */
+    .section-card {
+        background: white;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--gray-200);
+        overflow: hidden;
+        transition: all 0.3s;
+    }
+
+    .section-card:hover {
+        box-shadow: var(--shadow-lg);
+    }
+
+    .section-header {
+        padding: 20px 24px;
+        border-bottom: 2px solid var(--gray-200);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        background: linear-gradient(135deg, var(--gray-50), white);
+    }
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--gray-800);
+        margin: 0;
+    }
+
+    .section-title i {
+        color: var(--secondary);
+        font-size: 20px;
+        background: rgba(198,40,40,0.1);
+        padding: 8px;
+        border-radius: 12px;
+    }
+
+    .view-all-link {
+        color: var(--primary);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 30px;
+        background: rgba(11,61,145,0.08);
+    }
+
+    .view-all-link:hover {
+        background: var(--primary);
+        color: white;
+    }
+
+    /* List Items */
+    .list-item {
+        padding: 18px 24px;
+        border-bottom: 1px solid var(--gray-200);
+        transition: all 0.2s;
+    }
+
+    .list-item:last-child {
+        border-bottom: none;
+    }
+
+    .list-item:hover {
+        background: var(--gray-50);
+        padding-left: 28px;
+    }
+
+    .list-item-title {
+        font-weight: 700;
+        color: var(--gray-800);
+        font-size: 15px;
+        margin-bottom: 8px;
+    }
+
+    .list-item-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        font-size: 12px;
+        color: var(--gray-500);
+        margin-bottom: 8px;
+    }
+
+    .list-item-meta i {
+        margin-right: 4px;
+        font-size: 11px;
+        color: var(--primary);
+    }
+
+    /* Colorful Badges */
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 14px;
+        border-radius: 30px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .badge-success { background: linear-gradient(135deg, var(--success-light), #a7f3d0); color: #065f46; }
+    .badge-info { background: linear-gradient(135deg, var(--info-light), #bfdbfe); color: #1e40af; }
+    .badge-warning { background: linear-gradient(135deg, var(--warning-light), #fde68a); color: #92400e; }
+    .badge-danger { background: linear-gradient(135deg, var(--danger-light), #fecaca); color: #991b1b; }
+    .badge-gray { background: linear-gradient(135deg, var(--gray-200), #e5e7eb); color: var(--gray-600); }
+    .badge-purple { background: linear-gradient(135deg, var(--purple-light), #ddd6fe); color: #5b21b6; }
+    .badge-teal { background: linear-gradient(135deg, var(--teal-light), #99f6e4); color: #0f5c54; }
+
+    /* Status Action Buttons - Modern */
+    .status-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        border-radius: 30px;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s;
+        cursor: pointer;
+        border: none;
+    }
+
+    .status-action.view {
+        background: linear-gradient(135deg, var(--info-light), #bfdbfe);
+        color: #1e40af;
+    }
+
+    .status-action.submit {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .status-action.resubmit {
+        background: linear-gradient(135deg, var(--warning), #ea580c);
+        color: white;
+    }
+
+    .status-action.completed {
+        background: linear-gradient(135deg, var(--success-light), #a7f3d0);
+        color: #065f46;
+        cursor: default;
+        opacity: 0.9;
+    }
+
+    .status-action.review {
+        background: linear-gradient(135deg, var(--purple-light), #ddd6fe);
+        color: #5b21b6;
+        cursor: default;
+    }
+
+    .status-action:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    /* Buttons */
+    .btn-sm {
+        padding: 6px 16px;
+        border-radius: var(--radius-sm);
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: none;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    /* Table Styles */
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .data-table th {
+        text-align: left;
+        padding: 14px 20px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--gray-600);
+        background: linear-gradient(135deg, var(--gray-100), var(--gray-50));
+        border-bottom: 2px solid var(--gray-200);
+    }
+
+    .data-table td {
+        padding: 14px 20px;
+        font-size: 13px;
+        border-bottom: 1px solid var(--gray-200);
+        color: var(--gray-700);
+        background: white;
+    }
+
+    .data-table tr:hover td {
+        background: linear-gradient(90deg, var(--gray-50), white);
+    }
+
+    .data-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .stage-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 13px;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 48px 24px;
+        color: var(--gray-500);
+    }
+
+    .empty-state i {
+        font-size: 48px;
+        color: var(--gray-300);
+        margin-bottom: 16px;
+        display: block;
+    }
+
+    /* Quick Links Grid - 5 Different Colors */
+    .quick-links-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 20px;
+        padding: 24px;
+    }
+
+    .quick-link-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 12px;
+        padding: 24px 16px;
+        border-radius: var(--radius-lg);
+        text-decoration: none;
+        transition: all 0.3s;
+        border: 1px solid rgba(255,255,255,0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .quick-link-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        transform: scaleX(0);
+        transition: transform 0.3s;
+    }
+
+    .quick-link-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .quick-link-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    /* Individual card background colors */
+    .quick-link-card:nth-child(1) { 
+        background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+        border-color: #bfdbfe;
+    }
+    .quick-link-card:nth-child(1)::before { background: linear-gradient(90deg, var(--primary), var(--primary-light)); }
+    
+    .quick-link-card:nth-child(2) { 
+        background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%);
+        border-color: #a7f3d0;
+    }
+    .quick-link-card:nth-child(2)::before { background: linear-gradient(90deg, var(--success), #34d399); }
+    
+    .quick-link-card:nth-child(3) { 
+        background: linear-gradient(135deg, #fed7aa 0%, #fffbeb 100%);
+        border-color: #fdba74;
+    }
+    .quick-link-card:nth-child(3)::before { background: linear-gradient(90deg, var(--warning), #fbbf24); }
+    
+    .quick-link-card:nth-child(4) { 
+        background: linear-gradient(135deg, #ede9fe 0%, #f5f3ff 100%);
+        border-color: #c4b5fd;
+    }
+    .quick-link-card:nth-child(4)::before { background: linear-gradient(90deg, var(--purple), #a78bfa); }
+    
+    .quick-link-card:nth-child(5) { 
+        background: linear-gradient(135deg, #ccfbf1 0%, #f0fdfa 100%);
+        border-color: #99f6e4;
+    }
+    .quick-link-card:nth-child(5)::before { background: linear-gradient(90deg, var(--teal), #2dd4bf); }
+
+    .quick-link-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        transition: transform 0.3s;
+        background: white;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .quick-link-card:hover .quick-link-icon {
+        transform: scale(1.05);
+    }
+
+    .quick-link-icon.blue { color: var(--primary); }
+    .quick-link-icon.green { color: var(--success); }
+    .quick-link-icon.orange { color: var(--warning); }
+    .quick-link-icon.purple { color: var(--purple); }
+    .quick-link-icon.teal { color: var(--teal); }
+
+    .quick-link-text h4 {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--gray-800);
+        margin-bottom: 4px;
+    }
+
+    .quick-link-text p {
+        font-size: 11px;
+        color: var(--gray-600);
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+        .stats-grid { gap: 20px; }
+        .stat-value { font-size: 24px; }
+        .quick-links-grid { gap: 16px; }
+        .quick-link-icon { width: 50px; height: 50px; font-size: 24px; }
+        .quick-link-card { padding: 20px 12px; }
+    }
+
+    @media (max-width: 992px) {
+        .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        .two-columns { grid-template-columns: 1fr; gap: 24px; }
+        .quick-links-grid { grid-template-columns: repeat(3, 1fr); }
+        .welcome-text h1 { font-size: 28px; }
+        .welcome-content { padding: 28px 30px; }
+    }
+
+    @media (max-width: 768px) {
+        .welcome-content { flex-direction: column; text-align: center; gap: 20px; }
+        .glass-progress-card { margin-left: 0; margin-top: 20px; width: 100%; }
+        .quick-links-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 576px) {
+        .dashboard-container { padding: 16px; }
+        .welcome-content { padding: 24px 20px; }
+        .welcome-text h1 { font-size: 24px; }
+        .stats-grid { grid-template-columns: 1fr; gap: 16px; }
+        .quick-links-grid { grid-template-columns: 1fr; }
+        .section-header { padding: 16px 20px; flex-direction: column; align-items: flex-start; }
+        .list-item { padding: 14px 20px; }
+        .list-item-meta { flex-direction: column; gap: 6px; }
+        .data-table th, .data-table td { padding: 10px 16px; font-size: 12px; }
+        .glass-progress-number { font-size: 28px; }
+        .glass-progress-number small { font-size: 14px; }
+        .glass-progress-icon { width: 50px; height: 50px; }
+        .glass-progress-icon i { font-size: 24px; }
+        .glass-progress-card { padding: 16px 20px; }
+    }
+</style>
+
+<div class="dashboard-container">
+    
+    <!-- Welcome Section -->
+    <div class="welcome-card">
+        <div class="welcome-content">
+            <div class="welcome-text">
+                <div class="welcome-badge">
+                    <i class="fa-regular fa-star"></i> Student Portal
                 </div>
+                <h1>Welcome back, {{ student_profile.user.get_full_name|default:student_profile.user.username }}!</h1>
+                <p>Track your learning progress, submit projects, and access study materials all in one place.</p>
             </div>
-        </div>
-        
-        <div class="col-md-3 mb-4">
-            <div class="card bg-success text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Projects Progress</h5>
-                    <h3 class="mb-0">{{ completed_projects }}/{{ total_projects }}</h3>
-                    <small>Projects Completed</small>
-                    <div class="progress mt-2" style="height: 5px;">
-                        <div class="progress-bar" style="width: {{ progress_percentage }}%"></div>
+            
+            <!-- GLASS PROGRESS CARD - Icon and Number Side by Side -->
+            <div class="glass-progress-card">
+                <div class="glass-progress-header">
+                    <div class="glass-progress-icon">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+                    <div class="glass-progress-number-wrapper">
+                        <div class="glass-progress-title">BATCH PROGRESS</div>
+                        <div class="glass-progress-number">
+                            {{ completed_sessions|default:0 }}<small> / {{ total_batch_days|default:0 }}</small>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        
-        <div class="col-md-3 mb-4">
-            <div class="card bg-info text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Sessions</h5>
-                    <h3 class="mb-0">{{ total_sessions }}</h3>
-                    <small>Total Sessions</small>
+                <div class="glass-progress-bar-container">
+                    <div class="glass-progress-bar-bg">
+                        <div class="glass-progress-fill" style="width: {{ session_progress_percentage|default:0 }}%"></div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        
-        <div class="col-md-3 mb-4">
-            <div class="card bg-warning text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Deliverables</h5>
-                    <h3 class="mb-0">{{ deliverables.count }}</h3>
-                    <small>Available Downloads</small>
+                <div class="glass-progress-label">
+                    <i class="fa-regular fa-clock"></i> {{ session_progress_percentage|default:0 }}% Complete
                 </div>
             </div>
         </div>
     </div>
-    
-    <div class="row">
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-icon blue">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <div class="stat-value">{{ current_batch.name|default:"No Batch" }}</div>
+            <div class="stat-label">Current Batch</div>
+            {% if current_batch %}
+                <div class="progress-wrapper">
+                    <div class="progress-bar-bg">
+                        <div class="progress-fill 
+                            {% if current_batch.status == 'completed' %}completed
+                            {% elif current_batch.status == 'running' %}running
+                            {% elif current_batch.status == 'upcoming' %}upcoming
+                            {% endif %}" 
+                            style="width: {% if current_batch.status == 'completed' %}100{% elif current_batch.status == 'running' %}50{% elif current_batch.status == 'upcoming' %}25{% else %}0{% endif %}%">
+                        </div>
+                    </div>
+                </div>
+                <span class="batch-status {{ current_batch.status }}">
+                    <i class="fa-regular fa-circle-check"></i> Status: {{ current_batch.get_status_display }}
+                </span>
+            {% else %}
+                <span class="stat-subtext"><i class="fa-regular fa-bell"></i> Contact Admin for assignment</span>
+            {% endif %}
+        </div>
+        
+        <div class="stat-item">
+            <div class="stat-icon green">
+                <i class="fa-solid fa-code-branch"></i>
+            </div>
+            <div class="stat-value">{{ completed_projects|default:0 }}/{{ total_projects|default:0 }}</div>
+            <div class="stat-label">Projects Completed</div>
+            <div class="progress-wrapper">
+                <div class="progress-bar-bg">
+                    <div class="progress-fill" style="width: {{ progress_percentage|default:0 }}%"></div>
+                </div>
+            </div>
+            <span class="stat-subtext">{{ progress_percentage|default:0 }}% Complete</span>
+        </div>
+        
+        <div class="stat-item">
+            <div class="stat-icon sky">
+                <i class="fa-solid fa-video"></i>
+            </div>
+            <div class="stat-value">{{ sessions|length|default:0 }}</div>
+            <div class="stat-label">Sessions Available</div>
+            <span class="stat-subtext"><i class="fa-regular fa-clock"></i> Keep up the momentum!</span>
+        </div>
+        
+        <div class="stat-item">
+            <div class="stat-icon orange">
+                <i class="fa-solid fa-book-open"></i>
+            </div>
+            <div class="stat-value">{{ deliverables|length|default:0 }}</div>
+            <div class="stat-label">Materials Available</div>
+            <span class="stat-subtext"><i class="fa-regular fa-file"></i> Ready to download</span>
+        </div>
+    </div>
+
+    <!-- Recent Sessions & Projects -->
+    <div class="two-columns">
+        
         <!-- Recent Sessions -->
-        <div class="col-md-6 mb-4">
-            <div class="card shadow">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Recent Sessions</h5>
+        <div class="section-card" style="background: linear-gradient(135deg, #fcfeff 0%, #f9fdff 100%); border: 1px solid #bae6fd;">
+            <div class="section-header" style="background: linear-gradient(135deg, var(--gray-50), white);">
+                <div class="section-title">
+                    <i class="fa-solid fa-calendar-week" style="color: #0284c7;"></i>
+                    <span>Recent Sessions</span>
                 </div>
-                <div class="card-body">
-                    {% if sessions %}
-                        <div class="list-group">
-                            {% for session in sessions %}
-                                <div class="list-group-item">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h6 class="mb-1">Day {{ session.day_number }}: {{ session.title }}</h6>
-                                            <small class="text-muted">{{ session.topic }}</small><br>
-                                            <small class="text-muted">{{ session.session_date }}</small>
-                                        </div>
-                                        {% if session.recording_link %}
-                                            <a href="{{ session.recording_link }}" target="_blank" class="btn btn-sm btn-outline-primary">Watch Recording</a>
-                                        {% endif %}
+                <a href="{% url 'training:student_sessions' %}" class="view-all-link">
+                    View All <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+            <div>
+                {% if sessions %}
+                    {% for session in sessions|slice:":2" %}
+                        <div class="list-item">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
+                                <div>
+                                    <div class="list-item-title">Day {{ session.day_number }}: {{ session.title }}</div>
+                                    <div class="list-item-meta">
+                                        <span><i class="fa-regular fa-calendar"></i> {{ session.session_date|date:"d M Y" }}</span>
+                                        <span><i class="fa-regular fa-clock"></i> {{ session.topic|truncatechars:40 }}</span>
                                     </div>
                                 </div>
-                            {% endfor %}
+                                {% if session.recording_link %}
+                                    <a href="{{ session.recording_link }}" target="_blank" class="btn-sm btn-primary" style="text-decoration: none;">
+                                        <i class="fa-solid fa-play"></i> Watch
+                                    </a>
+                                {% else %}
+                                    <span class="badge badge-gray"><i class="fa-regular fa-hourglass"></i> Coming Soon</span>
+                                {% endif %}
+                            </div>
                         </div>
-                        <div class="mt-3 text-center">
-                            <a href="{% url 'training:student_sessions' %}" class="btn btn-link">View All Sessions →</a>
-                        </div>
-                    {% else %}
-                        <p class="text-muted text-center">No sessions available yet.</p>
-                    {% endif %}
-                </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fa-regular fa-folder-open"></i>
+                        <p>No sessions available yet.</p>
+                    </div>
+                {% endif %}
             </div>
         </div>
-        
-        <!-- Recent Projects -->
-        <div class="col-md-6 mb-4">
-            <div class="card shadow">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Recent Projects</h5>
+
+        <!-- Recent Projects - Proper Status Handling -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-title">
+                    <i class="fa-solid fa-laptop-code"></i>
+                    <span>Recent Projects</span>
                 </div>
-                <div class="card-body">
-                    {% if projects %}
-                        <div class="list-group">
-                            {% for project in projects %}
-                                <div class="list-group-item">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h6 class="mb-1">{{ project.title }}</h6>
-                                            <small class="text-muted">Due: {{ project.due_date }}</small><br>
-                                            <span class="badge {% if project.submission_status == 'approved' %}bg-success{% elif project.submission_status == 'submitted' %}bg-info{% elif project.submission_status == 'rejected' %}bg-danger{% else %}bg-secondary{% endif %}">
-                                                {{ project.get_submission_status_display|default:"Not Started" }}
-                                            </span>
-                                        </div>
-                                        {% if project.submission_status != 'approved' and project.submission_status != 'under_review' %}
-                                            <a href="{% url 'training:submit_project' project.id %}" class="btn btn-sm btn-primary">Submit</a>
-                                        {% endif %}
+                <a href="{% url 'training:student_projects' %}" class="view-all-link">
+                    View All <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+            <div>
+                {% if projects %}
+                    {% for project in projects|slice:":2" %}
+                        <div class="list-item">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                                <div style="flex: 1;">
+                                    <div class="list-item-title">{{ project.title }}</div>
+                                    <div class="list-item-meta">
+                                        <span><i class="fa-regular fa-calendar"></i> Due: {{ project.due_date|date:"d M Y" }}</span>
+                                        <span class="badge 
+                                            {% if project.submission_status == 'approved' %}badge-success
+                                            {% elif project.submission_status == 'submitted' %}badge-info
+                                            {% elif project.submission_status == 'under_review' %}badge-purple
+                                            {% elif project.submission_status == 'rejected' %}badge-danger
+                                            {% else %}badge-gray{% endif %}">
+                                            {% if project.submission_status == 'approved' %}
+                                                <i class="fa-solid fa-check-circle"></i> Approved ✓
+                                            {% elif project.submission_status == 'submitted' %}
+                                                <i class="fa-solid fa-paper-plane"></i> Submitted
+                                            {% elif project.submission_status == 'under_review' %}
+                                                <i class="fa-solid fa-magnifying-glass"></i> Under Review
+                                            {% elif project.submission_status == 'rejected' %}
+                                                <i class="fa-solid fa-times-circle"></i> Rejected
+                                            {% else %}
+                                                <i class="fa-regular fa-circle"></i> Not Started
+                                            {% endif %}
+                                        </span>
                                     </div>
+                                    {% if project.submission and project.submission.submitted_at %}
+                                        <div class="list-item-meta" style="margin-top: 5px;">
+                                            <span><i class="fa-regular fa-clock"></i> Submitted: {{ project.submission.submitted_at|date:"d M Y, h:i A" }}</span>
+                                            {% if project.submission.admin_feedback %}
+                                                <span><i class="fa-regular fa-comment"></i> Feedback: {{ project.submission.admin_feedback|truncatechars:35 }}</span>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
                                 </div>
-                            {% endfor %}
+                                <div>
+                                    {% if project.submission_status == 'approved' %}
+                                        <span class="status-action completed">
+                                            <i class="fa-solid fa-trophy"></i> Completed
+                                        </span>
+                                    {% elif project.submission_status == 'submitted' %}
+                                        <span class="status-action review">
+                                            <i class="fa-solid fa-hourglass-half"></i> Awaiting Review
+                                        </span>
+                                    {% elif project.submission_status == 'under_review' %}
+                                        <span class="status-action review">
+                                            <i class="fa-solid fa-spinner fa-pulse"></i> Under Review
+                                        </span>
+                                    {% elif project.submission_status == 'rejected' %}
+                                        <a href="{% url 'training:submit_project' project.id %}" class="status-action resubmit">
+                                            <i class="fa-solid fa-redo"></i> Resubmit
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'training:submit_project' project.id %}" class="status-action submit">
+                                            <i class="fa-solid fa-upload"></i> Submit
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
-                        <div class="mt-3 text-center">
-                            <a href="{% url 'training:student_projects' %}" class="btn btn-link">View All Projects →</a>
-                        </div>
-                    {% else %}
-                        <p class="text-muted text-center">No projects assigned yet.</p>
-                    {% endif %}
-                </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fa-regular fa-folder-open"></i>
+                        <p>No projects assigned yet.</p>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
-    
-    <!-- Deliverables -->
-    <div class="row">
-        <div class="col-12 mb-4">
-            <div class="card shadow">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Recent Deliverables</h5>
-                </div>
-                <div class="card-body">
-                    {% if deliverables %}
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Stage</th>
-                                        <th>Title</th>
-                                        <th>Description</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for sd in deliverables|slice:":5" %}
-                                        <tr>
-                                            <td>Stage {{ sd.deliverable.stage_number }}</td>
-                                            <td>{{ sd.deliverable.title }}</td>
-                                            <td>{{ sd.deliverable.description|truncatechars:50 }}</td>
-                                            <td>
-                                                {% if sd.is_downloaded %}
-                                                    <span class="badge bg-success">Downloaded</span>
-                                                {% else %}
-                                                    <span class="badge bg-warning">Pending</span>
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                <a href="{% url 'training:download_deliverable' sd.id %}" class="btn btn-sm btn-primary">Download</a>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="mt-3 text-center">
-                            <a href="{% url 'training:student_deliverables' %}" class="btn btn-link">View All Deliverables →</a>
-                        </div>
-                    {% else %}
-                        <p class="text-muted text-center">No deliverables available yet.</p>
-                    {% endif %}
-                </div>
+
+    <!-- Learning Materials Section - Dark Blue Background -->
+    <div class="section-card" style="margin-bottom: 32px; background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);">
+        <div class="section-header" style="background:#092c6e; border-bottom: 2px solid #bfdbfe;">
+            <div class="section-title">
+                <i class="fa-solid fa-graduation-cap" style="color:#ffff;"></i>
+                <span style="color: #fff;">Learning Materials</span>
             </div>
+            <a href="{% url 'training:student_deliverables' %}" class="view-all-link" style="background: rgba(30,58,138,0.1); color: #fff;">
+                View All <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+        <div style="background: rgba(255,255,255,0.95);">
+            {% if deliverables %}
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Stage</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sd in deliverables|slice:":4" %}
+                                <tr>
+                                    <td style="text-align: center;">
+                                        <span class="stage-number">{{ sd.deliverable.stage_number }}</span>
+                                    </td>
+                                    <td><strong style="color: var(--primary);">{{ sd.deliverable.title|truncatechars:35 }}</strong></td>
+                                    <td style="color: var(--gray-600);">{{ sd.deliverable.description|truncatechars:50 }}</td>
+                                    <td>
+                                        {% if sd.is_downloaded %}
+                                            <span class="badge badge-success"><i class="fa-solid fa-check-circle"></i> Downloaded</span>
+                                        {% else %}
+                                            <span class="badge badge-teal"><i class="fa-regular fa-clock"></i> Pending</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'training:download_deliverable' sd.id %}" class="btn-sm btn-primary" style="text-decoration: none;">
+                                            <i class="fa-solid fa-download"></i> Download
+                                        </a>
+                                    </td>
+                                </table>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fa-regular fa-folder-open"></i>
+                    <p>No learning materials available yet.</p>
+                </div>
+            {% endif %}
         </div>
     </div>
+
+    <!-- Quick Links Section - 5 Different Light Colors -->
+    <div class="section-card">
+        <div class="section-header" style="background: white; border-radius: var(--radius-xl) var(--radius-xl) 0 0;">
+            <div class="section-title">
+                <i class="fa-solid fa-link"></i>
+                <span>Quick Access</span>
+            </div>
+        </div>
+        <div class="quick-links-grid">
+            <a href="{% url 'training:my_batch' %}" class="quick-link-card">
+                <div class="quick-link-icon blue">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div class="quick-link-text">
+                    <h4>My Batch</h4>
+                    <p>View batch details & progress</p>
+                </div>
+            </a>
+            <a href="{% url 'training:student_sessions' %}" class="quick-link-card">
+                <div class="quick-link-icon green">
+                    <i class="fa-solid fa-video"></i>
+                </div>
+                <div class="quick-link-text">
+                    <h4>All Sessions</h4>
+                    <p>Watch recorded sessions</p>
+                </div>
+            </a>
+            <a href="{% url 'training:student_projects' %}" class="quick-link-card">
+                <div class="quick-link-icon orange">
+                    <i class="fa-solid fa-laptop-code"></i>
+                </div>
+                <div class="quick-link-text">
+                    <h4>Projects</h4>
+                    <p>Submit your assignments</p>
+                </div>
+            </a>
+            <a href="{% url 'training:student_deliverables' %}" class="quick-link-card">
+                <div class="quick-link-icon purple">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+                <div class="quick-link-text">
+                    <h4>Materials</h4>
+                    <p>Download study materials</p>
+                </div>
+            </a>
+            <a href="{% url 'training:student_profile' %}" class="quick-link-card">
+                <div class="quick-link-icon teal">
+                    <i class="fa-regular fa-user"></i>
+                </div>
+                <div class="quick-link-text">
+                    <h4>My Profile</h4>
+                    <p>Update personal information</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
 </div>
 {% endblock %}

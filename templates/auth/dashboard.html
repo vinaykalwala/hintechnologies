@@ -682,6 +682,11 @@
                         <i class="fas fa-user-plus"></i> Create User
                     </a>
                     {% endif %}
+                     {% if user.is_superuser %}
+                    <a href="{% url 'training:admin_dashboard' %}" class="action-btn btn-secondary">
+                       <i class="fas fa-user-graduate"></i>  Student Management
+                    </a>
+                    {% endif %}
                 </div>
             </div>
         </div>

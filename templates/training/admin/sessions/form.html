@@ -4,162 +4,1235 @@
 {% block title %}{{ title }} - Training{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">{{ title }}</h5>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    :root {
+        --primary: #0B3D91;
+        --primary-dark: #092c6e;
+        --primary-light: #1a5bbf;
+        --primary-bg: #e8f0fe;
+        --secondary: #C62828;
+        --secondary-dark: #a51b1b;
+        --secondary-light: #ff5e5e;
+        --secondary-bg: #fee2e2;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --info: #0ea5e9;
+        --gray-50: #f8fafc;
+        --gray-100: #f1f5f9;
+        --gray-200: #e2e8f0;
+        --gray-300: #cbd5e1;
+        --gray-400: #94a3b8;
+        --gray-500: #64748b;
+        --gray-600: #475569;
+        --gray-700: #334155;
+        --gray-800: #1e293b;
+        --gray-900: #0f172a;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 20px;
+        --radius-2xl: 24px;
+        --radius-3xl: 32px;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+        min-height: 100vh;
+    }
+
+    .form-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 40px 32px;
+    }
+
+    .hero-section {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        border-radius: var(--radius-2xl);
+        padding: 32px 40px;
+        margin-bottom: 32px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow-xl);
+    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: -30%;
+        right: -5%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 70%);
+        border-radius: 50%;
+        animation: floatHero 8s ease-in-out infinite;
+    }
+
+    .hero-section::after {
+        content: '';
+        position: absolute;
+        bottom: -20%;
+        left: -5%;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 70%);
+        border-radius: 50%;
+        animation: floatHero2 6s ease-in-out infinite;
+    }
+
+    @keyframes floatHero {
+        0%, 100% { transform: translateX(0) translateY(0); }
+        50% { transform: translateX(-20px) translateY(-15px); }
+    }
+
+    @keyframes floatHero2 {
+        0%, 100% { transform: translateX(0) translateY(0); }
+        50% { transform: translateX(20px) translateY(15px); }
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 30px;
+    }
+
+    .hero-text h1 {
+        font-size: 32px;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 8px;
+        letter-spacing: -0.5px;
+    }
+
+    .hero-text h1 i {
+        margin-right: 12px;
+        background: rgba(255,255,255,0.2);
+        padding: 10px;
+        border-radius: 50%;
+        font-size: 24px;
+    }
+
+    .hero-text p {
+        font-size: 14px;
+        color: rgba(255,255,255,0.85);
+    }
+
+    .hero-icon-boxes {
+        display: flex;
+        gap: 20px;
+    }
+
+    .icon-box-item {
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        border-radius: var(--radius-xl);
+        padding: 16px 24px;
+        text-align: center;
+        border: 1px solid rgba(255,255,255,0.2);
+        transition: var(--transition);
+    }
+
+    .icon-box-item:hover {
+        transform: translateY(-5px);
+        background: rgba(255,255,255,0.25);
+    }
+
+    .icon-box-item i {
+        font-size: 32px;
+        color: white;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .icon-box-item span {
+        font-size: 12px;
+        color: rgba(255,255,255,0.9);
+        font-weight: 500;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: var(--radius-2xl);
+        box-shadow: var(--shadow-xl);
+        overflow: hidden;
+    }
+
+    .form-header {
+        padding: 24px 32px;
+        background: linear-gradient(135deg, var(--gray-50), white);
+        border-bottom: 2px solid var(--gray-200);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .form-header-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .form-header-left .icon-circle {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        border-radius: var(--radius-lg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .form-header-left .icon-circle i {
+        font-size: 22px;
+        color: white;
+    }
+
+    .form-header-left h2 {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--gray-800);
+        margin: 0;
+    }
+
+    .form-header-left p {
+        font-size: 12px;
+        color: var(--gray-500);
+        margin-top: 2px;
+    }
+
+    .required-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        background: var(--secondary-bg);
+        border-radius: 30px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--secondary);
+    }
+
+    .form-body {
+        padding: 32px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+    }
+
+    .full-width {
+        grid-column: span 2;
+    }
+
+    .form-group {
+        margin-bottom: 0;
+    }
+
+    .form-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--gray-700);
+        margin-bottom: 8px;
+    }
+
+    .form-label i {
+        font-size: 14px;
+        color: var(--primary);
+        width: 18px;
+    }
+
+    .required-star {
+        color: var(--secondary);
+        font-size: 14px;
+    }
+
+    .auto-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 3px 10px;
+        background: var(--primary-bg);
+        border-radius: 30px;
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--primary);
+        margin-left: 10px;
+    }
+
+    /* ======================================== */
+    /* SEARCHABLE SELECT DROPDOWN */
+    /* ======================================== */
+    
+    .searchable-select {
+        position: relative;
+        width: 100%;
+    }
+
+    .select-trigger {
+        width: 100%;
+        padding: 14px 40px 14px 48px;
+        font-size: 14px;
+        font-family: 'Inter', sans-serif;
+        border: 2px solid var(--gray-200);
+        border-radius: var(--radius-lg);
+        background: var(--gray-50);
+        color: var(--gray-800);
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .select-trigger:hover {
+        border-color: var(--primary-light);
+        background: white;
+    }
+
+    .select-trigger.active {
+        border-color: var(--primary);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(11, 61, 145, 0.1);
+    }
+
+    .trigger-text {
+        flex: 1;
+        color: var(--gray-600);
+    }
+
+    .trigger-text.has-value {
+        color: var(--gray-800);
+        font-weight: 500;
+    }
+
+    .trigger-icon {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--primary);
+        font-size: 18px;
+        pointer-events: none;
+    }
+
+    .trigger-arrow {
+        color: var(--gray-400);
+        font-size: 14px;
+        transition: transform 0.3s;
+    }
+
+    .select-trigger.active .trigger-arrow {
+        transform: rotate(180deg);
+    }
+
+    /* Dropdown Menu */
+    .select-dropdown {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        right: 0;
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-xl);
+        border: 1px solid var(--gray-200);
+        z-index: 100;
+        display: none;
+        overflow: hidden;
+        animation: dropdownFade 0.2s ease;
+    }
+
+    .select-dropdown.show {
+        display: block;
+    }
+
+    @keyframes dropdownFade {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Search Box */
+    .dropdown-search {
+        padding: 12px;
+        border-bottom: 1px solid var(--gray-200);
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 1;
+    }
+
+    .dropdown-search input {
+        width: 100%;
+        padding: 10px 12px 10px 36px;
+        font-size: 13px;
+        border: 1.5px solid var(--gray-200);
+        border-radius: var(--radius-md);
+        background: var(--gray-50);
+        transition: var(--transition);
+    }
+
+    .dropdown-search input:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: white;
+    }
+
+    .dropdown-search i {
+        position: absolute;
+        left: 24px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gray-400);
+        font-size: 14px;
+    }
+
+    /* Options List */
+    .dropdown-options {
+        max-height: 280px;
+        overflow-y: auto;
+    }
+
+    .dropdown-option {
+        padding: 12px 16px;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-bottom: 1px solid var(--gray-100);
+    }
+
+    .dropdown-option:hover {
+        background: var(--primary-bg);
+    }
+
+    .dropdown-option.selected {
+        background: var(--primary-bg);
+        color: var(--primary);
+    }
+
+    .dropdown-option i {
+        width: 20px;
+        color: var(--primary);
+        font-size: 14px;
+    }
+
+    .option-text {
+        flex: 1;
+        font-size: 14px;
+        color: var(--gray-700);
+    }
+
+    .dropdown-option:hover .option-text {
+        color: var(--primary);
+    }
+
+    .no-results {
+        padding: 20px;
+        text-align: center;
+        color: var(--gray-400);
+        font-size: 13px;
+    }
+
+    /* Hide original select */
+    #id_batch {
+        display: none;
+    }
+
+    /* Batch Preview Card */
+    .batch-preview {
+        margin-top: 12px;
+        padding: 12px 16px;
+        background: var(--primary-bg);
+        border-radius: var(--radius-lg);
+        display: none;
+        align-items: center;
+        gap: 12px;
+        border-left: 3px solid var(--primary);
+        animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .batch-preview.show {
+        display: flex;
+    }
+
+    .batch-preview-icon {
+        width: 36px;
+        height: 36px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .batch-preview-icon i {
+        font-size: 18px;
+        color: var(--primary);
+    }
+
+    .batch-preview-info {
+        flex: 1;
+    }
+
+    .batch-preview-name {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--gray-800);
+    }
+
+    .batch-preview-details {
+        font-size: 11px;
+        color: var(--gray-500);
+        margin-top: 2px;
+    }
+
+    /* Other Input Styles */
+    .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 14px;
+        font-family: 'Inter', sans-serif;
+        border: 2px solid var(--gray-200);
+        border-radius: var(--radius-lg);
+        transition: var(--transition);
+        background: var(--gray-50);
+        color: var(--gray-800);
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(11, 61, 145, 0.1);
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .help-text {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 6px;
+        font-size: 11px;
+        color: var(--gray-400);
+    }
+
+    .help-text i {
+        font-size: 11px;
+    }
+
+    .error-text {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 6px;
+        padding: 8px 12px;
+        background: var(--secondary-bg);
+        border-radius: var(--radius-md);
+        font-size: 12px;
+        color: var(--secondary);
+    }
+
+    .error-text i {
+        font-size: 14px;
+    }
+
+    .alert-box {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 20px;
+        background: var(--secondary-bg);
+        border-left: 4px solid var(--secondary);
+        border-radius: var(--radius-lg);
+        margin-bottom: 24px;
+    }
+
+    .section-divider {
+        grid-column: span 2;
+        margin: 8px 0 12px;
+        position: relative;
+    }
+
+    .divider-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .divider-content i {
+        font-size: 16px;
+        color: var(--primary);
+        background: var(--primary-bg);
+        padding: 6px;
+        border-radius: 10px;
+    }
+
+    .divider-content span {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--gray-700);
+    }
+
+    .divider-line {
+        flex: 1;
+        height: 2px;
+        background: linear-gradient(90deg, var(--gray-200), transparent);
+    }
+
+    .pro-tip-box {
+        grid-column: span 2;
+        background: linear-gradient(135deg, var(--primary-bg), white);
+        border-radius: var(--radius-lg);
+        padding: 18px 24px;
+        margin-top: 8px;
+        border: 1px solid rgba(11, 61, 145, 0.1);
+    }
+
+    .pro-tip-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .pro-tip-header i {
+        font-size: 20px;
+        color: var(--primary);
+    }
+
+    .pro-tip-header span {
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 13px;
+    }
+
+    .pro-tip-box p {
+        font-size: 12px;
+        color: var(--gray-600);
+        line-height: 1.5;
+        margin-left: 30px;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 16px;
+        margin-top: 32px;
+        padding-top: 24px;
+        border-top: 2px solid var(--gray-200);
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 32px;
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: var(--radius-md);
+        text-decoration: none;
+        transition: var(--transition);
+        cursor: pointer;
+        border: none;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .btn-cancel {
+        background: var(--gray-100);
+        color: var(--gray-600);
+        border: 1px solid var(--gray-200);
+    }
+
+    .btn-cancel:hover {
+        background: var(--gray-200);
+        transform: translateY(-2px);
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        box-shadow: 0 4px 12px rgba(11, 61, 145, 0.3);
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(11, 61, 145, 0.4);
+    }
+
+    .day-loading .form-control {
+        background-color: #fff3cd !important;
+        border-color: var(--warning) !important;
+    }
+
+    .day-success .form-control {
+        background-color: #d4edda !important;
+        border-color: var(--success) !important;
+    }
+
+    @media (max-width: 992px) {
+        .form-container {
+            padding: 24px 20px;
+        }
+        .hero-section {
+            padding: 24px 28px;
+        }
+        .hero-text h1 {
+            font-size: 28px;
+        }
+        .icon-box-item {
+            padding: 12px 20px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .form-container {
+            padding: 20px 16px;
+        }
+        .hero-section {
+            padding: 20px 24px;
+        }
+        .hero-content {
+            flex-direction: column;
+            text-align: center;
+        }
+        .hero-text h1 {
+            font-size: 24px;
+        }
+        .hero-icon-boxes {
+            justify-content: center;
+        }
+        .form-header {
+            padding: 20px 24px;
+            flex-direction: column;
+            text-align: center;
+        }
+        .form-header-left {
+            flex-direction: column;
+            text-align: center;
+        }
+        .form-body {
+            padding: 24px;
+        }
+        .form-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        .full-width {
+            grid-column: span 1;
+        }
+        .section-divider {
+            grid-column: span 1;
+        }
+        .pro-tip-box {
+            grid-column: span 1;
+        }
+        .pro-tip-box p {
+            margin-left: 0;
+        }
+        .form-actions {
+            flex-direction: column;
+        }
+        .btn {
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="form-container">
+    <div class="hero-section">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>
+                    <i class="fas fa-chalkboard-user"></i>
+                    {{ title }} Session
+                </h1>
+                <p>Create engaging learning experiences with detailed session information</p>
+            </div>
+            <div class="hero-icon-boxes">
+                <div class="icon-box-item">
+                    <i class="fas fa-video"></i>
+                    <span>Live Session</span>
                 </div>
-                <div class="card-body">
-                    <form method="post" id="sessionForm">
-                        {% csrf_token %}
-                        
-                        {% if form.non_field_errors %}
-                            <div class="alert alert-danger">
-                                {% for error in form.non_field_errors %}
-                                    {{ error }}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                        
-                        <!-- Batch Selection -->
-                        <div class="mb-3">
-                            <label for="{{ form.batch.id_for_label }}" class="form-label">Select Batch *</label>
-                            {{ form.batch }}
-                            {% if form.batch.errors %}
-                                <div class="text-danger small">{{ form.batch.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <!-- Day Number Field -->
-                        <div class="mb-3">
-                            <label for="{{ form.day_number.id_for_label }}" class="form-label">
-                                {{ form.day_number.label }}
-                                <span class="badge bg-success ms-2">Auto</span>
-                            </label>
-                            {{ form.day_number }}
-                            {% if form.day_number.help_text %}
-                                <small class="text-muted">{{ form.day_number.help_text }}</small>
-                            {% endif %}
-                            {% if form.day_number.errors %}
-                                <div class="text-danger small">{{ form.day_number.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <!-- Session Title -->
-                        <div class="mb-3">
-                            <label for="{{ form.title.id_for_label }}" class="form-label">Session Title *</label>
-                            {{ form.title }}
-                            {% if form.title.errors %}
-                                <div class="text-danger small">{{ form.title.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <!-- Topic -->
-                        <div class="mb-3">
-                            <label for="{{ form.topic.id_for_label }}" class="form-label">Topic *</label>
-                            {{ form.topic }}
-                            {% if form.topic.errors %}
-                                <div class="text-danger small">{{ form.topic.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <!-- Session Date -->
-                        <div class="mb-3">
-                            <label for="{{ form.session_date.id_for_label }}" class="form-label">Session Date *</label>
-                            {{ form.session_date }}
-                            {% if form.session_date.errors %}
-                                <div class="text-danger small">{{ form.session_date.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <!-- Notes -->
-                        <div class="mb-3">
-                            <label for="{{ form.notes.id_for_label }}" class="form-label">Notes</label>
-                            {{ form.notes }}
-                            {% if form.notes.errors %}
-                                <div class="text-danger small">{{ form.notes.errors.0 }}</div>
-                            {% endif %}
-                            <small class="text-muted">Any additional notes or resources for this session</small>
-                        </div>
-                        
-                        <!-- Recording Link -->
-                        <div class="mb-3">
-                            <label for="{{ form.recording_link.id_for_label }}" class="form-label">Recording Link</label>
-                            {{ form.recording_link }}
-                            {% if form.recording_link.errors %}
-                                <div class="text-danger small">{{ form.recording_link.errors.0 }}</div>
-                            {% endif %}
-                            <small class="text-muted">YouTube, Google Drive, or any video hosting link</small>
-                        </div>
-                        
-                        <div class="d-flex justify-content-between">
-                            <a href="{% url 'training:session_list' %}" class="btn btn-secondary">Cancel</a>
-                            <button type="submit" class="btn btn-primary">Save Session</button>
-                        </div>
-                    </form>
+                <div class="icon-box-item">
+                    <i class="fas fa-download"></i>
+                    <span>Resources</span>
+                </div>
+                <div class="icon-box-item">
+                    <i class="fas fa-certificate"></i>
+                    <span>Certificate</span>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="form-card">
+        <div class="form-header">
+            <div class="form-header-left">
+                <div class="icon-circle">
+                    <i class="fas fa-pen-fancy"></i>
+                </div>
+                <div>
+                    <h2>Session Information</h2>
+                    <p>Fill in the details below to create a new session</p>
+                </div>
+            </div>
+            <div class="required-badge">
+                <i class="fas fa-asterisk"></i>
+                Required fields
+            </div>
+        </div>
+
+        <div class="form-body">
+            <form method="post" id="sessionForm">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert-box">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="form-grid">
+                    <!-- Searchable Batch Select Field -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-layer-group"></i>
+                            Select Batch <span class="required-star">*</span>
+                        </label>
+                        
+                        <!-- Hidden original select -->
+                        {{ form.batch }}
+                        
+                        <!-- Custom Searchable Select -->
+                        <div class="searchable-select">
+                            <div class="select-trigger" id="selectTrigger">
+                                <i class="fas fa-chalkboard trigger-icon"></i>
+                                <span class="trigger-text" id="triggerText">Select a batch...</span>
+                                <i class="fas fa-chevron-down trigger-arrow"></i>
+                            </div>
+                            
+                            <div class="select-dropdown" id="selectDropdown">
+                                <div class="dropdown-search">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" id="searchInput" placeholder="Search batches..." autocomplete="off">
+                                </div>
+                                <div class="dropdown-options" id="dropdownOptions">
+                                    <!-- Options will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Batch Preview Card -->
+                        <div class="batch-preview" id="batchPreview">
+                            <div class="batch-preview-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="batch-preview-info">
+                                <div class="batch-preview-name" id="batchPreviewName">Batch Name</div>
+                                <div class="batch-preview-details" id="batchPreviewDetails">Selected batch</div>
+                            </div>
+                        </div>
+                        
+                        {% if form.batch.errors %}
+                            <div class="error-text">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span>{{ form.batch.errors.0 }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Day Number Field -->
+                    <div class="form-group" id="dayNumberGroup">
+                        <label class="form-label">
+                            <i class="fas fa-hashtag"></i>
+                            {{ form.day_number.label }}
+                            <span class="auto-badge"><i class="fas fa-magic"></i> Auto</span>
+                        </label>
+                        {{ form.day_number }}
+                        <div class="help-text">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Automatically calculated based on batch sessions</span>
+                        </div>
+                        {% if form.day_number.errors %}
+                            <div class="error-text">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span>{{ form.day_number.errors.0 }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Session Title -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-heading"></i>
+                            Session Title <span class="required-star">*</span>
+                        </label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                            <div class="error-text">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span>{{ form.title.errors.0 }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Session Date -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-calendar-alt"></i>
+                            Session Date <span class="required-star">*</span>
+                        </label>
+                        {{ form.session_date }}
+                        {% if form.session_date.errors %}
+                            <div class="error-text">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span>{{ form.session_date.errors.0 }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Topic -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-tag"></i>
+                            Topic <span class="required-star">*</span>
+                        </label>
+                        {{ form.topic }}
+                        {% if form.topic.errors %}
+                            <div class="error-text">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span>{{ form.topic.errors.0 }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Recording Link -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-link"></i>
+                            Recording Link
+                        </label>
+                        {{ form.recording_link }}
+                        <div class="help-text">
+                            <i class="fab fa-youtube"></i>
+                            <i class="fab fa-google-drive"></i>
+                            <i class="fas fa-video"></i>
+                            <span>YouTube, Google Drive, Zoom, or any video hosting platform link</span>
+                        </div>
+                        {% if form.recording_link.errors %}
+                            <div class="error-text">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span>{{ form.recording_link.errors.0 }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Section Divider -->
+                    <div class="section-divider">
+                        <div class="divider-content">
+                            <i class="fas fa-sticky-note"></i>
+                            <span>Additional Information</span>
+                            <div class="divider-line"></div>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="form-group full-width">
+                        <label class="form-label">
+                            <i class="fas fa-sticky-note"></i>
+                            Notes
+                        </label>
+                        {{ form.notes }}
+                        <div class="help-text">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Add key takeaways, homework assignments, or additional resources for students</span>
+                        </div>
+                        {% if form.notes.errors %}
+                            <div class="error-text">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span>{{ form.notes.errors.0 }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Pro Tip Box -->
+                    <div class="pro-tip-box">
+                        <div class="pro-tip-header">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Pro Tip</span>
+                        </div>
+                        <p>
+                            Add a recording link after the session so students can revisit the content anytime.
+                            Supported platforms: YouTube, Vimeo, Google Drive, Zoom Cloud Recordings.
+                            Detailed notes help students understand key concepts better.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="{% url 'training:session_list' %}" class="btn btn-cancel">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-submit">
+                        <i class="fas fa-save"></i> Save Session
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const batchSelect = document.getElementById('id_batch');
+    const originalSelect = document.getElementById('id_batch');
+    const selectTrigger = document.getElementById('selectTrigger');
+    const selectDropdown = document.getElementById('selectDropdown');
+    const triggerText = document.getElementById('triggerText');
+    const searchInput = document.getElementById('searchInput');
+    const dropdownOptions = document.getElementById('dropdownOptions');
+    const batchPreview = document.getElementById('batchPreview');
+    const batchPreviewName = document.getElementById('batchPreviewName');
+    const batchPreviewDetails = document.getElementById('batchPreviewDetails');
     const dayNumberField = document.getElementById('id_day_number');
-    
-    // Function to fetch and display next day number
+    const dayGroup = document.getElementById('dayNumberGroup');
+
+    let allOptions = [];
+
+    // Get all options from original select
+    function loadOptions() {
+        const options = originalSelect.querySelectorAll('option');
+        allOptions = [];
+        dropdownOptions.innerHTML = '';
+        
+        options.forEach(option => {
+            if (option.value) {
+                allOptions.push({
+                    value: option.value,
+                    text: option.text
+                });
+            }
+        });
+        
+        renderOptions(allOptions);
+    }
+
+    // Render options in dropdown
+    function renderOptions(options) {
+        dropdownOptions.innerHTML = '';
+        
+        if (options.length === 0) {
+            dropdownOptions.innerHTML = '<div class="no-results"><i class="fas fa-inbox"></i> No batches found</div>';
+            return;
+        }
+        
+        options.forEach(option => {
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'dropdown-option';
+            if (originalSelect.value === option.value) {
+                optionDiv.classList.add('selected');
+            }
+            optionDiv.innerHTML = `
+                <i class="fas fa-layer-group"></i>
+                <span class="option-text">${escapeHtml(option.text)}</span>
+            `;
+            optionDiv.addEventListener('click', () => {
+                selectOption(option.value, option.text);
+            });
+            dropdownOptions.appendChild(optionDiv);
+        });
+    }
+
+    // Escape HTML to prevent XSS
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Select an option
+    function selectOption(value, text) {
+        originalSelect.value = value;
+        triggerText.textContent = text;
+        triggerText.classList.add('has-value');
+        
+        // Update preview
+        batchPreviewName.textContent = text;
+        batchPreviewDetails.textContent = 'Selected batch';
+        batchPreview.classList.add('show');
+        
+        // Close dropdown
+        selectDropdown.classList.remove('show');
+        selectTrigger.classList.remove('active');
+        
+        // Trigger change event for day number calculation
+        const changeEvent = new Event('change', { bubbles: true });
+        originalSelect.dispatchEvent(changeEvent);
+        
+        // Update selected class in options
+        document.querySelectorAll('.dropdown-option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+    }
+
+    // Toggle dropdown
+    selectTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        selectDropdown.classList.toggle('show');
+        selectTrigger.classList.toggle('active');
+        
+        if (selectDropdown.classList.contains('show')) {
+            searchInput.value = '';
+            renderOptions(allOptions);
+            searchInput.focus();
+        }
+    });
+
+    // Search functionality
+    searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const filtered = allOptions.filter(opt => 
+            opt.text.toLowerCase().includes(searchTerm)
+        );
+        renderOptions(filtered);
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!selectTrigger.contains(e.target) && !selectDropdown.contains(e.target)) {
+            selectDropdown.classList.remove('show');
+            selectTrigger.classList.remove('active');
+        }
+    });
+
+    // Auto day number calculation
     async function updateDayNumber() {
-        const batchId = batchSelect.value;
+        const batchId = originalSelect.value;
         
         if (!batchId) {
             dayNumberField.value = '';
             dayNumberField.placeholder = 'Select a batch first';
+            dayGroup?.classList.remove('day-success');
             return;
         }
         
-        // Show loading state
-        dayNumberField.style.backgroundColor = '#fff3cd';
+        dayNumberField.value = '';
         dayNumberField.placeholder = 'Calculating...';
+        dayGroup?.classList.add('day-loading');
+        dayGroup?.classList.remove('day-success');
         
         try {
-            // Fetch next day number from server
             const response = await fetch(`/training/admin/sessions/next-day/${batchId}/`);
             const data = await response.json();
             
             if (data.next_day) {
-                // Display the calculated day number
                 dayNumberField.value = data.next_day;
-                dayNumberField.style.backgroundColor = '#d4edda';
+                dayGroup?.classList.add('day-success');
                 
-                // Optional: Show success message
                 setTimeout(() => {
-                    dayNumberField.style.backgroundColor = '';
-                }, 1000);
+                    dayGroup?.classList.remove('day-loading');
+                    setTimeout(() => {
+                        dayGroup?.classList.remove('day-success');
+                    }, 1500);
+                }, 500);
             } else {
                 dayNumberField.value = '';
-                dayNumberField.placeholder = 'Error calculating';
-                dayNumberField.style.backgroundColor = '#f8d7da';
+                dayNumberField.placeholder = 'Auto-calculated';
+                dayGroup?.classList.remove('day-loading');
             }
         } catch (error) {
             console.error('Error:', error);
             dayNumberField.value = '';
             dayNumberField.placeholder = 'Error loading day number';
-            dayNumberField.style.backgroundColor = '#f8d7da';
+            dayGroup?.classList.remove('day-loading');
         }
+    }
+
+    // Set initial value
+    function setInitialValue() {
+        if (originalSelect.value) {
+            const selectedOption = originalSelect.querySelector('option:checked');
+            if (selectedOption) {
+                triggerText.textContent = selectedOption.text;
+                triggerText.classList.add('has-value');
+                batchPreviewName.textContent = selectedOption.text;
+                batchPreview.classList.add('show');
+                updateDayNumber();
+            }
+        }
+    }
+
+    // Listen to original select changes
+    originalSelect.addEventListener('change', updateDayNumber);
+    
+    // Initialize
+    loadOptions();
+    setInitialValue();
+
+    // Style original day number field
+    if (dayNumberField) {
+        dayNumberField.classList.add('form-control');
     }
     
-    // Update day number when batch changes
-    if (batchSelect) {
-        batchSelect.addEventListener('change', updateDayNumber);
-        
-        // Also update if batch is pre-selected (when page loads)
-        if (batchSelect.value) {
-            updateDayNumber();
-        }
-    }
+    // Style all form controls
+    document.querySelectorAll('#id_title, #id_topic, #id_session_date, #id_notes, #id_recording_link').forEach(field => {
+        if (field) field.classList.add('form-control');
+    });
 });
 </script>
+
 {% endblock %}
