@@ -1,73 +1,1243 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}About Us - HIN Technologies{% endblock %}
+{% block title %}About Us - HIN Technologies | Premium IT Solutions{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <h1 class="text-center mb-4">About HIN Technologies</h1>
-            <p class="lead text-center mb-5">Empowering IT Professionals with Real DevOps Skills Since 2018</p>
-            
-            <h2>Our Story</h2>
-            <p>At <strong>HIN Technologies</strong>, we recognized a critical gap between academic IT education and industry requirements. Fresh graduates knew theory but struggled with real-world tools like Docker, Kubernetes, and Jenkins. Experienced professionals needed structured upskilling to stay relevant.</p>
-            <p>We built HIN Technologies to solve this problem. Our training approach focuses on <strong>hands-on learning</strong> with actual cloud environments, live projects, and industry-standard tools. Every student builds a complete CI/CD pipeline from scratch – not just watch demos.</p>
-            
-            <h2 class="mt-5">Our Mission</h2>
-            <div class="alert alert-primary">
-                "To bridge the DevOps skills gap in India by delivering practical, job-focused training that transforms beginners into confident professionals."
+
+<style>
+    /* ----- RESET & GLOBAL VARIABLES (No Bootstrap) ----- */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    :root {
+        --hin-deep: #0a2540;
+        --hin-blue: #0B3D91;
+        --hin-blue-light: #eef3ff;
+        --hin-red: #C62828;
+        --hin-red-light: #fff0f0;
+        --gold-accent: #E6B12E;
+        --text-dark: #111827;
+        --text-soft: #4b5565;
+        --bg-white: #ffffff;
+        --bg-soft: #f9fafc;
+        --border-light: rgba(11, 61, 145, 0.08);
+        --shadow-sm: 0 15px 30px -12px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 25px 45px -12px rgba(11, 61, 145, 0.12);
+        --shadow-hover: 0 32px 55px -15px rgba(11, 61, 145, 0.2);
+        --gradient-primary: linear-gradient(115deg, #0B3D91, #1e5dd6);
+        --gradient-red: linear-gradient(115deg, #C62828, #e35d5d);
+        --transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    }
+
+    body {
+        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+        background: var(--bg-white);
+        color: var(--text-dark);
+        line-height: 1.5;
+    }
+
+    .about-premium {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 70px 5% 100px;
+    }
+
+    /* ===== TYPOGRAPHY & UTILITIES ===== */
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        text-align: center;
+        margin-bottom: 55px;
+        position: relative;
+        color: var(--hin-deep);
+    }
+
+    .section-title:after {
+        content: '';
+        display: block;
+        width: 70px;
+        height: 4px;
+        background: var(--gradient-red);
+        border-radius: 4px;
+        margin: 18px auto 0;
+    }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--hin-red-light);
+        color: var(--hin-red);
+        padding: 6px 20px;
+        border-radius: 40px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        letter-spacing: 0.3px;
+        margin-bottom: 28px;
+    }
+
+    /* ===== HERO SECTION (premium grid) ===== */
+    .hero-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: center;
+        margin-bottom: 85px;
+    }
+
+    .hero-left h1 {
+        font-size: 3.8rem;
+        font-weight: 800;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, #0a2540 30%, #0B3D91 80%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        margin-bottom: 10px;
+    }
+
+    .hero-left h1 span {
+        background: linear-gradient(135deg, #C62828, #f97316);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        display: inline-block;
+    }
+
+    .hero-desc {
+        font-size: 1.05rem;
+        line-height: 1.65;
+        color: var(--text-soft);
+        margin: 25px 0 32px;
+        padding-left: 20px;
+        border-left: 3px solid var(--hin-red);
+    }
+
+    .btn-group-hero {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 18px;
+    }
+
+    .about-btn-primary {
+        background: var(--gradient-primary);
+        color: white;
+        padding: 14px 32px;
+        border-radius: 44px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        transition: var(--transition);
+        box-shadow: 0 8px 20px rgba(11, 61, 145, 0.25);
+    }
+
+    .about-btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 20px 30px -10px rgba(11, 61, 145, 0.4);
+        background: linear-gradient(115deg, #0a347a, #2670e0);
+    }
+
+    .about-btn-outline {
+        border: 1.5px solid var(--hin-blue);
+        background: transparent;
+        color: var(--hin-blue);
+        padding: 12px 30px;
+        border-radius: 44px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .about-btn-outline:hover {
+        background: rgba(11, 61, 145, 0.05);
+        border-color: var(--hin-red);
+        color: var(--hin-red);
+        transform: translateY(-2px);
+    }
+
+    .hero-right-card {
+        position: relative;
+        overflow: hidden;
+
+        background:
+            linear-gradient(145deg,
+                #f8fbff,
+                #eef5ff);
+
+        border-radius: 40px;
+
+        padding: 45px;
+
+        isolation: isolate;
+    }
+
+    /* background image watermark */
+
+    .hero-right-card::before {
+
+        content: "";
+
+        position: absolute;
+
+        inset: 0;
+
+        background: url("{% static 'images/devops-bg.png' %}");
+
+        background-size: 280px;
+
+        background-repeat: no-repeat;
+
+        background-position: center;
+
+        opacity: 15;
+
+        z-index: -2;
+    }
+
+
+    /* animated circles */
+
+    .hero-right-card::after {
+
+        content: "";
+
+        position: absolute;
+
+        width: 350px;
+        height: 350px;
+
+        background:
+            radial-gradient(circle,
+                rgba(11, 61, 145, .12),
+                transparent 70%);
+
+        top: -120px;
+        right: -80px;
+
+        animation: blobMove 8s infinite alternate;
+
+        z-index: -1;
+    }
+
+    /* floating particles */
+
+    .bg-dots {
+
+        position: absolute;
+
+        inset: 0;
+
+        pointer-events: none;
+
+        overflow: hidden;
+    }
+
+    .bg-dots span {
+
+        position: absolute;
+
+        width: 10px;
+        height: 10px;
+
+        background: #0B3D91;
+
+        border-radius: 50%;
+
+        opacity: .12;
+
+        animation: floatDots 8s infinite;
+    }
+
+    .bg-dots span:nth-child(1) {
+        top: 20%;
+        left: 15%;
+    }
+
+    .bg-dots span:nth-child(2) {
+        top: 65%;
+        right: 20%;
+    }
+
+    .bg-dots span:nth-child(3) {
+        bottom: 25%;
+        left: 45%;
+    }
+
+    @keyframes blobMove {
+
+        from {
+            transform:
+                translateY(0) translateX(0);
+        }
+
+        to {
+
+            transform:
+                translateY(40px) translateX(-30px);
+        }
+    }
+
+    @keyframes floatDots {
+
+        0% {
+            transform:
+                translateY(0);
+        }
+
+        100% {
+
+            transform:
+                translateY(-20px);
+        }
+    }
+
+    .top-badge {
+        position: absolute;
+
+        top: 25px;
+        right: 25px;
+
+        background: white;
+
+        padding: 10px 18px;
+
+        border-radius: 50px;
+
+        font-size: .8rem;
+
+        font-weight: 700;
+
+        color: #C62828;
+
+        box-shadow:
+            0 10px 25px rgba(0, 0, 0, .08);
+    }
+
+    .tech-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 18px;
+
+        margin-top: 45px;
+    }
+
+    .tech-box {
+        background: white;
+
+        padding: 25px;
+
+        border-radius: 24px;
+
+        text-align: center;
+
+        transition: .3s;
+
+        box-shadow:
+            0 10px 20px rgba(0, 0, 0, .05);
+    }
+
+    .tech-box:hover {
+        transform: translateY(-8px);
+    }
+
+    .tech-box i {
+        font-size: 2rem;
+
+        color: #0B3D91;
+
+        margin-bottom: 12px;
+    }
+
+    .tech-box span {
+        font-weight: 700;
+    }
+
+    .placement-card {
+        margin-top: 30px;
+
+        padding: 22px;
+
+        background: white;
+
+        border-radius: 24px;
+    }
+
+    .progress-wrap {
+        height: 10px;
+
+        background: #eee;
+
+        border-radius: 20px;
+
+        margin: 15px 0;
+    }
+
+    .progress-fill {
+        width: 98%;
+
+        height: 100%;
+
+        background:
+            linear-gradient(90deg,
+                #0B3D91,
+                #C62828);
+
+        border-radius: 20px;
+    }
+
+    .bottom-stats {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+        gap: 15px;
+
+        margin-top: 25px;
+    }
+
+    .mini-card {
+        background: white;
+
+        padding: 18px;
+
+        border-radius: 20px;
+
+        text-align: center;
+    }
+
+    .mini-card h3 {
+        color: #0B3D91;
+        font-size: 1.5rem;
+    }
+
+    .mini-card p {
+        font-size: .8rem;
+        color: #666;
+    }
+
+    .tech-ring {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        flex-wrap: wrap;
+        margin-bottom: 35px;
+    }
+
+    .tech-icon {
+        background: white;
+        width: 85px;
+        height: 85px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.4rem;
+        font-weight: 700;
+        color: var(--hin-blue);
+        box-shadow: 0 15px 25px -10px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s;
+    }
+
+    .hero-stats-mini {
+        display: flex;
+        justify-content: center;
+        gap: 28px;
+        margin-top: 20px;
+        font-weight: 600;
+        color: var(--hin-blue);
+    }
+
+    /* ===== STATS BAR ===== */
+    .stats-bar {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        background: var(--bg-white);
+        border-radius: 100px;
+        padding: 28px 50px;
+        margin-bottom: 85px;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-light);
+    }
+
+    .stat-item {
+        text-align: center;
+        flex: 1;
+        min-width: 100px;
+    }
+
+    .stat-number {
+        font-size: 2.1rem;
+        font-weight: 800;
+        background: var(--gradient-red);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        letter-spacing: -0.5px;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-soft);
+        text-transform: uppercase;
+        margin-top: 6px;
+    }
+
+    /* ===== EXPERTISE GRID ===== */
+    .expertise-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 24px;
+        margin-bottom: 90px;
+    }
+
+    .exp-card {
+        background: var(--bg-white);
+        border: 1px solid var(--border-light);
+        border-radius: 32px;
+        padding: 28px 16px;
+        text-align: center;
+        font-weight: 700;
+        color: var(--hin-blue);
+        transition: var(--transition);
+        backdrop-filter: blur(2px);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .exp-card i {
+        font-size: 2rem;
+        margin-bottom: 14px;
+        display: block;
+        color: var(--hin-red);
+    }
+
+    .exp-card:hover {
+        transform: translateY(-8px);
+        background: var(--gradient-primary);
+        color: white;
+        border-color: transparent;
+        box-shadow: var(--shadow-hover);
+    }
+
+    .exp-card:hover i {
+        color: var(--gold-accent);
+    }
+
+    /* ===== SERVICES 4-COLUMN ===== */
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 32px;
+        margin-bottom: 90px;
+    }
+
+    .service-tile {
+        background: white;
+        border-radius: 38px;
+        padding: 40px 28px;
+        transition: var(--transition);
+        border: 1px solid var(--border-light);
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .service-tile:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: var(--gradient-primary);
+    }
+
+    .service-tile i {
+        font-size: 2.6rem;
+        background: linear-gradient(125deg, #0B3D91, #C62828);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        margin-bottom: 24px;
+    }
+
+    .service-tile h3 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 16px;
+    }
+
+    .service-tile p {
+        color: var(--text-soft);
+        line-height: 1.55;
+    }
+
+    .service-tile:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    /* ===== CLIENTS + PROJECT (dual) ===== */
+    .dual-premium {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        margin-bottom: 90px;
+    }
+
+    .glass-card {
+        background: white;
+        border-radius: 40px;
+        padding: 42px 35px;
+        box-shadow: var(--shadow-md);
+        transition: var(--transition);
+        border: 1px solid rgba(0, 0, 0, 0.02);
+        margin-bottom: 70px;
+        /* add */
+    }
+
+    .glass-card h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 28px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .logo-cluster {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 16px;
+    }
+
+    .logo-chip {
+        background: #f8fafd;
+        border-radius: 20px;
+        padding: 16px 8px;
+        text-align: center;
+        font-weight: 600;
+        color: var(--hin-deep);
+        transition: 0.2s;
+        border: 1px solid var(--border-light);
+    }
+
+    .logo-chip:hover {
+        background: var(--gradient-primary);
+        color: white;
+        transform: scale(0.97);
+    }
+
+    .project-list {
+        list-style: none;
+    }
+
+    .project-list li {
+        padding: 14px 0;
+        border-bottom: 1px solid rgba(11, 61, 145, 0.07);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-weight: 500;
+    }
+
+    .project-list li i {
+        color: var(--hin-red);
+        width: 28px;
+    }
+
+    /* ===== WHY CHOOSE US ===== */
+    .why-grid {
+        display: grid;
+        grid-template-columns:
+            repeat(auto-fit, minmax(220px, 1fr));
+
+        gap: 30px;
+
+        margin-bottom: 100px;
+    }
+
+    .why-card {
+
+        background:
+            linear-gradient(145deg,
+                #ffffff,
+                #f8fbff);
+
+        border-radius: 30px;
+
+        padding: 35px 25px;
+
+        min-height: 170px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        text-align: center;
+
+        font-weight: 700;
+
+        border: 1px solid rgba(11, 61, 145, .08);
+
+        box-shadow:
+            0 15px 35px rgba(0, 0, 0, .05);
+
+        transition: .35s;
+    }
+
+    .why-card:hover {
+
+        transform:
+            translateY(-10px);
+
+        background:
+            linear-gradient(135deg,
+                #0B3D91,
+                #1e5dd6);
+
+        color: white;
+
+        box-shadow:
+            0 25px 45px rgba(11, 61, 145, .25);
+    }
+
+    .why-card i {
+        font-size: 2.2rem;
+        color: var(--hin-red);
+        margin-bottom: 18px;
+        display: block;
+    }
+
+
+    .why-card:hover i {
+        color: var(--gold-accent);
+    }
+
+    /* ===== VISION MISSION ===== */
+    .vm-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 35px;
+    }
+
+    .vm-block {
+        border-radius: 44px;
+        padding: 48px 40px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        transition: 0.2s;
+    }
+
+    .vm-block h3 {
+        font-size: 2.1rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .vm-block p {
+        font-size: 1rem;
+        line-height: 1.6;
+        opacity: 0.92;
+    }
+
+    .vm-block i.emoji-bg {
+        position: absolute;
+        bottom: 20px;
+        right: 30px;
+        font-size: 5rem;
+        opacity: 0.15;
+    }
+
+    .vision {
+        background: linear-gradient(125deg, #C62828, #b12a2a);
+    }
+
+    .mission {
+        background: linear-gradient(125deg, #0B3D91, #0a2e6e);
+    }
+
+    .vm-block:hover {
+        transform: scale(1.01);
+        box-shadow: 0 30px 45px -18px rgba(0, 0, 0, 0.25);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1000px) {
+
+        .hero-grid,
+        .dual-premium,
+        .vm-wrapper {
+            grid-template-columns: 1fr;
+        }
+
+        .hero-left h1 {
+            font-size: 2.8rem;
+        }
+
+        .stats-bar {
+            border-radius: 50px;
+            padding: 25px 20px;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .stat-item {
+            width: 100%;
+            border-right: none;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 650px) {
+        .about-premium {
+            padding: 45px 6% 80px;
+        }
+
+        .btn-group-hero {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .about-btn-primary,
+        .about-btn-outline {
+            text-align: center;
+            justify-content: center;
+        }
+    }
+
+    /* animations */
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(25px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .fade-up {
+        animation: fadeUp 0.6s ease forwards;
+    }
+</style>
+
+<section class="about-premium">
+    <!-- HERO SECTION -->
+    <div class="hero-grid fade-up">
+        <div class="hero-left">
+            <div class="badge">
+                <i class="fas fa-medal"></i> 10+ Years of Trust
             </div>
-            
-            <h2 class="mt-5">Our Training Approach</h2>
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <h4>1️⃣ Learn by Doing</h4>
-                    <p>No PowerPoint-heavy sessions. Every concept is followed by a live hands-on lab exercise.</p>
-                    
-                    <h4>2️⃣ Real-World Projects</h4>
-                    <p>Work on projects that simulate actual enterprise scenarios – multiple environments, rollback strategies, monitoring setup.</p>
-                </div>
-                <div class="col-md-6">
-                    <h4>3️⃣ Industry Expert Trainers</h4>
-                    <p>All trainers are <strong>practicing DevOps engineers</strong> with 6+ years of experience in product companies and consultancies.</p>
-                    
-                    <h4>4️⃣ Career-Focused Support</h4>
-                    <p>Resume reviews, mock interviews, GitHub portfolio building, and referral to our hiring partner network.</p>
-                </div>
+            <h1>Empowering <br>Careers & <span>Real‑Time Innovation</span></h1>
+            <div class="hero-desc">
+                Founded in 2014, HIN Technologies is a professional IT Training, Consulting, Development and Support
+                organization focused on Middleware, DevOps, Cloud and Modern Infrastructure Technologies.
+
+                Over the years, HIN Technologies has successfully trained more than 1000+ students and completed 75+
+                successful training batches helping students and professionals build strong careers in the IT industry.
+
+                Our mission is to provide practical, real-time, industry-focused training and solutions that bridge the
+                gap between theoretical knowledge and real-world implementation.
             </div>
-            
-            <h2 class="mt-5">Our Curriculum Highlights</h2>
-            <ul>
-                <li>Introduction to DevOps & SDLC – Waterfall vs Agile vs DevOps principles</li>
-                <li>Linux, Git & Maven – Shell scripting, Git workflows, Maven setup</li>
-                <li>Code Quality & Artifact Management – SonarQube, JFrog Artifactory</li>
-                <li>Docker & Kubernetes – Containers, pods, deployments, scaling</li>
-                <li>Monitoring & Observability – Datadog, New Relic</li>
-                <li>Configuration Management & IaC – Ansible, Terraform</li>
-                <li>Project Management – Jira, Agile ticketing</li>
-                <li>Capstone Project: End-to-end CI/CD pipeline</li>
-            </ul>
-            
-            <div class="row text-center mt-5">
-                <div class="col-md-3">
-                    <h3 class="text-primary">8+ Years</h3>
-                    <p>Combined Experience</p>
-                </div>
-                <div class="col-md-3">
-                    <h3 class="text-primary">2,500+</h3>
-                    <p>Professionals Trained</p>
-                </div>
-                <div class="col-md-3">
-                    <h3 class="text-primary">100%</h3>
-                    <p>Hands-on Curriculum</p>
-                </div>
-                <div class="col-md-3">
-                    <h3 class="text-primary">50+</h3>
-                    <p>Corporate Partners</p>
-                </div>
+            <div class="btn-group-hero">
+                <a href="{% url 'hin:public_services' %}" class="about-btn-primary">
+                    Explore Services
+                </a>
+
+                <a href="{% url 'hin:contact' %}" class="about-btn-outline">
+                    Contact Us
+                </a>
             </div>
         </div>
+        <div class="hero-right-card">
+            <div class="bg-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="floating-badge top-badge">
+                <i class="fas fa-award"></i>
+                Top Training Institute
+            </div>
+
+            <div class="tech-grid">
+
+                <div class="tech-box">
+                    <i class="fab fa-docker"></i>
+                    <span>Docker</span>
+                </div>
+
+                <div class="tech-box">
+                    <i class="fas fa-dharmachakra"></i>
+                    <span>K8s</span>
+                </div>
+
+                <div class="tech-box">
+                    <i class="fab fa-aws"></i>
+                    <span>AWS</span>
+                </div>
+
+                <div class="tech-box">
+                    <i class="fab fa-jenkins"></i>
+                    <span>Jenkins</span>
+                </div>
+
+            </div>
+
+
+            <div class="bottom-stats">
+
+                <div class="mini-card">
+                    <h3>1000+</h3>
+                    <p>Students</p>
+                </div>
+
+                <div class="mini-card">
+                    <h3>75+</h3>
+                    <p>Batches</p>
+                </div>
+
+                <div class="mini-card">
+                    <h3>24/7</h3>
+                    <p>Support</p>
+                </div>
+
+            </div>
+
+        </div>
     </div>
-</div>
+
+    <!-- STATS STRIP (premium) -->
+    <div class="stats-bar fade-up">
+        <div class="stat-item">
+            <div class="stat-number">2014</div>
+            <div class="stat-label">Established</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">1000+</div>
+            <div class="stat-label">Students Trained</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">75+</div>
+            <div class="stat-label">Batches</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">10+</div>
+            <div class="stat-label">Years Expertise</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">24/7</div>
+            <div class="stat-label">Job Support</div>
+        </div>
+    </div>
+
+    <!-- EXPERTISE SECTION -->
+    <div class="section-title">Our Expertise</div>
+    <div class="expertise-grid">
+        <div class="exp-card"><i class="fab fa-dev"></i> DevOps</div>
+        <div class="exp-card"><i class="fab fa-jenkins"></i> Jenkins</div>
+        <div class="exp-card"><i class="fab fa-docker"></i> Docker</div>
+        <div class="exp-card"><i class="fas fa-cloud-upload-alt"></i> Kubernetes</div>
+        <div class="exp-card"><i class="fas fa-code-branch"></i> CI/CD</div>
+        <div class="exp-card"><i class="fab fa-linux"></i> Linux</div>
+        <div class="exp-card"><i class="fas fa-cloud"></i> Cloud (AWS/Azure)</div>
+        <div class="exp-card"><i class="fas fa-server"></i> Middleware</div>
+
+        <div class="exp-card"><i class="fas fa-terminal"></i> Linux Administration</div>
+
+        <div class="exp-card"><i class="fas fa-robot"></i> Automation Tools</div>
+
+        <div class="exp-card"><i class="fas fa-chart-line"></i> Monitoring & Infrastructure</div>
+    </div>
+
+    <!-- SERVICES (professional) -->
+    <div class="section-title">What We Deliver</div>
+    <div class="services-grid">
+
+        <div class="service-tile">
+            <i class="fas fa-chalkboard-user"></i>
+
+            <h3>Training Services</h3>
+
+            <p>
+                Middleware Technologies<br>
+                DevOps<br>
+                Jenkins<br>
+                Docker<br>
+                Kubernetes (K8s)<br>
+                CI/CD Pipelines<br>
+                Linux Administration<br>
+                Cloud Technologies<br>
+                Automation Tools<br>
+                Monitoring & Infrastructure Management
+            </p>
+
+        </div>
+
+        <div class="service-tile">
+
+            <i class="fas fa-code"></i>
+
+            <h3>Learning Approach</h3>
+
+            <p>
+                Real-time project scenarios<br>
+                Hands-on practical sessions<br>
+                Industry-level assignments<br>
+                Interview preparation<br>
+                Resume guidance<br>
+                Job-oriented learning
+            </p>
+
+        </div>
+
+        <div class="service-tile">
+
+            <i class="fas fa-building"></i>
+
+            <h3>Corporate Training</h3>
+
+            <p>
+                Online Corporate Training<br>
+                Offline Corporate Workshops<br>
+                Customized Enterprise Programs<br>
+                DevOps Transformation Guidance
+            </p>
+
+        </div>
+
+        <div class="service-tile">
+
+            <i class="fas fa-user-tie"></i>
+
+            <h3>Job Support</h3>
+
+            <p>
+                Hourly Basis<br>
+                Monthly Basis<br>
+                Project Support<br>
+                Production Support<br>
+                Deployment & Troubleshooting
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- CLIENTS + UPCOMING PROJECT (dual column) -->
+    <div class="dual-premium">
+        <div class="glass-card">
+            <h2><i class="fas fa-handshake" style="color:#C62828;"></i> Our Clients</h2>
+            <div class="logo-cluster">
+                <div class="logo-chip">TTS Foods</div>
+                <div class="logo-chip">Mr HungryBird Cafe</div>
+                <div class="logo-chip">ClubChicken</div>
+                <div class="logo-chip">HungerFresh</div>
+                <div class="logo-chip">ChickenDrop</div>
+            </div>
+        </div>
+        <div class="glass-card">
+            <h2><i class="fas fa-chart-simple"></i> Upcoming Project</h2>
+            <ul class="project-list">
+
+                <li><i class="fas fa-warehouse"></i>Inventory Management</li>
+
+                <li><i class="fas fa-box"></i>Stock Tracking</li>
+
+                <li><i class="fas fa-cart-shopping"></i>Sales & Purchase Management</li>
+
+                <li><i class="fas fa-chart-line"></i>Reporting & Analytics</li>
+
+                <li><i class="fas fa-robot"></i>Business Automation</li>
+
+                <li><i class="fas fa-store"></i>Multi Branch Management</li>
+
+            </ul>
+        </div>
+    </div>
+
+    <div class="glass-card">
+
+        <h2>
+            <i class="fas fa-briefcase"></i>
+
+            Business Services
+        </h2>
+
+        <ul class="project-list">
+
+            <li>
+                <i class="fas fa-laptop-code"></i>
+                Technology Solutions
+            </li>
+
+            <li>
+                <i class="fas fa-code"></i>
+                Application Development
+            </li>
+
+            <li>
+                <i class="fas fa-server"></i>
+                Infrastructure Management
+            </li>
+
+            <li>
+                <i class="fas fa-cogs"></i>
+                Digital Operations
+            </li>
+
+            <li>
+                <i class="fas fa-robot"></i>
+                Automation Services
+            </li>
+
+            <li>
+                <i class="fas fa-cloud"></i>
+                DevOps Implementation
+            </li>
+
+        </ul>
+
+    </div>
+    <div class="section-title">
+        In-House Project Development
+    </div>
+
+    <div class="why-grid">
+
+        <div class="why-card">
+            Jenkins CI/CD Projects
+        </div>
+
+        <div class="why-card">
+            Docker Applications
+        </div>
+
+        <div class="why-card">
+            Kubernetes Deployments
+        </div>
+
+        <div class="why-card">
+            Multi Environment Pipelines
+        </div>
+
+        <div class="why-card">
+            Automation Projects
+        </div>
+
+        <div class="why-card">
+            Monitoring & Logging
+        </div>
+
+        <div class="why-card">
+            Cloud Deployment Projects
+        </div>
+
+    </div>
+
+    <!-- WHY CHOOSE HIN TECHNOLOGIES -->
+    <div class="section-title">Why Choose HIN Technologies?</div>
+    <div class="why-grid">
+
+        <div class="why-card">
+            <i class="fas fa-trophy"></i>
+            10+ Years Experience
+        </div>
+
+        <div class="why-card">
+            <i class="fas fa-laptop-code"></i>
+            Practical Training
+        </div>
+
+        <div class="why-card">
+            <i class="fas fa-users"></i>
+            Experienced Technical Team
+        </div>
+
+        <div class="why-card">
+            <i class="fas fa-chart-line"></i>
+            Strong Student Success Track Record
+        </div>
+
+        <div class="why-card">
+            <i class="fas fa-road"></i>
+            End-to-End Project Guidance
+        </div>
+
+        <div class="why-card">
+            <i class="fas fa-headset"></i>
+            Dedicated Job Support
+        </div>
+
+        <div class="why-card">
+            <i class="fas fa-building"></i>
+            Corporate Training Expertise
+        </div>
+
+        <div class="why-card">
+            <i class="fas fa-diagram-project"></i>
+            Real-Time DevOps Projects
+        </div>
+
+        <div class="why-card">
+            <i class="fas fa-microchip"></i>
+            Business Technology Solutions
+        </div>
+
+    </div>
+
+    <!-- VISION & MISSION (modern cards) -->
+    <div class="vm-wrapper">
+        <div class="vm-block vision">
+            <h3><i class="fas fa-eye"></i> Our Vision</h3>
+            <p>To become a leading technology training and solutions company by empowering students, professionals and
+                businesses with practical knowledge, real-time experience and innovative solutions.</p>
+            <i class="fas fa-globe-americas emoji-bg"></i>
+        </div>
+        <div class="vm-block mission">
+            <h3><i class="fas fa-bullseye"></i> Our Mission</h3>
+            <p>To deliver high-quality technical education, enterprise solutions and real-time project exposure that
+                helps individuals and organizations achieve growth and success in the evolving IT industry.</p>
+            <i class="fas fa-rocket emoji-bg"></i>
+        </div>
+    </div>
+
+    <!-- subtle footer note (premium) -->
+    <div style="margin-top: 75px; text-align: center; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 35px;">
+        <span
+            style="font-weight: 500; background: linear-gradient(135deg, #0B3D91, #C62828); background-clip: text; -webkit-background-clip: text; color: transparent;">HIN
+            Technologies — Where Innovation Meets Execution</span>
+        <p style="font-size: 0.85rem; color: var(--text-soft); margin-top: 12px;"><i class="fas fa-shield-alt"></i>
+            Trusted by 1000+ professionals | 24/7 support ecosystem</p>
+    </div>
+</section>
+
+<!-- Font Awesome 6 (free icons) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 {% endblock %}

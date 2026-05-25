@@ -10,46 +10,383 @@
         --primary-red: #C62828;
         --dark-red: #8e0e12;
         --logo-blue: #0B3D91;
-        --light-blue: #f5f9ff;
-        --text-dark: #1a1a2e;
-
-        --shadow:
-            0 20px 45px rgba(0, 0, 0, .08);
     }
 
     body {
         background:
-            linear-gradient(180deg,
-                #f5f8ff,
-                white);
+            linear-gradient(135deg, #f5f8ff, #ffffff);
     }
 
     .profile-page {
-        padding: 45px 0 70px;
+        padding: 50px 0;
     }
 
-    /* TOP CARD */
+    .profile-layout {
 
-    .hero {
+        display: grid;
 
-        background:
-            linear-gradient(135deg,
-                #0B3D91,
-                #245ecf,
-                #C62828);
+        grid-template-columns: 420px 1fr;
+
+        gap: 30px;
+
+        align-items: stretch;
+
+    }
+
+    /* LEFT */
+    .profile-card {
+
+        background: white;
 
         border-radius: 35px;
 
-        padding: 40px;
+        overflow: hidden;
+
+        box-shadow:
+            0 20px 45px rgba(0, 0, 0, .08);
+
+        height: 100%;
+
+        display: flex;
+
+        flex-direction: column;
+
+    }
+
+    .cover-section {
+        height: 300px;
+        position: relative;
+        overflow: hidden;
+        background:
+            linear-gradient(135deg,
+                #0B3D91 0%,
+                #123fa8 50%,
+                #C62828 100%);
+    }
+
+    .cover-section::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background:
+            url("https://www.transparenttextures.com/patterns/wavecut.png");
+        opacity: .15;
+    }
+
+    .cover-section::after {
+        content: "";
+        position: absolute;
+        bottom: -55px;
+        left: -5%;
+        width: 110%;
+        height: 120px;
+        background: white;
+        border-radius: 100% 100% 0 0;
+        transform: rotate(-3deg);
+    }
+
+    .wave-bg {
+        position: absolute;
+        left: -20%;
+        bottom: 40px;
+        width: 140%;
+        height: 140px;
+        background:
+            rgba(255, 255, 255, .08);
+        border-radius: 50%;
+        transform: rotate(-8deg);
+    }
+
+    .profile-center {
+
+        position: absolute;
+
+        width: 100%;
+
+        top: 45px;
+
+        text-align: center;
+
+        z-index: 10;
+
+    }
+
+    .avatar {
+        width: 170px;
+        height: 170px;
+        background: white;
+        border-radius: 50%;
+        margin: auto;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 70px;
+        color: #7d1e9f;
+        border: 5px solid white;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, .12);
+    }
+
+    .online-dot {
+        position: absolute;
+        right: 18px;
+        bottom: 18px;
+        width: 22px;
+        height: 22px;
+        background: #32d74b;
+        border-radius: 50%;
+        border: 4px solid white;
+    }
+
+    .profile-center h2 {
+
+        margin-top: 18px;
+
+        font-weight: 700;
+
+    }
+
+    .badge-role {
+
+        display: inline-block;
+
+        padding: 10px 20px;
+
+        border-radius: 30px;
+
+        background: #e00000;
+
+        color: white;
+
+        font-size: 13px;
+
+        font-weight: 600;
+
+        margin-top: 8px;
+
+    }
+
+    .overview-card {
+
+        padding: 28px;
+
+        flex: 1;
+
+        display: flex;
+
+        flex-direction: column;
+
+        justify-content: flex-start;
+
+    }
+
+    .overview-card h6 {
+
+        font-weight: 700;
+
+        color: #3c4d70;
+
+    }
+
+    .line {
+
+        width: 45px;
+        height: 3px;
+
+        background: var(--primary-red);
+
+        margin: 12px 0 20px;
+
+    }
+
+    .detail-row {
+
+        display: flex;
+
+        gap: 16px;
+
+        padding: 18px 0;
+
+        border-bottom: 1px solid #edf1ff;
+
+    }
+
+    .icon {
+
+        width: 52px;
+        height: 52px;
+
+        border-radius: 50%;
+
+        display: flex;
+
+        justify-content: center;
+        align-items: center;
+
+        font-size: 18px;
+
+    }
+
+    .blue {
+
+        background: #edf2ff;
+
+        color: var(--logo-blue);
+
+    }
+
+    .red {
+
+        background: #ffeaea;
+
+        color: var(--primary-red);
+
+    }
+
+    .stats-row {
+
+        display: flex;
+
+        justify-content: space-between;
+
+
+        gap: 10px;
+
+        padding: 22px;
+
+        margin-top: auto;
+
+    }
+
+    .stat-box {
+
+        flex: 1;
+
+        min-height: 150px;
+
+        padding: 22px 12px;
+
+        border-radius: 24px;
+
+        text-align: center;
+
+        display: flex;
+
+        flex-direction: column;
+
+        justify-content: center;
+
+        align-items: center;
 
         position: relative;
 
         overflow: hidden;
 
-        box-shadow: var(--shadow);
+        color: white;
+
     }
 
-    .hero::before {
+    .stat-box::before {
+
+        content: "";
+
+        position: absolute;
+
+        width: 80px;
+        height: 80px;
+
+        background:
+            rgba(255, 255, 255, .08);
+
+        border-radius: 50%;
+
+        top: -20px;
+        right: -20px;
+
+    }
+
+    .premium-blue {
+        background: linear-gradient(135deg,
+                #0B3D91,
+                #2f63db);
+    }
+
+    .premium-red {
+        background: linear-gradient(135deg,
+                #C62828,
+                #ff5757);
+    }
+
+    .premium-purple {
+        background: linear-gradient(135deg,
+                #6d28d9,
+                #8b5cf6);
+    }
+
+    .stat-icon {
+        width: 52px;
+        height: 52px;
+        margin: auto;
+        margin-bottom: 12px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, .15);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+    }
+
+    .stat-box h5 {
+
+        font-size: 20px;
+
+        font-weight: 700;
+
+        margin: 8px 0;
+
+        line-height: 1.3;
+
+    }
+
+    .stat-box span {
+
+        font-size: 13px;
+
+        opacity: .95;
+
+    }
+
+    .stat-box i {
+
+        font-size: 22px;
+
+        margin-bottom: 10px;
+
+        color: var(--logo-blue);
+
+    }
+
+    /* RIGHT */
+
+    .edit-card {
+
+        background: white;
+
+        border-radius: 35px;
+
+        padding: 40px;
+
+        box-shadow:
+            0 20px 45px rgba(0, 0, 0, .08);
+
+        position: relative;
+
+        overflow: hidden;
+
+    }
+
+    .edit-card::before {
 
         content: "";
 
@@ -59,33 +396,18 @@
         height: 220px;
 
         background:
-            rgba(255, 255, 255, .08);
+            linear-gradient(135deg,
+                rgba(11, 61, 145, .05),
+                rgba(198, 40, 40, .05));
 
         border-radius: 50%;
 
+        right: -90px;
         top: -90px;
-        right: -70px;
+
     }
 
-    .hero::after {
-
-        content: "";
-
-        position: absolute;
-
-        width: 150px;
-        height: 150px;
-
-        background:
-            rgba(255, 255, 255, .06);
-
-        border-radius: 50%;
-
-        bottom: -60px;
-        left: -40px;
-    }
-
-    .hero-content {
+    .edit-header {
 
         display: flex;
 
@@ -93,604 +415,839 @@
 
         align-items: center;
 
-        flex-wrap: wrap;
+        padding-bottom: 25px;
 
-        gap: 20px;
+        border-bottom: 1px solid #edf1ff;
+
+        margin-bottom: 35px;
+
     }
 
-    .left-info {
+    .edit-left {
 
         display: flex;
 
-        gap: 20px;
+        gap: 18px;
 
         align-items: center;
 
-        color: white;
     }
 
-    .avatar {
+    .edit-icon {
 
-        position: relative;
+        width: 75px;
+        height: 75px;
 
-        width: 110px;
-        height: 110px;
-
-        border-radius: 30px;
+        border-radius: 24px;
 
         background:
-            linear-gradient(145deg,
-                rgba(255, 255, 255, .25),
-                rgba(255, 255, 255, .08));
-
-        backdrop-filter: blur(12px);
-
-        border: 2px solid rgba(255, 255, 255, .2);
+            linear-gradient(135deg,
+                var(--primary-red),
+                #ff5858);
 
         display: flex;
 
         justify-content: center;
-
         align-items: center;
 
-        font-size: 42px;
-
-        font-weight: 700;
+        font-size: 25px;
 
         color: white;
 
-        box-shadow:
-            0 12px 30px rgba(0, 0, 0, .18),
-            inset 0 1px 1px rgba(255, 255, 255, .25);
-
-        overflow: hidden;
     }
 
-    .avatar::before {
+    .edit-header img {
 
-        content: "";
+        width: 120px;
 
-        position: absolute;
-
-        width: 55px;
-        height: 55px;
-
-        background:
-            rgba(255, 255, 255, .12);
-
-        border-radius: 50%;
-
-        top: -15px;
-        left: -10px;
     }
 
+    .input-box {
 
-    .left-info h2 {
+        margin-bottom: 22px;
 
-        margin: 0;
-
-        font-weight: 700;
     }
 
-    .left-info p {
-
-        margin-top: 8px;
-
-        opacity: .9;
-    }
-
-    .right-actions {
-
-        display: flex;
-
-        gap: 15px;
-    }
-
-    .hero-btn {
-
-        padding: 14px 24px;
-
-        border-radius: 16px;
-
-        text-decoration: none;
-
-        font-weight: 700;
-    }
-
-    .contact-btn {
-
-        background: white;
-
-        color: var(--primary-red);
-    }
-
-    .dash-btn {
-
-        background:
-            rgba(255, 255, 255, .12);
-
-        backdrop-filter: blur(8px);
-
-        color: white;
-    }
-
-    .hero-stats {
-
-        display: grid;
-
-        grid-template-columns:
-            repeat(3, 1fr);
-
-        gap: 20px;
-
-        margin-top: 35px;
-    }
-
-    .stat-card {
-
-        background:
-            rgba(255, 255, 255, .12);
-
-        padding: 20px;
-
-        border-radius: 20px;
-
-        backdrop-filter: blur(10px);
-
-        text-align: center;
-
-        color: white;
-    }
-
-    .stat-card h4 {
-
-        margin-bottom: 5px;
-
-        font-weight: 700;
-    }
-
-    /* FORM */
-
-    .form-box {
-
-        background: white;
-
-        margin-top: 35px;
-
-        padding: 35px;
-
-        border-radius: 30px;
-
-        box-shadow: var(--shadow);
-    }
-
-    .timeline {
-
-        position: relative;
-
-        padding-left: 35px;
-    }
-
-    .timeline::before {
-
-        content: "";
-
-        position: absolute;
-
-        left: 8px;
-
-        width: 4px;
-
-        height: 100%;
-
-        background:
-            linear-gradient(180deg,
-                var(--logo-blue),
-                var(--primary-red));
-    }
-
-    .step {
-
-        position: relative;
-
-        background: #fff;
-
-        padding: 25px;
-
-        border-radius: 25px;
-
-        margin-bottom: 25px;
-
-        box-shadow:
-            0 8px 20px rgba(0, 0, 0, .05);
-    }
-
-    .step::before {
-
-        content: "";
-
-        position: absolute;
-
-        left: -35px;
-
-        top: 35px;
-
-        width: 20px;
-        height: 20px;
-
-        background: var(--primary-red);
-
-        border: 4px solid white;
-
-        border-radius: 50%;
-    }
-
-    .step-title {
-
-        font-size: 20px;
-
-        font-weight: 700;
-
-        color: var(--logo-blue);
-
-        margin-bottom: 20px;
-    }
-
-    .field {
-
-        margin-bottom: 18px;
-    }
-
-    .field label {
+    .input-box label {
 
         display: block;
+
+        margin-bottom: 8px;
 
         font-size: 13px;
 
         font-weight: 700;
 
-        margin-bottom: 8px;
+        color: #555;
 
-        color: #666;
     }
 
-    input,
-    textarea,
-    select {
+    .edit-card input,
+    .edit-card textarea,
+    .edit-card select {
 
         width: 100%;
 
-        padding: 15px;
+        padding: 17px;
+
+        border: 1px solid #e7ecff;
+
+        border-radius: 18px;
+
+        background: #fbfcff;
+
+        outline: none;
+
+    }
+
+    .edit-card input:focus,
+    .edit-card textarea:focus,
+    .edit-card select:focus {
+
+        border-color: var(--logo-blue);
+
+    }
+
+    .edit-card input:focus {
+        border-color: var(--logo-blue);
+    }
+
+
+    .save-btn {
+
+        width: 100%;
+
+        padding: 18px;
 
         border: none;
 
-        background: #f5f8ff;
+        border-radius: 18px;
 
-        border-radius: 16px;
+        background:
+            linear-gradient(90deg,
+                var(--logo-blue),
+                var(--primary-red));
 
-        outline: none;
-    }
+        color: white;
 
-    .expand {
-
-        background: #f5f8ff;
-
-        padding: 18px 20px;
-
-        border-radius: 16px;
-
-        cursor: pointer;
+        font-size: 16px;
 
         font-weight: 700;
 
-        list-style: none;
+        margin-top: 10px;
 
-        transition: .3s;
     }
 
-    .expand:hover {
-        background: #eef4ff;
+    .lock-img {
+        width: 130px;
+        opacity: .95;
     }
 
-    details[open] .expand {
-
-        background: #eef4ff;
-
-        color: #0B3D91;
+    .edit-card {
+        background: white;
+        background-image:
+            radial-gradient(#e8efff 1px, transparent 1px);
+        background-size: 30px 30px;
     }
 
-    details summary::-webkit-details-marker {
-        display: none;
-    }
-
-    .expand {
+    .profile-header-actions {
 
         display: flex;
+
+        flex-direction: column;
 
         align-items: center;
 
         gap: 12px;
 
-        background: #f5f8ff;
-
-        padding: 18px 20px;
-
-        border-radius: 16px;
-
-        cursor: pointer;
-
-        font-weight: 700;
-
-        transition: .3s;
     }
 
-    .expand i {
-
-        width: 34px;
-
-        height: 34px;
-
-        background: white;
-
-        border-radius: 10px;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        color: #C62828;
-
-        box-shadow:
-            0 4px 12px rgba(0, 0, 0, .06);
-    }
-
-    .action-area {
-
-        display: flex;
-
-        justify-content: space-between;
-
-        margin-top: 30px;
-    }
-
-    .back-btn {
-
-        padding: 14px 24px;
-
-        background: #edf3ff;
-
-        border-radius: 16px;
-
-        text-decoration: none;
-
-        color: var(--logo-blue);
-
-        font-weight: 700;
-    }
-
-    .save-btn {
-
-        border: none;
-
-        padding: 14px 35px;
-
-        border-radius: 16px;
+    .change-pass-btn {
 
         background:
-            linear-gradient(90deg,
-                var(--primary-red),
-                var(--dark-red));
+            linear-gradient(135deg,
+                var(--logo-blue),
+                var(--primary-red));
 
         color: white;
 
-        font-weight: 700;
+        padding: 12px 18px;
+
+        border-radius: 14px;
+
+        text-decoration: none;
+
+        font-size: 13px;
+
+        font-weight: 600;
+
+        box-shadow:
+            0 10px 20px rgba(11, 61, 145, .15);
+
+        transition: .3s;
+
     }
 
-    .hero-btn i {
+    .change-pass-btn:hover {
+
+        transform: translateY(-3px);
+
+        color: white;
+
+    }
+
+    .change-pass-btn i {
 
         margin-right: 8px;
 
-        font-size: 15px;
     }
 
-    .left-info h2 i {
+    @media(max-width:992px) {
 
-        margin-right: 10px;
-
-        color: #ffd54f;
-    }
-
-    @media(max-width:768px) {
-
-        .hero-stats {
+        .profile-layout {
             grid-template-columns: 1fr;
         }
 
-        .hero-content {
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width:1200px) {
+
+        .profile-layout {
+
+            grid-template-columns: 350px 1fr;
+
+            gap: 20px;
+
+        }
+
+        .edit-card {
+
+            padding: 30px;
+
+        }
+
+    }
+
+
+    /* TABLET */
+
+    @media (max-width:992px) {
+
+        .profile-page {
+
+            padding: 30px 0;
+
+        }
+
+        .profile-layout {
+
+            grid-template-columns: 1fr;
+
+            gap: 25px;
+
+        }
+
+        .profile-card {
+
+            order: 1;
+
+        }
+
+        .edit-card {
+
+            order: 2;
+
+        }
+
+        .edit-header {
+
             flex-direction: column;
-            align-items: flex-start;
-        }
 
-        .right-actions {
-            width: 100%;
-        }
+            gap: 25px;
 
-        .hero-btn {
-            flex: 1;
             text-align: center;
+
+        }
+
+        .edit-left {
+
+            justify-content: center;
+
+        }
+
+        .profile-header-actions {
+
+            width: 100%;
+
+        }
+
+        .change-pass-btn {
+
+            width: 100%;
+
+            text-align: center;
+
+        }
+
+    }
+
+
+    /* MOBILE */
+
+    @media (max-width:768px) {
+
+        .container {
+
+            padding: 0 15px;
+
+        }
+
+        .profile-page {
+
+            padding: 20px 0;
+
+        }
+
+        .profile-card,
+        .edit-card {
+
+            border-radius: 25px;
+
+        }
+
+        .cover-section {
+
+            height: 260px;
+
+        }
+
+        .avatar {
+
+            width: 130px;
+
+            height: 130px;
+
+            font-size: 50px;
+
+        }
+
+        .profile-center {
+
+            top: 35px;
+
+        }
+
+        .profile-center h2 {
+
+            font-size: 28px;
+
+        }
+
+        .badge-role {
+
+            font-size: 11px;
+
+            padding: 8px 15px;
+
+        }
+
+        .overview-card {
+
+            padding: 20px;
+
+        }
+
+        .detail-row {
+
+            padding: 14px 0;
+
+        }
+
+        .icon {
+
+            width: 45px;
+
+            height: 45px;
+
+        }
+
+        .stats-row {
+
+            flex-wrap: wrap;
+
+            padding: 15px;
+
+        }
+
+        .stat-box {
+
+            min-width: calc(50% - 8px);
+
+            min-height: 130px;
+
+        }
+
+        .edit-card {
+
+            padding: 20px;
+
+        }
+
+        .edit-icon {
+
+            width: 60px;
+
+            height: 60px;
+
+            font-size: 22px;
+
+        }
+
+        .lock-img {
+
+            width: 90px;
+
+        }
+
+    }
+
+
+    /* SMALL MOBILE */
+
+    @media (max-width:576px) {
+
+        .cover-section {
+
+            height: 230px;
+
+        }
+
+        .avatar {
+
+            width: 110px;
+
+            height: 110px;
+
+            font-size: 42px;
+
+        }
+
+        .online-dot {
+
+            width: 18px;
+
+            height: 18px;
+
+        }
+
+        .profile-center h2 {
+
+            font-size: 24px;
+
+        }
+
+        .detail-row {
+
+            gap: 12px;
+
+        }
+
+        .stats-row {
+
+            flex-direction: column;
+
+        }
+
+        .stat-box {
+
+            width: 100%;
+
+            min-height: 110px;
+
+        }
+
+        .edit-header {
+
+            margin-bottom: 20px;
+
+        }
+
+        .edit-left {
+
+            flex-direction: column;
+
+            text-align: center;
+
+        }
+
+        .row {
+
+            display: block;
+
+        }
+
+        .col-md-4,
+        .col-md-6 {
+
+            width: 100%;
+
+        }
+
+        .save-btn {
+
+            padding: 15px;
+
         }
 
     }
 </style>
 
 
-
 <div class="container profile-page">
 
-    <!-- TOP -->
+    <div class="profile-layout">
 
-    <div class="hero">
+        <!-- LEFT -->
 
-        <div class="hero-content">
+        <div class="profile-card">
 
-            <div class="left-info">
+            <div class="cover-section">
 
-                <div class="avatar">
+                <div class="wave-bg"></div>
 
+                <div class="profile-center">
 
-                    {{ user.first_name|first }}
+                    <div class="avatar">
 
-                </div>
+                        <i class="fa fa-user"></i>
 
-                <div>
+                        <span class="online-dot"></span>
+
+                    </div>
+
                     <h2>
-                        <i class="fa-solid fa-circle-user"></i>
 
-
-                        Welcome,
                         {{ user.first_name }}
 
                     </h2>
 
-                    <p>
+                    <div class="badge-role">
 
-                        Manage your profile information & settings
+                        👑 Super Administrator
 
-                    </p>
+                    </div>
 
                 </div>
 
             </div>
 
+            <div class="overview-card">
+
+                <h6>
+
+                    ACCOUNT OVERVIEW
+
+                </h6>
+
+                <div class="line"></div>
 
 
-            <div class="right-actions">
-                <a href="mailto:{{ user.email }}" class="hero-btn contact-btn">
+                <!-- 5 NAME -->
 
-                    <i class="fa-solid fa-headset"></i>
+                <div class="detail-row">
 
-                    Contact
+                    <div class="icon blue">
 
-                </a>
+                        <i class="fa fa-user"></i>
+
+                    </div>
+
+                    <div>
+
+                        <p>Name</p>
+
+                        <b>
+
+                            {{ user.first_name }}
+
+                            {{ user.last_name }}
+
+                        </b>
+
+                    </div>
+
+                </div>
+
+                <!-- 1 EMAIL -->
+
+                <div class="detail-row">
+
+                    <div class="icon blue">
+
+                        <i class="fa fa-envelope"></i>
+
+                    </div>
+
+                    <div>
+
+                        <p>Email Address</p>
+
+                        <b>
+
+                            {{ user.email }}
+
+                        </b>
+
+                    </div>
+
+                </div>
 
 
-                <a href="{% url 'training:student_dashboard' %}" class="hero-btn dash-btn">
+                <!-- 2 QUALIFICATION -->
 
-                    <i class="fa-solid fa-table-columns"></i>
+                <div class="detail-row">
 
-                    Dashboard
+                    <div class="icon red">
 
-                </a>
+                        <i class="fa fa-user-graduate"></i>
+
+                    </div>
+
+                    <div>
+
+                        <p>Qualification</p>
+
+                        <b>
+
+                            {{ form.qualification.value }}
+
+                        </b>
+
+                    </div>
+
+                </div>
+
+
+                <!-- 3 PHONE -->
+
+                <div class="detail-row">
+
+                    <div class="icon blue">
+
+                        <i class="fa fa-phone"></i>
+
+                    </div>
+
+                    <div>
+
+                        <p>Phone Number</p>
+
+                        <b>
+
+                            {{ form.phone.value }}
+
+                        </b>
+
+                    </div>
+
+                </div>
+
+
+                <!-- 4 EXPERIENCE -->
+
+                <div class="detail-row">
+
+                    <div class="icon red">
+
+                        <i class="fa fa-briefcase"></i>
+
+                    </div>
+
+                    <div>
+
+                        <p>Experience</p>
+
+                        <b>
+
+                            {{ form.experience.value }}
+
+                        </b>
+
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+            <div class="stats-row">
+
+                <div class="stat-box premium-blue">
+
+                    <div class="stat-icon">
+
+                        <i class="fa fa-user-graduate"></i>
+
+                    </div>
+
+                    <h5>
+
+                        {{ form.qualification.value }}
+
+                    </h5>
+
+                    <span>
+
+                        Qualification
+
+                    </span>
+
+                </div>
+
+
+                <div class="stat-box premium-red">
+
+                    <div class="stat-icon">
+
+                        <i class="fa fa-star"></i>
+
+                    </div>
+
+                    <h5>
+
+                        {{ user.student_profile.status|title }}
+
+                    </h5>
+
+                    <span>
+
+                        Current Status
+
+                    </span>
+
+                </div>
+
+
+                <div class="stat-box premium-purple">
+
+                    <div class="stat-icon">
+
+                        <i class="fa fa-calendar-check"></i>
+
+                    </div>
+
+                    <h5>
+
+                        {{ user.student_profile.joined_at|date:"M Y" }}
+
+                    </h5>
+
+                    <span>
+
+                        Joined Date
+
+                    </span>
+
+                </div>
+
             </div>
 
         </div>
 
 
 
-        <div class="hero-stats">
+        <!-- RIGHT -->
 
-            <div class="stat-card">
+        <div class="edit-card">
 
-                <h4>
+            <div class="edit-header">
 
-                    80%
+                <div class="edit-left">
 
-                </h4>
+                    <div class="edit-icon">
 
-                Profile Completion
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <h4>
-
-                    Active
-
-                </h4>
-
-                Status
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <h4>
-
-                    {{ form.qualification.value }}
-
-                </h4>
-
-                Qualification
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- FORM -->
-
-    <div class="form-box">
-
-        <form method="POST">
-
-            {% csrf_token %}
-
-            <div class="timeline">
-
-                <div class="step">
-
-                    <div class="step-title">
-
-                        👤 Personal Information
+                        <i class="fa fa-user-pen"></i>
 
                     </div>
 
-                    <div class="row">
+                    <div>
 
-                        <div class="col-md-6 field">
+                        <h2>
 
-                            <label>
+                            Edit Profile
 
-                                First Name
+                        </h2>
 
-                            </label>
+                        <p>
 
-                            {{ form.first_name }}
+                            Update your personal information and account details
 
-                        </div>
-
-                        <div class="col-md-6 field">
-
-                            <label>
-
-                                Last Name
-
-                            </label>
-
-                            {{ form.last_name }}
-
-                        </div>
+                        </p>
 
                     </div>
 
+                </div>
 
-                    <div class="field">
+                <div class="profile-header-actions">
+
+                    <img src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png" class="lock-img">
+                    <a href="{% url 'hin:change_password' %}"
+   class="change-pass-btn">
+
+    <i class="fa fa-key"></i>
+
+    Change Password
+
+</a>
+
+                </div>
+            </div>
+
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="row">
+
+                    <div class="col-md-4 input-box">
 
                         <label>
 
-                            Email
+                            Username
 
                         </label>
 
-                        {{ form.email }}
+                        {{ form.first_name }}
+
+                    </div>
+
+
+                    <div class="col-md-4 input-box">
+
+                        <label>
+
+                            First Name
+
+                        </label>
+
+                        {{ form.first_name }}
+
+                    </div>
+
+
+                    <div class="col-md-4 input-box">
+
+                        <label>
+
+                            Last Name
+
+                        </label>
+
+                        {{ form.last_name }}
 
                     </div>
 
@@ -698,106 +1255,75 @@
 
 
 
-                <div class="step">
+                <div class="input-box">
 
-                    <details>
-                        <summary class="expand">
+                    <label>
 
-                            <i class="fa-solid fa-briefcase"></i>
+                        Email Address
 
-                            Professional Information
+                    </label>
 
-                        </summary>
-
-                        <div class="mt-4">
-
-                            <div class="field">
-
-                                <label>
-
-                                    Phone Number
-
-                                </label>
-
-                                {{ form.phone }}
-
-                            </div>
-
-
-                            <div class="field">
-
-                                <label>
-
-                                    Qualification
-
-                                </label>
-
-                                {{ form.qualification }}
-
-                            </div>
-
-                        </div>
-
-                    </details>
+                    {{ form.email }}
 
                 </div>
 
 
 
-                <div class="step">
+                <div class="row">
 
-                    <details>
-                        <summary class="expand">
+                    <div class="col-md-6 input-box">
 
-                            <i class="fa-solid fa-user-gear"></i>
+                        <label>
 
-                            Additional Details / Experience
+                            Phone Number
 
-                        </summary>
+                        </label>
 
-                        <div class="mt-4">
+                        {{ form.phone }}
 
-                            <div class="field">
+                    </div>
 
-                                <label>
 
-                                    Experience
+                    <div class="col-md-6 input-box">
 
-                                </label>
+                        <label>
 
-                                {{ form.experience }}
+                            Qualification
 
-                            </div>
+                        </label>
 
-                        </div>
+                        {{ form.qualification }}
 
-                    </details>
+                    </div>
 
                 </div>
 
 
-            </div>
+
+                <div class="input-box">
+
+                    <label>
+
+                        Experience
+
+                    </label>
+
+                    {{ form.experience }}
+
+                </div>
 
 
+                <button class="save-btn">
 
-            <div class="action-area">
-
-                <a href="{% url 'training:student_dashboard' %}" class="back-btn">
-
-                    ← Back
-
-                </a>
-
-
-                <button type="submit" class="save-btn">
+                    <i class="fa fa-floppy-disk"></i>
 
                     Update Profile
 
                 </button>
 
-            </div>
+            </form>
 
-        </form>
+        </div>
 
     </div>
 
