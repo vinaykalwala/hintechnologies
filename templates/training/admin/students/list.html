@@ -4,587 +4,1765 @@
 {% block title %}Manage Students - Training{% endblock %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Student Management | Training Portal</title>
-    <!-- Bootstrap 5 + Icons + Google Fonts -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-    <!-- AOS Animation -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
-        :root {
-            --primary-red: #C62828;
-            --dark-red: #8e0e12;
-            --logo-blue: #0B3D91;
-            --light-blue: #f5f9ff;
-            --text-dark: #1a1a2e;
-            --shadow: 0 20px 45px rgba(0, 0, 0, .08);
-            
-            /* Premium extended */
-            --gradient-primary: linear-gradient(135deg, #C62828 0%, #8e0e12 100%);
-            --gradient-blue: linear-gradient(135deg, #0B3D91 0%, #1a5fb4 100%);
-            --glass-bg: rgba(255, 255, 255, 0.92);
-            --glass-border: rgba(255, 255, 255, 0.5);
-            --shadow-premium: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.02);
-            --shadow-elevated: 0 30px 60px -20px rgba(0, 0, 0, 0.25);
-            --transition-premium: all 0.4s cubic-bezier(0.2, 0.95, 0.4, 1.05);
-        }
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: radial-gradient(circle at 10% 20%, rgba(198, 40, 40, 0.03) 0%, rgba(11, 61, 145, 0.02) 100%),
-                        linear-gradient(125deg, #f9fafb 0%, #f0f4f9 100%);
-            color: var(--text-dark);
-            min-height: 100vh;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-        /* Premium Glass Card Effect */
-        .premium-glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 2rem;
-            box-shadow: var(--shadow-premium);
-            transition: var(--transition-premium);
-        }
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-        .premium-glass-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-elevated);
-            border-color: rgba(198, 40, 40, 0.2);
-        }
+    :root {
+        --primary-red: #C62828;
+        --dark-red: #8e0e12;
+        --logo-blue: #0B3D91;
+        --text-dark: #1a1a2e;
 
-        /* Animated Gradient Border */
-        .gradient-border-card {
-            position: relative;
-            background: white;
-            border-radius: 2rem;
-            overflow: hidden;
-        }
+        --glass-bg:
+            rgba(255, 255, 255, .95);
 
-        .gradient-border-card::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, var(--primary-red), var(--logo-blue), var(--primary-red));
-            border-radius: 2rem;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            z-index: -1;
-        }
+        --shadow:
+            0 20px 50px rgba(0, 0, 0, .08);
 
-        .gradient-border-card:hover::before {
-            opacity: 0.15;
-        }
+        --gradient-primary:
+            linear-gradient(135deg,
+                #C62828,
+                #8e0e12);
 
-        /* Page Header Premium */
-        .premium-header {
-            position: relative;
-            margin-bottom: 2rem;
-        }
+    }
 
-        .page-title-premium {
-            font-size: 2.5rem;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            background: linear-gradient(125deg, var(--primary-red) 0%, var(--dark-red) 40%, var(--logo-blue) 100%);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            display: inline-block;
-            position: relative;
-        }
+    body {
 
-        .title-accent {
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 80px;
-            height: 4px;
-            background: var(--gradient-primary);
-            border-radius: 4px;
-        }
+        font-family: 'Inter', sans-serif;
 
-        /* Premium Filter Controls */
-        .premium-input {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 1rem;
-            padding: 0.7rem 1.2rem;
-            font-weight: 500;
-            transition: var(--transition-premium);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
-        }
+        background:
+            linear-gradient(135deg,
+                #f8fafc,
+                #edf2f7);
 
-        .premium-input:focus {
-            border-color: var(--primary-red);
-            box-shadow: 0 0 0 4px rgba(198, 40, 40, 0.1);
-            outline: none;
-            transform: translateY(-1px);
-        }
+        min-height: 100vh;
 
-        .premium-select {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 1rem;
-            padding: 0.7rem 1.2rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition-premium);
-        }
+    }
 
-        .premium-select:focus {
-            border-color: var(--primary-red);
-            box-shadow: 0 0 0 4px rgba(198, 40, 40, 0.1);
-        }
+    .main-container {
 
-        .btn-premium-primary {
-            background: var(--gradient-primary);
-            border: none;
-            border-radius: 1rem;
-            padding: 0.7rem 1.8rem;
-            font-weight: 600;
-            color: white;
-            transition: var(--transition-premium);
-            box-shadow: 0 4px 12px rgba(198, 40, 40, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
+        max-width: 1450px;
 
-        .btn-premium-primary::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
+        margin: auto;
 
-        .btn-premium-primary:hover::before {
-            width: 300px;
-            height: 300px;
-        }
+        padding: 50px 35px;
 
-        .btn-premium-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(198, 40, 40, 0.4);
-        }
+    }
 
-        /* Premium Table Design */
-        .premium-table-wrapper {
-            overflow-x: auto;
-            border-radius: 1.5rem;
-        }
+    /* HEADER */
 
-        .premium-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
+    .premium-header {
 
-        .premium-table thead th {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            padding: 1.2rem 1rem;
-            font-weight: 700;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--logo-blue);
-            border-bottom: 2px solid rgba(198, 40, 40, 0.2);
-            white-space: nowrap;
-        }
+        display: flex;
 
-        .premium-table tbody tr {
-            transition: var(--transition-premium);
-            border-bottom: 1px solid #f0f2f5;
-        }
+        justify-content: space-between;
 
-        .premium-table tbody tr:hover {
-            background: linear-gradient(90deg, rgba(198, 40, 40, 0.02) 0%, rgba(11, 61, 145, 0.02) 100%);
-            transform: scale(1.01);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
+        align-items: center;
 
-        .premium-table tbody td {
-            padding: 1.2rem 1rem;
-            vertical-align: middle;
-            font-weight: 500;
-        }
+        gap: 20px;
 
-        /* Premium Avatar */
-        .premium-avatar {
-            width: 44px;
-            height: 44px;
-            background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
-            border-radius: 1rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-            margin-right: 12px;
-            box-shadow: 0 4px 10px rgba(198, 40, 40, 0.2);
-            transition: var(--transition-premium);
-        }
+        flex-wrap: wrap;
 
-        .premium-table tbody tr:hover .premium-avatar {
-            transform: scale(1.05) rotate(3deg);
-        }
+        margin-bottom: 40px;
 
-        /* Premium Badges */
-        .badge-premium {
-            padding: 0.4rem 1rem;
-            border-radius: 2rem;
-            font-weight: 700;
-            font-size: 0.75rem;
-            letter-spacing: 0.3px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            backdrop-filter: blur(4px);
-            transition: var(--transition-premium);
-        }
+    }
 
-        .badge-active { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 2px 8px rgba(16,185,129,0.3); }
-        .badge-onhold { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
-        .badge-completed { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; }
-        .badge-placed { background: linear-gradient(135deg, #0B3D91, #1e40af); color: white; }
-        .badge-dropped { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
-        .badge-default { background: linear-gradient(135deg, #94a3b8, #64748b); color: white; }
+    .page-title-premium {
 
-        /* Batch Pill */
-        .batch-pill {
-            background: rgba(11, 61, 145, 0.1);
-            border-radius: 2rem;
-            padding: 0.3rem 1rem;
-            font-weight: 600;
-            font-size: 0.8rem;
-            color: var(--logo-blue);
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            backdrop-filter: blur(2px);
-        }
+        font-size: 42px;
 
-        /* Premium Button Outline */
-        .btn-premium-outline {
-            border-radius: 1rem;
-            border: 1.5px solid var(--primary-red);
-            background: transparent;
-            color: var(--primary-red);
-            padding: 0.4rem 1.2rem;
-            font-weight: 600;
-            transition: var(--transition-premium);
-        }
+        font-weight: 800;
 
-        .btn-premium-outline:hover {
-            background: var(--gradient-primary);
-            color: white;
-            border-color: transparent;
-            transform: translateX(4px);
-            box-shadow: 0 4px 12px rgba(198,40,40,0.3);
-        }
+        background:
+            linear-gradient(135deg,
+                var(--primary-red),
+                var(--logo-blue));
 
-        /* Pagination Premium */
-        .pagination-premium .page-link {
-            border-radius: 0.75rem;
-            margin: 0 5px;
-            border: none;
-            background: white;
-            color: var(--text-dark);
-            font-weight: 600;
-            padding: 0.6rem 1rem;
-            transition: var(--transition-premium);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
+        -webkit-background-clip: text;
 
-        .pagination-premium .page-item.active .page-link {
-            background: var(--gradient-primary);
-            color: white;
-            box-shadow: 0 4px 12px rgba(198,40,40,0.3);
-            transform: scale(1.05);
-        }
+        color: transparent;
 
-        .pagination-premium .page-link:hover {
-            background: var(--gradient-blue);
-            color: white;
-            transform: translateY(-2px);
-        }
+        position: relative;
 
-        /* Empty State Premium */
-        .empty-state-premium {
-            text-align: center;
-            padding: 4rem;
-            background: linear-gradient(135deg, rgba(198,40,40,0.02), rgba(11,61,145,0.02));
-            border-radius: 1.5rem;
-        }
+    }
 
-        /* Animations */
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+    .title-accent {
 
-        .animate-premium {
-            animation: slideInUp 0.5s ease forwards;
-        }
+        width: 80px;
 
-        /* Stat Badge */
-        .stat-badge {
-            background: white;
-            border-radius: 2rem;
-            padding: 0.5rem 1.2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            backdrop-filter: blur(8px);
-        }
-    </style>
-</head>
-<body>
+        height: 4px;
 
-<div class="container-fluid py-5 px-lg-5">
-    <!-- Premium Header with Stats -->
-    <div class="premium-header d-flex flex-wrap justify-content-between align-items-center mb-5" data-aos="fade-up" data-aos-duration="600">
+        margin-top: 10px;
+
+        border-radius: 10px;
+
+        background: var(--gradient-primary);
+
+    }
+
+    .header-sub {
+
+        margin-top: 18px;
+
+        color: #777;
+
+    }
+
+    .stat-badge {
+
+        padding: 16px 24px;
+
+        background: white;
+
+        border-radius: 18px;
+
+        box-shadow: var(--shadow);
+
+        font-weight: 700;
+
+    }
+
+    /* CARD */
+
+    .premium-card {
+
+        background: var(--glass-bg);
+
+        border-radius: 28px;
+
+        box-shadow: var(--shadow);
+
+        padding: 35px;
+
+        margin-bottom: 35px;
+
+    }
+
+    /* FILTER */
+
+    .filter-grid {
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(auto-fit,
+                minmax(230px,
+                    1fr));
+
+        gap: 20px;
+
+        align-items: end;
+
+    }
+
+    .field {
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 10px;
+
+    }
+
+    .field label {
+
+        font-weight: 700;
+
+        font-size: 14px;
+
+    }
+
+    .premium-input,
+    .premium-select {
+
+        padding: 16px;
+
+        border-radius: 15px;
+
+        border: 1px solid #ddd;
+
+        font-size: 14px;
+
+        outline: none;
+
+        transition: .3s;
+
+    }
+
+    .premium-input:focus,
+    .premium-select:focus {
+
+        border-color:
+            var(--primary-red);
+
+        box-shadow:
+            0 0 0 4px rgba(198,
+                40,
+                40,
+                .1);
+
+    }
+
+    .btn-premium {
+
+        height: 55px;
+
+        border: none;
+
+        border-radius: 15px;
+
+        background:
+            var(--gradient-primary);
+
+        color: white;
+
+        font-weight: 700;
+
+        cursor: pointer;
+
+        transition: .3s;
+
+    }
+
+    .btn-premium:hover {
+
+        transform:
+            translateY(-3px);
+
+    }
+
+    /* TABLE */
+
+    .table-wrap {
+
+        overflow: auto;
+
+    }
+
+    .premium-table {
+
+        width: 100%;
+
+        border-collapse: collapse;
+
+        min-width: 1100px;
+
+    }
+
+    .premium-table th {
+
+        padding: 20px;
+
+        background: #f8fafc;
+
+        font-size: 13px;
+
+        text-transform: uppercase;
+
+        color: var(--logo-blue);
+
+        text-align: left;
+
+    }
+
+    .premium-table td {
+
+        padding: 18px;
+
+        border-bottom:
+            1px solid #eee;
+
+    }
+
+    .premium-table tr:hover {
+
+        background:
+            rgba(198,
+                40,
+                40,
+                .02);
+
+    }
+
+    /* STUDENT */
+
+    .student-box {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 14px;
+
+    }
+
+    .premium-avatar {
+
+        width: 50px;
+
+        height: 50px;
+
+        border-radius: 16px;
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+
+        background:
+            var(--gradient-primary);
+
+        color: white;
+
+        font-size: 18px;
+
+    }
+
+    .student-name {
+
+        font-weight: 700;
+
+    }
+
+    .student-mail {
+
+        font-size: 12px;
+
+        color: #777;
+
+        margin-top: 4px;
+
+    }
+
+    /* BADGE */
+
+    .batch-pill {
+
+        padding:
+            8px 15px;
+
+        border-radius: 30px;
+
+        background:
+            rgba(11,
+                61,
+                145,
+                .1);
+
+        color:
+            var(--logo-blue);
+
+        font-size: 13px;
+
+        font-weight: 700;
+
+    }
+
+    .view-btn {
+
+        padding:
+            10px 18px;
+
+        border-radius: 12px;
+
+        text-decoration: none;
+
+        border:
+            1px solid var(--primary-red);
+
+        color:
+            var(--primary-red);
+
+        font-weight: 700;
+
+        display: inline-block;
+
+        transition: .3s;
+
+    }
+
+    .view-btn:hover {
+
+        background:
+            var(--gradient-primary);
+
+        color: white;
+
+    }
+
+    /* EMPTY */
+
+    .empty-box {
+
+        padding: 60px;
+
+        text-align: center;
+
+    }
+
+    /* PAGINATION */
+
+    .pagination-box {
+
+        padding: 25px;
+
+        display: flex;
+
+        justify-content: center;
+
+        gap: 10px;
+
+        flex-wrap: wrap;
+
+    }
+
+    .page-link {
+
+        padding:
+            12px 18px;
+
+        border-radius: 12px;
+
+        background: white;
+
+        text-decoration: none;
+
+        box-shadow:
+            0 3px 8px rgba(0,
+                0,
+                0,
+                .05);
+
+        font-weight: 700;
+
+        color: black;
+
+    }
+
+    .active-page {
+
+        background:
+            var(--gradient-primary);
+
+        color: white;
+
+    }
+
+    .assign-toggle-wrap {
+
+        display: flex;
+
+        gap: 15px;
+
+        margin-top: 25px;
+
+        flex-wrap: wrap;
+
+        padding-top: 25px;
+
+        border-top: 1px solid #eee;
+
+    }
+
+    .assign-btn {
+
+        border: none;
+
+        padding: 14px 28px;
+
+        border-radius: 18px;
+
+        font-weight: 700;
+
+        font-size: 14px;
+
+        cursor: pointer;
+
+        background: white;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+
+        color: #444;
+
+        box-shadow:
+            0 10px 25px rgba(0, 0, 0, .06);
+
+        transition: .4s;
+
+    }
+
+    .assign-btn:hover {
+
+        transform:
+            translateY(-4px);
+
+    }
+
+    .assign-btn.active {
+
+        background:
+            linear-gradient(135deg,
+                #C62828,
+                #8e0e12);
+
+        color: white;
+
+        box-shadow:
+            0 15px 30px rgba(198,
+                40,
+                40,
+                .3);
+
+    }
+
+    .unassigned-pill {
+
+        padding: 8px 15px;
+
+        border-radius: 30px;
+
+        background: #ffe5e5;
+
+        color: #C62828;
+
+        font-size: 13px;
+
+        font-weight: 700;
+
+    }
+
+    .status-pill {
+
+        padding: 9px 18px;
+
+        border-radius: 30px;
+
+        font-size: 13px;
+
+        font-weight: 700;
+
+        display: inline-block;
+
+    }
+
+    .status-active {
+
+        background:
+            linear-gradient(135deg,
+                #d1fae5,
+                #a7f3d0);
+
+        color: #047857;
+
+        box-shadow:
+            0 8px 18px rgba(16,
+                185,
+                129,
+                .15);
+
+    }
+
+    .status-inactive {
+
+        background:
+            linear-gradient(135deg,
+                #ffe4e6,
+                #fecdd3);
+
+        color: #be123c;
+
+        box-shadow:
+            0 8px 18px rgba(244,
+                63,
+                94,
+                .15);
+
+    }
+
+    .status-onhold {
+
+        background:
+            linear-gradient(135deg,
+                #fef3c7,
+                #fde68a);
+
+        color: #d97706;
+
+        box-shadow:
+            0 8px 18px rgba(245,
+                158,
+                11,
+                .15);
+
+    }
+
+    .status-completed {
+
+        background:
+            linear-gradient(135deg,
+                #ede9fe,
+                #ddd6fe);
+
+        color: #7c3aed;
+
+        box-shadow:
+            0 8px 18px rgba(124,
+                58,
+                237,
+                .15);
+
+    }
+
+    .status-dropped {
+
+        background:
+            linear-gradient(135deg,
+                #ffe4e6,
+                #fecdd3);
+
+        color: #e11d48;
+
+        box-shadow:
+            0 8px 18px rgba(225,
+                29,
+                72,
+                .15);
+
+    }
+
+    .status-placed {
+
+        background:
+            linear-gradient(135deg,
+                #ccfbf1,
+                #a5f3fc);
+
+        color: #0f766e;
+
+        box-shadow:
+            0 8px 18px rgba(13,
+                148,
+                136,
+                .15);
+
+    }
+    /* ============================================
+   COMPLETE RESPONSIVE STYLES
+   Add this to your existing <style> block
+   ============================================ */
+
+/* Base responsive adjustments */
+@media (max-width: 1200px) {
+    .main-container {
+        padding: 40px 25px;
+    }
+    
+    .premium-table th,
+    .premium-table td {
+        padding: 16px 12px;
+    }
+}
+
+/* Tablet landscape and medium screens */
+@media (max-width: 992px) {
+    .main-container {
+        padding: 35px 20px;
+    }
+    
+    .page-title-premium {
+        font-size: 36px;
+    }
+    
+    .premium-card {
+        padding: 28px 24px;
+    }
+    
+    .filter-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
+    
+    .btn-premium {
+        height: 52px;
+    }
+    
+    .premium-table {
+        min-width: 850px;
+    }
+    
+    .premium-table th,
+    .premium-table td {
+        padding: 14px 10px;
+    }
+    
+    .student-box {
+        gap: 10px;
+    }
+    
+    .premium-avatar {
+        width: 44px;
+        height: 44px;
+    }
+}
+
+/* Tablet portrait and small tablets */
+@media (max-width: 768px) {
+    .main-container {
+        padding: 25px 18px;
+    }
+    
+    .premium-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .page-title-premium {
+        font-size: 32px;
+    }
+    
+    .title-accent {
+        width: 60px;
+    }
+    
+    .stat-badge {
+        align-self: flex-start;
+        padding: 10px 18px;
+        font-size: 14px;
+    }
+    
+    .premium-card {
+        padding: 22px 18px;
+        border-radius: 24px;
+        margin-bottom: 25px;
+    }
+    
+    .filter-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .field label {
+        font-size: 13px;
+    }
+    
+    .premium-input,
+    .premium-select {
+        padding: 12px 14px;
+        font-size: 14px;
+    }
+    
+    .btn-premium {
+        height: 48px;
+        font-size: 14px;
+    }
+    
+    /* Table horizontal scroll for tablet */
+    .table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 16px;
+    }
+    
+    .premium-table {
+        min-width: 750px;
+    }
+    
+    .premium-table th {
+        padding: 12px 10px;
+        font-size: 11px;
+    }
+    
+    .premium-table td {
+        padding: 12px 10px;
+        font-size: 13px;
+    }
+    
+    .premium-avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+        border-radius: 14px;
+    }
+    
+    .student-name {
+        font-size: 14px;
+    }
+    
+    .student-mail {
+        font-size: 11px;
+    }
+    
+    .batch-pill,
+    .unassigned-pill,
+    .status-pill {
+        padding: 5px 12px;
+        font-size: 11px;
+        white-space: nowrap;
+    }
+    
+    .view-btn {
+        padding: 7px 14px;
+        font-size: 12px;
+    }
+    
+    .assign-toggle-wrap {
+        gap: 10px;
+        margin-top: 20px;
+        padding-top: 20px;
+    }
+    
+    .assign-btn {
+        padding: 10px 18px;
+        font-size: 12px;
+    }
+    
+    .assign-btn i {
+        font-size: 14px;
+    }
+    
+    .pagination-box {
+        padding: 20px 10px 5px;
+        gap: 6px;
+    }
+    
+    .page-link {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+}
+
+/* Mobile landscape and large phones */
+@media (max-width: 576px) {
+    .main-container {
+        padding: 20px 14px;
+    }
+    
+    .page-title-premium {
+        font-size: 28px;
+    }
+    
+    .header-sub {
+        font-size: 13px;
+        margin-top: 8px;
+    }
+    
+    .stat-badge {
+        font-size: 13px;
+        padding: 8px 16px;
+    }
+    
+    .premium-card {
+        padding: 18px 14px;
+        border-radius: 20px;
+    }
+    
+    .filter-grid {
+        gap: 12px;
+    }
+    
+    .field {
+        gap: 6px;
+    }
+    
+    .field label {
+        font-size: 12px;
+    }
+    
+    .premium-input,
+    .premium-select {
+        padding: 10px 12px;
+        font-size: 13px;
+        border-radius: 12px;
+    }
+    
+    .btn-premium {
+        height: 44px;
+        font-size: 13px;
+        border-radius: 12px;
+    }
+    
+    .table-wrap {
+        margin: 0 -6px;
+        padding: 0 6px;
+    }
+    
+    .premium-table {
+        min-width: 650px;
+    }
+    
+    .premium-table th {
+        padding: 10px 8px;
+        font-size: 10px;
+    }
+    
+    .premium-table td {
+        padding: 10px 8px;
+        font-size: 12px;
+    }
+    
+    .student-box {
+        gap: 8px;
+    }
+    
+    .premium-avatar {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+        border-radius: 12px;
+    }
+    
+    .student-name {
+        font-size: 13px;
+    }
+    
+    .student-mail {
+        font-size: 10px;
+        margin-top: 3px;
+    }
+    
+    .batch-pill,
+    .unassigned-pill,
+    .status-pill {
+        padding: 4px 10px;
+        font-size: 10px;
+        border-radius: 20px;
+    }
+    
+    .view-btn {
+        padding: 6px 12px;
+        font-size: 11px;
+        border-radius: 10px;
+    }
+    
+    .assign-toggle-wrap {
+        gap: 8px;
+        margin-top: 18px;
+        padding-top: 18px;
+    }
+    
+    .assign-btn {
+        padding: 8px 16px;
+        font-size: 11px;
+        border-radius: 30px;
+    }
+    
+    .assign-btn i {
+        font-size: 13px;
+    }
+    
+    .pagination-box {
+        padding: 15px 5px 5px;
+        gap: 5px;
+    }
+    
+    .page-link {
+        padding: 6px 12px;
+        font-size: 12px;
+        border-radius: 10px;
+    }
+    
+    .empty-box {
+        padding: 40px 20px;
+        font-size: 13px;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .main-container {
+        padding: 15px 12px;
+    }
+    
+    .page-title-premium {
+        font-size: 24px;
+    }
+    
+    .title-accent {
+        width: 50px;
+        height: 3px;
+        margin-top: 8px;
+    }
+    
+    .header-sub {
+        font-size: 12px;
+    }
+    
+    .stat-badge {
+        font-size: 12px;
+        padding: 6px 14px;
+        border-radius: 14px;
+    }
+    
+    .premium-card {
+        padding: 16px 12px;
+        border-radius: 18px;
+        margin-bottom: 20px;
+    }
+    
+    .filter-grid {
+        gap: 10px;
+    }
+    
+    .field label {
+        font-size: 11px;
+    }
+    
+    .premium-input,
+    .premium-select {
+        padding: 9px 11px;
+        font-size: 12px;
+        border-radius: 10px;
+    }
+    
+    .btn-premium {
+        height: 40px;
+        font-size: 12px;
+        border-radius: 10px;
+    }
+    
+    .premium-table {
+        min-width: 580px;
+    }
+    
+    .premium-table th {
+        padding: 8px 6px;
+        font-size: 9px;
+    }
+    
+    .premium-table td {
+        padding: 8px 6px;
+        font-size: 11px;
+    }
+    
+    .student-box {
+        gap: 6px;
+    }
+    
+    .premium-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+        border-radius: 10px;
+    }
+    
+    .student-name {
+        font-size: 12px;
+    }
+    
+    .student-mail {
+        font-size: 9px;
+        margin-top: 2px;
+    }
+    
+    .premium-table td:nth-child(2),
+    .premium-table td:nth-child(3) {
+        max-width: 120px;
+        word-break: break-word;
+    }
+    
+    .batch-pill,
+    .unassigned-pill,
+    .status-pill {
+        padding: 3px 8px;
+        font-size: 9px;
+        border-radius: 16px;
+    }
+    
+    .view-btn {
+        padding: 5px 10px;
+        font-size: 10px;
+        border-radius: 8px;
+    }
+    
+    .assign-toggle-wrap {
+        gap: 6px;
+        margin-top: 15px;
+        padding-top: 15px;
+    }
+    
+    .assign-btn {
+        padding: 6px 14px;
+        font-size: 10px;
+        border-radius: 25px;
+    }
+    
+    .assign-btn i {
+        font-size: 12px;
+    }
+    
+    .pagination-box {
+        padding: 12px 5px 5px;
+        gap: 4px;
+    }
+    
+    .page-link {
+        padding: 5px 10px;
+        font-size: 11px;
+        border-radius: 8px;
+    }
+}
+
+/* Extra small devices (iPhone SE, small Android) */
+@media (max-width: 375px) {
+    .main-container {
+        padding: 12px 10px;
+    }
+    
+    .page-title-premium {
+        font-size: 22px;
+    }
+    
+    .premium-card {
+        padding: 14px 10px;
+    }
+    
+    .premium-table {
+        min-width: 520px;
+    }
+    
+    .premium-table th {
+        padding: 8px 5px;
+        font-size: 8px;
+    }
+    
+    .premium-table td {
+        padding: 8px 5px;
+        font-size: 10px;
+    }
+    
+    .premium-avatar {
+        width: 28px;
+        height: 28px;
+        font-size: 11px;
+    }
+    
+    .student-name {
+        font-size: 11px;
+    }
+    
+    .student-mail {
+        font-size: 8px;
+    }
+    
+    .batch-pill,
+    .unassigned-pill,
+    .status-pill {
+        padding: 2px 6px;
+        font-size: 8px;
+    }
+    
+    .view-btn {
+        padding: 4px 8px;
+        font-size: 9px;
+    }
+    
+    .assign-btn {
+        padding: 5px 12px;
+        font-size: 9px;
+    }
+    
+    .page-link {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+}
+
+/* Landscape orientation for mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .main-container {
+        padding: 20px 25px;
+    }
+    
+    .premium-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .filter-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .assign-toggle-wrap {
+        flex-wrap: wrap;
+    }
+}
+
+/* Improve touch targets for mobile devices */
+@media (hover: none) and (pointer: coarse) {
+    .btn-premium,
+    .assign-btn,
+    .view-btn,
+    .page-link,
+    .premium-input,
+    .premium-select {
+        cursor: pointer;
+        min-height: 44px;
+    }
+    
+    .premium-input,
+    .premium-select {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    .btn-premium {
+        min-height: 44px;
+    }
+    
+    .assign-btn {
+        min-height: 40px;
+    }
+}
+
+/* Print styles - optional */
+@media print {
+    .assign-toggle-wrap,
+    .btn-premium,
+    .filter-grid .btn-premium,
+    .pagination-box,
+    .view-btn {
+        display: none;
+    }
+    
+    .premium-card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    .premium-table {
+        min-width: 100%;
+    }
+}
+
+</style>
+
+
+<div class="main-container">
+
+    <div class="premium-header">
+
         <div>
+
             <h1 class="page-title-premium">
+
                 Student Management
+
                 <div class="title-accent"></div>
+
             </h1>
-            <p class="text-muted mt-3" style="font-size: 0.95rem;">
-                <i class="bi bi-shield-check me-2" style="color: var(--primary-red);"></i>
-                Comprehensive overview · Real-time insights
+
+            <p class="header-sub">
+
+                Comprehensive Overview
+
             </p>
+
         </div>
-        <div class="stat-badge mt-3 mt-sm-0">
-            <i class="bi bi-people-fill me-2" style="color: var(--primary-red);"></i>
-            <strong class="fs-5">{{ students.paginator.count|default:"0" }}</strong>
-            <span class="text-muted ms-1">active learners</span>
+
+        <div class="stat-badge">
+
+            {{ students.paginator.count|default:"0" }}
+
+            Students
+
         </div>
+
     </div>
 
-    <!-- Premium Filter Card -->
-    <div class="premium-glass-card mb-5" data-aos="fade-up" data-aos-delay="100">
-        <div class="card-body p-4 p-lg-5">
-            <form method="get" class="row g-4">
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold mb-2"><i class="bi bi-search-heart me-1"></i> Search</label>
-                    <input type="text" name="search" class="form-control premium-input" placeholder="Name, email or contact..." value="{{ search_query }}">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label fw-semibold mb-2"><i class="bi bi-funnel-fill me-1"></i> Status</label>
-                    <select name="status" class="form-select premium-select">
-                        <option value="">All Status</option>
-                        {% for value, label in status_choices %}
-                            <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label fw-semibold mb-2"><i class="bi bi-grid-3x3-gap-fill me-1"></i> Batch</label>
-                    <select name="batch" class="form-select premium-select">
-                        <option value="">All Batches</option>
-                        {% for batch in batches %}
-                            <option value="{{ batch.id }}" {% if batch_filter == batch.id|stringformat:"s" %}selected{% endif %}>{{ batch.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <button type="submit" class="btn btn-premium-primary w-100">
-                        <i class="bi bi-lightning-charge-fill me-2"></i> Filter
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
 
-    <!-- Premium Students Table -->
-    <div class="gradient-border-card" data-aos="fade-up" data-aos-delay="200">
-        <div class="premium-glass-card p-0 overflow-hidden">
-            <div class="premium-table-wrapper">
-                <table class="premium-table">
-                    <thead>
-                        <tr>
-                            <th>Student</th>
-                            <th>Contact</th>
-                            <th>Qualification</th>
-                            <th>Batch</th>
-                            <th>Status</th>
-                            <th>Joined</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for student in students %}
-                            <tr class="animate-premium" style="animation-delay: {{ forloop.counter0|add:1|floatformat:"0" }}0ms;">
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="premium-avatar">
-                                            <i class="bi bi-person-standing"></i>
-                                        </div>
-                                        <div>
-                                            <div class="fw-bold">{{ student.user.get_full_name|default:student.user.username }}</div>
-                                            <small class="text-muted">{{ student.user.email }}</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <i class="bi bi-telephone-fill me-2" style="color: var(--logo-blue); font-size: 0.8rem;"></i>
-                                    {{ student.phone|default:"—" }}
-                                </td>
-                                <td>
-                                    <span class="text-secondary">{{ student.qualification|truncatechars:35|default:"—" }}</span>
-                                </td>
-                                <td>
-                                    {% if student.current_batch_name %}
-                                        <span class="batch-pill">
-                                            <i class="bi bi-bookmark-fill"></i> {{ student.current_batch_name }}
-                                        </span>
-                                    {% else %}
-                                        <span class="text-muted fst-italic">Unassigned</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% with student_status=student.status %}
-                                        <span class="badge-premium 
-                                            {% if student_status == 'active' %}badge-active
-                                            {% elif student_status == 'on_hold' %}badge-onhold
-                                            {% elif student_status == 'completed' %}badge-completed
-                                            {% elif student_status == 'placed' %}badge-placed
-                                            {% elif student_status == 'dropped' %}badge-dropped
-                                            {% else %}badge-default{% endif %}">
-                                            <i class="bi 
-                                                {% if student_status == 'active' %}bi-check-circle-fill
-                                                {% elif student_status == 'on_hold' %}bi-pause-fill
-                                                {% elif student_status == 'completed' %}bi-trophy-fill
-                                                {% elif student_status == 'placed' %}bi-briefcase-fill
-                                                {% elif student_status == 'dropped' %}bi-emoji-frown-fill
-                                                {% else %}bi-question-circle-fill{% endif %}"></i>
-                                            {{ student.get_status_display }}
-                                        </span>
-                                    {% endwith %}
-                                </td>
-                                <td class="text-muted">
-                                    <i class="bi bi-calendar3 me-1"></i> {{ student.joined_at|date:"M d, Y" }}
-                                </td>
-                                <td>
-                                    <a href="{% url 'training:student_detail' student.id %}" class="btn btn-premium-outline btn-sm">
-                                        <i class="bi bi-arrow-right-circle"></i> View
-                                    </a>
-                                </td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="7" class="empty-state-premium">
-                                    <i class="bi bi-people" style="font-size: 4rem; color: var(--primary-red); opacity: 0.5;"></i>
-                                    <h4 class="mt-3 fw-bold">No students found</h4>
-                                    <p class="text-muted">Try adjusting filters to see results</p>
-                                    <a href="?" class="btn btn-premium-primary mt-2">
-                                        <i class="bi bi-arrow-repeat"></i> Reset Filters
-                                    </a>
-                                </td>
-                            </tr>
+    <!-- FILTER -->
+
+    <div class="premium-card">
+
+        <form method="get">
+
+            <div class="filter-grid">
+
+                <div class="field">
+
+                    <label>Search</label>
+
+                    <input type="text" name="search" class="premium-input" placeholder="Name / Email"
+                        value="{{ search_query|default:'' }}">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>Status</label>
+
+                    <select name="status" class="premium-select">
+
+                        <option value="">
+
+                            All Status
+
+                        </option>
+
+                        {% for value,label in status_choices %}
+
+                        <option value="{{ value }}" {% if status_filter == value %} selected {% endif %}>
+
+                            {{ label }}
+
+                        </option>
+
                         {% endfor %}
-                    </tbody>
-                </table>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>Batch</label>
+
+                    <select name="batch" class="premium-select">
+
+                        <option value="">
+
+                            All Batch
+
+                        </option>
+{% for batch in batches %}
+
+<option value="{{ batch.id }}"
+{% if batch_filter == batch.id|stringformat:"s" %}
+selected
+{% endif %}
+>
+
+{{ batch.name }}
+
+</option>
+
+{% endfor %}
+
+                    </select>
+
+                </div>
+
+                <button type="submit" class="btn-premium">
+
+                    Filter
+
+                </button>
+
+            </div>
+            <!-- Assignment Toggle -->
+
+            <div class="assign-toggle-wrap">
+
+                <button type="button" class="assign-btn active" onclick="filterAssignment('all',this)">
+
+                    <i class="bi bi-grid"></i>
+                    All
+
+                </button>
+
+                <button type="button" class="assign-btn" onclick="filterAssignment('assigned',this)">
+
+                    <i class="bi bi-check-circle-fill"></i>
+                    Assigned
+
+                </button>
+
+                <button type="button" class="assign-btn" onclick="filterAssignment('unassigned',this)">
+
+                    <i class="bi bi-x-circle-fill"></i>
+                    Unassigned
+
+                </button>
+
             </div>
 
-            <!-- Premium Pagination -->
-            {% if students.has_other_pages %}
-                <div class="p-4 bg-transparent border-top">
-                    <nav>
-                        <ul class="pagination justify-content-center pagination-premium mb-0">
-                            {% if students.has_previous %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ students.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if batch_filter %}&batch={{ batch_filter }}{% endif %}">
-                                        <i class="bi bi-arrow-left-short"></i> Prev
-                                    </a>
-                                </li>
-                            {% else %}
-                                <li class="page-item disabled"><span class="page-link"><i class="bi bi-arrow-left-short"></i> Prev</span></li>
-                            {% endif %}
-                            
-                            {% for num in students.paginator.page_range %}
-                                {% if students.number == num %}
-                                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-                                {% elif num > students.number|add:'-3' and num < students.number|add:'3' %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if batch_filter %}&batch={{ batch_filter }}{% endif %}">{{ num }}</a>
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-                            
-                            {% if students.has_next %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ students.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if batch_filter %}&batch={{ batch_filter }}{% endif %}">
-                                        Next <i class="bi bi-arrow-right-short"></i>
-                                    </a>
-                                </li>
-                            {% else %}
-                                <li class="page-item disabled"><span class="page-link">Next <i class="bi bi-arrow-right-short"></i></span></li>
-                            {% endif %}
-                        </ul>
-                    </nav>
-                </div>
-            {% endif %}
-        </div>
+        </form>
+
     </div>
+
+
+
+    <!-- TABLE -->
+
+    <div class="premium-card">
+
+        <div class="table-wrap">
+
+            <table class="premium-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Student</th>
+
+                        <th>Contact</th>
+
+                        <th>Qualification</th>
+
+                        <th>Batch</th>
+
+                        <th>Status</th>
+
+                        <th>Joined</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for student in students %}
+
+                    <tr>
+
+                        <td>
+
+                            <div class="student-box">
+
+                                <div class="premium-avatar">
+
+                                    <i class="bi bi-person"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <div class="student-name">
+
+                                        {{ student.user.get_full_name|default:student.user.username }}
+
+                                    </div>
+
+                                    <div class="student-mail">
+
+                                        {{ student.user.email }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            {{ student.phone|default:"—" }}
+
+                        </td>
+
+                        <td>
+
+                            {{ student.qualification|truncatechars:35|default:"—" }}
+
+                        </td>
+                        <td class="batch-cell"
+                            data-assignment="{% if student.current_batch_name %}assigned{% else %}unassigned{% endif %}">
+
+                            {% if student.current_batch_name %}
+
+                            <span class="batch-pill">
+
+                                {{ student.current_batch_name }}
+
+                            </span>
+
+                            {% else %}
+
+                            <span class="unassigned-pill">
+
+                                Unassigned
+
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+                        <td>
+
+                            <span class="status-pill
+
+{% if student.status == 'active' %}
+status-active
+
+{% elif student.status == 'on_hold' %}
+status-onhold
+
+{% elif student.status == 'completed' %}
+status-completed
+
+{% elif student.status == 'dropped' %}
+status-dropped
+
+{% elif student.status == 'placed' %}
+status-placed
+
+{% elif student.status == 'inactive' %}
+status-inactive
+
+{% endif %}
+">
+
+                                {{ student.get_status_display }}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            {{ student.joined_at|date:"M d,Y" }}
+
+                        </td>
+
+                        <td>
+
+                            <a href="{% url 'training:student_detail' student.id %}" class="view-btn">
+
+                                View
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="7">
+
+                            <div class="empty-box">
+
+                                No Students Found
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        {% if students.has_other_pages %}
+
+        <div class="pagination-box">
+
+            {% if students.has_previous %}
+
+            <a class="page-link" href="?page={{ students.previous_page_number }}">
+
+                Prev
+
+            </a>
+
+            {% endif %}
+
+            {% for num in students.paginator.page_range %}
+
+            {% if students.number == num %}
+
+            <span class="page-link active-page">
+
+                {{ num }}
+
+            </span>
+
+            {% else %}
+
+            <a class="page-link" href="?page={{ num }}">
+
+                {{ num }}
+
+            </a>
+
+            {% endif %}
+
+            {% endfor %}
+
+            {% if students.has_next %}
+
+            <a class="page-link" href="?page={{ students.next_page_number }}">
+
+                Next
+
+            </a>
+
+            {% endif %}
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-    AOS.init({
-        duration: 700,
-        once: true,
-        offset: 20,
-        easing: 'ease-out-quad'
-    });
 
-    // Add ripple effect to premium buttons
-    document.querySelectorAll('.btn-premium-primary').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            let rect = btn.getBoundingClientRect();
-            let ripple = document.createElement('span');
-            ripple.style.position = 'absolute';
-            ripple.style.borderRadius = '50%';
-            ripple.style.backgroundColor = 'rgba(255,255,255,0.5)';
-            ripple.style.width = ripple.style.height = '100px';
-            ripple.style.left = e.clientX - rect.left - 50 + 'px';
-            ripple.style.top = e.clientY - rect.top - 50 + 'px';
-            ripple.style.pointerEvents = 'none';
-            ripple.style.transform = 'scale(0)';
-            ripple.style.transition = 'transform 0.5s';
-            btn.style.position = 'relative';
-            btn.style.overflow = 'hidden';
-            btn.appendChild(ripple);
-            setTimeout(() => ripple.style.transform = 'scale(4)', 10);
-            setTimeout(() => ripple.remove(), 500);
+    function filterAssignment(type, btn) {
+
+        document
+            .querySelectorAll(".assign-btn")
+            .forEach(
+                x => x.classList.remove(
+                    "active"
+                )
+            );
+
+        btn.classList.add(
+            "active"
+        );
+
+        const rows =
+            document.querySelectorAll(
+                ".premium-table tbody tr"
+            );
+
+        rows.forEach(row => {
+
+            const batch =
+                row.querySelector(
+                    ".batch-cell"
+                );
+
+            if (!batch) return;
+
+            const value =
+                batch.dataset.assignment;
+
+            if (type === "all") {
+
+                row.style.display =
+                    "table-row";
+
+            }
+
+            else if (type === "assigned") {
+
+                row.style.display =
+                    value === "assigned"
+                        ?
+                        "table-row"
+                        :
+                        "none";
+
+            }
+
+            else {
+
+                row.style.display =
+                    value === "unassigned"
+                        ?
+                        "table-row"
+                        :
+                        "none";
+
+            }
+
         });
-    });
+
+    }
+
+
+    // filter form fix
+
+    document
+        .querySelector("form")
+        .addEventListener(
+            "submit",
+            function () {
+
+                const search =
+                    document.querySelector(
+                        'input[name="search"]'
+                    );
+
+                const status =
+                    document.querySelector(
+                        'select[name="status"]'
+                    );
+
+                const batch =
+                    document.querySelector(
+                        'select[name="batch"]'
+                    );
+
+
+                // remove None
+
+                if (search.value === "None") {
+
+                    search.value = "";
+
+                }
+
+
+                // remove empty params
+
+                if (
+                    search.value.trim() === ""
+                ) {
+
+                    search.removeAttribute(
+                        "name"
+                    );
+
+                }
+
+                if (
+                    status.value === ""
+                ) {
+
+                    status.removeAttribute(
+                        "name"
+                    );
+
+                }
+
+                if (
+                    batch.value === ""
+                ) {
+
+                    batch.removeAttribute(
+                        "name"
+                    );
+
+                }
+
+            }
+
+        );
+
 </script>
-</body>
-</html>
+
 {% endblock %}

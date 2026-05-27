@@ -1,73 +1,2103 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}About Us - HIN Technologies{% endblock %}
+{% block title %}About Us - HIN Technologies | Premium IT Solutions{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <h1 class="text-center mb-4">About HIN Technologies</h1>
-            <p class="lead text-center mb-5">Empowering IT Professionals with Real DevOps Skills Since 2018</p>
-            
-            <h2>Our Story</h2>
-            <p>At <strong>HIN Technologies</strong>, we recognized a critical gap between academic IT education and industry requirements. Fresh graduates knew theory but struggled with real-world tools like Docker, Kubernetes, and Jenkins. Experienced professionals needed structured upskilling to stay relevant.</p>
-            <p>We built HIN Technologies to solve this problem. Our training approach focuses on <strong>hands-on learning</strong> with actual cloud environments, live projects, and industry-standard tools. Every student builds a complete CI/CD pipeline from scratch – not just watch demos.</p>
-            
-            <h2 class="mt-5">Our Mission</h2>
-            <div class="alert alert-primary">
-                "To bridge the DevOps skills gap in India by delivering practical, job-focused training that transforms beginners into confident professionals."
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    :root {
+        --hin-blue: #0B3D91;
+        --hin-blue-light: #eef5ff;
+        --hin-red: #C62828;
+        --hin-red-light: #fef2f2;
+        --text-main: #1a1a2e;
+        --text-muted: #5b6475;
+        --bg-page: #f7fafe;
+        --white: #ffffff;
+        --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        --shadow-sm: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 20px 35px -10px rgba(11, 61, 145, 0.12);
+        --shadow-lg: 0 30px 50px -15px rgba(0, 0, 0, 0.1);
+        --shadow-xl: 0 40px 65px -20px rgba(0, 0, 0, 0.15);
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: var(--bg-page);
+        color: var(--text-main);
+        line-height: 1.5;
+    }
+
+    .about-premium {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Add this new class for inner content */
+    .about-inner {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 5% 100px;
+    }
+
+    /* Section Headers */
+    .section-header {
+        text-align: center;
+        margin-bottom: 55px;
+    }
+
+    .section-header .badge {
+        background: var(--hin-red-light);
+        color: var(--hin-red);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 6px 18px;
+        border-radius: 40px;
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+
+    .section-header h2 {
+        font-size: 2.6rem;
+        font-weight: 700;
+        color: var(--text-main);
+    }
+
+    .section-header h2 span {
+        color: var(--hin-blue);
+        position: relative;
+        display: inline-block;
+    }
+
+    .section-header h2 span::after {
+        content: '';
+        position: absolute;
+        bottom: 8px;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: var(--hin-red-light);
+        z-index: -1;
+        border-radius: 10px;
+    }
+
+    .hero-section {
+        width: 100%;
+        padding: 60px 7% 80px;
+        margin-bottom: 60px;
+        display: grid;
+        grid-template-columns: 1fr 1.15fr;
+        align-items: center;
+        gap: 50px;
+        background: linear-gradient(135deg, #f8fbff, #eef5ff);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-section:before {
+        content: '';
+        position: absolute;
+        left: 70px;
+        top: 120px;
+        width: 100px;
+        height: 100px;
+
+        background-image: radial-gradient(#0B3D91 1.5px,
+                transparent 1.5px);
+
+        background-size: 14px 14px;
+        opacity: .25;
+    }
+
+    .hero-left {
+        width: 100%;
+        max-width: none;
+
+        padding-right: 20px;
+    }
+
+    .hero-left h1 {
+        font-size: 62px;
+        line-height: 1.05;
+        margin: 20px 0;
+
+        color: #0B3D91;
+    }
+
+    .hero-left h1 span {
+        color: #C62828;
+        display: block;
+    }
+
+    .hero-left p {
+        max-width: 560px;
+        font-size: 18px;
+        line-height: 1.9;
+
+        color: #64748b;
+
+        margin-bottom: 28px;
+    }
+
+    .hero-badge {
+        background: white;
+        padding: 12px 22px;
+        border-radius: 40px;
+        color: #d61f1f;
+        font-weight: 700;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, .06);
+    }
+
+    .hero-points {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+    }
+
+    .hero-points div {
+        background: white;
+        padding: 10px 16px;
+        border-radius: 30px;
+        font-size: .9rem;
+        font-weight: 600;
+    }
+
+    .hero-points i {
+        color: red;
+        margin-right: 8px;
+    }
+
+    /* RIGHT */
+
+    .hero-right {
+
+        width: 100%;
+
+        display: flex;
+
+        justify-content: flex-end;
+
+        align-items: center;
+
+        position: relative;
+
+        min-height: 560px;
+        transform: translateX(15px);
+    }
+
+    .hero-right img {
+        width: 100%;
+
+        max-width: 620px;
+
+        height: 560px;
+        object-fit: cover;
+
+        border-radius: 32px;
+        padding: 10px;
+        background: rgba(255, 255, 255, .75);
+        backdrop-filter: blur(20px);
+
+
+        position: relative;
+        z-index: 3;
+
+        box-shadow:
+            0 25px 55px rgba(13, 61, 145, .15);
+    }
+
+    .bg-red {
+        position: absolute;
+        top: -10px;
+        right: -20px;
+        width: 170px;
+        height: 220px;
+        background: #cf2323;
+        border-radius: 35px;
+        z-index: 1;
+    }
+
+    .bg-blue {
+        position: absolute;
+        bottom: -25px;
+        right: -35px;
+
+        width: 170px;
+        height: 200px;
+
+        background: #0B3D91;
+        border-radius: 35px;
+
+        z-index: 1;
+    }
+
+    .stat-card {
+        position: absolute;
+        background: rgba(255, 255, 255, .95);
+        backdrop-filter: blur(12px);
+        border-radius: 25px;
+        padding: 20px;
+        z-index: 5;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, .08);
+    }
+
+    .top {
+        top: 60px;
+        left: -35px;
+    }
+
+    .top h3 {
+        font-size: 2rem;
+        color: #d61f1f;
+    }
+
+    .bottom {
+        bottom: 40px;
+        left: -35px;
+    }
+
+    .bottom i {
+        width: 60px;
+        height: 60px;
+        background: #d61f1f;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 18px;
+    }
+
+    @media(max-width:1000px) {
+
+        .hero-section {
+            grid-template-columns: 1fr;
+            padding: 40px 25px;
+        }
+
+        .hero-left h1 {
+            font-size: 2.8rem;
+        }
+
+    }
+
+    /* ===== STATS STRIP ===== */
+    .stats-strip {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        background: var(--white);
+        border-radius: 60px;
+        padding: 32px 45px;
+        margin-bottom: 80px;
+        box-shadow: var(--shadow-md);
+        border: 1px solid rgba(11, 61, 145, 0.08);
+    }
+
+    .strip-item {
+        text-align: center;
+    }
+
+    .strip-number {
+        font-size: 2rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--hin-blue), var(--hin-red));
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+    }
+
+    .strip-label {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        font-weight: 500;
+        margin-top: 6px;
+    }
+
+    /* ===== TWO COLUMN LAYOUT WITH IMAGES ===== */
+    .two-column {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 50px;
+        margin-bottom: 80px;
+        align-items: center;
+    }
+
+    .image-card {
+        border-radius: 40px;
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+        height: 400px;
+        background-size: cover;
+        background-position: center;
+        transition: var(--transition);
+    }
+
+    .image-card:hover {
+        transform: scale(1.02);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .img-1 {
+        background-image:url('{% static "images/hero-tech-uii.jpeg" %}');
+        background-size: cover;
+        background-position: center;
+    }
+
+    .img-2 {
+        background-image: url('https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=500&fit=crop');
+        background-size: cover;
+        background-position: center;
+    }
+
+    .content-card {
+        padding: 20px;
+    }
+
+    .content-card .badge-mini {
+        background: var(--hin-red-light);
+        color: var(--hin-red);
+        padding: 4px 16px;
+        border-radius: 30px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        display: inline-block;
+        margin-bottom: 18px;
+    }
+
+    .content-card h3 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: var(--text-main);
+    }
+
+    .content-card p {
+        color: var(--text-muted);
+        line-height: 1.7;
+        margin-bottom: 25px;
+    }
+
+    .feature-list {
+        list-style: none;
+    }
+
+    .feature-list li {
+        padding: 10px 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 500;
+    }
+
+    .feature-list li i {
+        color: var(--hin-red);
+        width: 24px;
+    }
+
+    /* ===== EXPERTISE BUBBLES ===== */
+    .expertise-bubbles {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin: 50px 0 80px;
+    }
+
+    .bubble {
+        background: var(--white);
+        border-radius: 100px;
+        padding: 12px 28px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        color: var(--hin-blue);
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+        border: 1px solid rgba(11, 61, 145, 0.1);
+    }
+
+    .bubble i {
+        color: var(--hin-red);
+        font-size: 1rem;
+    }
+
+    .bubble:hover {
+        background: linear-gradient(135deg, var(--hin-blue), #0a2e6e);
+        color: white;
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .bubble:hover i {
+        color: white;
+    }
+
+    /* ===== SERVICES 4-COLUMN ===== */
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 25px;
+        margin-bottom: 80px;
+    }
+
+    .service-card {
+        background: var(--white);
+        border-radius: 32px;
+        padding: 35px 25px;
+        text-align: center;
+        transition: var(--transition);
+        border: 1px solid rgba(11, 61, 145, 0.08);
+        box-shadow: var(--shadow-sm);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .service-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--hin-blue), var(--hin-red));
+    }
+
+    .service-icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, var(--hin-blue-light), var(--white));
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+    }
+
+    .service-icon i {
+        font-size: 2rem;
+        background: linear-gradient(135deg, var(--hin-blue), var(--hin-red));
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+    }
+
+    .service-card h3 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+    .service-card p {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+
+    .service-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-xl);
+    }
+
+    /* ===== CLIENTS & PROJECT SECTION ===== */
+    .clients-project {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 35px;
+        margin-bottom: 60px;
+    }
+
+    .premium-card {
+        background: var(--white);
+        border-radius: 36px;
+        padding: 40px;
+        box-shadow: var(--shadow-md);
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .premium-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .premium-card h3 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 28px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .premium-card h3 i {
+        color: var(--hin-red);
+    }
+
+    .client-logos {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .client-logo {
+        background: linear-gradient(135deg, var(--hin-blue-light), var(--white));
+        padding: 14px 24px;
+        border-radius: 50px;
+        font-weight: 600;
+        color: var(--hin-blue);
+        transition: var(--transition);
+        border: 1px solid rgba(11, 61, 145, 0.1);
+    }
+
+    .client-logo:hover {
+        background: var(--hin-blue);
+        color: white;
+        transform: translateY(-3px);
+    }
+
+    .project-list {
+        list-style: none;
+    }
+
+    .project-list li {
+        padding: 14px 0;
+        border-bottom: 1px solid rgba(11, 61, 145, 0.08);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-weight: 500;
+        transition: var(--transition);
+    }
+
+    .project-list li:hover {
+        transform: translateX(8px);
+        color: var(--hin-blue);
+    }
+
+    .project-list li i {
+        color: var(--hin-red);
+        width: 28px;
+    }
+
+    /* ===== BUSINESS SERVICES ===== */
+    .business-section {
+        background: linear-gradient(135deg, var(--hin-blue-light) 0%, var(--white) 100%);
+        border-radius: 36px;
+        padding: 45px;
+        margin-bottom: 80px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .business-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, var(--hin-red-light) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .business-section h3 {
+        font-size: 1.6rem;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .business-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .business-item {
+        background: var(--white);
+        padding: 16px 22px;
+        border-radius: 28px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 600;
+        transition: var(--transition);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .business-item i {
+        color: var(--hin-red);
+        width: 28px;
+    }
+
+    .business-item:hover {
+        background: var(--hin-blue);
+        color: white;
+        transform: translateX(8px);
+    }
+
+    .business-item:hover i {
+        color: white;
+    }
+
+    /* ===== IN-HOUSE PROJECTS ===== */
+    .inhouse-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+        margin-bottom: 80px;
+    }
+
+    .inhouse-card {
+        background: var(--white);
+        border-radius: 28px;
+        padding: 30px 20px;
+        text-align: center;
+        transition: var(--transition);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid rgba(11, 61, 145, 0.05);
+    }
+
+    .inhouse-card i {
+        font-size: 2.2rem;
+        background: linear-gradient(135deg, var(--hin-blue), var(--hin-red));
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .inhouse-card span {
+        font-weight: 700;
+        color: var(--text-main);
+    }
+
+    .inhouse-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-lg);
+        background: linear-gradient(135deg, var(--hin-blue), #0a2e6e);
+    }
+
+    .inhouse-card:hover i,
+    .inhouse-card:hover span {
+        background: white;
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+    }
+
+    /* ===== WHY CHOOSE ===== */
+    .why-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 28px;
+        margin-bottom: 80px;
+    }
+
+    .why-card {
+        background: var(--white);
+        border-radius: 30px;
+        padding: 35px 25px;
+        text-align: center;
+        transition: var(--transition);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid rgba(11, 61, 145, 0.05);
+    }
+
+    .why-card i {
+        font-size: 2.3rem;
+        color: var(--hin-red);
+        margin-bottom: 18px;
+        display: block;
+    }
+
+    .why-card h4 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-main);
+    }
+
+    .why-card:hover {
+        background: linear-gradient(135deg, var(--hin-blue), #0a2e6e);
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .why-card:hover i,
+    .why-card:hover h4 {
+        color: white;
+    }
+
+    /* ===== VISION MISSION ===== */
+    .vm-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 35px;
+        margin-bottom: 70px;
+    }
+
+    .vm-card {
+        border-radius: 40px;
+        padding: 50px 45px;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        color: white;
+    }
+
+    .vm-card.vision {
+        background: linear-gradient(135deg, var(--hin-red) 0%, #a02020 100%);
+    }
+
+    .vm-card.mission {
+        background: linear-gradient(135deg, var(--hin-blue) 0%, #082c66 100%);
+    }
+
+    .vm-card h3 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 22px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .vm-card p {
+        line-height: 1.7;
+        opacity: 0.92;
+    }
+
+    .vm-card .bg-icon {
+        position: absolute;
+        bottom: 20px;
+        right: 30px;
+        font-size: 5rem;
+        opacity: 0.12;
+        transition: var(--transition);
+    }
+
+    .vm-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .vm-card:hover .bg-icon {
+        transform: scale(1.1);
+        opacity: 0.2;
+    }
+
+    /* ===== TECH STACK FOOTER ===== */
+    .tech-footer {
+        background: var(--white);
+        border-radius: 50px;
+        padding: 25px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-top: 40px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .tech-footer span {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        color: var(--hin-blue);
+    }
+
+    .tech-footer i {
+        font-size: 1.5rem;
+        color: var(--hin-red);
+    }
+
+    /* ===== FOOTER ===== */
+    .about-footer {
+        text-align: center;
+        padding-top: 50px;
+        margin-top: 30px;
+        border-top: 2px solid rgba(11, 61, 145, 0.1);
+    }
+
+    .about-footer .tagline {
+        font-size: 1.3rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--hin-blue), var(--hin-red));
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        margin-bottom: 14px;
+    }
+
+    .trust-badge {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1200px) {
+        .services-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .inhouse-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .why-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .business-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 1000px) {
+        .hero-content {
+            max-width: 100%;
+            padding: 50px 40px;
+        }
+
+        .hero-stats-panel {
+            position: relative;
+            right: auto;
+            top: auto;
+            transform: none;
+            margin: 0 40px 40px 40px;
+            width: auto;
+        }
+
+        .two-column {
+            grid-template-columns: 1fr;
+        }
+
+        .clients-project {
+            grid-template-columns: 1fr;
+        }
+
+        .vm-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-strip {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            border-radius: 40px;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+        }
+    }
+
+    @media (max-width: 700px) {
+        .services-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .inhouse-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .why-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .business-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-strip {
+            grid-template-columns: 1fr;
+            text-align: center;
+        }
+
+        .hero-buttons {
+            flex-direction: column;
+        }
+
+        .tech-footer {
+            justify-content: center;
+        }
+    }
+
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .fade-up {
+        animation: fadeUp 0.7s ease forwards;
+    }
+
+    /* ========== COMPLETE RESPONSIVE FIXES FOR ALL SCREEN SIZES ========== */
+
+    /* Large Desktop (1200px - 1400px) */
+    @media (max-width: 1400px) {
+        .hero-left h1 {
+            font-size: 52px;
+        }
+
+        .hero-right img {
+            max-width: 550px;
+            height: 520px;
+        }
+
+        .hero-right {
+            min-height: 520px;
+        }
+
+        .stats-strip {
+            padding: 28px 35px;
+        }
+    }
+
+    /* Desktop (1024px - 1199px) */
+    @media (max-width: 1199px) {
+        .hero-left h1 {
+            font-size: 44px;
+        }
+
+        .hero-left p {
+            font-size: 16px;
+        }
+
+        .hero-right img {
+            max-width: 480px;
+            height: 480px;
+        }
+
+        .hero-right {
+            min-height: 480px;
+        }
+
+        .stat-card.top {
+            top: 30px;
+            left: -20px;
+            padding: 15px;
+        }
+
+        .stat-card.bottom {
+            bottom: 30px;
+            left: -20px;
+            padding: 15px;
+        }
+
+        .stat-card.top h3 {
+            font-size: 1.6rem;
+        }
+
+        .bg-red {
+            width: 140px;
+            height: 180px;
+            top: 0;
+            right: -10px;
+        }
+
+        .bg-blue {
+            width: 140px;
+            height: 170px;
+            bottom: -15px;
+            right: -25px;
+        }
+
+        .services-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .inhouse-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .why-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .business-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .vm-card {
+            padding: 40px 30px;
+        }
+
+        .vm-card h3 {
+            font-size: 1.8rem;
+        }
+    }
+
+    /* Tablet (768px - 1023px) */
+    @media (max-width: 1023px) {
+        .hero-section {
+            grid-template-columns: 1fr;
+            padding: 40px 5% 50px;
+            gap: 30px;
+        }
+
+        .hero-left {
+            text-align: center;
+            padding-right: 0;
+        }
+
+        .hero-left h1 {
+            font-size: 38px;
+        }
+
+        .hero-left h1 span {
+            display: inline-block;
+        }
+
+        .hero-left p {
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-points {
+            justify-content: center;
+        }
+
+        .hero-buttons {
+            justify-content: center;
+        }
+
+        .hero-right {
+            justify-content: center;
+            min-height: 450px;
+            transform: translateX(0);
+        }
+
+        .hero-right img {
+            max-width: 450px;
+            height: 420px;
+        }
+
+        .bg-red {
+            width: 120px;
+            height: 150px;
+            top: -5px;
+            right: 20px;
+        }
+
+        .bg-blue {
+            width: 120px;
+            height: 140px;
+            bottom: -10px;
+            right: 10px;
+        }
+
+        .stat-card.top {
+            top: 20px;
+            left: 10px;
+        }
+
+        .stat-card.bottom {
+            bottom: 20px;
+            left: 10px;
+        }
+
+        .stats-strip {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 25px 20px;
+            margin-bottom: 50px;
+        }
+
+        .two-column {
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .image-card {
+            height: 350px;
+        }
+
+        .content-card {
+            text-align: center;
+            padding: 0;
+        }
+
+        .content-card h3 {
+            font-size: 1.6rem;
+        }
+
+        .feature-list {
+            display: inline-block;
+            text-align: left;
+        }
+
+        .section-header h2 {
+            font-size: 2.2rem;
+        }
+
+        .expertise-bubbles {
+            margin: 30px 0 50px;
+        }
+
+        .bubble {
+            padding: 8px 20px;
+            font-size: 0.85rem;
+        }
+
+        .clients-project {
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .premium-card {
+            padding: 30px;
+        }
+
+        .premium-card h3 {
+            font-size: 1.4rem;
+        }
+
+        .business-section {
+            padding: 35px 25px;
+        }
+
+        .business-section h3 {
+            font-size: 1.4rem;
+        }
+
+        .vm-grid {
+            gap: 25px;
+        }
+
+        .vm-card {
+            padding: 35px 25px;
+        }
+
+        .vm-card h3 {
+            font-size: 1.6rem;
+        }
+
+        .tech-footer {
+            padding: 20px 25px;
+            justify-content: center;
+        }
+
+        .tech-footer span {
+            font-size: 0.85rem;
+        }
+
+        .about-footer .tagline {
+            font-size: 1.1rem;
+        }
+    }
+
+    /* Mobile Landscape (576px - 767px) */
+    @media (max-width: 767px) {
+        .hero-section {
+            padding: 30px 4% 40px;
+        }
+
+        .hero-left h1 {
+            font-size: 32px;
+        }
+
+        .hero-badge {
+            padding: 8px 16px;
+            font-size: 0.8rem;
+        }
+
+        .hero-points div {
+            padding: 6px 12px;
+            font-size: 0.75rem;
+        }
+
+        .hero-buttons a {
+            padding: 10px 20px;
+            font-size: 0.85rem;
+        }
+
+        .hero-right img {
+            max-width: 350px;
+            height: 320px;
+        }
+
+        .hero-right {
+            min-height: 380px;
+        }
+
+        .bg-red {
+            width: 90px;
+            height: 120px;
+            border-radius: 25px;
+        }
+
+        .bg-blue {
+            width: 90px;
+            height: 110px;
+            border-radius: 25px;
+            bottom: -5px;
+            right: 5px;
+        }
+
+        .stat-card {
+            padding: 12px 15px;
+        }
+
+        .stat-card.top {
+            top: 15px;
+            left: 5px;
+        }
+
+        .stat-card.top h3 {
+            font-size: 1.3rem;
+        }
+
+        .stat-card.top span {
+            font-size: 0.7rem;
+        }
+
+        .stat-card.bottom {
+            bottom: 15px;
+            left: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stat-card.bottom i {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+            border-radius: 12px;
+        }
+
+        .stat-card.bottom h4 {
+            font-size: 0.9rem;
+        }
+
+        .stat-card.bottom p {
+            font-size: 0.7rem;
+        }
+
+        .stats-strip {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 20px 15px;
+            border-radius: 30px;
+        }
+
+        .strip-number {
+            font-size: 1.5rem;
+        }
+
+        .strip-label {
+            font-size: 0.7rem;
+        }
+
+        .section-header {
+            margin-bottom: 35px;
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+        }
+
+        .section-header .badge {
+            font-size: 0.65rem;
+            padding: 4px 14px;
+        }
+
+        .services-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .service-card {
+            padding: 25px 20px;
+        }
+
+        .service-icon {
+            width: 55px;
+            height: 55px;
+        }
+
+        .service-icon i {
+            font-size: 1.5rem;
+        }
+
+        .service-card h3 {
+            font-size: 1.2rem;
+        }
+
+        .inhouse-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .inhouse-card {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .inhouse-card i {
+            margin-bottom: 0;
+            font-size: 1.5rem;
+        }
+
+        .why-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .why-card {
+            padding: 25px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            text-align: left;
+        }
+
+        .why-card i {
+            margin-bottom: 0;
+            font-size: 1.5rem;
+        }
+
+        .why-card h4 {
+            font-size: 1rem;
+        }
+
+        .business-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .business-item {
+            padding: 12px 18px;
+            font-size: 0.9rem;
+        }
+
+        .image-card {
+            height: 280px;
+        }
+
+        .content-card h3 {
+            font-size: 1.4rem;
+        }
+
+        .content-card p {
+            font-size: 0.9rem;
+        }
+
+        .feature-list li {
+            font-size: 0.85rem;
+        }
+
+        .expertise-bubbles {
+            gap: 10px;
+        }
+
+        .bubble {
+            padding: 6px 14px;
+            font-size: 0.75rem;
+        }
+
+        .bubble i {
+            font-size: 0.8rem;
+        }
+
+        .client-logo {
+            padding: 8px 16px;
+            font-size: 0.8rem;
+        }
+
+        .project-list li {
+            padding: 10px 0;
+            font-size: 0.85rem;
+        }
+
+        .vm-card {
+            padding: 30px 20px;
+        }
+
+        .vm-card h3 {
+            font-size: 1.3rem;
+        }
+
+        .vm-card p {
+            font-size: 0.85rem;
+        }
+
+        .tech-footer {
+            gap: 12px;
+            padding: 15px 20px;
+        }
+
+        .tech-footer span {
+            font-size: 0.75rem;
+            gap: 6px;
+        }
+
+        .tech-footer i {
+            font-size: 1rem;
+        }
+
+        .about-footer {
+            padding-top: 30px;
+        }
+
+        .about-footer .tagline {
+            font-size: 1rem;
+        }
+
+        .trust-badge {
+            font-size: 0.75rem;
+        }
+    }
+
+    /* Mobile Portrait (320px - 575px) */
+    @media (max-width: 575px) {
+        .hero-section {
+            padding: 25px 4% 35px;
+        }
+
+        .hero-left h1 {
+            font-size: 26px;
+        }
+
+        .hero-badge {
+            padding: 6px 12px;
+            font-size: 0.7rem;
+        }
+
+        .hero-points {
+            gap: 8px;
+        }
+
+        .hero-points div {
+            padding: 5px 10px;
+            font-size: 0.7rem;
+        }
+
+        .hero-buttons {
+            gap: 10px;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .hero-buttons a {
+            width: 100%;
+            max-width: 200px;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .hero-right img {
+            max-width: 280px;
+            height: 260px;
+        }
+
+        .hero-right {
+            min-height: 320px;
+        }
+
+        .bg-red {
+            width: 70px;
+            height: 90px;
+            border-radius: 20px;
+            right: 15px;
+        }
+
+        .bg-blue {
+            width: 70px;
+            height: 85px;
+            border-radius: 20px;
+            right: 5px;
+        }
+
+        .stat-card.top {
+            top: 10px;
+            left: 0;
+            padding: 8px 12px;
+        }
+
+        .stat-card.top h3 {
+            font-size: 1.1rem;
+        }
+
+        .stat-card.top span {
+            font-size: 0.6rem;
+        }
+
+        .stat-card.bottom {
+            bottom: 10px;
+            left: 0;
+            padding: 8px 12px;
+            gap: 8px;
+        }
+
+        .stat-card.bottom i {
+            width: 32px;
+            height: 32px;
+            font-size: 1rem;
+            border-radius: 10px;
+        }
+
+        .stat-card.bottom h4 {
+            font-size: 0.8rem;
+        }
+
+        .stat-card.bottom p {
+            font-size: 0.6rem;
+        }
+
+        .stats-strip {
+            grid-template-columns: 1fr;
+            gap: 12px;
+            padding: 15px;
+            margin-bottom: 35px;
+        }
+
+        .strip-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 15px;
+            background: #f8fafc;
+            border-radius: 50px;
+        }
+
+        .strip-number {
+            font-size: 1.3rem;
+        }
+
+        .strip-label {
+            font-size: 0.7rem;
+            margin-top: 0;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .section-header h2 span::after {
+            bottom: 4px;
+            height: 4px;
+        }
+
+        .image-card {
+            height: 220px;
+            border-radius: 25px;
+        }
+
+        .content-card h3 {
+            font-size: 1.2rem;
+        }
+
+        .content-card p {
+            font-size: 0.8rem;
+        }
+
+        .feature-list li {
+            font-size: 0.75rem;
+            padding: 6px 0;
+        }
+
+        .expertise-bubbles {
+            gap: 8px;
+        }
+
+        .bubble {
+            padding: 5px 12px;
+            font-size: 0.7rem;
+        }
+
+        .premium-card {
+            padding: 20px;
+        }
+
+        .premium-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .client-logos {
+            gap: 10px;
+        }
+
+        .client-logo {
+            padding: 6px 12px;
+            font-size: 0.7rem;
+        }
+
+        .project-list li {
+            padding: 8px 0;
+            font-size: 0.75rem;
+        }
+
+        .business-section {
+            padding: 25px 20px;
+        }
+
+        .business-section h3 {
+            font-size: 1.2rem;
+        }
+
+        .business-item {
+            padding: 10px 15px;
+            font-size: 0.8rem;
+        }
+
+        .inhouse-card {
+            padding: 15px;
+        }
+
+        .inhouse-card span {
+            font-size: 0.8rem;
+        }
+
+        .why-card {
+            padding: 15px;
+        }
+
+        .why-card i {
+            font-size: 1.2rem;
+        }
+
+        .why-card h4 {
+            font-size: 0.85rem;
+        }
+
+        .vm-card {
+            padding: 25px 18px;
+        }
+
+        .vm-card h3 {
+            font-size: 1.1rem;
+            gap: 8px;
+        }
+
+        .vm-card h3 i {
+            font-size: 1.2rem;
+        }
+
+        .vm-card p {
+            font-size: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .vm-card .bg-icon {
+            font-size: 3rem;
+            bottom: 10px;
+            right: 15px;
+        }
+
+        .tech-footer {
+            gap: 10px;
+            padding: 12px 15px;
+            flex-wrap: wrap;
+        }
+
+        .tech-footer span {
+            font-size: 0.7rem;
+        }
+
+        .about-footer .tagline {
+            font-size: 0.9rem;
+        }
+
+        .trust-badge {
+            font-size: 0.65rem;
+        }
+    }
+
+    /* Fix for buttons (if they use these classes) */
+    .about-btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #0B3D91;
+        color: white;
+        padding: 12px 28px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .about-btn-primary:hover {
+        background: #C62828;
+        transform: translateY(-2px);
+    }
+
+    .about-btn-outline {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 2px solid #0B3D91;
+        color: #0B3D91;
+        background: white;
+        padding: 12px 28px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .about-btn-outline:hover {
+        background: #0B3D91;
+        color: white;
+    }
+
+    /* Fix for hero buttons container */
+    .hero-buttons {
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+    }
+
+    /* Ensure images don't overflow */
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* Smooth scrolling */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Fix for small devices landscape orientation */
+    @media (max-width: 480px) and (orientation: landscape) {
+        .hero-section {
+            padding: 20px 4% 30px;
+        }
+
+        .hero-left h1 {
+            font-size: 28px;
+        }
+
+        .hero-right {
+            min-height: 280px;
+        }
+
+        .hero-right img {
+            max-width: 250px;
+            height: 230px;
+        }
+
+        .stats-strip {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .services-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .inhouse-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
+
+<section class="about-premium">
+    <!-- FULL WIDTH HERO SECTION -->
+    <div class="hero-section fade-up">
+        <div class="hero-left">
+            <span class="hero-badge">
+                <i class="fas fa-star"></i>
+                Since 2014 • Trusted Training Partner
+            </span>
+            <h1>
+                Empowering Careers Through
+                <span>Real-Time Learning</span>
+            </h1>
+            <p>
+                HIN Technologies provides industry-focused DevOps,
+                Cloud, Middleware and infrastructure training with
+                practical implementation experience.
+            </p>
+            <div class="hero-points">
+                <div><i class="fas fa-check"></i> 1000+ Students</div>
+                <div><i class="fas fa-check"></i> Real Projects</div>
+                <div><i class="fas fa-check"></i> Job Support</div>
             </div>
-            
-            <h2 class="mt-5">Our Training Approach</h2>
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <h4>1️⃣ Learn by Doing</h4>
-                    <p>No PowerPoint-heavy sessions. Every concept is followed by a live hands-on lab exercise.</p>
-                    
-                    <h4>2️⃣ Real-World Projects</h4>
-                    <p>Work on projects that simulate actual enterprise scenarios – multiple environments, rollback strategies, monitoring setup.</p>
-                </div>
-                <div class="col-md-6">
-                    <h4>3️⃣ Industry Expert Trainers</h4>
-                    <p>All trainers are <strong>practicing DevOps engineers</strong> with 6+ years of experience in product companies and consultancies.</p>
-                    
-                    <h4>4️⃣ Career-Focused Support</h4>
-                    <p>Resume reviews, mock interviews, GitHub portfolio building, and referral to our hiring partner network.</p>
-                </div>
+            <div class="hero-buttons">
+                <a href="{% url 'hin:public_services' %}" class="about-btn-primary">Explore Services</a>
+                <a href="{% url 'hin:contact' %}" class="about-btn-outline">Contact Us</a>
             </div>
-            
-            <h2 class="mt-5">Our Curriculum Highlights</h2>
-            <ul>
-                <li>Introduction to DevOps & SDLC – Waterfall vs Agile vs DevOps principles</li>
-                <li>Linux, Git & Maven – Shell scripting, Git workflows, Maven setup</li>
-                <li>Code Quality & Artifact Management – SonarQube, JFrog Artifactory</li>
-                <li>Docker & Kubernetes – Containers, pods, deployments, scaling</li>
-                <li>Monitoring & Observability – Datadog, New Relic</li>
-                <li>Configuration Management & IaC – Ansible, Terraform</li>
-                <li>Project Management – Jira, Agile ticketing</li>
-                <li>Capstone Project: End-to-end CI/CD pipeline</li>
-            </ul>
-            
-            <div class="row text-center mt-5">
-                <div class="col-md-3">
-                    <h3 class="text-primary">8+ Years</h3>
-                    <p>Combined Experience</p>
-                </div>
-                <div class="col-md-3">
-                    <h3 class="text-primary">2,500+</h3>
-                    <p>Professionals Trained</p>
-                </div>
-                <div class="col-md-3">
-                    <h3 class="text-primary">100%</h3>
-                    <p>Hands-on Curriculum</p>
-                </div>
-                <div class="col-md-3">
-                    <h3 class="text-primary">50+</h3>
-                    <p>Corporate Partners</p>
+        </div>
+        <div class="hero-right">
+            <div class="bg-red"></div>
+            <div class="bg-blue"></div>
+            <img src="{% static 'images/hero-tech-ui.png' %}" alt="HIN Tech">
+            <div class="stat-card top">
+                <h3>1000+</h3>
+                <span>Students Trained</span>
+            </div>
+            <div class="stat-card bottom">
+                <i class="fas fa-award"></i>
+                <div>
+                    <h4>10+ Years</h4>
+                    <p>Industry Experience</p>
                 </div>
             </div>
         </div>
     </div>
-</div>
+
+    <!-- WRAP REMAINING CONTENT INSIDE THIS DIV -->
+    <div class="about-inner">
+        <!-- STATS STRIP -->
+        <div class="stats-strip fade-up">
+            <div class="strip-item">
+                <div class="strip-number">2014</div>
+                <div class="strip-label">Established</div>
+            </div>
+            <div class="strip-item">
+                <div class="strip-number">1000+</div>
+                <div class="strip-label">Students Trained</div>
+            </div>
+            <div class="strip-item">
+                <div class="strip-number">75+</div>
+                <div class="strip-label">Batches</div>
+            </div>
+            <div class="strip-item">
+                <div class="strip-number">10+</div>
+                <div class="strip-label">Years Expertise</div>
+            </div>
+            <div class="strip-item">
+                <div class="strip-number">24/7</div>
+                <div class="strip-label">Support</div>
+            </div>
+        </div>
+
+        <!-- MISSION STATEMENT -->
+        <div class="two-column fade-up">
+            <div class="image-card img-1"></div>
+            <div class="content-card">
+                <span class="badge-mini"><i class="fas fa-quote-left"></i> Our Mission</span>
+                <h3>Bridging Theory & Real-World Implementation</h3>
+                <p>Over the years, HIN Technologies has successfully trained more than 1000+ students and completed 75+
+                    successful training batches helping students and professionals build strong careers in the IT
+                    industry.</p>
+                <p>Our mission is to provide practical, real-time, industry-focused training and solutions that bridge
+                    the gap between theoretical knowledge and real-world implementation.</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i> Real-time project scenarios</li>
+                    <li><i class="fas fa-check-circle"></i> Hands-on practical sessions</li>
+                    <li><i class="fas fa-check-circle"></i> Industry-level assignments</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- EXPERTISE SECTION -->
+        <div class="section-header fade-up">
+            <span class="badge">TECHNICAL MASTERY</span>
+            <h2>Our <span>Expertise</span></h2>
+        </div>
+        <div class="expertise-bubbles fade-up">
+            <div class="bubble"><i class="fab fa-dev"></i> DevOps</div>
+            <div class="bubble"><i class="fab fa-jenkins"></i> Jenkins</div>
+            <div class="bubble"><i class="fab fa-docker"></i> Docker</div>
+            <div class="bubble"><i class="fas fa-cloud-upload-alt"></i> Kubernetes</div>
+            <div class="bubble"><i class="fas fa-code-branch"></i> CI/CD</div>
+            <div class="bubble"><i class="fab fa-linux"></i> Linux</div>
+            <div class="bubble"><i class="fas fa-cloud"></i> Cloud (AWS/Azure)</div>
+            <div class="bubble"><i class="fas fa-server"></i> Middleware</div>
+            <div class="bubble"><i class="fas fa-terminal"></i> Linux Administration</div>
+            <div class="bubble"><i class="fas fa-robot"></i> Automation Tools</div>
+            <div class="bubble"><i class="fas fa-chart-line"></i> Monitoring & Infrastructure</div>
+        </div>
+
+        <!-- SERVICES SECTION -->
+        <div class="section-header fade-up">
+            <span class="badge">WHAT WE DELIVER</span>
+            <h2>Our <span>Services</span></h2>
+        </div>
+        <div class="services-grid fade-up">
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-chalkboard-user"></i></div>
+                <h3>Training Services</h3>
+                <p>Middleware Technologies, DevOps, Jenkins, Docker, Kubernetes, CI/CD Pipelines, Linux Administration,
+                    Cloud Technologies, Automation Tools</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-code"></i></div>
+                <h3>Learning Approach</h3>
+                <p>Real-time project scenarios, Hands-on practical sessions, Industry-level assignments, Interview
+                    preparation, Resume guidance</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-building"></i></div>
+                <h3>Corporate Training</h3>
+                <p>Online Corporate Training, Offline Corporate Workshops, Customized Enterprise Programs, DevOps
+                    Transformation Guidance</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-user-tie"></i></div>
+                <h3>Job Support</h3>
+                <p>Hourly Basis, Monthly Basis, Project Support, Production Support, Deployment & Troubleshooting</p>
+            </div>
+        </div>
+
+        <!-- CLIENTS + PROJECT -->
+        <div class="clients-project fade-up">
+            <div class="premium-card">
+                <h3><i class="fas fa-handshake"></i> Our Clients</h3>
+                <div class="client-logos">
+                    <div class="client-logo">TTS Foods</div>
+                    <div class="client-logo">Mr HungryBird Cafe</div>
+                    <div class="client-logo">ClubChicken</div>
+                    <div class="client-logo">HungerFresh</div>
+                    <div class="client-logo">ChickenDrop</div>
+                </div>
+            </div>
+            <div class="premium-card">
+                <h3><i class="fas fa-chart-line"></i> Upcoming Project</h3>
+                <ul class="project-list">
+                    <li><i class="fas fa-warehouse"></i> Inventory Management</li>
+                    <li><i class="fas fa-box"></i> Stock Tracking</li>
+                    <li><i class="fas fa-cart-shopping"></i> Sales & Purchase Management</li>
+                    <li><i class="fas fa-chart-line"></i> Reporting & Analytics</li>
+                    <li><i class="fas fa-robot"></i> Business Automation</li>
+                    <li><i class="fas fa-store"></i> Multi Branch Management</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- BUSINESS SERVICES -->
+        <div class="business-section fade-up">
+            <h3><i class="fas fa-briefcase"></i> Business Services</h3>
+            <div class="business-grid">
+                <div class="business-item"><i class="fas fa-laptop-code"></i> Technology Solutions</div>
+                <div class="business-item"><i class="fas fa-code"></i> Application Development</div>
+                <div class="business-item"><i class="fas fa-server"></i> Infrastructure Management</div>
+                <div class="business-item"><i class="fas fa-cogs"></i> Digital Operations</div>
+                <div class="business-item"><i class="fas fa-robot"></i> Automation Services</div>
+                <div class="business-item"><i class="fas fa-cloud"></i> DevOps Implementation</div>
+            </div>
+        </div>
+
+        <!-- IN-HOUSE PROJECTS -->
+        <div class="section-header fade-up">
+            <span class="badge">OUR WORK</span>
+            <h2>In-House <span>Project Development</span></h2>
+        </div>
+        <div class="inhouse-grid fade-up">
+            <div class="inhouse-card"><i class="fab fa-jenkins"></i><span>Jenkins CI/CD Projects</span></div>
+            <div class="inhouse-card"><i class="fab fa-docker"></i><span>Docker Applications</span></div>
+            <div class="inhouse-card"><i class="fas fa-dharmachakra"></i><span>Kubernetes Deployments</span></div>
+            <div class="inhouse-card"><i class="fas fa-code-branch"></i><span>Multi Environment Pipelines</span></div>
+            <div class="inhouse-card"><i class="fas fa-robot"></i><span>Automation Projects</span></div>
+            <div class="inhouse-card"><i class="fas fa-chart-line"></i><span>Monitoring & Logging</span></div>
+            <div class="inhouse-card"><i class="fas fa-cloud-upload-alt"></i><span>Cloud Deployment Projects</span>
+            </div>
+        </div>
+
+        <!-- WHY CHOOSE -->
+        <div class="section-header fade-up">
+            <span class="badge">WHY TRUST US</span>
+            <h2>Why Choose <span>HIN Technologies?</span></h2>
+        </div>
+        <div class="why-grid fade-up">
+            <div class="why-card"><i class="fas fa-trophy"></i>
+                <h4>10+ Years Experience</h4>
+            </div>
+            <div class="why-card"><i class="fas fa-laptop-code"></i>
+                <h4>Practical Training</h4>
+            </div>
+            <div class="why-card"><i class="fas fa-users"></i>
+                <h4>Experienced Technical Team</h4>
+            </div>
+            <div class="why-card"><i class="fas fa-chart-line"></i>
+                <h4>Strong Student Success Track Record</h4>
+            </div>
+            <div class="why-card"><i class="fas fa-road"></i>
+                <h4>End-to-End Project Guidance</h4>
+            </div>
+            <div class="why-card"><i class="fas fa-headset"></i>
+                <h4>Dedicated Job Support</h4>
+            </div>
+            <div class="why-card"><i class="fas fa-building"></i>
+                <h4>Corporate Training Expertise</h4>
+            </div>
+            <div class="why-card"><i class="fas fa-diagram-project"></i>
+                <h4>Real-Time DevOps Projects</h4>
+            </div>
+            <div class="why-card"><i class="fas fa-microchip"></i>
+                <h4>Business Technology Solutions</h4>
+            </div>
+        </div>
+
+        <!-- VISION & MISSION -->
+        <div class="vm-grid fade-up">
+            <div class="vm-card vision">
+                <h3><i class="fas fa-eye"></i> Our Vision</h3>
+                <p>To become a leading technology training and solutions company by empowering students, professionals
+                    and businesses with practical knowledge, real-time experience and innovative solutions.</p>
+                <i class="fas fa-globe-americas bg-icon"></i>
+            </div>
+            <div class="vm-card mission">
+                <h3><i class="fas fa-bullseye"></i> Our Mission</h3>
+                <p>To deliver high-quality technical education, enterprise solutions and real-time project exposure that
+                    helps individuals and organizations achieve growth and success in the evolving IT industry.</p>
+                <i class="fas fa-rocket bg-icon"></i>
+            </div>
+        </div>
+
+        <!-- TECH FOOTER -->
+        <div class="tech-footer fade-up">
+            <span><i class="fab fa-docker"></i> Docker</span>
+            <span><i class="fas fa-dharmachakra"></i> Kubernetes</span>
+            <span><i class="fab fa-aws"></i> AWS</span>
+            <span><i class="fab fa-jenkins"></i> Jenkins</span>
+            <span><i class="fab fa-linux"></i> Linux</span>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="about-footer fade-up">
+            <div class="tagline">HIN Technologies — Where Innovation Meets Execution</div>
+            <div class="trust-badge"><i class="fas fa-shield-alt"></i> Trusted by 1000+ professionals | 24/7 support
+                ecosystem</div>
+        </div>
+    </div>
+    <!-- END of about-inner -->
+</section>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 {% endblock %}

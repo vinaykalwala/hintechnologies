@@ -461,6 +461,7 @@ overflow:visible;
 
         position: relative;
         overflow: hidden;
+        color: white;
     }
 
     .form-header::after {
@@ -599,16 +600,97 @@ overflow:visible;
                 #C62828,
                 #8e0e12);
     }
+.btn-cancel{
 
-    .btn-cancel {
+    background:
+    linear-gradient(
+    135deg,
+    #ffffff,
+    #f3f4f6);
 
-        background: #eee;
+    color:#6b21a8;
 
-        padding: 14px 25px;
+    padding:14px 28px;
 
-        border-radius: 15px;
+    border-radius:18px;
 
-    }
+    text-decoration:none;
+
+    font-weight:700;
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    border:1px solid
+    rgba(107,33,168,.15);
+
+    box-shadow:
+    0 10px 25px
+    rgba(0,0,0,.06);
+
+    transition:.35s;
+
+    position:relative;
+
+    overflow:hidden;
+}
+
+.btn-cancel::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+    linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,.7),
+    transparent);
+
+    transform:
+    translateX(-100%);
+
+    transition:.6s;
+}
+
+.btn-cancel:hover{
+
+    transform:
+    translateY(-3px);
+
+    background:
+    linear-gradient(
+    135deg,
+    #f5f3ff,
+    #ede9fe);
+
+    box-shadow:
+    0 18px 35px
+    rgba(107,33,168,.15);
+}
+
+.btn-cancel:hover::before{
+
+    transform:
+    translateX(100%);
+}
+
+.btn-cancel::after{
+
+    content:"✕";
+
+    font-size:14px;
+
+    font-weight:700;
+}
 
     /* SEARCH */
 

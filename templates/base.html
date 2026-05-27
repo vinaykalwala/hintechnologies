@@ -695,7 +695,7 @@
                     <li><a href="{% url 'hin:public_services' %}" data-nav-key="services" class="nav-link">Services</a></li>
                     <li><a href="{% url 'hin:public_clients' %}" data-nav-key="clients" class="nav-link">Clients</a></li>
                     <li><a href="{% url 'hin:public_blogs' %}" data-nav-key="blogs" class="nav-link">Blogs</a></li>
-                    <li><a href="{% url 'hin:contact' %}" data-nav-key="blogs" class="nav-link">Contact</a></li>
+                    <li><a href="{% url 'hin:contact' %}" data-nav-key="contact" class="nav-link">Contact</a></li>
                 </ul>
             </div>
             <div class="header-actions">
@@ -706,9 +706,7 @@
                 <div class="dropdown" id="userDropdownDesktop">
                     <button class="user-menu-btn" id="desktopDropdownBtn">
                         <i class="fas fa-user-circle"></i><span>{{ user.username }}</span>
-                        {% if user.student_profile %}
-                        <span class="student-badge">Student</span>
-                        {% endif %}
+                        
                         <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i>
                     </button>
                     <ul class="dropdown-menu" id="desktopDropdownMenu">
@@ -786,7 +784,7 @@
         <li><a href="{% url 'hin:public_services' %}" data-mobile-key="services" class="mobile-nav-link"><i class="fas fa-cogs"></i> Services</a></li>
         <li><a href="{% url 'hin:public_clients' %}" data-mobile-key="clients" class="mobile-nav-link"><i class="fas fa-building"></i> Clients</a></li>
         <li><a href="{% url 'hin:public_blogs' %}" data-mobile-key="blogs" class="mobile-nav-link"><i class="fas fa-blog"></i> Blogs</a></li>
-        <li><a href="{% url 'hin:contact' %}" data-mobile-key="blogs" class="mobile-nav-link"><i class="fas fa-headset"></i>Contact</a></li>
+        <li><a href="{% url 'hin:contact' %}" data-mobile-key="contact" class="mobile-nav-link"><i class="fas fa-headset"></i>Contact</a></li>
     </ul>
     <div class="sidebar-actions">
         <a href="{% url 'training:signup' %}" class="mobile-action-btn mobile-contact" data-mobile-key="contact">

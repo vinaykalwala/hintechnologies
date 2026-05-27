@@ -710,6 +710,76 @@ margin:0;
             padding: 24px 20px;
         }
     }
+    /* ===== BLOG FORM BUTTONS MOBILE FIX ===== */
+
+@media(max-width:768px){
+
+    /* save + cancel */
+
+    .blog-form-card form > .blog-btn,
+    .blog-form-card form > a{
+
+        width:100%;
+
+        margin:10px 0 0;
+
+        justify-content:center;
+    }
+
+    .ms-2{
+        margin-left:0;
+    }
+
+    /* search section */
+
+    .search-box{
+
+        flex-direction:column;
+
+        border-radius:28px;
+
+        padding:16px;
+    }
+
+    .search-box input{
+
+        width:100%;
+
+        padding:14px;
+    }
+
+    .search-box button{
+
+        width:100%;
+
+        margin-top:10px;
+    }
+
+}
+
+/* EXTRA SMALL */
+
+@media(max-width:480px){
+
+    .blog-btn{
+
+        width:100%;
+
+        min-height:52px;
+
+        font-size:14px;
+    }
+
+    .publish-box{
+
+        flex-wrap:wrap;
+
+        justify-content:center;
+
+        text-align:center;
+    }
+
+}
 </style>
 
 <div class="blog-container py-5">
