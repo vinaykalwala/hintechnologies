@@ -1,126 +1,576 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Deliverables - HIN{% endblock %}
+{% block title %}Deliverables - HIN Technologies{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row">
-        <div class="col-12">
-            <h2 class="mb-4">Deliverables & Downloads</h2>
+<!-- Premium Fonts & Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    :root {
+        /* HIN Technologies Luxury Brand Colors */
+        --hin-blue: #0B3D91;
+        --hin-blue-light: #eef5ff;
+        --hin-blue-hover: #082d6b;
+        --hin-red: #C62828;
+        --hin-red-light: #fef2f2;
+        --hin-red-hover: #a12020;
+        
+        /* Neutrals */
+        --dark-text: #1a1a2e;
+        --muted-text: #5b6475;
+        --bg-main: #f4f7fc;
+        --white: #ffffff;
+        --border-color: rgba(255, 255, 255, 0.8); 
+        
+        /* Glassmorphism Configuration */
+        --glass-bg: rgba(255, 255, 255, 0.85);
+        --glass-blur: blur(25px);
+        
+        /* UI Elements */
+        --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 10px 20px -3px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 25px 50px -12px rgba(11, 61, 145, 0.15);
+        --radius-lg: 30px;
+        --radius-md: 18px;
+        --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background-color: var(--bg-main);
+        font-family: 'Inter', system-ui, sans-serif;
+        color: var(--dark-text);
+        overflow-x: hidden;
+        position: relative;
+    }
+
+    /* --- DYNAMIC AMBIENT BACKGROUND --- */
+    .ambient-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .ambient-blob {
+        position: absolute;
+        filter: blur(100px);
+        border-radius: 50%;
+        opacity: 0.65;
+        animation: floatBlob 18s infinite alternate ease-in-out;
+    }
+
+    .blob-1 {
+        background: rgba(11, 61, 145, 0.38);
+        width: 50vw;
+        height: 50vw;
+        top: -15%;
+        left: -15%;
+    }
+
+    .blob-2 {
+        background: rgba(198, 40, 40, 0.28);
+        width: 55vw;
+        height: 55vw;
+        bottom: -25%;
+        right: -15%;
+        animation-delay: -4s;
+    }
+
+    .blob-3 {
+        background: rgba(14, 165, 233, 0.22);
+        width: 40vw;
+        height: 40vw;
+        top: 25%;
+        left: 35%;
+        animation-delay: -8s;
+    }
+
+    .ambient-grid {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: radial-gradient(var(--hin-blue) 1.5px, transparent 1.5px);
+        background-size: 32px 32px;
+        opacity: 0.06;
+    }
+
+    @keyframes floatBlob {
+        0% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(5%, 10%) scale(1.08); }
+        100% { transform: translate(-5%, -5%) scale(0.92); }
+    }
+
+    .page-container {
+        max-width: 1350px;
+        margin: 0 auto;
+        padding: 40px 20px 80px;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* --- HEADER COMPONENT --- */
+    .dashboard-header {
+        position: relative;
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        padding: clamp(2rem, 5vw, 3rem) 2rem;
+        border-radius: var(--radius-lg);
+        margin-bottom: 35px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        border: 1px solid var(--border-color);
+        border-bottom: 4px solid var(--hin-blue);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .header-left h1 {
+        font-size: clamp(1.8rem, 4vw, 2.8rem);
+        font-weight: 800;
+        color: var(--hin-blue);
+        letter-spacing: -0.5px;
+        line-height: 1.2;
+    }
+
+    .header-left h1 span {
+        color: var(--hin-red);
+    }
+
+    .total-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--white);
+        padding: 10px 20px;
+        border-radius: 50px;
+        box-shadow: var(--shadow-sm);
+        color: var(--hin-blue);
+        font-weight: 700;
+        font-size: 0.95rem;
+        border: 1px solid rgba(11, 61, 145, 0.1);
+    }
+
+    .total-badge i {
+        color: var(--hin-red);
+    }
+
+    /* --- MASTER TABLE CONTAINER CARD --- */
+    .master-panel-card {
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border-radius: var(--radius-lg);
+        padding: clamp(1.5rem, 4vw, 2.5rem);
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow-lg);
+        position: relative;
+    }
+
+    .panel-subheader {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: var(--hin-blue);
+        font-size: 1.25rem;
+        font-weight: 800;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .panel-subheader i {
+        color: var(--hin-red);
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+        border-radius: var(--radius-md);
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table th {
+        background-color: rgba(11, 61, 145, 0.04);
+        color: var(--hin-blue);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 700;
+        padding: 18px 16px;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.05em;
+        border-bottom: 2px solid rgba(11, 61, 145, 0.08);
+    }
+
+    .table td {
+        padding: 20px 16px;
+        color: var(--dark-text);
+        border-bottom: 1px solid var(--bg-main);
+        vertical-align: middle;
+        background: transparent;
+        transition: var(--transition);
+    }
+
+    .table tbody tr:hover td {
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* --- STAGE BADGE CONTROLS --- */
+    .stage-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border-radius: 8px;
+        background-color: var(--hin-blue-light);
+        color: var(--hin-blue);
+        font-weight: 700;
+        font-size: 0.85rem;
+        border: 1px solid rgba(11, 61, 145, 0.1);
+    }
+
+    .title-cell strong {
+        color: var(--hin-blue);
+        font-size: 1.05rem;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .title-cell small {
+        color: var(--muted-text);
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .description-text {
+        font-size: 0.95rem;
+        color: #334155;
+        line-height: 1.5;
+        max-width: 400px;
+    }
+
+    .batch-name-text {
+        font-weight: 600;
+        color: var(--dark-text);
+    }
+
+    /* --- STATUS PILLS --- */
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        line-height: 1;
+    }
+
+    .status-downloaded {
+        background-color: #dcfce7;
+        color: #15803d;
+        border: 1px solid rgba(21, 128, 61, 0.2);
+    }
+
+    .status-pending {
+        background-color: #fef3c7;
+        color: #b45309;
+        border: 1px solid rgba(180, 83, 9, 0.2);
+    }
+
+    .timestamp-text {
+        display: block;
+        font-size: 0.8rem;
+        color: var(--muted-text);
+        margin-top: 4px;
+        font-weight: 500;
+    }
+
+    /* --- MULTI-TONE COMBINATOR DOWNLOAD BUTTON --- */
+    /* Download Trigger Button: Starts Blue -> Hover turns Red */
+    .btn-hin-download {
+        background-color: var(--hin-blue);
+        color: var(--white);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: var(--transition);
+        box-shadow: 0 4px 10px rgba(11, 61, 145, 0.15);
+        white-space: nowrap;
+    }
+
+    .btn-hin-download:hover {
+        background-color: var(--hin-red);
+        color: var(--white);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(198, 40, 40, 0.25);
+    }
+
+    /* --- EMPTY STATE MODULE --- */
+    .empty-state-card {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .empty-state-icon {
+        width: 80px;
+        height: 80px;
+        background-color: var(--hin-red-light);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: var(--hin-red);
+        font-size: 2rem;
+    }
+
+    .empty-state-card h5 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--dark-text);
+        margin-bottom: 8px;
+    }
+
+    .empty-state-card p {
+        color: var(--muted-text);
+        font-size: 0.95rem;
+    }
+
+    /* --- PREMIUM PAGINATION --- */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 35px;
+        list-style: none;
+    }
+
+    .page-item .page-link, .page-item span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+        height: 40px;
+        padding: 0 14px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--border-color);
+        color: var(--dark-text);
+        font-weight: 600;
+        text-decoration: none;
+        transition: var(--transition);
+    }
+
+    .page-item.active .page-link {
+        background: var(--hin-blue);
+        color: var(--white);
+        border-color: var(--hin-blue);
+    }
+
+    .page-item:not(.active):not(.disabled) .page-link:hover {
+        background: var(--white);
+        color: var(--hin-red);
+        border-color: rgba(198, 40, 40, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .page-item.disabled span {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: transparent;
+    }
+
+    /* --- RESPONSIVE MEDIA BREAKPOINTS --- */
+    @media (max-width: 1024px) {
+        .table th, .table td { padding: 16px 12px; }
+        .description-text { max-width: 280px; }
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-header { flex-direction: column; align-items: flex-start; padding: 25px 20px; }
+        .master-panel-card { padding: 20px 15px; }
+        .table th, .table td { padding: 14px 10px; }
+    }
+</style>
+
+<!-- BACKGROUND CANVAS ANIMATION LAYER -->
+<div class="ambient-bg">
+    <div class="ambient-blob blob-1"></div>
+    <div class="ambient-blob blob-2"></div>
+    <div class="ambient-blob blob-3"></div>
+    <div class="ambient-grid"></div>
+</div>
+
+<div class="page-container">
+
+    <!-- Premium Dashboard Header -->
+    <header class="dashboard-header">
+        <div class="header-section header-left">
+            <h1>Deliverables & <span>Downloads</span></h1>
         </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow">
-                <div class="card-header bg-white">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h5 class="mb-0">Available Documents</h5>
-                        </div>
-                        <div class="col-auto">
-                            <span class="badge bg-primary">{{ deliverables.paginator.count }} Total Items</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    {% if deliverables %}
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Stage</th>
-                                        <th>Title</th>
-                                        <th>Description</th>
-                                        <th>Batch</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for sd in deliverables %}
-                                        <tr>
-                                            <td><span class="badge bg-secondary">Stage {{ sd.deliverable.stage_number }}</span></td>
-                                            <td>
-                                                <strong>{{ sd.deliverable.title }}</strong>
-                                                <br>
-                                                <small class="text-muted">Added: {{ sd.deliverable.created_at|date:"M d, Y" }}</small>
-                                            </td>
-                                            <td>{{ sd.deliverable.description|truncatechars:100 }}</td>
-                                            <td>{{ sd.deliverable.batch.name }}</td>
-                                            <td>
-                                                {% if sd.is_downloaded %}
-                                                    <span class="badge bg-success">
-                                                        <i class="bi bi-check-circle"></i> Downloaded
-                                                    </span>
-                                                    <br>
-                                                    <small class="text-muted">{{ sd.downloaded_at|date:"M d, Y" }}</small>
-                                                {% else %}
-                                                    <span class="badge bg-warning">
-                                                        <i class="bi bi-clock"></i> Not Downloaded
-                                                    </span>
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                <a href="{% url 'training:download_deliverable' sd.id %}" class="btn btn-sm btn-primary">
-                                                    <i class="bi bi-download"></i> Download
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                        <!-- Pagination -->
-                        {% if deliverables.has_other_pages %}
-                            <nav aria-label="Page navigation" class="mt-4">
-                                <ul class="pagination justify-content-center">
-                                    {% if deliverables.has_previous %}
-                                        <li class="page-item">
-                                            <a class="page-link" href="?page={{ deliverables.previous_page_number }}">Previous</a>
-                                        </li>
-                                    {% else %}
-                                        <li class="page-item disabled">
-                                            <span class="page-link">Previous</span>
-                                        </li>
-                                    {% endif %}
-                                    
-                                    {% for num in deliverables.paginator.page_range %}
-                                        {% if deliverables.number == num %}
-                                            <li class="page-item active">
-                                                <span class="page-link">{{ num }}</span>
-                                            </li>
-                                        {% elif num > deliverables.number|add:'-3' and num < deliverables.number|add:'3' %}
-                                            <li class="page-item">
-                                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                                            </li>
-                                        {% endif %}
-                                    {% endfor %}
-                                    
-                                    {% if deliverables.has_next %}
-                                        <li class="page-item">
-                                            <a class="page-link" href="?page={{ deliverables.next_page_number }}">Next</a>
-                                        </li>
-                                    {% else %}
-                                        <li class="page-item disabled">
-                                            <span class="page-link">Next</span>
-                                        </li>
-                                    {% endif %}
-                                </ul>
-                            </nav>
-                        {% endif %}
-                    {% else %}
-                        <div class="text-center py-5">
-                            <i class="bi bi-file-earmark-x" style="font-size: 48px;"></i>
-                            <h5 class="mt-3">No deliverables available yet</h5>
-                            <p class="text-muted">Deliverables will appear here once uploaded by the admin.</p>
-                        </div>
-                    {% endif %}
-                </div>
+        <div class="header-section header-right">
+            <div class="total-badge">
+                <i class="fas fa-boxes"></i>
+                <span>{{ deliverables.paginator.count }} Total Items</span>
             </div>
+        </div>
+    </header>
+
+    <!-- Main Output Module -->
+    <div class="master-panel-card">
+        <div class="panel-subheader">
+            <i class="fas fa-file-invoice"></i> Available Documents
+        </div>
+
+        <div class="table-body-wrapper">
+            {% if deliverables %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Stage</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Batch Assignment</th>
+                                <th>Download Status</th>
+                                <th>Action Operation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sd in deliverables %}
+                                <tr>
+                                    <td>
+                                        <span class="stage-badge">
+                                            <i class="fas fa-step-forward fa-sm"></i> Stage {{ sd.deliverable.stage_number }}
+                                        </span>
+                                    </td>
+                                    <td class="title-cell">
+                                        <strong>{{ sd.deliverable.title }}</strong>
+                                        <small><i class="far fa-calendar-alt"></i> Added: {{ sd.deliverable.created_at|date:"M d, Y" }}</small>
+                                    </td>
+                                    <td>
+                                        <p class="description-text">{{ sd.deliverable.description|truncatechars:100 }}</p>
+                                    </td>
+                                    <td>
+                                        <span class="batch-name-text">{{ sd.deliverable.batch.name }}</span>
+                                    </td>
+                                    <td>
+                                        {% if sd.is_downloaded %}
+                                            <span class="status-pill status-downloaded">
+                                                <i class="fas fa-check-circle"></i> Downloaded
+                                            </span>
+                                            <span class="timestamp-text">{{ sd.downloaded_at|date:"M d, Y" }}</span>
+                                        {% else %}
+                                            <span class="status-pill status-pending">
+                                                <i class="fas fa-exclamation-circle"></i> Not Downloaded
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'training:download_deliverable' sd.id %}" class="btn-hin-download">
+                                            <i class="fas fa-cloud-download-alt"></i> Download
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Custom Pagination -->
+                {% if deliverables.has_other_pages %}
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            {% if deliverables.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ deliverables.previous_page_number }}">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled"><span><i class="fas fa-chevron-left"></i></span></li>
+                            {% endif %}
+                            
+                            {% for num in deliverables.paginator.page_range %}
+                                {% if deliverables.number == num %}
+                                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                                {% elif num > deliverables.number|add:'-3' and num < deliverables.number|add:'3' %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if deliverables.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ deliverables.next_page_number }}">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled"><span><i class="fas fa-chevron-right"></i></span></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            {% else %}
+                <div class="empty-state-card">
+                    <div class="empty-state-icon">
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+                    <h5>No deliverables available yet</h5>
+                    <p>Deliverables will appear here once uploaded by the admin framework configuration.</p>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Subtle row introduction staging effect
+        const targetRows = document.querySelectorAll('.table tbody tr');
+        targetRows.forEach((row, index) => {
+            row.style.opacity = '0';
+            row.style.transform = 'translateY(8px)';
+            row.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            setTimeout(() => {
+                row.style.opacity = '1';
+                row.style.transform = 'translateY(0)';
+            }, 50 * index);
+        });
+    });
+</script>
 {% endblock %}
