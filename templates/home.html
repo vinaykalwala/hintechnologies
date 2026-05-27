@@ -1,9 +1,492 @@
 {% extends 'base.html' %}
-{% load static %}
-
-{% block title %}Home - Master DevOps with Hands-On Training{% endblock %}
-
+ {% load static %}
 {% block content %}
+
+<!-- GOOGLE FONT -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+
+
+/* HERO */
+.hero-title{
+    font-family:'Orbitron', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:2px;
+}
+
+.hero-sub,
+.hero-desc{
+    font-family:'Inter', sans-serif;
+}
+.hero-v2{
+    position:relative;
+    width:100%;
+    min-height:100vh;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:80px 0 30px;
+    background:
+    url('{% static "images/hero-bg.png" %}')
+    center center/cover no-repeat;
+}
+
+/* overlay */
+
+.hero-v2::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background:
+    linear-gradient(
+        90deg,
+        rgba(0,72,255,.42) 0%,
+        rgba(255,255,255,.18) 50%,
+        rgba(215,20,65,.40) 100%
+    );
+    z-index:1;
+}
+
+.hero-v2::after{
+    content:'';
+    position:absolute;
+    inset:0;
+    backdrop-filter:blur(5px);
+    z-index:1;
+}
+
+/* CONTENT */
+
+.hero-inner{
+    position:relative;
+    z-index:2;
+    width:100%;
+    max-width:1500px;
+    text-align:center;
+    padding:0 30px;
+}
+
+/* TITLE */
+
+.hero-title{
+    font-size:50px;
+    font-weight:800;
+    line-height:1.08;
+    letter-spacing:-2px;
+    color:#10234a;
+    max-width:1150px;
+    margin:auto;
+}
+
+.hero-title span{
+    color:#d61f3d;
+}
+
+.hero-sub{
+    margin-top:18px;
+    font-size:24px;
+    font-weight:500;
+    letter-spacing:.5px;
+    color:#222;
+}
+
+.hero-desc{
+    margin:28px auto 42px;
+    max-width:980px;
+    font-size:21px;
+    line-height:1.8;
+    font-weight:400;
+    color:#303030;
+}
+
+/* STAGE */
+
+.carousel-stage{
+    position:relative;
+    width:100%;
+    height:540px;
+    perspective:2200px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* RING */
+
+.carousel-ring{
+    position:relative;
+    width:100%;
+    height:100%;
+    transform-style:preserve-3d;
+    animation:rotateRing 34s linear infinite;
+}
+
+/* smooth infinite */
+
+@keyframes rotateRing{
+    from{
+        transform:rotateY(0deg);
+    }
+    to{
+        transform:rotateY(360deg);
+    }
+}
+
+/* CARDS */
+
+.service-card{
+    position:absolute;
+    width:270px;
+    height:360px;
+    border-radius:34px;
+    overflow:hidden;
+    left:50%;
+    top:70px;
+    margin-left:-130px;
+    background:white;
+    box-shadow:
+    0 25px 70px rgba(0,0,0,.18);
+    transition:.4s;
+}
+
+.service-card:hover{
+    transform:scale(1.04);
+}
+
+.service-card img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+/* overlay */
+
+.card-gradient{
+    position:absolute;
+    inset:0;
+    background:
+    linear-gradient(
+        to top,
+        rgba(15, 43, 95, 0.88),
+        rgba(255, 172, 199, 0.3)
+    );
+}
+
+.card-text{
+    position:absolute;
+    bottom:28px;
+    left:22px;
+    right:22px;
+    color:white;
+    font-size:22px;
+    font-weight:700;
+    line-height:1.35;
+}
+
+/* PERFECT EQUAL GAP */
+
+.card1{
+transform:rotateY(0deg) translateZ(430px);
+}
+
+.card2{
+transform:rotateY(51.4deg) translateZ(430px);
+}
+
+.card3{
+transform:rotateY(102.8deg) translateZ(430px);
+}
+
+.card4{
+transform:rotateY(154.2deg) translateZ(430px);
+}
+
+.card5{
+transform:rotateY(205.6deg) translateZ(430px);
+}
+
+.card6{
+transform:rotateY(257deg) translateZ(430px);
+}
+
+.card7{
+transform:rotateY(308.4deg) translateZ(430px);
+}
+
+/* FLOOR */
+
+.floor-ring{
+    position:absolute;
+    bottom:15px;
+    left:50%;
+    transform:translateX(-50%);
+    width:1200px;
+    height:170px;
+    border-radius:50%;
+    border:2px solid rgba(255,255,255,.35);
+    box-shadow:
+    0 0 90px rgba(255,255,255,.22);
+}
+
+/* MOBILE */
+
+@media(max-width:992px){
+
+.hero-title{
+font-size:42px;
+letter-spacing:-1px;
+}
+
+.hero-sub{
+font-size:18px;
+}
+
+.hero-desc{
+font-size:17px;
+}
+
+.carousel-stage{
+height:380px;
+}
+
+.service-card{
+width:180px;
+height:250px;
+margin-left:-90px;
+}
+
+.card-text{
+font-size:17px;
+}
+
+.floor-ring{
+width:700px;
+height:110px;
+}
+
+}
+/* ===== MOBILE RESPONSIVE HERO ===== */
+
+@media screen and (max-width:768px){
+
+    .hero-v2{
+        min-height:auto;
+        padding:90px 0 40px;
+    }
+
+    .hero-inner{
+        padding:0 15px;
+    }
+
+    .hero-title{
+        font-size:30px;
+        line-height:1.25;
+        letter-spacing:0;
+    }
+
+    .hero-sub{
+        font-size:15px;
+        margin-top:12px;
+        line-height:1.5;
+    }
+
+    .hero-desc{
+        font-size:14px;
+        line-height:1.7;
+        margin:18px auto 25px;
+        max-width:100%;
+        padding:0 5px;
+    }
+
+    .carousel-stage{
+        height:260px;
+        perspective:1200px;
+        overflow:hidden;
+    }
+
+    .carousel-ring{
+        animation:rotateRing 28s linear infinite;
+    }
+
+    .service-card{
+        width:120px;
+        height:170px;
+        border-radius:20px;
+        top:35px;
+        margin-left:-60px;
+    }
+
+    .service-card img{
+        object-fit:cover;
+    }
+
+    .card-text{
+        font-size:12px;
+        bottom:14px;
+        left:12px;
+        right:12px;
+        line-height:1.3;
+    }
+
+    /* smaller circle for mobile */
+    .card1{transform:rotateY(0deg) translateZ(210px);}
+    .card2{transform:rotateY(51.4deg) translateZ(210px);}
+    .card3{transform:rotateY(102.8deg) translateZ(210px);}
+    .card4{transform:rotateY(154.2deg) translateZ(210px);}
+    .card5{transform:rotateY(205.6deg) translateZ(210px);}
+    .card6{transform:rotateY(257deg) translateZ(210px);}
+    .card7{transform:rotateY(308.4deg) translateZ(210px);}
+
+    .floor-ring{
+        width:320px;
+        height:70px;
+        bottom:0;
+    }
+}
+
+
+/* Extra Small Mobile */
+
+@media screen and (max-width:480px){
+
+    .hero-v2{
+        padding:80px 0 30px;
+    }
+
+    .hero-title{
+        font-size:24px;
+        line-height:1.3;
+    }
+
+    .hero-sub{
+        font-size:13px;
+    }
+
+    .hero-desc{
+        font-size:13px;
+        line-height:1.6;
+    }
+
+    .carousel-stage{
+        height:220px;
+    }
+
+    .service-card{
+        width:95px;
+        height:140px;
+        margin-left:-48px;
+        top:28px;
+    }
+
+    .card-text{
+        font-size:10px;
+        bottom:10px;
+    }
+
+    .card1{transform:rotateY(0deg) translateZ(170px);}
+    .card2{transform:rotateY(51.4deg) translateZ(170px);}
+    .card3{transform:rotateY(102.8deg) translateZ(170px);}
+    .card4{transform:rotateY(154.2deg) translateZ(170px);}
+    .card5{transform:rotateY(205.6deg) translateZ(170px);}
+    .card6{transform:rotateY(257deg) translateZ(170px);}
+    .card7{transform:rotateY(308.4deg) translateZ(170px);}
+
+    .floor-ring{
+        width:260px;
+        height:55px;
+    }
+}
+</style>
+
+<section class="hero-v2">
+
+    <div class="hero-inner">
+
+        <h1 class="hero-title">
+            Transform Your Career & Business with
+            <span>Real-Time Technology Solutions</span>
+        </h1>
+
+        <div class="hero-sub">
+            Training | DevOps | Cloud | Development | Corporate Solutions
+        </div>
+
+        <div class="hero-desc">
+            Founded in 2014, HIN Technologies has successfully trained
+            1000+ students and completed 75+ successful batches in
+            Middleware, DevOps, Cloud and Infrastructure Technologies.
+        </div>
+
+        <div class="carousel-stage">
+
+            <div class="floor-ring"></div>
+
+            <div class="carousel-ring">
+
+                <div class="service-card card1">
+                    <img src="{% static 'images/training.png' %}">
+                    <div class="card-gradient"></div>
+                    <div class="card-text">Real-Time IT Training</div>
+                </div>
+
+                <div class="service-card card2">
+                    <img src="{% static 'images/corporate.png' %}">
+                    <div class="card-gradient"></div>
+                    <div class="card-text">Corporate Trainings</div>
+                </div>
+
+                <div class="service-card card3">
+                    <img src="{% static 'images/devops.png' %}">
+                    <div class="card-gradient"></div>
+                    <div class="card-text">DevOps Project Development</div>
+                </div>
+
+                <div class="service-card card4">
+                    <img src="{% static 'images/jobsupport.png' %}">
+                    <div class="card-gradient"></div>
+                    <div class="card-text">Job Support Services</div>
+                </div>
+
+                <div class="service-card card5">
+                    <img src="{% static 'images/cloud.png' %}">
+                    <div class="card-gradient"></div>
+                    <div class="card-text">Cloud Solutions</div>
+                </div>
+
+                <div class="service-card card6">
+                    <img src="{% static 'images/app.png' %}">
+                    <div class="card-gradient"></div>
+                    <div class="card-text">Application Development</div>
+                </div>
+
+                <div class="service-card card7">
+                    <img src="{% static 'images/automation.png' %}">
+                    <div class="card-gradient"></div>
+                    <div class="card-text">Automation Services</div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+{% include 'includes/aboutandwhysection.html' %}
+{% include 'includes/training_services_cources_section.html' %}
+{% include 'includes/lastsections.html' %}
 
 
 
