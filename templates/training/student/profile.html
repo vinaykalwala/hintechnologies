@@ -22,15 +22,11 @@
     }
 
     .profile-layout {
-
         display: grid;
-
-        grid-template-columns: 420px 1fr;
-
+        grid-template-columns: minmax(320px, 420px) 1fr;
         gap: 30px;
-
         align-items: stretch;
-
+        width: 100%;
     }
 
     /* LEFT */
@@ -109,6 +105,68 @@
         text-align: center;
 
         z-index: 10;
+
+    }
+
+    /* ===== CUSTOM CONTAINER ===== */
+
+    .container {
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding-inline: 24px;
+        box-sizing: border-box;
+    }
+
+    /* ===== CUSTOM GRID ===== */
+
+    .row {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        margin: 0;
+    }
+
+    .col-md-4,
+    .col-md-6 {
+        width: 100%;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* RESPONSIVE */
+
+    @media(max-width:992px) {
+
+        .col-md-4 {
+            width: 50%;
+        }
+
+        .col-md-6 {
+            width: 100%;
+        }
+
+    }
+
+    @media (max-width:768px) {
+
+        .container {
+            padding-inline: 20px;
+        }
+
+        .profile-page {
+            padding: 20px 0;
+        }
+
+        .profile-layout {
+            gap: 20px;
+        }
+
+        .profile-card,
+        .edit-card {
+            width: 100%;
+            margin: 0 auto;
+        }
 
     }
 
@@ -463,9 +521,8 @@
     }
 
     .input-box {
-
+        width: 100%;
         margin-bottom: 22px;
-
     }
 
     .input-box label {
@@ -882,18 +939,6 @@
 
         }
 
-        .row {
-
-            display: block;
-
-        }
-
-        .col-md-4,
-        .col-md-6 {
-
-            width: 100%;
-
-        }
 
         .save-btn {
 
@@ -902,12 +947,77 @@
         }
 
     }
+
+    @media(max-width:576px) {
+
+        .profile-page {
+            padding: 15px 0;
+        }
+
+        .profile-card,
+        .edit-card {
+            border-radius: 20px;
+        }
+
+        .edit-card {
+            padding: 18px;
+        }
+
+        .cover-section {
+            height: 220px;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            font-size: 38px;
+        }
+
+        .profile-center h2 {
+            font-size: 22px;
+        }
+
+        .stats-row {
+            flex-direction: column;
+        }
+
+        .stat-box {
+            width: 100%;
+        }
+
+        .save-btn {
+            font-size: 14px;
+        }
+
+    }
+
+    @media(max-width:576px) {
+
+        .container {
+            padding-inline: 16px !important;
+        }
+
+        .profile-page {
+            padding: 16px 0;
+        }
+
+        .profile-layout {
+            gap: 16px;
+        }
+
+        .profile-card,
+        .edit-card {
+            width: 100%;
+            margin: 0 auto;
+            border-radius: 18px;
+        }
+
+    }
 </style>
 
 
 <div class="container profile-page">
-
-    <div class="profile-layout">
+    <div class="profile-layout custom-grid">
 
         <!-- LEFT -->
 
@@ -1194,14 +1304,13 @@
                 <div class="profile-header-actions">
 
                     <img src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png" class="lock-img">
-                    <a href="{% url 'hin:change_password' %}"
-   class="change-pass-btn">
+                    <a href="{% url 'hin:change_password' %}" class="change-pass-btn">
 
-    <i class="fa fa-key"></i>
+                        <i class="fa fa-key"></i>
 
-    Change Password
+                        Change Password
 
-</a>
+                    </a>
 
                 </div>
             </div>
