@@ -4,184 +4,640 @@
 {% block title %}Manage Batches - HIN Technologies{% endblock %}
 
 {% block content %}
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
     :root {
+        /* HIN Technologies Premium Brand Palette */
         --hin-blue: #0B3D91;
+        --hin-blue-light: #eef5ff;
+        --hin-blue-hover: #082d6b;
         --hin-red: #C62828;
-        --bg-main: #f7fafe;
+        --hin-red-light: #fef2f2;
+        --hin-red-hover: #a12020;
+        
+        /* Neutrals & UI Structure */
+        --dark-text: #1a1a2e;
+        --muted-text: #5b6475;
+        --bg-main: #f4f7fc;
         --white: #ffffff;
-        --border-color: #edf2f7;
-        --shadow-md: 0 10px 25px -5px rgba(11, 61, 145, 0.1);
+        --border-color: rgba(255, 255, 255, 0.8); 
+        
+        /* Glassmorphism Configuration */
+        --glass-bg: rgba(255, 255, 255, 0.85);
+        --glass-blur: blur(25px);
+        
+        /* Elevation Shadows */
+        --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 10px 20px -3px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 25px 50px -12px rgba(11, 61, 145, 0.15);
+        --radius-lg: 30px;
+        --radius-md: 18px;
+        --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .batch-page-wrapper {
-        padding: 40px 5%;
-        background: var(--bg-main);
-        min-height: 100vh;
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
     }
 
-    /* --- PAGE HEADER --- */
-    .page-header {
+    body {
+        background-color: var(--bg-main);
+        font-family: 'Inter', system-ui, sans-serif;
+        color: var(--dark-text);
+        overflow-x: hidden;
+        position: relative;
+    }
+
+    /* --- DYNAMIC AMBIENT BACKGROUND FRAMEWORK --- */
+    .ambient-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .ambient-blob {
+        position: absolute;
+        filter: blur(100px);
+        border-radius: 50%;
+        opacity: 0.65;
+        animation: floatBlob 18s infinite alternate ease-in-out;
+    }
+
+    .blob-1 {
+        background: rgba(11, 61, 145, 0.35);
+        width: 48vw;
+        height: 48vw;
+        top: -15%;
+        left: -15%;
+    }
+
+    .blob-2 {
+        background: rgba(198, 40, 40, 0.25);
+        width: 52vw;
+        height: 52vw;
+        bottom: -20%;
+        right: -10%;
+        animation-delay: -4s;
+    }
+
+    .blob-3 {
+        background: rgba(14, 165, 233, 0.18);
+        width: 38vw;
+        height: 38vw;
+        top: 30%;
+        left: 35%;
+        animation-delay: -8s;
+    }
+
+    .ambient-grid {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: radial-gradient(var(--hin-blue) 1.5px, transparent 1.5px);
+        background-size: 32px 32px;
+        opacity: 0.05;
+    }
+
+    @keyframes floatBlob {
+        0% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(4%, 8%) scale(1.05); }
+        100% { transform: translate(-4%, -4%) scale(0.95); }
+    }
+
+    .page-container {
+        max-width: 1350px;
+        margin: 0 auto;
+        padding: 40px 20px 80px;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* --- PREMIUM HEADER BANNER --- */
+    .dashboard-header {
+        position: relative;
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        padding: clamp(2rem, 5vw, 3rem) 2rem;
+        border-radius: var(--radius-lg);
+        margin-bottom: 35px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        border: 1px solid var(--border-color);
+        border-bottom: 4px solid var(--hin-blue);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 40px;
+        flex-wrap: wrap;
+        gap: 20px;
     }
 
-    .page-header h2 {
+    .header-left h2 {
         font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 2.5rem;
-        color: var(--hin-red);
+        font-size: clamp(1.8rem, 4vw, 2.8rem);
         font-weight: 800;
+        color: var(--hin-blue);
+        letter-spacing: -0.5px;
+        line-height: 1.2;
     }
 
     .btn-create {
         background: var(--hin-blue);
-        color: white;
+        color: var(--white);
         padding: 14px 28px;
         border-radius: 50px;
         text-decoration: none;
-        font-weight: 600;
-        transition: 0.3s;
-        box-shadow: 0 10px 15px rgba(11, 61, 145, 0.2);
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: var(--transition);
+        box-shadow: 0 6px 15px rgba(11, 61, 145, 0.15);
     }
 
-    .btn-create:hover { background: var(--hin-red); transform: translateY(-3px); }
+    .btn-create:hover {
+        background: var(--hin-red);
+        color: var(--white);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(198, 40, 40, 0.25);
+    }
 
-    /* --- MODERN FILTER CARD --- */
+    /* --- LUXURY HIGH-FIDELITY BENTO FILTER CARD --- */
     .filter-card {
-        background: var(--white);
-        border-radius: 20px;
-        padding: 25px;
-        box-shadow: var(--shadow-md);
-        margin-bottom: 30px;
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border-radius: var(--radius-lg);
+        padding: 30px;
+        margin-bottom: 35px;
         border: 1px solid var(--border-color);
+        box-shadow: var(--shadow-md);
+        position: relative;
+    }
+
+    .filter-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, var(--hin-red), var(--hin-blue), var(--hin-red));
+        border-top-left-radius: var(--radius-lg);
+        border-top-right-radius: var(--radius-lg);
+    }
+
+    .filter-form-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 20px;
+        align-items: end;
+    }
+
+    .filter-input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .filter-input-wrapper i {
+        position: absolute;
+        left: 16px;
+        color: var(--hin-blue);
+        font-size: 1.05rem;
+        pointer-events: none;
+        transition: var(--transition);
+        z-index: 2;
     }
 
     .filter-card input, .filter-card select {
         width: 100%;
-        padding: 12px 16px;
-        border-radius: 12px;
-        border: 1px solid var(--border-color);
-        background: #fcfcfc;
+        padding: 12px 16px 12px 45px;
+        border-radius: 14px;
+        border: 2px solid rgba(226, 232, 240, 0.9);
+        background: rgba(255, 255, 255, 0.8);
+        font-family: inherit;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--dark-text);
+        transition: var(--transition);
+        height: 3.2rem;
+        -webkit-appearance: none;
+        appearance: none;
     }
 
-    /* --- MODERN TABLE --- */
-    .table-responsive {
-        background: var(--white);
-        border-radius: 20px;
-        padding: 20px;
-        box-shadow: var(--shadow-md);
-        border: 1px solid var(--border-color);
+    /* Select Arrow Override */
+    .select-container {
+        position: relative;
+        width: 100%;
     }
-
-    .table { width: 100%; border-collapse: separate; border-spacing: 0; }
-    .table th { color: var(--hin-blue); padding: 20px; border-bottom: 2px solid var(--border-color); }
-    .table td { padding: 20px; border-bottom: 1px solid var(--border-color); }
     
-    .status-badge {
-        padding: 6px 12px;
-        border-radius: 8px;
-        font-size: 0.85rem;
-        font-weight: 600;
+    .select-container::after {
+        content: '\f107';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        position: absolute;
+        right: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted-text);
+        pointer-events: none;
+        font-size: 1rem;
+        transition: var(--transition);
     }
-    .status-running { background: #dcfce7; color: #166534; }
-    .status-upcoming { background: #e0f2fe; color: #075985; }
-    .status-paused { background: #fef3c7; color: #92400e; }
-    .status-other { background: #f1f5f9; color: #475569; }
 
-    /* --- RESPONSIVE TABLE --- */
-    @media (max-width: 992px) {
-        .page-header { flex-direction: column; gap: 20px; }
-        .filter-card form { gap: 15px; display: grid; grid-template-columns: 1fr 1fr; }
+    .select-container:focus-within::after {
+        color: var(--hin-blue);
+        transform: translateY(-50%) rotate(180deg);
     }
-    @media (max-width: 576px) {
-        .filter-card form { grid-template-columns: 1fr; }
+
+    .filter-card input:focus, .filter-card select:focus {
+        border-color: var(--hin-blue);
+        background: var(--white);
+        outline: none;
+        box-shadow: 0 0 0 5px rgba(11, 61, 145, 0.1);
+    }
+
+    .filter-card input:focus + i, .filter-card select:focus ~ i {
+        color: var(--hin-red);
+    }
+
+    /* Filter Action Button: Starts Blue -> Hover turns Red */
+    .btn-primary-filter {
+        background: var(--hin-blue);
+        color: var(--white);
+        border: none;
+        border-radius: 14px;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: var(--transition);
+        height: 3.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(11, 61, 145, 0.18);
+        width: 100%;
+    }
+
+    .btn-primary-filter:hover {
+        background: var(--hin-red);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(198, 40, 40, 0.25);
+    }
+
+    .btn-secondary-clear {
+        border-radius: 14px;
+        text-decoration: none;
+        text-align: center;
+        font-weight: 600;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 3.2rem;
+        background: #e2e8f0;
+        color: #475569;
+        transition: var(--transition);
+        width: 100%;
+        border: 1px solid rgba(226, 232, 240, 0.5);
+    }
+
+    .btn-secondary-clear:hover {
+        background: #cbd5e1;
+        color: #1e293b;
+        transform: translateY(-1px);
+    }
+
+    /* --- PREMIUM DATA MODULE TABLE --- */
+    .master-table-panel {
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border-radius: var(--radius-lg);
+        padding: clamp(1.5rem, 4vw, 2.5rem);
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+        border-radius: var(--radius-md);
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table th {
+        background-color: rgba(11, 61, 145, 0.04);
+        color: var(--hin-blue);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 700;
+        padding: 18px 16px;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.05em;
+        border-bottom: 2px solid rgba(11, 61, 145, 0.08);
+    }
+
+    .table td {
+        padding: 20px 16px;
+        color: var(--dark-text);
+        border-bottom: 1px solid var(--bg-main);
+        vertical-align: middle;
+        background: transparent;
+        transition: var(--transition);
+    }
+
+    .table tbody tr:hover td {
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .batch-title-cell strong {
+        color: var(--hin-blue);
+        font-size: 1.1rem;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .batch-title-cell small {
+        color: var(--muted-text);
+        font-size: 0.85rem;
+        line-height: 1.4;
+        display: block;
+        max-width: 320px;
+    }
+
+    .date-cell, .enrolled-cell {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #334155;
+    }
+
+    /* Universal Toggle-Like Progress Metrics */
+    .progress-track-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .progress-percentage {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--hin-blue);
+    }
+
+    .progress {
+        background-color: #e2e8f0;
+        border-radius: 50px;
+        overflow: hidden;
+        box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .progress-bar {
+        height: 10px;
+        border-radius: 50px;
+        transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .bg-success { background: linear-gradient(90deg, #22c55e, #16a34a); }
+    .bg-danger { background: linear-gradient(90deg, #ef4444, #dc2626); }
+
+    /* Universal Toggle-Like Status Badges */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        line-height: 1;
+    }
+
+    .status-running { background-color: #dcfce7; color: #15803d; border: 1px solid rgba(21, 128, 61, 0.2); }
+    .status-upcoming { background-color: #e0f2fe; color: #0369a1; border: 1px solid rgba(3, 105, 161, 0.2); }
+    .status-paused { background-color: #fef3c7; color: #b45309; border: 1px solid rgba(180, 83, 9, 0.2); }
+    .status-other { background-color: #f1f5f9; color: #475569; border: 1px solid rgba(71, 85, 105, 0.2); }
+
+    /* Edit Row Action Trigger: Starts Blue -> Hover turns Red */
+    .action-edit-trigger {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background-color: var(--hin-blue-light);
+        color: var(--hin-blue);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: var(--transition);
+        border: 1px solid rgba(11, 61, 145, 0.1);
+    }
+
+    .action-edit-trigger:hover {
+        background-color: var(--hin-red);
+        color: var(--white);
+        transform: scale(1.1);
+        box-shadow: 0 4px 10px rgba(198, 40, 40, 0.2);
+    }
+
+    /* --- EMPTY STATE MODULE --- */
+    .empty-state-container {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .empty-state-icon-box {
+        width: 80px;
+        height: 80px;
+        background-color: var(--hin-red-light);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: var(--hin-red);
+        font-size: 2rem;
+    }
+
+    .empty-state-container h5 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--dark-text);
+        margin-bottom: 8px;
+    }
+
+    /* --- RESPONSIVE ADJUSTMENT MATRIX --- */
+    @media (max-width: 1200px) {
+        .filter-form-grid { grid-template-columns: repeat(2, 1fr); }
+        .grid-search { grid-column: span 1; }
+        .grid-status { grid-column: span 1; }
+        .grid-actions { grid-column: span 2; }
+    }
+
+    @media (max-width: 992px) {
+        .dashboard-header { flex-direction: column; align-items: flex-start; padding: 25px 20px; }
+        .btn-create { width: 100%; justify-content: center; }
+        .table th, .table td { padding: 16px 12px; }
+    }
+
+    @media (max-width: 768px) {
+        .filter-form-grid { grid-template-columns: 1fr; }
+        .grid-search, .grid-status, .grid-actions { grid-column: span 1; }
+        .filter-actions-flex { flex-direction: column; }
+        .master-table-panel { padding: 20px 15px; }
     }
 </style>
 
-<div class="batch-page-wrapper">
-    <div class="page-header">
-        <h2>Manage Batches</h2>
-        <a href="{% url 'training:batch_create' %}" class="btn-create">
-            <i class="fas fa-plus"></i> Create New Batch
-        </a>
-    </div>
+<div class="ambient-bg">
+    <div class="ambient-blob blob-1"></div>
+    <div class="ambient-blob blob-2"></div>
+    <div class="ambient-blob blob-3"></div>
+    <div class="ambient-grid"></div>
+</div>
+
+<div class="page-container">
     
+    <header class="dashboard-header">
+        <div class="header-section header-left">
+            <h2>Manage Batches</h2>
+        </div>
+        <div class="header-section header-right">
+            <a href="{% url 'training:batch_create' %}" class="btn-create">
+                <i class="fas fa-plus"></i> Create New Batch
+            </a>
+        </div>
+    </header>
+
     <div class="filter-card">
-        <form method="get" class="row g-3">
-            <div class="col-md-4">
-                <input type="text" name="search" placeholder="Search by name..." value="{{ search_query }}">
-            </div>
-            <div class="col-md-3">
-                <select name="status">
-                    <option value="">All Statuses</option>
-                    {% for value, label in status_choices %}
-                        <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="col-md-5 d-flex gap-2">
-                <button type="submit" class="btn btn-primary" style="flex:1; border-radius:12px; background: var(--hin-blue); border:none;">Filter</button>
-                <a href="{% url 'training:batch_list' %}" class="btn btn-secondary" style="flex:1; border-radius:12px; text-decoration:none; text-align:center; padding: 10px; background: #e2e8f0; color: #64748b;">Clear</a>
+        <form method="get">
+            <div class="filter-form-grid">
+                
+                <div class="filter-input-wrapper grid-search" style="grid-column: span 4;">
+                    <input type="text" name="search" placeholder="Search batches by name..." value="{{ search_query }}">
+                    <i class="fas fa-search"></i>
+                </div>
+                
+                <div class="select-container filter-input-wrapper grid-status" style="grid-column: span 4;">
+                    <select name="status">
+                        <option value="">All Statuses Available</option>
+                        {% for value, label in status_choices %}
+                            <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <i class="fas fa-toggle-on"></i>
+                </div>
+                
+                <div class="grid-actions" style="grid-column: span 4;">
+                    <div class="filter-actions-flex" style="display: flex; gap: 12px; width: 100%;">
+                        <button type="submit" class="btn-primary-filter">
+                            <i class="fas fa-filter"></i> Filter
+                        </button>
+                        <a href="{% url 'training:batch_list' %}" class="btn-secondary-clear">Clear</a>
+                    </div>
+                </div>
+
             </div>
         </form>
     </div>
-    
-    <div class="table-responsive">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Batch Name</th>
-                    <th>Dates</th>
-                    <th>Students</th>
-                    <th>Progress</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for batch in batches %}
-                <tr>
-                    <td>
-                        <strong style="color: var(--hin-blue);">{{ batch.name }}</strong><br>
-                        <small class="text-muted">{{ batch.description|truncatechars:30 }}</small>
-                    </td>
-                    <td>{{ batch.start_date|date:"d M" }} - {{ batch.end_date|date:"d M, y" }}</td>
-                    <td>{{ batch.student_count }} / {{ batch.batch_capacity }}</td>
-                    <td>
-                        {% widthratio batch.student_count batch.batch_capacity 100 as progress_width %}
-                        <div class="progress" style="width: 100px; height: 10px;">
-                            <div
-                                class="progress-bar {% if batch.student_count >= batch.batch_capacity %}bg-danger{% else %}bg-success{% endif %}"
-                                style="width: {{ progress_width }}%;">
+
+    <div class="master-table-panel">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Batch Details</th>
+                        <th>Duration Term</th>
+                        <th>Occupancy</th>
+                        <th>Allocation Space</th>
+                        <th>Status</th>
+                        <th>Operation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for batch in batches %}
+                    <tr>
+                        <td class="batch-title-cell">
+                            <strong>{{ batch.name }}</strong>
+                            <small class="text-muted">{{ batch.description|truncatechars:30 }}</small>
+                        </td>
+                        <td class="date-cell">
+                            <i class="far fa-calendar-alt text-muted me-1"></i>
+                            {{ batch.start_date|date:"d M" }} - {{ batch.end_date|date:"d M, y" }}
+                        </td>
+                        <td class="enrolled-cell">
+                            <strong>{{ batch.student_count }}</strong> <span class="text-muted">/ {{ batch.batch_capacity }}</span>
+                        </td>
+                        <td style="min-width: 140px;">
+                            {% widthratio batch.student_count batch.batch_capacity 100 as progress_width %}
+                            <div class="progress-track-wrapper">
+                                <span class="progress-percentage">{{ progress_width }}% Capacity</span>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar {% if batch.student_count >= batch.batch_capacity %}bg-danger{% else %}bg-success{% endif %}"
+                                         style="width: {{ progress_width }}%;">
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </td>
-                    <td>
-                        <span class="status-badge {% if batch.status == 'running' %}status-running{% elif batch.status == 'upcoming' %}status-upcoming{% elif batch.status == 'paused' %}status-paused{% else %}status-other{% endif %}">
-                            {{ batch.get_status_display }}
-                        </span>
-                    </td>
-                    <td>
-                        <a href="{% url 'training:batch_edit' batch.id %}" style="color: var(--hin-blue);"><i class="fas fa-pen"></i></a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="6" class="text-center py-5">
-                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                            <i class="fas fa-calendar-times" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 10px;"></i>
-                            <h5>No batches found</h5>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                        </td>
+                        <td>
+                            <span class="status-badge {% if batch.status == 'running' %}status-running{% elif batch.status == 'upcoming' %}status-upcoming{% elif batch.status == 'paused' %}status-paused{% else %}status-other{% endif %}">
+                                <i class="fas {% if batch.status == 'running' %}fa-play-circle{% elif batch.status == 'upcoming' %}fa-clock{% elif batch.status == 'paused' %}fa-pause-circle{% else %}fa-check-circle{% endif %} fa-sm me-1"></i>
+                                {{ batch.get_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{% url 'training:batch_edit' batch.id %}" class="action-edit-trigger" title="Edit Batch Structural Metrics">
+                                <i class="fas fa-pen"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state-container">
+                                <div class="empty-state-icon-box">
+                                    <i class="fas fa-calendar-times"></i>
+                                </div>
+                                <h5>No Training Batches Encountered</h5>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Subtle clean layout cascade item loader animation
+        const rows = document.querySelectorAll('.table tbody tr');
+        rows.forEach((row, index) => {
+            row.style.opacity = '0';
+            row.style.transform = 'translateY(8px)';
+            row.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            setTimeout(() => {
+                row.style.opacity = '1';
+                row.style.transform = 'translateY(0)';
+            }, 50 * index);
+        });
+    });
+</script>
 {% endblock %}
