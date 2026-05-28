@@ -138,7 +138,6 @@
         max-width: 500px;
     }
 
-    /* NEW GLASS PROGRESS CARD - Icon and Number Side by Side */
     .glass-progress-card {
         flex-shrink: 0;
         margin-left: 30px;
@@ -344,7 +343,6 @@
         display: block;
     }
 
-    /* Batch Status Badge */
     .batch-status {
         display: inline-block;
         padding: 3px 10px;
@@ -477,7 +475,7 @@
         color: var(--primary);
     }
 
-    /* Colorful Badges */
+    /* Badges */
     .badge {
         display: inline-flex;
         align-items: center;
@@ -496,7 +494,7 @@
     .badge-purple { background: linear-gradient(135deg, var(--purple-light), #ddd6fe); color: #5b21b6; }
     .badge-teal { background: linear-gradient(135deg, var(--teal-light), #99f6e4); color: #0f5c54; }
 
-    /* Status Action Buttons - Modern */
+    /* Status Action Buttons */
     .status-action {
         display: inline-flex;
         align-items: center;
@@ -545,7 +543,6 @@
         box-shadow: var(--shadow-md);
     }
 
-    /* Buttons */
     .btn-sm {
         padding: 6px 16px;
         border-radius: var(--radius-sm);
@@ -571,17 +568,20 @@
         box-shadow: var(--shadow-md);
     }
 
-    /* Table Styles */
-    .table-wrapper {
+    /* Deliverables Table - NO STAGE COLUMN */
+    .deliverables-wrapper {
         overflow-x: auto;
+        background: rgba(255,255,255,0.95);
+        border-radius: 0 0 var(--radius-xl) var(--radius-xl);
     }
 
-    .data-table {
+    .deliverables-table {
         width: 100%;
         border-collapse: collapse;
+        min-width: 500px;
     }
 
-    .data-table th {
+    .deliverables-table th {
         text-align: left;
         padding: 14px 20px;
         font-size: 12px;
@@ -591,7 +591,7 @@
         border-bottom: 2px solid var(--gray-200);
     }
 
-    .data-table td {
+    .deliverables-table td {
         padding: 14px 20px;
         font-size: 13px;
         border-bottom: 1px solid var(--gray-200);
@@ -599,25 +599,12 @@
         background: white;
     }
 
-    .data-table tr:hover td {
+    .deliverables-table tr:hover td {
         background: linear-gradient(90deg, var(--gray-50), white);
     }
 
-    .data-table tr:last-child td {
+    .deliverables-table tr:last-child td {
         border-bottom: none;
-    }
-
-    .stage-number {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 32px;
-        height: 32px;
-        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-        color: white;
-        border-radius: 12px;
-        font-weight: 700;
-        font-size: 13px;
     }
 
     /* Empty State */
@@ -634,7 +621,7 @@
         display: block;
     }
 
-    /* Quick Links Grid - 5 Different Colors */
+    /* Quick Links Grid */
     .quick-links-grid {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
@@ -677,7 +664,6 @@
         box-shadow: var(--shadow-lg);
     }
 
-    /* Individual card background colors */
     .quick-link-card:nth-child(1) { 
         background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
         border-color: #bfdbfe;
@@ -758,12 +744,14 @@
         .quick-links-grid { grid-template-columns: repeat(3, 1fr); }
         .welcome-text h1 { font-size: 28px; }
         .welcome-content { padding: 28px 30px; }
+        .deliverables-table { min-width: 450px; }
     }
 
     @media (max-width: 768px) {
         .welcome-content { flex-direction: column; text-align: center; gap: 20px; }
         .glass-progress-card { margin-left: 0; margin-top: 20px; width: 100%; }
         .quick-links-grid { grid-template-columns: repeat(2, 1fr); }
+        .deliverables-table th, .deliverables-table td { padding: 10px 16px; font-size: 12px; }
     }
 
     @media (max-width: 576px) {
@@ -775,12 +763,13 @@
         .section-header { padding: 16px 20px; flex-direction: column; align-items: flex-start; }
         .list-item { padding: 14px 20px; }
         .list-item-meta { flex-direction: column; gap: 6px; }
-        .data-table th, .data-table td { padding: 10px 16px; font-size: 12px; }
         .glass-progress-number { font-size: 28px; }
         .glass-progress-number small { font-size: 14px; }
         .glass-progress-icon { width: 50px; height: 50px; }
         .glass-progress-icon i { font-size: 24px; }
         .glass-progress-card { padding: 16px 20px; }
+        .deliverables-table th, .deliverables-table td { padding: 8px 12px; font-size: 11px; }
+        .deliverables-table { min-width: 400px; }
     }
 </style>
 
@@ -797,7 +786,6 @@
                 <p>Track your learning progress, submit projects, and access study materials all in one place.</p>
             </div>
             
-            <!-- GLASS PROGRESS CARD - Icon and Number Side by Side -->
             <div class="glass-progress-card">
                 <div class="glass-progress-header">
                     <div class="glass-progress-icon">
@@ -928,7 +916,7 @@
             </div>
         </div>
 
-        <!-- Recent Projects - Proper Status Handling -->
+        <!-- Recent Projects -->
         <div class="section-card">
             <div class="section-header">
                 <div class="section-title">
@@ -1012,65 +1000,59 @@
         </div>
     </div>
 
-    <!-- Learning Materials Section - Dark Blue Background -->
+    <!-- Learning Materials Section - NO STAGE COLUMN, PROPER TABLE -->
     <div class="section-card" style="margin-bottom: 32px; background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);">
         <div class="section-header" style="background:#092c6e; border-bottom: 2px solid #bfdbfe;">
             <div class="section-title">
                 <i class="fa-solid fa-graduation-cap" style="color:#ffff;"></i>
-                <span style="color: #fff;">Learning Materials</span>
+                <span style="color: #fff;">Deliverables</span>
             </div>
             <a href="{% url 'training:student_deliverables' %}" class="view-all-link" style="background: rgba(30,58,138,0.1); color: #fff;">
                 View All <i class="fa-solid fa-arrow-right"></i>
             </a>
         </div>
-        <div style="background: rgba(255,255,255,0.95);">
-            {% if deliverables %}
-                <div class="table-wrapper">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Stage</th>
-                                <th>Title</th>
-                                <th>Description</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
+        
+        {% if deliverables %}
+            <div class="deliverables-wrapper">
+                <table class="deliverables-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Title</th>
+                            <th style="width: 40%;">Description</th>
+                            <th style="width: 15%;">Status</th>
+                            <th style="width: 15%;">Action</th>
                         </thead>
-                        <tbody>
-                            {% for sd in deliverables|slice:":4" %}
-                                <tr>
-                                    <td style="text-align: center;">
-                                        <span class="stage-number">{{ sd.deliverable.stage_number }}</span>
-                                    </td>
-                                    <td><strong style="color: var(--primary);">{{ sd.deliverable.title|truncatechars:35 }}</strong></td>
-                                    <td style="color: var(--gray-600);">{{ sd.deliverable.description|truncatechars:50 }}</td>
-                                    <td>
-                                        {% if sd.is_downloaded %}
-                                            <span class="badge badge-success"><i class="fa-solid fa-check-circle"></i> Downloaded</span>
-                                        {% else %}
-                                            <span class="badge badge-teal"><i class="fa-regular fa-clock"></i> Pending</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <a href="{% url 'training:download_deliverable' sd.id %}" class="btn-sm btn-primary" style="text-decoration: none;">
-                                            <i class="fa-solid fa-download"></i> Download
-                                        </a>
-                                    </td>
-                                </table>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% else %}
-                <div class="empty-state">
-                    <i class="fa-regular fa-folder-open"></i>
-                    <p>No learning materials available yet.</p>
-                </div>
-            {% endif %}
-        </div>
+                    <tbody>
+                        {% for sd in deliverables|slice:":4" %}
+                            <tr>
+                                <td><strong style="color: var(--primary);">{{ sd.deliverable.title|truncatechars:35 }}</strong></td>
+                                <td style="color: var(--gray-600);">{{ sd.deliverable.description|truncatechars:60 }}</td>
+                                <td>
+                                    {% if sd.is_downloaded %}
+                                        <span class="badge badge-success"><i class="fa-solid fa-check-circle"></i> Downloaded</span>
+                                    {% else %}
+                                        <span class="badge badge-teal"><i class="fa-regular fa-clock"></i> Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'training:download_deliverable' sd.id %}" class="btn-sm btn-primary" style="text-decoration: none;">
+                                        <i class="fa-solid fa-download"></i> Download
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state" style="background: rgba(255,255,255,0.95); border-radius: 0 0 var(--radius-xl) var(--radius-xl);">
+                <i class="fa-regular fa-folder-open"></i>
+                <p>No learning materials available yet.</p>
+            </div>
+        {% endif %}
     </div>
 
-    <!-- Quick Links Section - 5 Different Light Colors -->
+    <!-- Quick Links Section -->
     <div class="section-card">
         <div class="section-header" style="background: white; border-radius: var(--radius-xl) var(--radius-xl) 0 0;">
             <div class="section-title">
@@ -1111,7 +1093,7 @@
                     <i class="fa-solid fa-book-open"></i>
                 </div>
                 <div class="quick-link-text">
-                    <h4>Deliverables </h4>
+                    <h4>Deliverables</h4>
                     <p>Download study materials</p>
                 </div>
             </a>
@@ -1128,4 +1110,6 @@
     </div>
 
 </div>
+
+<script src="https://kit.fontawesome.com/your-kit-code.js" crossorigin="anonymous"></script>
 {% endblock %}

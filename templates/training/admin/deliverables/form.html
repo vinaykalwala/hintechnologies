@@ -155,25 +155,170 @@
 </div>
 
 <script>
-    // Logic for dynamic form fields remains identical to your working implementation
-    document.addEventListener('DOMContentLoaded', function() {
-        const typeSelect = document.getElementById('id_deliverable_type');
-        const batchSelect = document.getElementById('id_batch');
-        const studentSelect = document.getElementById('id_assigned_student');
-        const studentField = document.getElementById('studentField');
-        
-        function toggleFields() {
-            if (typeSelect.value === 'batch') {
-                studentField.style.display = 'none';
-            } else {
-                studentField.style.display = 'block';
-            }
+document.addEventListener('DOMContentLoaded', function () {
+
+    const typeSelect = document.getElementById('id_deliverable_type');
+    const batchSelect = document.getElementById('id_batch');
+    const studentSelect = document.getElementById('id_assigned_student');
+
+    const studentField = document.getElementById('studentField');
+    const studentInfo = document.getElementById('studentInfo');
+    const batchInfo = document.getElementById('batchInfo');
+
+    // =========================
+    // TOGGLE STUDENT FIELD
+    // =========================
+    function toggleFields() {
+
+        if (typeSelect.value === 'batch') {
+
+            studentField.style.display = 'none';
+
+            studentSelect.required = false;
+
+            studentSelect.value = '';
+
+        } else {
+
+            studentField.style.display = 'block';
+
+            studentSelect.required = true;
         }
-        
-        typeSelect.addEventListener('change', toggleFields);
-        toggleFields();
-        
-        // Add student loading logic here as per your previous script...
+    }
+
+    // =========================
+    // LOAD STUDENTS
+    // =========================
+    function loadStudents(batchId) {
+
+        // Reset dropdown
+        studentSelect.innerHTML = `
+            <option value="">
+                Select Student
+            </option>
+        `;
+
+        studentInfo.innerHTML = '';
+
+        if (!batchId) {
+            return;
+        }
+
+        // Loading state
+        studentSelect.innerHTML = `
+            <option value="">
+                Loading students...
+            </option>
+        `;
+
+        batchInfo.innerHTML = `
+            <div class="alert alert-info mt-2">
+                Loading students from selected batch...
+            </div>
+        `;
+
+        fetch(`/training/admin/deliverables/get-students/${batchId}/`)
+            .then(response => {
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch students');
+                }
+
+                return response.json();
+            })
+            .then(data => {
+
+                studentSelect.innerHTML = `
+                    <option value="">
+                        Select Student
+                    </option>
+                `;
+
+                batchInfo.innerHTML = '';
+
+                if (data.success && data.students.length > 0) {
+
+                    data.students.forEach(student => {
+
+                        const option = document.createElement('option');
+
+                        option.value = student.id;
+
+                        option.textContent =
+                            `${student.name} (${student.email})`;
+
+                        studentSelect.appendChild(option);
+                    });
+
+                    studentInfo.innerHTML = `
+                        <div class="alert alert-info mt-2">
+                            ${data.count} active students found in this batch
+                        </div>
+                    `;
+
+                } else {
+
+                    studentSelect.innerHTML = `
+                        <option value="">
+                            No students found
+                        </option>
+                    `;
+
+                    studentInfo.innerHTML = `
+                        <div class="alert alert-danger mt-2">
+                            No active students assigned to this batch.
+                        </div>
+                    `;
+                }
+
+            })
+            .catch(error => {
+
+                console.error('Error loading students:', error);
+
+                studentSelect.innerHTML = `
+                    <option value="">
+                        Failed to load students
+                    </option>
+                `;
+
+                studentInfo.innerHTML = `
+                    <div class="alert alert-danger mt-2">
+                        Failed to load students.
+                    </div>
+                `;
+            });
+    }
+
+    // =========================
+    // EVENTS
+    // =========================
+
+    typeSelect.addEventListener('change', toggleFields);
+
+    batchSelect.addEventListener('change', function () {
+
+        const batchId = this.value;
+
+        if (typeSelect.value === 'individual') {
+            loadStudents(batchId);
+        }
     });
+
+    // =========================
+    // INITIAL LOAD
+    // =========================
+
+    toggleFields();
+
+    // Auto-load students if batch already selected
+    if (
+        batchSelect.value &&
+        typeSelect.value === 'individual'
+    ) {
+        loadStudents(batchSelect.value);
+    }
+
+});
 </script>
-{% endblock %}  
+{% endblock %}

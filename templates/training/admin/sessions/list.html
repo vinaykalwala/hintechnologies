@@ -492,6 +492,35 @@
         color: var(--primary);
     }
 
+    .create-session-btn {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        padding: 8px 20px;
+        border-radius: var(--radius-md);
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: var(--transition);
+    }
+    
+    .create-session-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(11, 61, 145, 0.3);
+        color: white;
+    }
+    
+    .caret-icon {
+        transition: transform 0.2s ease;
+        font-size: 12px;
+    }
+    
+    .create-session-btn:hover .caret-icon {
+        transform: translateX(4px);
+    }
+
     .table-wrapper {
         overflow-x: auto;
     }
@@ -909,7 +938,7 @@
         </div>
         <div class="hero-stats">
             <div class="hero-stat">
-                <div class="hero-stat-value">{{ batches|length|default:0 }}</div>
+                <div class="hero-stat-value">{{ batches.count|default:0 }}</div>
                 <div class="hero-stat-label">Total Batches</div>
             </div>
             <div class="hero-stat">
@@ -930,7 +959,7 @@
         <div class="stat-card">
             <div class="stat-card-inner">
                 <div class="stat-info">
-                    <div class="stat-value">{{ batches|length|default:0 }}</div>
+                    <div class="stat-value">{{ batches.count|default:0 }}</div>
                     <div class="stat-label">Active Batches</div>
                     <div class="stat-trend">
                         <i class="fas fa-arrow-up"></i> +12%
@@ -1040,8 +1069,14 @@
     <div class="table-card">
         <div class="table-header">
             <h3><i class="fas fa-list-ul"></i> Session List</h3>
-            <div class="total-badge">
-                <i class="fas fa-video"></i> {{ sessions|length }} Sessions
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="total-badge">
+                    <i class="fas fa-video"></i> {{ sessions|length }} Sessions
+                </div>
+                <a href="{% url 'training:session_create' %}" class="create-session-btn">
+                    <i class="fas fa-plus-circle"></i> New Session
+                    <i class="fas fa-chevron-right caret-icon"></i>
+                </a>
             </div>
         </div>
         
