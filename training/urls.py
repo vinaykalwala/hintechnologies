@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import *
 
 app_name = 'training'
 
@@ -49,4 +50,13 @@ urlpatterns = [
     path('admin/sessions/next-day/<int:batch_id>/', views.get_next_day_number, name='get_next_day_number'),
     path('admin/projects/next-number/<int:batch_id>/', views.get_next_project_number, name='get_next_project_number'),
     path('admin/deliverables/get-students/<int:batch_id>/', views.get_students_by_batch, name='get_students_by_batch'),
+    path('deliverable/<int:deliverable_id>/submit/', student_submit_deliverable, name='student_submit_deliverable'),
+    path('deliverable/<int:deliverable_id>/detail/', student_deliverable_detail, name='student_deliverable_detail'),
+    path('student-deliverable/<int:student_deliverable_id>/download/', student_download_approved_version, name='student_download_approved'),
+    
+    # Admin URLs
+    path('admin/deliverables/pending/', pending_reviews, name='pending_reviews'),
+    path('admin/deliverables/version/<int:version_id>/review/', review_deliverable_version, name='review_deliverable_version'),
+    path('admin/student-deliverable/<int:student_deliverable_id>/', admin_student_deliverable_detail, name='admin_student_deliverable_detail'),
+    path('admin/student-deliverable/<int:student_deliverable_id>/upload-version/', admin_upload_version, name='admin_upload_version'),
 ]

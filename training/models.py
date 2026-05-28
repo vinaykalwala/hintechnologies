@@ -291,6 +291,129 @@ class Deliverable(models.Model):
         
         super().save(*args, **kwargs)
 
+# models.py
+def deliverable_version_file_path(instance, filename):
+    """Generate file path for deliverable versions"""    
+    if instance.student_record:
+        # Individual deliverable
+        return f'deliverables/{instance.deliverable.id}/student_{instance.student_record.student.id}/version_{instance.version_number}/{filename}'
+    else:
+        # Batch-wide deliverable
+        return f'deliverables/{instance.deliverable.id}/batch/version_{instance.version_number}/{filename}'
+
+class DeliverableVersion(models.Model):
+    """
+    Represents a version of a deliverable submitted by either student or admin
+    """
+    VERSION_STATUS_CHOICES = [
+        ('pending', 'Pending Approval'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+        ('revision_requested', 'Revision Requested'),
+    ]
+    
+    SUBMITTER_TYPE_CHOICES = [
+        ('student', 'Student'),
+        ('admin', 'Admin'),
+    ]
+    
+    deliverable = models.ForeignKey(Deliverable, on_delete=models.CASCADE, related_name='versions')
+    student_record = models.ForeignKey('StudentDeliverable', on_delete=models.CASCADE, related_name='versions', null=True, blank=True)
+    
+    version_number = models.PositiveIntegerField()
+    file = models.FileField(upload_to=deliverable_version_file_path)
+    
+    submitter_type = models.CharField(max_length=20, choices=SUBMITTER_TYPE_CHOICES)
+    submitted_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='submitted_versions')
+    
+    status = models.CharField(max_length=20, choices=VERSION_STATUS_CHOICES, default='pending')
+    comments = models.TextField(blank=True, help_text="Admin comments or revision requests")
+    
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+    reviewed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='reviewed_versions')
+    
+    is_latest = models.BooleanField(default=True)
+    
+    class Meta:
+        ordering = ['-version_number']
+        unique_together = ['deliverable', 'student_record', 'version_number']
+    
+    def __str__(self):
+        if self.student_record:
+            return f"v{self.version_number} - {self.student_record.student.user.get_full_name()} - {self.get_submitter_type_display()}"
+        return f"v{self.version_number} - Batch-wide - {self.get_submitter_type_display()}"
+    
+    def save(self, *args, **kwargs):
+        # Set is_latest=False for previous versions
+        if self.is_latest:
+            DeliverableVersion.objects.filter(
+                deliverable=self.deliverable,
+                student_record=self.student_record,
+                is_latest=True
+            ).exclude(pk=self.pk).update(is_latest=False)
+        
+        super().save(*args, **kwargs)
+    
+    def approve(self, reviewer, comments=None):
+        """Approve this version"""
+        self.status = 'approved'
+        self.reviewed_at = timezone.now()
+        self.reviewed_by = reviewer
+        if comments:
+            self.comments = comments
+        self.save()
+        
+        # Update the StudentDeliverable to mark as downloaded/completed
+        if self.student_record:
+            self.student_record.is_approved = True
+            self.student_record.approved_at = timezone.now()
+            self.student_record.approved_version = self
+            self.student_record.save()
+    
+    def reject(self, reviewer, comments):
+        """Reject this version with comments"""
+        self.status = 'rejected'
+        self.reviewed_at = timezone.now()
+        self.reviewed_by = reviewer
+        self.comments = comments
+        self.save()
+        
+        if self.student_record:
+            self.student_record.is_approved = False
+            self.student_record.save()
+    
+    def request_revision(self, reviewer, comments):
+        """Request revision for this version"""
+        self.status = 'revision_requested'
+        self.reviewed_at = timezone.now()
+        self.reviewed_by = reviewer
+        self.comments = comments
+        self.save()
+        
+        if self.student_record:
+            self.student_record.is_approved = False
+            self.student_record.save()
+
+
+# training/models.py - Corrected version
+
+class DeliverableVersionComment(models.Model):
+    """Inline comments on specific versions"""
+    version = models.ForeignKey(DeliverableVersion, on_delete=models.CASCADE, related_name='version_comments')  # Changed from 'comments' to 'version_comments'
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['created_at']
+    
+    def __str__(self):
+        return f"Comment by {self.user.username} on {self.version}"
+
+
+# Update StudentDeliverable model
 class StudentDeliverable(models.Model):
     student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='deliverables')
     deliverable = models.ForeignKey(Deliverable, on_delete=models.CASCADE, related_name='student_records')
@@ -298,15 +421,40 @@ class StudentDeliverable(models.Model):
     is_downloaded = models.BooleanField(default=False)
     downloaded_at = models.DateTimeField(blank=True, null=True)
     
+    # New fields for versioning
+    is_submitted = models.BooleanField(default=False)
+    submitted_at = models.DateTimeField(null=True, blank=True)
+    is_approved = models.BooleanField(default=False)
+    approved_at = models.DateTimeField(null=True, blank=True)
+    approved_version = models.ForeignKey(DeliverableVersion, on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_for_student')
+    
     class Meta:
         unique_together = ['student', 'deliverable']
         ordering = ['deliverable__stage_number']
     
     def __str__(self):
-        return f"{self.student.user.get_full_name()} - {self.deliverable.title} ({'Downloaded' if self.is_downloaded else 'Not Downloaded'})"
+        status = []
+        if self.is_submitted:
+            status.append('Submitted')
+        if self.is_approved:
+            status.append('Approved')
+        status_str = f" ({', '.join(status)})" if status else " (Not Started)"
+        return f"{self.student.user.get_full_name()} - {self.deliverable.title}{status_str}"
     
     def mark_downloaded(self):
         if not self.is_downloaded:
             self.is_downloaded = True
             self.downloaded_at = timezone.now()
             self.save()
+    
+    def get_latest_version(self):
+        """Get the latest version submitted for this student deliverable"""
+        return self.versions.filter(is_latest=True).first()
+    
+    def get_pending_version(self):
+        """Get the latest pending version"""
+        return self.versions.filter(status='pending').order_by('-version_number').first()
+    
+    def get_approved_version(self):
+        """Get the approved version"""
+        return self.approved_version or self.versions.filter(status='approved').first()

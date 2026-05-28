@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Review Submission</h2>
+        <a href="{% url 'training:pending_reviews' %}" class="btn btn-secondary">
+            Back to Pending Reviews
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <!-- Submission Details -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Submission Details</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th width="150">Student:</th>
+                            <td><strong>{{ version.student_record.student.user.get_full_name }}</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Email:</th>
+                            <td>{{ version.student_record.student.user.email }}</td>
+                        </tr>
+                        <tr>
+                            <th>Deliverable:</th>
+                            <td>{{ deliverable.title }}</td>
+                        </tr>
+                        <tr>
+                            <th>Version:</th>
+                            <td><span class="badge bg-info">v{{ version.version_number }}</span></td>
+                        </tr>
+                        <tr>
+                            <th>Submitted:</th>
+                            <td>{{ version.submitted_at|date:"Y-m-d H:i:s" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Submitted By:</th>
+                            <td>{{ version.get_submitter_type_display }}</td>
+                        </tr>
+                    </table>
+
+                    {% if version.comments %}
+                        <div class="alert alert-secondary mt-3">
+                            <strong>Student Comments:</strong><br>
+                            {{ version.comments|linebreaks }}
+                        </div>
+                    {% endif %}
+
+                    <div class="mt-3">
+                        <strong>File:</strong><br>
+                        <a href="{{ version.file.url }}" class="btn btn-outline-primary mt-2" target="_blank">
+                            <i class="fas fa-file-download"></i> Download Submission File
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <!-- Review Form -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Review Decision</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Version Comparison -->
+            {% if all_versions.count > 1 %}
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Previous Versions</h4>
+                    </div>
+                    <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                        {% for old_version in all_versions %}
+                            {% if old_version.id != version.id %}
+                                <div class="border-bottom mb-3 pb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>Version {{ old_version.version_number }}</strong>
+                                        <span class="badge 
+                                            {% if old_version.status == 'approved' %}bg-success
+                                            {% elif old_version.status == 'pending' %}bg-warning
+                                            {% else %}bg-secondary{% endif %}">
+                                            {{ old_version.get_status_display }}
+                                        </span>
+                                    </div>
+                                    <small>Submitted: {{ old_version.submitted_at|date:"Y-m-d H:i" }}</small>
+                                    <br>
+                                    <a href="{{ old_version.file.url }}" class="btn btn-sm btn-link" target="_blank">
+                                        Download
+                                    </a>
+                                    {% if old_version.comments %}
+                                        <div class="mt-1 small text-muted">{{ old_version.comments }}</div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

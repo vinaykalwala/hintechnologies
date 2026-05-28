@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Submit Deliverable: {{ deliverable.title }}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        {{ form.as_p }}
+                        
+                        <div class="alert alert-info">
+                            <strong><i class="fas fa-info-circle"></i> Submission Guidelines:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>Maximum file size: 50MB</li>
+                                <li>Allowed formats: PDF, DOC, DOCX, ZIP, JPG, JPEG, PNG</li>
+                                <li>Each new submission creates a new version</li>
+                                <li>Your submission will be reviewed by admin</li>
+                                <li>You can submit multiple versions if needed</li>
+                            </ul>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload"></i> Submit Version
+                        </button>
+                        <a href="{% url 'training:student_deliverable_detail' deliverable.id %}" class="btn btn-secondary">
+                            Cancel
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Version History</h4>
+                </div>
+                <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                    {% if versions %}
+                        {% for version in versions %}
+                            <div class="border-bottom mb-3 pb-3">
+                                <div class="d-flex justify-content-between">
+                                    <strong>Version {{ version.version_number }}</strong>
+                                    <span class="badge 
+                                        {% if version.status == 'approved' %}bg-success
+                                        {% elif version.status == 'pending' %}bg-warning
+                                        {% elif version.status == 'rejected' %}bg-danger
+                                        {% else %}bg-info{% endif %}">
+                                        {{ version.get_status_display }}
+                                    </span>
+                                </div>
+                                <small class="text-muted">
+                                    Submitted: {{ version.submitted_at|date:"Y-m-d H:i" }}<br>
+                                    By: {{ version.get_submitter_type_display }}
+                                </small>
+                                {% if version.comments %}
+                                    <div class="mt-2 small">{{ version.comments }}</div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No versions submitted yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

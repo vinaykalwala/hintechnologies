@@ -1291,3 +1291,311 @@ def get_next_project_number(request, batch_id):
         })
     except Batch.DoesNotExist:
         return JsonResponse({'error': 'Batch not found'}, status=404)
+
+# views.py
+
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponseForbidden, JsonResponse
+from django.db import transaction
+from .forms import *
+
+@login_required
+def student_submit_deliverable(request, deliverable_id):
+    """Allow student to submit/update their deliverable version"""
+    student_record = get_object_or_404(
+        StudentDeliverable.objects.select_related('deliverable', 'student'),
+        deliverable_id=deliverable_id,
+        student__user=request.user
+    )
+    
+    deliverable = student_record.deliverable
+    
+    # COMMENT OUT OR REMOVE THIS SECTION - due_date doesn't exist in Deliverable model
+    # Check if deliverable is still open for submission
+    # if deliverable.due_date and deliverable.due_date < timezone.now():
+    #     messages.error(request, 'This deliverable submission deadline has passed.')
+    #     return redirect('training:student_deliverable_detail', deliverable_id=deliverable_id)
+    
+    if request.method == 'POST':
+        form = DeliverableVersionUploadForm(request.POST, request.FILES)
+        
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    # Get the next version number
+                    last_version = student_record.versions.order_by('-version_number').first()
+                    next_version = (last_version.version_number + 1) if last_version else 1
+                    
+                    # Create new version
+                    version = DeliverableVersion(
+                        deliverable=deliverable,
+                        student_record=student_record,
+                        version_number=next_version,
+                        file=form.cleaned_data['file'],
+                        submitter_type='student',
+                        submitted_by=request.user,
+                        status='pending',
+                        comments=form.cleaned_data.get('comments', ''),
+                        is_latest=True
+                    )
+                    version.save()
+                    
+                    # Update student record
+                    student_record.is_submitted = True
+                    student_record.submitted_at = timezone.now()
+                    student_record.is_approved = False
+                    student_record.save()
+                    
+                    messages.success(
+                        request,
+                        f'Your submission (Version {next_version}) has been uploaded and is pending review.'
+                    )
+                    
+                    # Send notification to admin (optional - implement if needed)
+                    # notify_admin_new_submission(version)
+                    
+                    return redirect('training:student_deliverable_detail', deliverable_id=deliverable.id)
+                    
+            except Exception as e:
+                messages.error(request, f'Error submitting deliverable: {str(e)}')
+                return redirect('training:student_submit_deliverable', deliverable_id=deliverable_id)
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = DeliverableVersionUploadForm()
+    
+    # Get version history
+    versions = student_record.versions.select_related('submitted_by', 'reviewed_by').all()
+    
+    return render(request, 'training/student/submit_deliverable.html', {
+        'form': form,
+        'student_record': student_record,
+        'deliverable': deliverable,
+        'versions': versions,
+        'latest_version': student_record.get_latest_version(),
+        'approved_version': student_record.get_approved_version(),
+    })
+
+
+@login_required
+@user_passes_test(is_admin)
+def admin_upload_version(request, student_deliverable_id):
+    """Admin can upload a new version for student (feedback, corrections, etc.)"""
+    student_record = get_object_or_404(
+        StudentDeliverable.objects.select_related('deliverable', 'student__user'),
+        id=student_deliverable_id
+    )
+    
+    if request.method == 'POST':
+        form = AdminDeliverableVersionForm(request.POST, request.FILES)
+        
+        if form.is_valid():
+            with transaction.atomic():
+                # Get next version number
+                last_version = student_record.versions.order_by('-version_number').first()
+                next_version = (last_version.version_number + 1) if last_version else 1
+                
+                # Create admin version
+                version = DeliverableVersion(
+                    deliverable=student_record.deliverable,
+                    student_record=student_record,
+                    version_number=next_version,
+                    file=form.cleaned_data['file'],
+                    submitter_type='admin',
+                    submitted_by=request.user,
+                    status=form.cleaned_data.get('status', 'approved'),
+                    comments=form.cleaned_data.get('comments', ''),
+                    is_latest=True
+                )
+                version.save()
+                
+                # If admin marks as approved, update student record
+                if version.status == 'approved':
+                    version.approve(request.user, version.comments)
+                
+                messages.success(
+                    request,
+                    f'Admin version {next_version} uploaded successfully for {student_record.student.user.get_full_name()}'
+                )
+                
+                # Notify student
+                notify_student_new_version(version)
+                
+                return redirect('training:admin_student_deliverable_detail', student_deliverable_id=student_record.id)
+    else:
+        form = AdminDeliverableVersionForm(initial={
+            'status': 'approved' if not student_record.is_approved else 'pending'
+        })
+    
+    versions = student_record.versions.select_related('submitted_by', 'reviewed_by').all()
+    
+    return render(request, 'training/admin/deliverables/admin_upload_version.html', {
+        'form': form,
+        'student_record': student_record,
+        'deliverable': student_record.deliverable,
+        'versions': versions,
+    })
+
+
+@login_required
+@user_passes_test(is_admin)
+def review_deliverable_version(request, version_id):
+    """Admin review page for a specific version"""
+    version = get_object_or_404(
+        DeliverableVersion.objects.select_related('deliverable', 'student_record__student__user'),
+        id=version_id,
+        status='pending'
+    )
+    
+    if request.method == 'POST':
+        form = DeliverableVersionReviewForm(request.POST, instance=version)
+        
+        if form.is_valid():
+            version = form.save(commit=False)
+            
+            if version.status == 'approved':
+                version.approve(request.user, version.comments)
+                message = f'Version {version.version_number} has been approved.'
+            elif version.status == 'rejected':
+                version.reject(request.user, version.comments)
+                message = f'Version {version.version_number} has been rejected.'
+            elif version.status == 'revision_requested':
+                version.request_revision(request.user, version.comments)
+                message = f'Revision requested for version {version.version_number}.'
+            
+            version.save()
+            
+            messages.success(request, message)
+            
+            # Redirect based on context
+            next_url = request.GET.get('next', 'training:pending_reviews')
+            return redirect(next_url)
+    else:
+        form = DeliverableVersionReviewForm(instance=version)
+    
+    # Get all versions for comparison
+    all_versions = version.deliverable.versions.filter(
+        student_record=version.student_record
+    ).order_by('-version_number')
+    
+    return render(request, 'training/admin/deliverables/review_version.html', {
+        'form': form,
+        'version': version,
+        'all_versions': all_versions,
+        'student_record': version.student_record,
+        'deliverable': version.deliverable,
+    })
+
+
+@login_required
+@user_passes_test(is_admin)
+def pending_reviews(request):
+    """List all pending deliverable submissions for admin review"""
+    pending_versions = DeliverableVersion.objects.filter(
+        status='pending',
+        submitter_type='student'
+    ).select_related(
+        'deliverable',
+        'student_record__student__user',
+        'submitted_by'
+    ).order_by('submitted_at')
+    
+    # Filter by deliverable
+    deliverable_filter = request.GET.get('deliverable')
+    if deliverable_filter:
+        pending_versions = pending_versions.filter(deliverable_id=deliverable_filter)
+    
+    # Filter by student
+    student_filter = request.GET.get('student')
+    if student_filter:
+        pending_versions = pending_versions.filter(student_record__student_id=student_filter)
+    
+    paginator = Paginator(pending_versions, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    deliverables = Deliverable.objects.all()
+    
+    return render(request, 'training/admin/deliverables/pending_reviews.html', {
+        'pending_versions': page_obj,
+        'deliverables': deliverables,
+        'deliverable_filter': deliverable_filter,
+        'student_filter': student_filter,
+    })
+
+
+@login_required
+def student_download_approved_version(request, student_deliverable_id):
+    """Student downloads the approved version"""
+    student_record = get_object_or_404(
+        StudentDeliverable.objects.select_related('deliverable', 'approved_version'),
+        id=student_deliverable_id,
+        student__user=request.user
+    )
+    
+    approved_version = student_record.get_approved_version()
+    
+    if not approved_version:
+        messages.error(request, 'No approved version available for download.')
+        return redirect('training:student_deliverable_detail', deliverable_id=student_record.deliverable.id)
+    
+    # Mark as downloaded
+    student_record.mark_downloaded()
+    
+    # Serve the file
+    response = HttpResponse(approved_version.file.read(), content_type='application/octet-stream')
+    response['Content-Disposition'] = f'attachment; filename="{os.path.basename(approved_version.file.name)}"'
+    return response
+
+
+@login_required
+def student_deliverable_detail(request, deliverable_id):
+    """Student view of their deliverable with version history"""
+    student_record = get_object_or_404(
+        StudentDeliverable.objects.select_related('deliverable', 'student'),
+        deliverable_id=deliverable_id,
+        student__user=request.user
+    )
+    
+    deliverable = student_record.deliverable
+    versions = student_record.versions.select_related('submitted_by', 'reviewed_by').order_by('-version_number')
+    
+    return render(request, 'training/student/deliverable_detail.html', {
+        'student_record': student_record,
+        'deliverable': deliverable,
+        'versions': versions,
+        'latest_version': student_record.get_latest_version(),
+        'approved_version': student_record.get_approved_version(),
+        'pending_version': student_record.get_pending_version(),
+    })
+
+
+@login_required
+@user_passes_test(is_admin)
+def admin_student_deliverable_detail(request, student_deliverable_id):
+    """Admin view of student deliverable with full version history"""
+    student_record = get_object_or_404(
+        StudentDeliverable.objects.select_related('deliverable', 'student__user'),
+        id=student_deliverable_id
+    )
+    
+    versions = student_record.versions.select_related('submitted_by', 'reviewed_by').order_by('-version_number')
+    
+    return render(request, 'training/admin/deliverables/student_deliverable_detail.html', {
+        'student_record': student_record,
+        'deliverable': student_record.deliverable,
+        'versions': versions,
+        'latest_version': student_record.get_latest_version(),
+        'approved_version': student_record.get_approved_version(),
+    })
+
+
+def deliverable_version_file_path(instance, filename):
+    """Generate file path for deliverable versions"""
+    if instance.student_record:
+        # Individual deliverable
+        return f'deliverables/{instance.deliverable.id}/student_{instance.student_record.student.id}/version_{instance.version_number}/{filename}'
+    else:
+        # Batch-wide deliverable
+        return f'deliverables/{instance.deliverable.id}/batch/version_{instance.version_number}/{filename}'
+

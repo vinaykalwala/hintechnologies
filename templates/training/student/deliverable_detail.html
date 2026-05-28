@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{{ deliverable.title }}</h2>
+        <div>
+            <a href="{% url 'training:student_submit_deliverable' deliverable.id %}" class="btn btn-primary">
+                <i class="fas fa-upload"></i> Submit New Version
+            </a>
+            <a href="{% url 'training:student_deliverables' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Deliverables
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <!-- Deliverable Description -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Description</h4>
+                </div>
+                <div class="card-body">
+                    <p>{{ deliverable.description|linebreaks }}</p>
+                    {% if approved_version %}
+                        <div class="alert alert-success mt-3">
+                            <strong><i class="fas fa-check-circle"></i> Approved Version Available</strong><br>
+                            <a href="{% url 'training:student_download_approved' student_record.id %}" class="btn btn-success btn-sm mt-2">
+                                <i class="fas fa-download"></i> Download Approved Version
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Version History -->
+            <div class="card">
+                <div class="card-header">
+                    <h4>Version History</h4>
+                </div>
+                <div class="card-body">
+                    {% if versions %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Version</th>
+                                        <th>Submitted By</th>
+                                        <th>Submitted At</th>
+                                        <th>Status</th>
+                                        <th>Comments</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for version in versions %}
+                                        <tr>
+                                            <td><strong>v{{ version.version_number }}</strong></td>
+                                            <td>{{ version.get_submitter_type_display }}</td>
+                                            <td>{{ version.submitted_at|date:"Y-m-d H:i" }}</td>
+                                            <td>
+                                                {% if version.status == 'approved' %}
+                                                    <span class="badge bg-success">Approved</span>
+                                                {% elif version.status == 'pending' %}
+                                                    <span class="badge bg-warning">Pending</span>
+                                                {% elif version.status == 'rejected' %}
+                                                    <span class="badge bg-danger">Rejected</span>
+                                                {% elif version.status == 'revision_requested' %}
+                                                    <span class="badge bg-info">Revision Requested</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if version.comments %}
+                                                    <small class="text-muted">{{ version.comments|truncatechars:50 }}</small>
+                                                {% else %}
+                                                    <small class="text-muted">-</small>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <a href="{{ version.file.url }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                                    <i class="fas fa-download"></i> Download
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No versions submitted yet.</p>
+                        <a href="{% url 'training:student_submit_deliverable' deliverable.id %}" class="btn btn-primary">
+                            Submit First Version
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Status Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Status</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Submission Status:</strong><br>
+                        {% if student_record.is_approved %}
+                            <span class="badge bg-success">Approved</span>
+                        {% elif student_record.is_submitted %}
+                            <span class="badge bg-warning">Submitted - Pending Review</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Not Started</span>
+                        {% endif %}
+                    </div>
+                    
+                    {% if latest_version %}
+                        <div class="mb-3">
+                            <strong>Latest Version:</strong> v{{ latest_version.version_number }}
+                        </div>
+                    {% endif %}
+                    
+                    {% if approved_version %}
+                        <div class="mb-3">
+                            <strong>Approved Version:</strong> v{{ approved_version.version_number }}
+                            <br>
+                            <small class="text-muted">Approved on: {{ approved_version.reviewed_at|date:"Y-m-d" }}</small>
+                        </div>
+                    {% endif %}
+                    
+                    {% if pending_version %}
+                        <div class="alert alert-warning">
+                            <strong>Pending Review</strong><br>
+                            Version v{{ pending_version.version_number }} is waiting for admin review.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Info Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h4>Information</h4>
+                </div>
+                <div class="card-body">
+                    <p><strong>Assigned:</strong> {{ student_record.assigned_at|date:"Y-m-d" }}</p>
+                    <p><strong>Type:</strong> {{ deliverable.get_deliverable_type_display }}</p>
+                    {% if deliverable.batch %}
+                        <p><strong>Batch:</strong> {{ deliverable.batch.name }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

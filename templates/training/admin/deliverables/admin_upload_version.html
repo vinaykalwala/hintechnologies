@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Upload Admin Version</h4>
+                </div>
+                <div class="card-body">
+                    <h5>Student: {{ student_record.student.user.get_full_name }}</h5>
+                    <h6>Deliverable: {{ deliverable.title }}</h6>
+                    <hr>
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+
+                        <div class="alert alert-info">
+                            <strong>Note:</strong> Uploading an admin version will automatically:
+                            <ul class="mb-0 mt-2">
+                                <li>Create a new version for the student</li>
+                                <li>If marked as approved, student can download this version</li>
+                                <li>The student will be notified of the new version</li>
+                            </ul>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Upload Version</button>
+                        <a href="{% url 'training:admin_student_deliverable_detail' student_record.id %}" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Version History</h4>
+                </div>
+                <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                    {% if versions %}
+                        {% for ver in versions %}
+                            <div class="border-bottom mb-3 pb-3">
+                                <div class="d-flex justify-content-between">
+                                    <strong>v{{ ver.version_number }}</strong>
+                                    <span class="badge 
+                                        {% if ver.status == 'approved' %}bg-success
+                                        {% elif ver.status == 'pending' %}bg-warning
+                                        {% else %}bg-danger{% endif %}">
+                                        {{ ver.get_status_display }}
+                                    </span>
+                                </div>
+                                <small>By: {{ ver.get_submitter_type_display }}</small>
+                                <br>
+                                <small>{{ ver.submitted_at|date:"Y-m-d H:i" }}</small>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>No versions yet</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

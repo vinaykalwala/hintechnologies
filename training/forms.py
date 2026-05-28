@@ -1,10 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from .models import (
-    StudentProfile, Batch, StudentBatch, DailySession,
-    Project, StudentProjectSubmission, Deliverable
-)
+from .models import *
 
 class StudentSignupForm(forms.ModelForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'}))
@@ -361,3 +358,58 @@ class StudentProfileUpdateForm(forms.ModelForm):
             student_profile.save()
         
         return student_profile
+
+# forms.py
+
+class DeliverableVersionUploadForm(forms.ModelForm):
+    class Meta:
+        model = DeliverableVersion
+        fields = ['file', 'comments']
+        widgets = {
+            'file': forms.FileInput(attrs={'class': 'form-control', 'required': True}),
+            'comments': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Add any comments about this version...'}),
+        }
+    
+    def clean_file(self):
+        file = self.cleaned_data.get('file')
+        if file:
+            # Validate file size (max 50MB)
+            if file.size > 50 * 1024 * 1024:
+                raise ValidationError('File size must be under 50MB.')
+            
+            # Validate file extension
+            valid_extensions = ['.pdf', '.doc', '.docx', '.zip', '.jpg', '.jpeg', '.png']
+            ext = os.path.splitext(file.name)[1].lower()
+            if ext not in valid_extensions:
+                raise ValidationError(f'Invalid file type. Allowed types: {", ".join(valid_extensions)}')
+        
+        return file
+
+
+class AdminDeliverableVersionForm(forms.ModelForm):
+    class Meta:
+        model = DeliverableVersion
+        fields = ['file', 'comments', 'status']
+        widgets = {
+            'file': forms.FileInput(attrs={'class': 'form-control'}),
+            'comments': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'status': forms.Select(attrs={'class': 'form-select'}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['file'].required = True
+
+
+class DeliverableVersionReviewForm(forms.ModelForm):
+    class Meta:
+        model = DeliverableVersion
+        fields = ['status', 'comments']
+        widgets = {
+            'status': forms.Select(attrs={'class': 'form-select'}),
+            'comments': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Provide feedback or revision requests...'}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['comments'].required = True
