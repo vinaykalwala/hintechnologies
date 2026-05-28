@@ -63,83 +63,76 @@
     }
 
     .blog-container {
-max-width: 1400px;
+        max-width: 1400px;
+        width: 100%;
+        margin: auto;
+        padding: 0 50px;
+    }
 
-margin:auto;
+    .blog-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -12px;
+    }
 
-padding:
-0 60px;
+    .blog-col,
+    .blog-col-lg-4,
+    .blog-col-lg-6,
+    .blog-col-md-6,
+    .blog-col-md-5,
+    .blog-col-md-7,
+    .blog-col-md-4,
+    .blog-col-12 {
 
-}
+        padding: 0 12px;
 
-.blog-row{
+    }
 
-display:flex;
-
-flex-wrap:wrap;
-
-margin:
-0 -25px;
-
-}
-.blog-row{
-
-margin:
-0 -15px;
-
-}
-
-.blog-col-lg-4,
-.blog-col-md-6{
-
-padding:
-0 15px;
-
-} .blog-col {
+    .blog-col {
         flex: 1;
-        padding: 0 25px;
+        padding: 0 12px;
     }
 
     .blog-col-lg-4 {
         flex: 0 0 auto;
         width: 33.333%;
-        padding: 0 25px;
+        padding: 0 12px;
     }
 
     .blog-col-lg-6 {
         flex: 0 0 auto;
         width: 50%;
-        padding: 0 25px;
+        padding: 0 12px;
     }
 
     .blog-col-md-6 {
         flex: 0 0 auto;
         width: 50%;
-        padding: 0 25px;
+        padding: 0 12px;
     }
 
     .blog-col-md-5 {
         flex: 0 0 auto;
         width: 41.666%;
-        padding: 0 20px;
+        padding: 0 12px;
     }
 
     .blog-col-md-7 {
         flex: 0 0 auto;
         width: 58.333%;
-        padding: 0 20px;
+        padding: 0 12px;
     }
 
     .blog-col-md-4 {
         flex: 0 0 auto;
         width: 33.333%;
-        padding: 0 20px;
+        padding: 0 12px;
     }
 
     .blog-col-12 {
         flex: 0 0 auto;
         width: 100%;
-        padding: 0 20px;
+        padding: 0 12px;
     }
 
     /* Premium Buttons */
@@ -428,13 +421,7 @@ padding:
         transition: var(--transition-bounce);
         border: 1px solid rgba(255, 255, 255, 0.3);
         position: relative;
-    }.blog-card{
-
-margin-left:10px;
-
-margin-right:10px;
-
-}
+    }
 
     .blog-card::before {
         content: '';
@@ -643,7 +630,7 @@ margin-right:10px;
     /* Responsive */
     @media (max-width: 1200px) {
         .blog-container {
-            padding: 0 32px;
+            padding: 0 35px;
         }
 
         .blog-heading {
@@ -684,13 +671,14 @@ margin-right:10px;
         }
 
         .blog-container {
-            padding: 0 24px;
+            padding: 0 18px;
         }
-        .blog-card{
 
-margin:0;
+        .blog-card {
 
-}
+            margin: 0;
+
+        }
 
         .blog-form-card {
             padding: 24px;
@@ -698,6 +686,23 @@ margin:0;
 
         .form-head h3 {
             font-size: 1.4rem;
+        }
+
+        .blog-row {
+            margin: 0 -8px;
+        }
+
+        .blog-col-md-6,
+        .blog-col-md-5,
+        .blog-col-md-7,
+        .blog-col-md-4,
+        .blog-col-lg-4,
+        .blog-col-lg-6 {
+
+            width: 100%;
+
+            padding: 0 8px;
+
         }
     }
 
@@ -710,76 +715,166 @@ margin:0;
             padding: 24px 20px;
         }
     }
+
     /* ===== BLOG FORM BUTTONS MOBILE FIX ===== */
 
-@media(max-width:768px){
+    @media(max-width:768px) {
 
-    /* save + cancel */
+        /* save + cancel */
 
-    .blog-form-card form > .blog-btn,
-    .blog-form-card form > a{
+        .blog-form-card form>.blog-btn,
+        .blog-form-card form>a {
 
-        width:100%;
+            width: 100%;
 
-        margin:10px 0 0;
+            margin: 10px 0 0;
 
-        justify-content:center;
+            justify-content: center;
+        }
+
+        .ms-2 {
+            margin-left: 0;
+        }
+
+        /* search section */
+
+        .search-box {
+
+            flex-direction: column;
+
+            border-radius: 28px;
+
+            padding: 16px;
+        }
+
+        .search-box input {
+
+            width: 100%;
+
+            padding: 14px;
+        }
+
+        .search-box button {
+
+            width: 100%;
+
+            margin-top: 10px;
+        }
+
     }
 
-    .ms-2{
-        margin-left:0;
+    /* EXTRA SMALL */
+
+    @media(max-width:480px) {
+
+        .blog-btn {
+
+            width: 100%;
+
+            min-height: 52px;
+
+            font-size: 14px;
+        }
+
+        .publish-box {
+
+            flex-wrap: wrap;
+
+            justify-content: center;
+
+            text-align: center;
+        }
+
+
     }
 
-    /* search section */
+    @media (max-width:768px) {
 
-    .search-box{
+        .blog-container {
+            padding-left: 20px !important;
+            padding-right: 20px !important;
+        }
 
-        flex-direction:column;
+        .blog-form-card {
+            padding: 20px !important;
+        }
 
-        border-radius:28px;
-
-        padding:16px;
     }
 
-    .search-box input{
+    @media (max-width:1300px) {
 
-        width:100%;
+        .blog-container {
+            max-width: 100%;
+            padding-left: 40px !important;
+            padding-right: 40px !important;
+        }
 
-        padding:14px;
+        .blog-form-card {
+            padding: 28px !important;
+        }
+
+        .blog-row {
+            margin-left: -10px;
+            margin-right: -10px;
+        }
+
+        .blog-col-md-6,
+        .blog-col-md-5,
+        .blog-col-md-7,
+        .blog-col-md-4,
+        .blog-col-lg-4,
+        .blog-col-lg-6,
+        .blog-col-12 {
+
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
     }
 
-    .search-box button{
+    @media (max-width:1400px) {
 
-        width:100%;
+        .blog-container {
 
-        margin-top:10px;
+            max-width: 100%;
+
+            padding-left: 60px !important;
+
+            padding-right: 60px !important;
+
+        }
+
+        .blog-form-card {
+
+            padding: 30px !important;
+
+        }
+
     }
 
-}
+    @media (max-width:1366px) {
 
-/* EXTRA SMALL */
+        .blog-container {
 
-@media(max-width:480px){
+            padding-left: 45px !important;
 
-    .blog-btn{
+            padding-right: 45px !important;
 
-        width:100%;
+        }
 
-        min-height:52px;
-
-        font-size:14px;
     }
 
-    .publish-box{
+    @media (max-width:1200px) {
 
-        flex-wrap:wrap;
+        .blog-container {
 
-        justify-content:center;
+            padding-left: 35px !important;
 
-        text-align:center;
+            padding-right: 35px !important;
+
+        }
+
     }
-
-}
 </style>
 
 <div class="blog-container py-5">
