@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h4>All Student Deliverables</h4>
+        </div>
+        <div class="card-body">
+            <!-- Filters -->
+            <form method="get" class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <select name="deliverable" class="form-select">
+                        <option value="">All Deliverables</option>
+                        {% for d in deliverables %}
+                            <option value="{{ d.id }}" {% if deliverable_filter == d.id|stringformat:"s" %}selected{% endif %}>
+                                {{ d.title }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="batch" class="form-select">
+                        <option value="">All Batches</option>
+                        {% for b in batches %}
+                            <option value="{{ b.id }}" {% if batch_filter == b.id|stringformat:"s" %}selected{% endif %}>
+                                {{ b.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="status" class="form-select">
+                        <option value="">All Status</option>
+                        <option value="submitted" {% if status_filter == 'submitted' %}selected{% endif %}>Submitted</option>
+                        <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>Approved</option>
+                        <option value="not_submitted" {% if status_filter == 'not_submitted' %}selected{% endif %}>Not Submitted</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                </div>
+            </form>
+
+            <!-- Results Table -->
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Deliverable</th>
+                            <th>Batch</th>
+                            <th>Status</th>
+                            <th>Latest Version</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sd in student_deliverables %}
+                        <tr>
+                            <td>{{ sd.student.user.get_full_name }}</td>
+                            <td>{{ sd.deliverable.title }}</td>
+                            <td>{{ sd.deliverable.batch.name|default:"Individual" }}</td>
+                            <td>
+                                {% if sd.is_approved %}
+                                    <span class="badge bg-success">Approved</span>
+                                {% elif sd.is_submitted %}
+                                    <span class="badge bg-warning">Submitted</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Not Started</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% with latest=sd.get_latest_version %}
+                                    {% if latest %}
+                                        v{{ latest.version_number }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td>
+                                <a href="{% url 'training:admin_student_deliverable_detail' sd.id %}" 
+                                   class="btn btn-sm btn-info">
+                                    View Details
+                                </a>
+                                <a href="{% url 'training:admin_upload_version' sd.id %}" 
+                                   class="btn btn-sm btn-primary">
+                                    Upload Version
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center">No deliverables found.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if student_deliverables.has_other_pages %}
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if student_deliverables.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ student_deliverables.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+                    
+                    {% for num in student_deliverables.paginator.page_range %}
+                        <li class="page-item {% if student_deliverables.number == num %}active{% endif %}">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endfor %}
+                    
+                    {% if student_deliverables.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ student_deliverables.next_page_number }}">Next</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

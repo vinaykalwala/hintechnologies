@@ -1418,8 +1418,7 @@ def admin_upload_version(request, student_deliverable_id):
                     f'Admin version {next_version} uploaded successfully for {student_record.student.user.get_full_name()}'
                 )
                 
-                # Notify student
-                notify_student_new_version(version)
+                
                 
                 return redirect('training:admin_student_deliverable_detail', student_deliverable_id=student_record.id)
     else:
@@ -1599,3 +1598,49 @@ def deliverable_version_file_path(instance, filename):
         # Batch-wide deliverable
         return f'deliverables/{instance.deliverable.id}/batch/version_{instance.version_number}/{filename}'
 
+# Add this to your training/views.py
+
+@login_required
+@user_passes_test(is_admin)
+def admin_all_student_deliverables(request):
+    """Admin view of all student deliverables across all batches"""
+    student_deliverables = StudentDeliverable.objects.select_related(
+        'student', 'student__user', 'deliverable', 'deliverable__batch'
+    ).all()
+    
+    # Filter by deliverable
+    deliverable_filter = request.GET.get('deliverable')
+    if deliverable_filter:
+        student_deliverables = student_deliverables.filter(deliverable_id=deliverable_filter)
+    
+    # Filter by batch
+    batch_filter = request.GET.get('batch')
+    if batch_filter:
+        student_deliverables = student_deliverables.filter(
+            deliverable__batch_id=batch_filter
+        )
+    
+    # Filter by submission status
+    status_filter = request.GET.get('status')
+    if status_filter == 'submitted':
+        student_deliverables = student_deliverables.filter(is_submitted=True)
+    elif status_filter == 'approved':
+        student_deliverables = student_deliverables.filter(is_approved=True)
+    elif status_filter == 'not_submitted':
+        student_deliverables = student_deliverables.filter(is_submitted=False)
+    
+    paginator = Paginator(student_deliverables, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    deliverables = Deliverable.objects.all()
+    batches = Batch.objects.all()
+    
+    return render(request, 'training/admin/deliverables/all_student_deliverables.html', {
+        'student_deliverables': page_obj,
+        'deliverables': deliverables,
+        'batches': batches,
+        'deliverable_filter': deliverable_filter,
+        'batch_filter': batch_filter,
+        'status_filter': status_filter,
+    })
