@@ -1,118 +1,444 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pending Deliverable Reviews - HIN Technologies{% endblock %}
 
 {% block content %}
-<div class="container-fluid mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Pending Deliverable Reviews</h2>
-        <div>
-            <a href="{% url 'training:deliverable_list' %}" class="btn btn-secondary">
-                Back to Deliverables
+<!-- Premium Fonts & Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    :root {
+        /* HIN Technologies Premium Brand Palette */
+        --hin-blue: #0B3D91;
+        --hin-blue-light: #eef5ff;
+        --hin-blue-hover: #082d6b;
+        --hin-red: #C62828;
+        --hin-red-light: #fef2f2;
+        --hin-red-hover: #a12020;
+        
+        /* Neutrals & Structure */
+        --dark-text: #1a1a2e;
+        --muted-text: #5b6475;
+        --bg-main: #f4f7fc;
+        --white: #ffffff;
+        --border-color: rgba(255, 255, 255, 0.8); 
+        
+        /* Glassmorphism Settings */
+        --glass-bg: rgba(255, 255, 255, 0.85);
+        --glass-blur: blur(25px);
+        
+        /* Shadows & Curves */
+        --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 10px 20px -3px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 25px 50px -12px rgba(11, 61, 145, 0.15);
+        --radius-lg: 30px;
+        --radius-md: 18px;
+        --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+        background-color: var(--bg-main);
+        font-family: 'Inter', sans-serif;
+        color: var(--dark-text);
+    }
+
+    /* --- DYNAMIC AMBIENT BACKGROUND LAYER --- */
+    .ambient-bg {
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        z-index: -1; overflow: hidden; pointer-events: none;
+    }
+
+    .ambient-blob {
+        position: absolute; filter: blur(100px); border-radius: 50%; opacity: 0.65;
+        animation: floatBlob 18s infinite alternate ease-in-out;
+    }
+
+    .blob-1 { background: rgba(11, 61, 145, 0.35); width: 48vw; height: 48vw; top: -15%; left: -15%; }
+    .blob-2 { background: rgba(198, 40, 40, 0.25); width: 52vw; height: 52vw; bottom: -20%; right: -10%; animation-delay: -4s; }
+    .blob-3 { background: rgba(14, 165, 233, 0.18); width: 38vw; height: 38vw; top: 30%; left: 35%; animation-delay: -8s; }
+
+    .ambient-grid {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background-image: radial-gradient(var(--hin-blue) 1.5px, transparent 1.5px);
+        background-size: 32px 32px; opacity: 0.05;
+    }
+
+    @keyframes floatBlob {
+        0% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(4%, 8%) scale(1.05); }
+        100% { transform: translate(-4%, -4%) scale(0.95); }
+    }
+
+    .page-container {
+        max-width: 1350px; margin: 0 auto; padding: 40px 20px 80px; position: relative; z-index: 1;
+    }
+
+    /* --- DASHBOARD HEADER --- */
+    .dashboard-header {
+        position: relative;
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        padding: clamp(2rem, 5vw, 3rem) 2rem;
+        border-radius: var(--radius-lg);
+        margin-bottom: 35px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        border: 1px solid var(--border-color);
+        border-bottom: 4px solid var(--hin-blue);
+        display: flex; justify-content: space-between; align-items: center;
+        flex-wrap: wrap; gap: 20px;
+    }
+
+    .header-left h2 {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800;
+        color: var(--hin-blue); letter-spacing: -0.5px; line-height: 1.2;
+    }
+
+    /* Cancel Navigation Style: Starts Blue -> Hover turns Red */
+    .btn-back-nav {
+        background: var(--hin-blue); color: var(--white);
+        padding: 14px 28px; border-radius: 50px; text-decoration: none;
+        font-weight: 700; display: inline-flex; align-items: center; gap: 8px;
+        transition: var(--transition); box-shadow: 0 6px 15px rgba(11, 61, 145, 0.15);
+    }
+
+    .btn-back-nav:hover {
+        background: var(--hin-red); color: var(--white);
+        transform: translateY(-3px); box-shadow: 0 8px 20px rgba(198, 40, 40, 0.25);
+    }
+
+    /* --- BENTO FILTER CARD --- */
+    .filter-card {
+        background: var(--glass-bg); backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur); border-radius: var(--radius-lg);
+        padding: 30px; margin-bottom: 35px; border: 1px solid var(--border-color);
+        box-shadow: var(--shadow-md); position: relative;
+    }
+
+    .filter-card::before {
+        content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px;
+        background: linear-gradient(90deg, var(--hin-red), var(--hin-blue), var(--hin-red));
+        border-top-left-radius: var(--radius-lg); border-top-right-radius: var(--radius-lg);
+    }
+
+    .filter-form-grid {
+        display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; align-items: end;
+    }
+
+    .filter-input-wrapper { position: relative; display: flex; align-items: center; }
+    .filter-input-wrapper i {
+        position: absolute; left: 16px; color: var(--hin-blue);
+        font-size: 1.05rem; pointer-events: none; transition: var(--transition); z-index: 2;
+    }
+
+    .filter-card select {
+        width: 100%; padding: 12px 40px 12px 45px; border-radius: 14px;
+        border: 2px solid rgba(226, 232, 240, 0.9); background: rgba(255, 255, 255, 0.8);
+        font-family: inherit; font-size: 0.95rem; font-weight: 500;
+        color: var(--dark-text); transition: var(--transition); height: 3.2rem;
+        -webkit-appearance: none; appearance: none;
+    }
+
+    .select-container { position: relative; width: 100%; }
+    .select-container::after {
+        content: '\f107'; font-family: 'Font Awesome 5 Free'; font-weight: 900;
+        position: absolute; right: 18px; top: 50%; transform: translateY(-50%);
+        color: var(--muted-text); pointer-events: none; font-size: 1rem; transition: var(--transition);
+    }
+
+    .select-container:focus-within::after { color: var(--hin-blue); transform: translateY(-50%) rotate(180deg); }
+    .filter-card select:focus { border-color: var(--hin-blue); background: var(--white); outline: none; box-shadow: 0 0 0 5px rgba(11, 61, 145, 0.1); }
+    .filter-card select:focus ~ i { color: var(--hin-red); }
+
+    /* Action Filter Submit: Starts Blue -> Hover turns Red */
+    .btn-primary-filter {
+        background: var(--hin-blue); color: var(--white); border: none;
+        border-radius: 14px; font-weight: 700; font-size: 1rem; cursor: pointer;
+        transition: var(--transition); height: 3.2rem; display: flex;
+        align-items: center; justify-content: center; gap: 8px;
+        box-shadow: 0 4px 12px rgba(11, 61, 145, 0.18); width: 100%;
+    }
+
+    .btn-primary-filter:hover {
+        background: var(--hin-red); transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(198, 40, 40, 0.25);
+    }
+
+    /* --- WORKSPACE DATATABLE PANEL --- */
+    .master-table-panel {
+        background: var(--glass-bg); backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur); border-radius: var(--radius-lg);
+        padding: clamp(1.5rem, 4vw, 2.5rem); border: 1px solid var(--border-color);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .table-responsive { overflow-x: auto; border-radius: var(--radius-md); }
+    .table { width: 100%; border-collapse: separate; border-spacing: 0; }
+
+    .table th {
+        background-color: rgba(11, 61, 145, 0.04); color: var(--hin-blue);
+        font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+        padding: 18px 16px; text-transform: uppercase; font-size: 0.8rem;
+        letter-spacing: 0.05em; border-bottom: 2px solid rgba(11, 61, 145, 0.08);
+    }
+
+    .table td {
+        padding: 20px 16px; color: var(--dark-text); border-bottom: 1px solid var(--bg-main);
+        vertical-align: middle; background: transparent; transition: var(--transition);
+    }
+
+    .table tbody tr:hover td { background-color: rgba(255, 255, 255, 0.5); }
+
+    .student-meta strong { color: var(--hin-blue); font-size: 1.05rem; display: block; margin-bottom: 4px; }
+    .student-meta small { color: var(--muted-text); font-size: 0.85rem; }
+    .deliverable-title-text { font-weight: 600; color: var(--dark-text); }
+    .timestamp-data { font-size: 0.9rem; color: var(--muted-text); }
+    
+    .comment-preview-box {
+        font-size: 0.95rem; color: #334155; max-width: 250px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .version-badge {
+        display: inline-flex; align-items: center; padding: 4px 12px;
+        border-radius: 8px; background-color: var(--hin-blue-light);
+        color: var(--hin-blue); font-weight: 700; font-size: 0.8rem;
+        border: 1px solid rgba(11, 61, 145, 0.1);
+    }
+
+    /* --- ACTION ROUTE TRIGGERS --- */
+    .actions-flex-cell { display: flex; gap: 10px; align-items: center; }
+
+    /* Review View Button: Starts Red -> Hover turns Blue */
+    .btn-action-review {
+        background-color: var(--hin-red); color: var(--white); border: none;
+        padding: 10px 18px; border-radius: 50px; font-weight: 600; font-size: 0.85rem;
+        cursor: pointer; text-decoration: none; display: inline-flex; align-items: center;
+        gap: 6px; transition: var(--transition); box-shadow: 0 4px 10px rgba(198, 40, 40, 0.15);
+    }
+
+    .btn-action-review:hover {
+        background-color: var(--hin-blue); color: var(--white);
+        transform: translateY(-2px); box-shadow: 0 6px 15px rgba(11, 61, 145, 0.25);
+    }
+
+    .btn-action-download {
+        background-color: #f1f5f9; color: #475569; border: 1px solid #e2e8f0;
+        padding: 10px 18px; border-radius: 50px; font-weight: 600; font-size: 0.85rem;
+        cursor: pointer; text-decoration: none; display: inline-flex; align-items: center;
+        gap: 6px; transition: var(--transition);
+    }
+
+    .btn-action-download:hover { background-color: #e2e8f0; color: #1e293b; transform: translateY(-1px); }
+
+    /* --- EMPTY STATE MODULE --- */
+    .empty-state-success-box {
+        text-align: center; padding: 50px 20px;
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.05) 0%, rgba(34, 197, 94, 0.01) 100%);
+        border: 1px solid rgba(34, 197, 94, 0.15); border-radius: var(--radius-md);
+    }
+
+    .empty-state-icon-circle {
+        width: 75px; height: 75px; background-color: #dcfce7; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
+        color: #16a34a; font-size: 2.2rem;
+    }
+
+    .empty-state-success-box h5 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; color: #14532d; }
+    .empty-state-success-box p { color: #166534; font-size: 0.95rem; }
+
+    /* --- PREMIUM PAGINATION --- */
+    .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 35px; list-style: none; }
+    .page-item .page-link {
+        display: flex; align-items: center; justify-content: center; min-width: 40px; height: 40px;
+        padding: 0 14px; border-radius: 10px; background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--border-color); color: var(--dark-text); font-weight: 600;
+        text-decoration: none; transition: var(--transition);
+    }
+
+    .page-item.active .page-link { background: var(--hin-blue); color: var(--white); border-color: var(--hin-blue); }
+    .page-item:not(.active) .page-link:hover { background: var(--white); color: var(--hin-red); border-color: rgba(198, 40, 40, 0.3); transform: translateY(-2px); }
+
+    /* --- RESPONSIVE MATRIX OVERRIDES --- */
+    @media (max-width: 992px) {
+        .dashboard-header { flex-direction: column; align-items: flex-start; padding: 25px 20px; }
+        .btn-back-nav { width: 100%; justify-content: center; }
+        .filter-form-grid { grid-template-columns: repeat(2, 1fr); }
+        .grid-select { grid-column: span 1; }
+        .grid-action { grid-column: span 1; }
+        .table th, .table td { padding: 16px 12px; }
+    }
+
+    @media (max-width: 768px) {
+        .filter-form-grid { grid-template-columns: 1fr; }
+        .grid-select, .grid-action { grid-column: span 1; }
+        .master-table-panel { padding: 20px 15px; }
+        .actions-flex-cell { flex-direction: column; align-items: stretch; width: 100%; }
+        .btn-action-review, .btn-action-download { justify-content: center; }
+    }
+</style>
+
+<!-- BACKGROUND CANVAS MATRIX LAYER -->
+<div class="ambient-bg">
+    <div class="ambient-blob blob-1"></div>
+    <div class="ambient-blob blob-2"></div>
+    <div class="ambient-blob blob-3"></div>
+    <div class="ambient-grid"></div>
+</div>
+
+<div class="page-container">
+
+    <!-- Hero Framework Header Component -->
+    <header class="dashboard-header">
+        <div class="header-section header-left">
+            <h2>Pending Deliverable Reviews</h2>
+        </div>
+        <div class="header-section header-right">
+            <a href="{% url 'training:deliverable_list' %}" class="btn-back-nav">
+                <i class="fas fa-chevron-left"></i> Back to Deliverables
             </a>
         </div>
-    </div>
+    </header>
 
-    <!-- Filters -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <form method="get" class="row g-3">
-                <div class="col-md-4">
-                    <label for="deliverable" class="form-label">Filter by Deliverable</label>
-                    <select name="deliverable" id="deliverable" class="form-select">
-                        <option value="">All Deliverables</option>
+    <!-- High-Fidelity Bento Filter Card Component -->
+    <div class="filter-card">
+        <form method="get">
+            <div class="filter-form-grid">
+                
+                <!-- Dropdown Selection Grid -->
+                <div class="select-container filter-input-wrapper grid-select" style="grid-column: span 8;">
+                    <select name="deliverable" id="deliverable">
+                        <option value="">All Deliverables Allocated</option>
                         {% for d in deliverables %}
                             <option value="{{ d.id }}" {% if deliverable_filter == d.id|stringformat:"s" %}selected{% endif %}>
                                 {{ d.title }}
                             </option>
                         {% endfor %}
                     </select>
+                    <i class="fas fa-filter"></i>
                 </div>
-                <div class="col-md-4">
-                    <label class="form-label">&nbsp;</label>
-                    <button type="submit" class="btn btn-primary d-block">Apply Filter</button>
+                
+                <!-- Filter Submission Grid Link -->
+                <div class="grid-action" style="grid-column: span 4;">
+                    <button type="submit" class="btn-primary-filter">
+                        <i class="fas fa-sliders-h"></i> Apply Metric Filter
+                    </button>
                 </div>
-            </form>
-        </div>
+
+            </div>
+        </form>
     </div>
 
-    <!-- Pending Reviews Table -->
-    <div class="card">
-        <div class="card-body">
-            {% if pending_versions %}
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
+    <!-- Main Datatable Execution Module -->
+    <div class="master-table-panel">
+        {% if pending_versions %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Student Details</th>
+                            <th>Deliverable Artifact</th>
+                            <th>Version Tracking</th>
+                            <th>Submitted Timestamp</th>
+                            <th>Explanatory Comments</th>
+                            <th>Review Operations</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for version in pending_versions %}
                             <tr>
-                                <th>Student</th>
-                                <th>Deliverable</th>
-                                <th>Version</th>
-                                <th>Submitted At</th>
-                                <th>Comments</th>
-                                <th>Actions</th>
+                                <td class="student-meta">
+                                    <strong>{{ version.student_record.student.user.get_full_name }}</strong>
+                                    <small>{{ version.student_record.student.user.email }}</small>
+                                </td>
+                                <td class="deliverable-title-text">{{ version.deliverable.title }}</td>
+                                <td>
+                                    <span class="version-badge">
+                                        <i class="fas fa-code-branch fa-sm me-1"></i> v{{ version.version_number }}
+                                    </span>
+                                </td>
+                                <td class="timestamp-data">
+                                    <i class="far fa-clock text-muted me-1"></i> {{ version.submitted_at|date:"M d, Y H:i" }}
+                                </td>
+                                <td>
+                                    <div class="comment-preview-box">
+                                        {% if version.comments %}{{ version.comments }}{% else %}<em>No comments appended</em>{% endif %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="actions-flex-cell">
+                                        <a href="{% url 'training:review_deliverable_version' version.id %}" class="btn-action-review">
+                                            <i class="fas fa-rate-card"></i> Review
+                                        </a>
+                                        <a href="{{ version.file.url }}" class="btn-action-download" target="_blank">
+                                            <i class="fas fa-cloud-download-alt"></i> Download
+                                        </a>
+                                    </div>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for version in pending_versions %}
-                                <tr>
-                                    <td>
-                                        <strong>{{ version.student_record.student.user.get_full_name }}</strong><br>
-                                        <small class="text-muted">{{ version.student_record.student.user.email }}</small>
-                                    </td>
-                                    <td>{{ version.deliverable.title }}</td>
-                                    <td>
-                                        <span class="badge bg-info">v{{ version.version_number }}</span>
-                                    </td>
-                                    <td>{{ version.submitted_at|date:"Y-m-d H:i" }}</td>
-                                    <td>
-                                        {% if version.comments %}
-                                            {{ version.comments|truncatechars:50 }}
-                                        {% else %}
-                                            <em>No comments</em>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <a href="{% url 'training:review_deliverable_version' version.id %}" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-eye"></i> Review
-                                        </a>
-                                        <a href="{{ version.file.url }}" class="btn btn-sm btn-outline-secondary" target="_blank">
-                                            <i class="fas fa-download"></i> Download
-                                        </a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
 
-                <!-- Pagination -->
-                {% if pending_versions.has_other_pages %}
-                    <nav>
-                        <ul class="pagination justify-content-center">
-                            {% if pending_versions.has_previous %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ pending_versions.previous_page_number }}{% if deliverable_filter %}&deliverable={{ deliverable_filter }}{% endif %}">Previous</a>
-                                </li>
-                            {% endif %}
+            <!-- Custom Premium Pagination -->
+            {% if pending_versions.has_other_pages %}
+                <nav aria-label="Datatable Navigation">
+                    <ul class="pagination">
+                        {% if pending_versions.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ pending_versions.previous_page_number }}{% if deliverable_filter %}&deliverable={{ deliverable_filter }}{% endif %}">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
 
-                            {% for num in pending_versions.paginator.page_range %}
-                                <li class="page-item {% if pending_versions.number == num %}active{% endif %}">
-                                    <a class="page-link" href="?page={{ num }}{% if deliverable_filter %}&deliverable={{ deliverable_filter }}{% endif %}">{{ num }}</a>
-                                </li>
-                            {% endfor %}
+                        {% for num in pending_versions.paginator.page_range %}
+                            <li class="page-item {% if pending_versions.number == num %}active{% endif %}">
+                                <a class="page-link" href="?page={{ num }}{% if deliverable_filter %}&deliverable={{ deliverable_filter }}{% endif %}">{{ num }}</a>
+                            </li>
+                        {% endfor %}
 
-                            {% if pending_versions.has_next %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ pending_versions.next_page_number }}{% if deliverable_filter %}&deliverable={{ deliverable_filter }}{% endif %}">Next</a>
-                                </li>
-                            {% endif %}
-                        </ul>
-                    </nav>
-                {% endif %}
-            {% else %}
-                <div class="alert alert-success mb-0">
-                    <i class="fas fa-check-circle"></i> No pending reviews! All submissions have been reviewed.
-                </div>
+                        {% if pending_versions.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ pending_versions.next_page_number }}{% if deliverable_filter %}&deliverable={{ deliverable_filter }}{% endif %}">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
             {% endif %}
-        </div>
+        {% else %}
+            <!-- High-Contrast Clean Success State Message Box -->
+            <div class="empty-state-success-box">
+                <div class="empty-state-icon-circle">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h5>All Appraised Cleared</h5>
+                <p>No pending review metrics encountered. All registered student versions have been structured and processed.</p>
+            </div>
+        {% endif %}
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Cascade clean load animation row items
+        const structuralRows = document.querySelectorAll('.table tbody tr');
+        structuralRows.forEach((row, index) => {
+            row.style.opacity = '0';
+            row.style.transform = 'translateY(8px)';
+            row.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            setTimeout(() => {
+                row.style.opacity = '1';
+                row.style.transform = 'translateY(0)';
+            }, 50 * index);
+        });
+    });
+</script>
 {% endblock %}

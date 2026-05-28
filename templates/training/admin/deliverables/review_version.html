@@ -1,115 +1,613 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Review Submission - HIN Technologies{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Review Submission</h2>
-        <a href="{% url 'training:pending_reviews' %}" class="btn btn-secondary">
-            Back to Pending Reviews
-        </a>
-    </div>
+<link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <div class="row">
-        <div class="col-md-6">
-            <!-- Submission Details -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h4>Submission Details</h4>
-                </div>
-                <div class="card-body">
-                    <table class="table table-borderless">
-                        <tr>
-                            <th width="150">Student:</th>
-                            <td><strong>{{ version.student_record.student.user.get_full_name }}</strong></td>
-                        </tr>
-                        <tr>
-                            <th>Email:</th>
-                            <td>{{ version.student_record.student.user.email }}</td>
-                        </tr>
-                        <tr>
-                            <th>Deliverable:</th>
-                            <td>{{ deliverable.title }}</td>
-                        </tr>
-                        <tr>
-                            <th>Version:</th>
-                            <td><span class="badge bg-info">v{{ version.version_number }}</span></td>
-                        </tr>
-                        <tr>
-                            <th>Submitted:</th>
-                            <td>{{ version.submitted_at|date:"Y-m-d H:i:s" }}</td>
-                        </tr>
-                        <tr>
-                            <th>Submitted By:</th>
-                            <td>{{ version.get_submitter_type_display }}</td>
-                        </tr>
-                    </table>
+<style>
+    :root {
+        /* HIN Technologies Premium Brand Palette */
+        --hin-blue: #0B3D91;
+        --hin-blue-light: #eef5ff;
+        --hin-blue-hover: #082d6b;
+        --hin-red: #C62828;
+        --hin-red-light: #fef2f2;
+        --hin-red-hover: #a12020;
 
-                    {% if version.comments %}
-                        <div class="alert alert-secondary mt-3">
-                            <strong>Student Comments:</strong><br>
-                            {{ version.comments|linebreaks }}
-                        </div>
-                    {% endif %}
+        /* Neutrals & UI Structure */
+        --dark-text: #1a1a2e;
+        --muted-text: #5b6475;
+        --bg-main: #f4f7fc;
+        --white: #ffffff;
+        --border-color: rgba(255, 255, 255, 0.8);
 
-                    <div class="mt-3">
-                        <strong>File:</strong><br>
-                        <a href="{{ version.file.url }}" class="btn btn-outline-primary mt-2" target="_blank">
-                            <i class="fas fa-file-download"></i> Download Submission File
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        /* Glassmorphism Configuration */
+        --glass-bg: rgba(255, 255, 255, 0.85);
+        --glass-blur: blur(25px);
 
-        <div class="col-md-6">
-            <!-- Review Form -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h4>Review Decision</h4>
-                </div>
-                <div class="card-body">
-                    <form method="post">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary">Submit Review</button>
-                    </form>
-                </div>
-            </div>
+        /* Elevation Shadows & Layout Metrics */
+        --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 10px 20px -3px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 25px 50px -12px rgba(11, 61, 145, 0.15);
+        --radius-lg: 30px;
+        --radius-md: 18px;
+        --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-            <!-- Version Comparison -->
-            {% if all_versions.count > 1 %}
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Previous Versions</h4>
-                    </div>
-                    <div class="card-body" style="max-height: 300px; overflow-y: auto;">
-                        {% for old_version in all_versions %}
-                            {% if old_version.id != version.id %}
-                                <div class="border-bottom mb-3 pb-3">
-                                    <div class="d-flex justify-content-between">
-                                        <strong>Version {{ old_version.version_number }}</strong>
-                                        <span class="badge 
-                                            {% if old_version.status == 'approved' %}bg-success
-                                            {% elif old_version.status == 'pending' %}bg-warning
-                                            {% else %}bg-secondary{% endif %}">
-                                            {{ old_version.get_status_display }}
-                                        </span>
-                                    </div>
-                                    <small>Submitted: {{ old_version.submitted_at|date:"Y-m-d H:i" }}</small>
-                                    <br>
-                                    <a href="{{ old_version.file.url }}" class="btn btn-sm btn-link" target="_blank">
-                                        Download
-                                    </a>
-                                    {% if old_version.comments %}
-                                        <div class="mt-1 small text-muted">{{ old_version.comments }}</div>
-                                    {% endif %}
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endif %}
-        </div>
-    </div>
+    body {
+        background-color: var(--bg-main);
+        font-family: 'Inter', system-ui, sans-serif;
+        color: var(--dark-text);
+    }
+
+    /* --- DYNAMIC AMBIENT BACKGROUND LAYER --- */
+    .ambient-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .ambient-blob {
+        position: absolute;
+        filter: blur(100px);
+        border-radius: 50%;
+        opacity: 0.65;
+        animation: floatBlob 18s infinite alternate ease-in-out;
+    }
+
+    .blob-1 {
+        background: rgba(11, 61, 145, 0.35);
+        width: 48vw;
+        height: 48vw;
+        top: -15%;
+        left: -15%;
+    }
+
+    .blob-2 {
+        background: rgba(198, 40, 40, 0.25);
+        width: 52vw;
+        height: 52vw;
+        bottom: -20%;
+        right: -10%;
+        animation-delay: -4s;
+    }
+
+    .blob-3 {
+        background: rgba(14, 165, 233, 0.18);
+        width: 38vw;
+        height: 38vw;
+        top: 30%;
+        left: 35%;
+        animation-delay: -8s;
+    }
+
+    .ambient-grid {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: radial-gradient(var(--hin-blue) 1.5px, transparent 1.5px);
+        background-size: 32px 32px;
+        opacity: 0.05;
+    }
+
+    @keyframes floatBlob {
+        0% {
+            transform: translate(0, 0) scale(1);
+        }
+
+        50% {
+            transform: translate(4%, 8%) scale(1.05);
+        }
+
+        100% {
+            transform: translate(-4%, -4%) scale(0.95);
+        }
+    }
+
+    .page-container {
+        max-width: 1350px;
+        margin: 0 auto;
+        padding: 40px 20px 80px;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* --- DASHBOARD HEADER --- */
+    .dashboard-header {
+        position: relative;
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        padding: clamp(1.8rem, 4vw, 2.5rem) 2rem;
+        border-radius: var(--radius-lg);
+        margin-bottom: 35px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        border: 1px solid var(--border-color);
+        border-bottom: 4px solid var(--hin-blue);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .header-left h2 {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+        font-weight: 800;
+        color: var(--hin-blue);
+        letter-spacing: -0.5px;
+        line-height: 1.2;
+    }
+
+    /* Back Route Control Style: Blue -> Hover shifts to Red */
+    .btn-back-nav {
+        background: var(--hin-blue);
+        color: var(--white);
+        padding: 12px 26px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: var(--transition);
+        box-shadow: 0 6px 15px rgba(11, 61, 145, 0.15);
+    }
+
+    .btn-back-nav:hover {
+        background: var(--hin-red);
+        color: var(--white);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(198, 40, 40, 0.25);
+    }
+
+    /* --- GLASS COMPONENT PANELS --- */
+    .glass-card-panel {
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border-radius: var(--radius-lg);
+        padding: 30px;
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow-lg);
+        height: 100%;
+        position: relative;
+    }
+
+    .glass-card-panel::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, var(--hin-blue), var(--hin-red));
+        border-top-left-radius: var(--radius-lg);
+        border-top-right-radius: var(--radius-lg);
+    }
+
+    .panel-subheader {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: var(--hin-blue);
+        font-size: 1.25rem;
+        font-weight: 800;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-bottom: 1px solid rgba(11, 61, 145, 0.08);
+        padding-bottom: 15px;
+    }
+
+    .panel-subheader i {
+        color: var(--hin-red);
+    }
+
+    /* --- META DETAILS TABLE --- */
+    .info-table {
+        width: 100%;
+        margin-bottom: 20px;
+        border-collapse: collapse;
+    }
+
+    .info-table tr {
+        border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+    }
+
+    .info-table tr:last-child {
+        border-bottom: none;
+    }
+
+    .info-table th {
+        padding: 14px 0;
+        color: var(--muted-text);
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        text-align: left;
+    }
+
+    .info-table td {
+        padding: 14px 0;
+        font-size: 1rem;
+        color: var(--dark-text);
+    }
+
+    .version-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 12px;
+        border-radius: 8px;
+        background-color: var(--hin-blue-light);
+        color: var(--hin-blue);
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
+
+    /* Student Block Alerts */
+    .student-comments-block {
+        background: rgba(11, 61, 145, 0.04);
+        border-left: 4px solid var(--hin-blue);
+        border-radius: 12px;
+        padding: 18px;
+        margin-top: 20px;
+    }
+
+    .student-comments-block strong {
+        color: var(--hin-blue);
+        display: block;
+        margin-bottom: 6px;
+    }
+
+    .student-comments-block p {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: #334155;
+        margin: 0;
+    }
+
+    /* File Download Anchor: Starts Blue -> Hover turns Red */
+    .btn-download-artifact {
+        background-color: var(--hin-blue);
+        color: var(--white);
+        padding: 14px 24px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: var(--transition);
+        box-shadow: 0 4px 10px rgba(11, 61, 145, 0.15);
+        margin-top: 15px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .btn-download-artifact:hover {
+        background-color: var(--hin-red);
+        color: var(--white);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(198, 40, 40, 0.25);
+    }
+
+    /* --- FORM INJECTION STYLING --- */
+    form p {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    form label {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--dark-text);
+    }
+
+    form input,
+    form select,
+    form textarea {
+        width: 100%;
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: 2px solid rgba(226, 232, 240, 0.9);
+        background: rgba(255, 255, 255, 0.8);
+        font-family: inherit;
+        font-size: 0.95rem;
+        transition: var(--transition);
+    }
+
+    form input:focus,
+    form select:focus,
+    form textarea:focus {
+        border-color: var(--hin-blue);
+        background: var(--white);
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(11, 61, 145, 0.1);
+    }
+
+    form textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    /* Submit Review Action: Starts Red -> Hover turns Blue */
+    .btn-submit-review {
+        background-color: var(--hin-red);
+        color: var(--white);
+        border: none;
+        padding: 14px 32px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        width: 100%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: var(--transition);
+        box-shadow: 0 6px 15px rgba(198, 40, 40, 0.18);
+        margin-top: 10px;
+    }
+
+    .btn-submit-review:hover {
+        background-color: var(--hin-blue);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(11, 61, 145, 0.25);
+    }
+
+    /* --- HISTORICAL LIST COMPONENT --- */
+    .history-scroll-box {
+        max-height: 320px;
+        overflow-y: auto;
+        padding-right: 8px;
+    }
+
+    .history-scroll-box::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .history-scroll-box::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .history-scroll-box::-webkit-scrollbar-thumb {
+        background: rgba(11, 61, 145, 0.15);
+        border-radius: 10px;
+    }
+
+    .history-item {
+        background: rgba(255, 255, 255, 0.4);
+        border: 1px solid rgba(226, 232, 240, 0.6);
+        border-radius: 14px;
+        padding: 16px;
+        transition: var(--transition);
+    }
+
+    .history-item:hover {
+        background: var(--white);
+        border-color: rgba(11, 61, 145, 0.15);
+    }
+
+    .status-badge-inline {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .badge-approved {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+
+    .badge-pending {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+
+    .badge-default {
+        background-color: #f1f5f9;
+        color: #475569;
+    }
+
+    .btn-link-download {
+        color: var(--hin-blue);
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        margin-top: 6px;
+        transition: var(--transition);
+    }
+
+    .btn-link-download:hover {
+        color: var(--hin-red);
+    }
+
+    /* --- RESPONSIVE MEDIA ASSIGNMENTS --- */
+    @media (max-width: 992px) {
+        .dashboard-header {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 25px 20px;
+        }
+
+        .btn-back-nav {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="ambient-bg">
+    <div class="ambient-blob blob-1"></div>
+    <div class="ambient-blob blob-2"></div>
+    <div class="ambient-blob blob-3"></div>
+    <div class="ambient-grid"></div>
 </div>
+
+<div class="page-container">
+
+    <header class="dashboard-header">
+        <div class="header-section header-left">
+            <h2>Review Submission</h2>
+        </div>
+        <div class="header-section header-right">
+            <a href="{% url 'training:pending_reviews' %}" class="btn-back-nav">
+                <i class="fas fa-chevron-left"></i> Back to Pending Reviews
+            </a>
+        </div>
+    </header>
+
+    <!-- Side-by-Side Panel Row Matrix -->
+    <div class="row g-4">
+
+        <!-- Left Column: Submission Details Matrix Card -->
+        <div class="col-lg-6">
+            <div class="glass-card-panel">
+                <div class="panel-subheader">
+                    <i class="fas fa-info-circle"></i> Submission Details
+                </div>
+
+                <table class="info-table">
+                    <tr>
+                        <th width="150">Student:</th>
+                        <td><strong>{{ version.student_record.student.user.get_full_name }}</strong></td>
+                    </tr>
+                    <tr>
+                        <th>Email:</th>
+                        <td>{{ version.student_record.student.user.email }}</td>
+                    </tr>
+                    <tr>
+                        <th>Deliverable:</th>
+                        <td>{{ deliverable.title }}</td>
+                    </tr>
+                    <tr>
+                        <th>Version:</th>
+                        <td><span class="version-badge"><i class="fas fa-code-branch fa-sm me-1"></i> v{{
+                                version.version_number }}</span></td>
+                    </tr>
+                    <tr>
+                        <th>Submitted:</th>
+                        <td><i class="far fa-clock me-1 text-muted"></i> {{ version.submitted_at|date:"Y-m-d H:i:s" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Submitted By:</th>
+                        <td>{{ version.get_submitter_type_display }}</td>
+                    </tr>
+                </table>
+
+                {% if version.comments %}
+                <div class="student-comments-block">
+                    <strong>Student Comments:</strong>
+                    <p>{{ version.comments|linebreaks }}</p>
+                </div>
+                {% endif %}
+
+                <div class="mt-4">
+                    <a href="{{ version.file.url }}" class="btn-download-artifact" target="_blank">
+                        <i class="fas fa-cloud-download-alt"></i> Download Submission File
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Administrative Input Form Module Card -->
+        <div class="col-lg-6">
+            <div class="glass-card-panel">
+                <div class="panel-subheader">
+                    <i class="fas fa-gavel"></i> Review Decision
+                </div>
+                <form method="post" class="novalidate">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn-submit-review">
+                        <i class="fas fa-check-circle"></i> Submit Review
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Secondary Row: Structural Iterations History Matrix -->
+    {% if all_versions.count > 1 %}
+    <div class="row g-4 mt-2">
+        <div class="col-12">
+            <div class="glass-card-panel">
+                <div class="panel-subheader">
+                    <i class="fas fa-history"></i> Previous Versions
+                </div>
+                <div class="history-scroll-box d-flex flex-column gap-3">
+                    {% for old_version in all_versions %}
+                    {% if old_version.id != version.id %}
+                    <div class="history-item">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <strong style="color: var(--hin-blue); font-family: 'Plus Jakarta Sans';">Version {{
+                                old_version.version_number }}</strong>
+                            <span
+                                class="status-badge-inline {% if old_version.status == 'approved' %}badge-approved{% elif old_version.status == 'pending' %}badge-pending{% else %}badge-default{% endif %}">
+                                {{ old_version.get_status_display }}
+                            </span>
+                        </div>
+                        <small class="text-muted d-block mb-1">
+                            <i class="far fa-calendar-alt me-1"></i> {{ old_version.submitted_at|date:"Y-m-d H:i" }}
+                        </small>
+                        <a href="{{ old_version.file.url }}" class="btn-link-download" target="_blank">
+                            <i class="fas fa-arrow-circle-down"></i> Download
+                        </a>
+                        {% if old_version.comments %}
+                        <div class="mt-2 p-2 rounded bg-light small text-muted"
+                            style="font-size: 0.85rem; border-left: 3px solid #cbd5e1;">
+                            {{ old_version.comments }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Cascade clean structural element entrance transition framework logic
+        const targetPanels = document.querySelectorAll('.glass-card-panel');
+        targetPanels.forEach((panel, index) => {
+            panel.style.opacity = '0';
+            panel.style.transform = 'translateY(12px)';
+            panel.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            setTimeout(() => {
+                panel.style.opacity = '1';
+                panel.style.transform = 'translateY(0)';
+            }, 80 * index);
+        });
+    });
+</script>
 {% endblock %}
