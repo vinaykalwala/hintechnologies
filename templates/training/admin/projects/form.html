@@ -205,7 +205,7 @@
         transition: all 0.25s;
     }
 
-    .select-trigger:hover {
+    .select-trigger:hover:not(.disabled) {
         border-color: #C62828;
     }
 
@@ -379,15 +379,20 @@
         height: 0;
     }
 
-    /* Disabled state */
+    /* Disabled state for searchable select */
+    .searchable-select.disabled {
+        pointer-events: none;
+    }
+
     .searchable-select.disabled .select-trigger {
         background-color: #f1f5f9;
         cursor: not-allowed;
         opacity: 0.7;
     }
 
-    .searchable-select.disabled .select-trigger:hover {
-        border-color: #e2e8f0;
+    .select-trigger.disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
     }
 
     /* ============================================ */
@@ -1067,9 +1072,19 @@ document.addEventListener('DOMContentLoaded', function() {
         batchDropdown.classList.remove('show');
         batchTrigger.classList.remove('active');
         
-        // Clear and disable student selection
-        clearStudentSelection();
+        // COMPLETELY RESET AND DISABLE student selection
+        studentOriginalSelect.value = '';
+        studentTriggerText.textContent = 'Select a student...';
+        studentTriggerText.classList.remove('has-value');
+        clearStudentBtn.style.display = 'none';
+        
+        // Disable student dropdown
         studentSearchable.classList.add('disabled');
+        studentTrigger.classList.add('disabled');
+        
+        // Ensure batch is enabled
+        batchSearchable.classList.remove('disabled');
+        batchTrigger.classList.remove('disabled');
         
         // Trigger change event for project number
         const changeEvent = new Event('change', { bubbles: true });
@@ -1082,14 +1097,19 @@ document.addEventListener('DOMContentLoaded', function() {
         batchTriggerText.classList.remove('has-value');
         clearBatchBtn.style.display = 'none';
         batchSearchable.classList.remove('disabled');
-        
-        // Enable student dropdown
-        studentSearchable.classList.remove('disabled');
+        batchTrigger.classList.remove('disabled');
         
         // Clear project number
         if (projectNumberField) {
             projectNumberField.value = '';
             projectNumberField.placeholder = 'Select batch first or enter manually';
+            projectNumberField.disabled = false;
+        }
+        
+        // Re-enable student dropdown if it's empty
+        if (!studentOriginalSelect.value) {
+            studentSearchable.classList.remove('disabled');
+            studentTrigger.classList.remove('disabled');
         }
     }
     
@@ -1139,14 +1159,25 @@ document.addEventListener('DOMContentLoaded', function() {
         studentDropdown.classList.remove('show');
         studentTrigger.classList.remove('active');
         
-        // Clear and disable batch selection
-        clearBatchSelection();
-        batchSearchable.classList.add('disabled');
+        // COMPLETELY RESET AND DISABLE batch selection
+        batchOriginalSelect.value = '';
+        batchTriggerText.textContent = 'Select a batch...';
+        batchTriggerText.classList.remove('has-value');
+        clearBatchBtn.style.display = 'none';
         
-        // Clear project number
+        // Disable batch dropdown
+        batchSearchable.classList.add('disabled');
+        batchTrigger.classList.add('disabled');
+        
+        // Ensure student is enabled
+        studentSearchable.classList.remove('disabled');
+        studentTrigger.classList.remove('disabled');
+        
+        // Clear project number (manual entry required for individual student)
         if (projectNumberField) {
             projectNumberField.value = '';
-            projectNumberField.placeholder = 'Manual entry required';
+            projectNumberField.placeholder = 'Enter manually for individual student';
+            projectNumberField.disabled = false;
         }
     }
     
@@ -1156,6 +1187,13 @@ document.addEventListener('DOMContentLoaded', function() {
         studentTriggerText.classList.remove('has-value');
         clearStudentBtn.style.display = 'none';
         studentSearchable.classList.remove('disabled');
+        studentTrigger.classList.remove('disabled');
+        
+        // Re-enable batch dropdown if it's empty
+        if (!batchOriginalSelect.value) {
+            batchSearchable.classList.remove('disabled');
+            batchTrigger.classList.remove('disabled');
+        }
     }
     
     // ========== HELPER FUNCTION ==========
@@ -1170,7 +1208,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const batchId = batchOriginalSelect.value;
         
         if (!batchId || batchId === '') {
-            if (projectNumberField) {
+            if (projectNumberField && !studentOriginalSelect.value) {
                 projectNumberField.value = '';
                 projectNumberField.placeholder = 'Select batch first';
                 projectNumberField.disabled = false;
@@ -1273,6 +1311,7 @@ document.addEventListener('DOMContentLoaded', function() {
             batchTriggerText.classList.add('has-value');
             clearBatchBtn.style.display = 'flex';
             studentSearchable.classList.add('disabled');
+            studentTrigger.classList.add('disabled');
         }
     }
     if (studentOriginalSelect.value) {
@@ -1282,6 +1321,7 @@ document.addEventListener('DOMContentLoaded', function() {
             studentTriggerText.classList.add('has-value');
             clearStudentBtn.style.display = 'flex';
             batchSearchable.classList.add('disabled');
+            batchTrigger.classList.add('disabled');
         }
     }
     

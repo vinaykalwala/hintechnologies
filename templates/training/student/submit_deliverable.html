@@ -1,75 +1,938 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h4>Submit Deliverable: {{ deliverable.title }}</h4>
+<style>
+    /* ============================================ */
+    /* CLEAN WHITE THEME WITH BLUE & RED ACCENTS */
+    /* STICKY LEFT COLUMN - RIGHT SCROLLS */
+    /* ============================================ */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap');
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #f0f2f8;
+    }
+    
+    /* ============================================ */
+    /* MAIN CONTAINER */
+    /* ============================================ */
+    .page-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 32px;
+    }
+    
+    /* ============================================ */
+    /* HEADER SECTION - CLEAN & SIMPLE */
+    /* ============================================ */
+    .page-header {
+        background: white;
+        border-radius: 24px;
+        padding: 0;
+        margin-bottom: 32px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+    
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    .header-left {
+        padding: 28px 32px;
+        flex: 1;
+    }
+    
+    .header-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #eef2ff;
+        padding: 5px 14px;
+        border-radius: 30px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #0B3D91;
+        margin-bottom: 16px;
+    }
+    
+    .header-left h1 {
+        font-size: 28px;
+        font-weight: 800;
+        color: #1a1a2e;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .header-left h1 i {
+        color: #C62828;
+        font-size: 28px;
+    }
+    
+    .header-left p {
+        font-size: 14px;
+        color: #64748b;
+    }
+    
+    /* Header Right Stats - Two Boxes Side by Side */
+    .header-right {
+        display: flex;
+        gap: 16px;
+        padding: 20px 32px;
+        align-items: center;
+    }
+    
+    .stat-box {
+        background: linear-gradient(135deg, #0B3D91, #1a4fa8);
+        padding: 20px 32px;
+        text-align: center;
+        border-radius: 20px;
+        min-width: 160px;
+        transition: transform 0.2s;
+    }
+    
+    .stat-box:hover {
+        transform: translateY(-3px);
+    }
+    
+    .stat-box.secondary {
+        background: linear-gradient(135deg, #C62828, #a51b1b);
+    }
+    
+    .stat-number {
+        font-size: 32px;
+        font-weight: 800;
+        color: white;
+    }
+    
+    .stat-label {
+        font-size: 11px;
+        color: rgba(255,255,255,0.85);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 6px;
+    }
+    
+    .stat-sub {
+        font-size: 10px;
+        color: rgba(255,255,255,0.6);
+        margin-top: 4px;
+    }
+    
+    /* ============================================ */
+    /* TWO COLUMN LAYOUT - STICKY LEFT */
+    /* ============================================ */
+    .two-columns {
+        display: grid;
+        grid-template-columns: 360px 1fr;
+        gap: 28px;
+        align-items: start;
+    }
+    
+    /* LEFT COLUMN - STICKY (FIXED POSITION WHILE SCROLLING) */
+    .left-column-sticky {
+        position: sticky;
+        top: 30px;
+        align-self: start;
+    }
+    
+    /* ============================================ */
+    /* LEFT COLUMN - VERSION HISTORY */
+    /* ============================================ */
+    .history-card {
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+    
+    .history-header {
+        padding: 20px 24px;
+        background: white;
+        border-bottom: 2px solid #eef2f8;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .history-header h3 {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a1a2e;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0;
+    }
+    
+    .history-header h3 i {
+        color: #C62828;
+        font-size: 18px;
+    }
+    
+    .badge-count {
+        background: #eef2ff;
+        padding: 3px 10px;
+        border-radius: 30px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #0B3D91;
+    }
+    
+    .history-list {
+        padding: 16px;
+        max-height: 550px;
+        overflow-y: auto;
+    }
+    
+    /* Version Items */
+    .version-item {
+        display: flex;
+        gap: 14px;
+        padding: 16px;
+        margin-bottom: 8px;
+        background: #fafcff;
+        border-radius: 16px;
+        transition: all 0.2s;
+        border: 1px solid #eef2f8;
+    }
+    
+    .version-item:hover {
+        background: white;
+        border-color: #e0e7ff;
+        transform: translateX(4px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    
+    .version-icon {
+        width: 44px;
+        height: 44px;
+        background: linear-gradient(135deg, #eef2ff, white);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border: 1px solid #e0e7ff;
+    }
+    
+    .version-icon i {
+        font-size: 20px;
+        color: #0B3D91;
+    }
+    
+    .version-details {
+        flex: 1;
+    }
+    
+    .version-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    
+    .version-number {
+        font-size: 14px;
+        font-weight: 700;
+        color: #1e293b;
+    }
+    
+    .status {
+        font-size: 10px;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 30px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .status-approved {
+        background: #d1fae5;
+        color: #059669;
+    }
+    
+    .status-pending {
+        background: #fed7aa;
+        color: #b45309;
+    }
+    
+    .status-rejected {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+    
+    .version-date {
+        font-size: 11px;
+        color: #94a3b8;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    
+    .version-date i {
+        font-size: 10px;
+        margin-right: 4px;
+        color: #C62828;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 50px 20px;
+    }
+    
+    .empty-state i {
+        font-size: 56px;
+        color: #cbd5e1;
+        margin-bottom: 16px;
+    }
+    
+    .empty-state p {
+        font-size: 14px;
+        color: #94a3b8;
+    }
+    
+    /* Left Column Scrollbar */
+    .history-list::-webkit-scrollbar {
+        width: 5px;
+    }
+    
+    .history-list::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 10px;
+    }
+    
+    .history-list::-webkit-scrollbar-thumb {
+        background: #0B3D91;
+        border-radius: 10px;
+    }
+    
+    /* ============================================ */
+    /* RIGHT COLUMN - NORMAL SCROLLING */
+    /* ============================================ */
+    .right-column-scroll {
+        min-width: 0;
+    }
+    
+    .form-card {
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+    
+    .form-header {
+        padding: 24px 28px;
+        background: white;
+        border-bottom: 2px solid #eef2f8;
+    }
+    
+    .deliverable-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, #C62828, #a51b1b);
+        padding: 5px 14px;
+        border-radius: 30px;
+        font-size: 11px;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 14px;
+    }
+    
+    .form-header h2 {
+        font-size: 22px;
+        font-weight: 800;
+        color: #1a1a2e;
+        margin-bottom: 10px;
+    }
+    
+    .due-date {
+        font-size: 13px;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .due-date i {
+        color: #C62828;
+    }
+    
+    .form-body {
+        padding: 28px;
+    }
+    
+    /* Form Fields */
+    .form-field {
+        margin-bottom: 24px;
+    }
+    
+    .form-field label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 8px;
+    }
+    
+    .form-field label i {
+        margin-right: 6px;
+        color: #0B3D91;
+    }
+    
+    .required {
+        color: #C62828;
+    }
+    
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+        width: 100%;
+        padding: 14px 16px;
+        font-size: 14px;
+        font-family: 'Inter', sans-serif;
+        background: #fafcff;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 14px;
+        transition: all 0.2s;
+        color: #1e293b;
+    }
+    
+    .form-field input:focus,
+    .form-field select:focus,
+    .form-field textarea:focus {
+        outline: none;
+        border-color: #0B3D91;
+        box-shadow: 0 0 0 3px rgba(11,61,145,0.1);
+        background: white;
+    }
+    
+    .form-field textarea {
+        resize: vertical;
+        min-height: 90px;
+    }
+    
+    /* File Upload */
+    .upload-area {
+        background: #fafcff;
+        border: 2px dashed #cbd5e1;
+        border-radius: 18px;
+        padding: 32px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .upload-area:hover {
+        border-color: #0B3D91;
+        background: #eef2ff;
+    }
+    
+    .upload-area.drag-over {
+        border-color: #10b981;
+        background: #d1fae5;
+    }
+    
+    .upload-icon {
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, #0B3D91, #1a4fa8);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+    }
+    
+    .upload-icon i {
+        font-size: 28px;
+        color: white;
+    }
+    
+    .upload-text {
+        font-size: 14px;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 6px;
+    }
+    
+    .upload-hint {
+        font-size: 11px;
+        color: #94a3b8;
+    }
+    
+    .file-info {
+        margin-top: 16px;
+        padding: 12px 16px;
+        background: #d1fae5;
+        border-radius: 14px;
+        display: none;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #059669;
+    }
+    
+    .file-info.show {
+        display: flex;
+    }
+    
+    /* Guidelines */
+    .guidelines-card {
+        background: #f8fafc;
+        border-radius: 18px;
+        padding: 20px 24px;
+        margin: 28px 0;
+        border: 1px solid #eef2f8;
+    }
+    
+    .guidelines-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: #0B3D91;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .guidelines-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .guidelines-list li {
+        font-size: 12px;
+        color: #475569;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .guidelines-list li i {
+        font-size: 11px;
+        color: #10b981;
+    }
+    
+    /* Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 16px;
+        margin-top: 28px;
+        padding-top: 24px;
+        border-top: 2px solid #eef2f8;
+    }
+    
+    .btn-submit {
+        background: linear-gradient(135deg, #0B3D91, #1a4fa8);
+        color: white;
+        padding: 14px 32px;
+        border: none;
+        border-radius: 14px;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(11,61,145,0.3);
+    }
+    
+    .btn-cancel {
+        background: white;
+        color: #64748b;
+        padding: 14px 32px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 14px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .btn-cancel:hover {
+        background: #f8fafc;
+        border-color: #C62828;
+        color: #C62828;
+    }
+    
+    .error-text {
+        color: #C62828;
+        font-size: 11px;
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .help-text {
+        font-size: 11px;
+        color: #94a3b8;
+        margin-top: 6px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 1000px) {
+        .two-columns {
+            grid-template-columns: 1fr;
+        }
+        
+        .left-column-sticky {
+            position: static;
+        }
+        
+        .page-container {
+            padding: 20px;
+        }
+        
+        .header-top {
+            flex-direction: column;
+        }
+        
+        .header-right {
+            width: 100%;
+            justify-content: center;
+            padding: 0 20px 20px 20px;
+        }
+        
+        .guidelines-list {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    @media (max-width: 550px) {
+        .page-container {
+            padding: 16px;
+        }
+        
+        .header-left {
+            padding: 20px;
+        }
+        
+        .header-left h1 {
+            font-size: 22px;
+        }
+        
+        .header-right {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .stat-box {
+            width: 100%;
+        }
+        
+        .form-header {
+            padding: 20px;
+        }
+        
+        .form-header h2 {
+            font-size: 18px;
+        }
+        
+        .form-body {
+            padding: 20px;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .btn-submit, .btn-cancel {
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .upload-area {
+            padding: 24px 16px;
+        }
+    }
+    
+    /* Animation */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .history-card, .form-card, .page-header, .stat-box {
+        animation: fadeInUp 0.4s ease-out;
+    }
+</style>
+
+<div class="page-container">
+    <!-- Header Section - Clean with Two Boxes -->
+    <div class="page-header">
+        <div class="header-top">
+            <div class="header-left">
+                <div class="header-badge">
+                    <i class="fas fa-graduation-cap"></i> Student Portal
                 </div>
-                <div class="card-body">
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        
-                        {{ form.as_p }}
-                        
-                        <div class="alert alert-info">
-                            <strong><i class="fas fa-info-circle"></i> Submission Guidelines:</strong>
-                            <ul class="mb-0 mt-2">
-                                <li>Maximum file size: 50MB</li>
-                                <li>Allowed formats: PDF, DOC, DOCX, ZIP, JPG, JPEG, PNG</li>
-                                <li>Each new submission creates a new version</li>
-                                <li>Your submission will be reviewed by admin</li>
-                                <li>You can submit multiple versions if needed</li>
-                            </ul>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-upload"></i> Submit Version
-                        </button>
-                        <a href="{% url 'training:student_deliverable_detail' deliverable.id %}" class="btn btn-secondary">
-                            Cancel
-                        </a>
-                    </form>
+                <h1>
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    Submit Deliverable
+                </h1>
+                <p>Upload your work and track submission status</p>
+            </div>
+            <div class="header-right">
+                <!-- Total Submissions Box -->
+                <div class="stat-box">
+                    <div class="stat-number">{{ versions|length|default:0 }}</div>
+                    <div class="stat-label">Total Submissions</div>
+                    <div class="stat-sub">All versions</div>
+                </div>
+                <!-- Submit & Take Review from Trainer Box -->
+                <div class="stat-box secondary">
+                    <div class="stat-number">
+                        {% with pending_count=0 %}
+                            {% for ver in versions %}
+                                {% if ver.status == 'pending' %}
+                                    {% with pending_count=pending_count|add:1 %}{% endwith %}
+                                {% endif %}
+                            {% endfor %}
+                            {{ pending_count }}
+                        {% endwith %}
+                    </div>
+                    <div class="stat-label">Submit & Take Review</div>
+                    <div class="stat-sub">Waiting for trainer feedback</div>
                 </div>
             </div>
         </div>
-
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <h4>Version History</h4>
+    </div>
+    
+    <!-- Two Column Layout - LEFT STICKY, RIGHT SCROLLS -->
+    <div class="two-columns">
+        <!-- LEFT COLUMN - STICKY (FIXED POSITION) -->
+        <div class="left-column-sticky">
+            <div class="history-card">
+                <div class="history-header">
+                    <h3>
+                        <i class="fas fa-history"></i>
+                        Version Timeline
+                    </h3>
+                    <span class="badge-count">{{ versions|length|default:0 }} versions</span>
                 </div>
-                <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                <div class="history-list">
                     {% if versions %}
                         {% for version in versions %}
-                            <div class="border-bottom mb-3 pb-3">
-                                <div class="d-flex justify-content-between">
-                                    <strong>Version {{ version.version_number }}</strong>
-                                    <span class="badge 
-                                        {% if version.status == 'approved' %}bg-success
-                                        {% elif version.status == 'pending' %}bg-warning
-                                        {% elif version.status == 'rejected' %}bg-danger
-                                        {% else %}bg-info{% endif %}">
-                                        {{ version.get_status_display }}
-                                    </span>
+                            <div class="version-item">
+                                <div class="version-icon">
+                                    <i class="fas fa-code-branch"></i>
                                 </div>
-                                <small class="text-muted">
-                                    Submitted: {{ version.submitted_at|date:"Y-m-d H:i" }}<br>
-                                    By: {{ version.get_submitter_type_display }}
-                                </small>
-                                {% if version.comments %}
-                                    <div class="mt-2 small">{{ version.comments }}</div>
-                                {% endif %}
+                                <div class="version-details">
+                                    <div class="version-row">
+                                        <span class="version-number">Version {{ version.version_number }}</span>
+                                        <span class="status 
+                                            {% if version.status == 'approved' %}status-approved
+                                            {% elif version.status == 'pending' %}status-pending
+                                            {% else %}status-rejected{% endif %}">
+                                            <i class="fas 
+                                                {% if version.status == 'approved' %}fa-check-circle
+                                                {% elif version.status == 'pending' %}fa-clock
+                                                {% else %}fa-times-circle{% endif %}"></i>
+                                            {{ version.get_status_display }}
+                                        </span>
+                                    </div>
+                                    <div class="version-date">
+                                        <span><i class="fas fa-calendar-alt"></i> {{ version.submitted_at|date:"M d, Y" }}</span>
+                                        <span><i class="fas fa-clock"></i> {{ version.submitted_at|date:"H:i" }}</span>
+                                        <span><i class="fas fa-user"></i> {{ version.get_submitter_type_display }}</span>
+                                    </div>
+                                </div>
                             </div>
                         {% endfor %}
                     {% else %}
-                        <p class="text-muted">No versions submitted yet.</p>
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>No submissions yet</p>
+                            <p style="font-size: 12px; margin-top: 8px; color: #cbd5e1;">Upload your first version</p>
+                        </div>
                     {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- RIGHT COLUMN - NORMAL SCROLLING -->
+        <div class="right-column-scroll">
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="deliverable-badge">
+                        <i class="fas fa-star"></i>
+                        Active Deliverable
+                    </div>
+                    <h2>{{ deliverable.title }}</h2>
+                    <div class="due-date">
+                        <i class="fas fa-calendar-alt"></i>
+                        Due Date: {{ deliverable.due_date|date:"l, F d, Y" }}
+                    </div>
+                </div>
+                <div class="form-body">
+                    <form method="post" enctype="multipart/form-data" id="submitForm">
+                        {% csrf_token %}
+                        
+                        <!-- File Upload -->
+                        <div class="form-field">
+                            <label><i class="fas fa-paperclip"></i> Upload File <span class="required">*</span></label>
+                            <div class="upload-area" id="uploadArea">
+                                <div class="upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <div class="upload-text">Click or drag file to upload</div>
+                                <div class="upload-hint">PDF, DOC, DOCX, ZIP, JPG, PNG (Max 50MB)</div>
+                                {{ form.file }}
+                            </div>
+                            <div class="file-info" id="fileInfo">
+                                <i class="fas fa-check-circle"></i>
+                                <span id="fileName"></span>
+                            </div>
+                            {% if form.file.errors %}
+                                <div class="error-text">{{ form.file.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Other Fields (excluding file and comments) -->
+                        {% for field in form %}
+                            {% if field.name != 'file' and field.name != 'comments' %}
+                                <div class="form-field">
+                                    <label>
+                                        <i class="fas 
+                                            {% if 'title' in field.name %}fa-heading
+                                            {% elif 'description' in field.name %}fa-align-left
+                                            {% else %}fa-circle{% endif %}"></i>
+                                        {{ field.label }}
+                                        {% if field.field.required %}<span class="required">*</span>{% endif %}
+                                    </label>
+                                    {{ field }}
+                                    {% if field.help_text %}
+                                        <div class="help-text">{{ field.help_text }}</div>
+                                    {% endif %}
+                                    {% if field.errors %}
+                                        <div class="error-text">{{ field.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        <!-- Guidelines -->
+                        <div class="guidelines-card">
+                            <div class="guidelines-title">
+                                <i class="fas fa-info-circle"></i>
+                                Submission Guidelines
+                            </div>
+                            <ul class="guidelines-list">
+                                <li><i class="fas fa-check-circle"></i> Maximum file size: 50MB</li>
+                                <li><i class="fas fa-check-circle"></i> Allowed: PDF, DOC, DOCX, ZIP, JPG, PNG</li>
+                                <li><i class="fas fa-check-circle"></i> Each submission creates a new version</li>
+                                <li><i class="fas fa-check-circle"></i> Admin will review your submission</li>
+                                <li><i class="fas fa-check-circle"></i> You can submit multiple versions</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-upload"></i> Submit Version
+                            </button>
+                            <a href="{% url 'training:student_deliverable_detail' deliverable.id %}" class="btn-cancel">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<!-- Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.querySelector('#id_file');
+    const fileInfo = document.getElementById('fileInfo');
+    const fileNameSpan = document.getElementById('fileName');
+    
+    if (uploadArea && fileInput) {
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                const file = e.target.files[0];
+                fileNameSpan.textContent = file.name;
+                fileInfo.classList.add('show');
+                uploadArea.style.borderColor = '#10b981';
+                uploadArea.style.background = '#d1fae5';
+            } else {
+                fileInfo.classList.remove('show');
+                uploadArea.style.borderColor = '';
+                uploadArea.style.background = '';
+            }
+        });
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('drag-over');
+        });
+        
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                const file = files[0];
+                fileNameSpan.textContent = file.name;
+                fileInfo.classList.add('show');
+                uploadArea.style.borderColor = '#10b981';
+                uploadArea.style.background = '#d1fae5';
+            }
+        });
+    }
+});
+</script>
+
 {% endblock %}

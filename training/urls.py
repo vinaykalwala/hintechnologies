@@ -59,4 +59,5 @@ urlpatterns = [
     path('admin/deliverables/version/<int:version_id>/review/', review_deliverable_version, name='review_deliverable_version'),
     path('admin/student-deliverable/<int:student_deliverable_id>/', admin_student_deliverable_detail, name='admin_student_deliverable_detail'),
     path('admin/student-deliverable/<int:student_deliverable_id>/upload-version/', admin_upload_version, name='admin_upload_version'),
+    path('admin/deliverables/all-submissions/', views.admin_all_student_deliverables, name='admin_all_student_deliverables'), 
 ]
