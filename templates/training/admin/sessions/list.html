@@ -323,6 +323,130 @@
         box-shadow: 0 0 0 4px rgba(11, 61, 145, 0.1);
     }
 
+    /* Enhanced Dropdown with Search Bar */
+    .enhanced-dropdown {
+        position: relative;
+        width: 100%;
+    }
+    
+    .dropdown-search-input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid var(--gray-200);
+        border-radius: var(--radius-lg);
+        font-size: 14px;
+        transition: var(--transition);
+        background: var(--gray-50);
+        font-family: 'Inter', sans-serif;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .dropdown-search-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(11, 61, 145, 0.1);
+    }
+    
+    .dropdown-search-input span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .dropdown-search-input i {
+        color: var(--gray-400);
+        transition: var(--transition);
+    }
+    
+    .dropdown-menu-custom {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        right: 0;
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-xl);
+        border: 1px solid var(--gray-200);
+        z-index: 1000;
+        display: none;
+        max-height: 320px;
+        overflow: hidden;
+        flex-direction: column;
+    }
+    
+    .dropdown-menu-custom.show {
+        display: flex;
+    }
+    
+    .dropdown-search-box {
+        padding: 12px;
+        border-bottom: 1px solid var(--gray-200);
+        position: sticky;
+        top: 0;
+        background: white;
+    }
+    
+    .dropdown-search-box input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-md);
+        font-size: 13px;
+        background: var(--gray-50);
+    }
+    
+    .dropdown-search-box input:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: white;
+    }
+    
+    .dropdown-options {
+        max-height: 260px;
+        overflow-y: auto;
+        padding: 8px 0;
+    }
+    
+    .dropdown-option {
+        padding: 10px 16px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .dropdown-option:hover {
+        background: var(--gray-100);
+    }
+    
+    .dropdown-option.selected {
+        background: var(--primary-bg);
+        color: var(--primary);
+        font-weight: 500;
+    }
+    
+    .dropdown-option i {
+        width: 18px;
+        color: var(--gray-400);
+    }
+    
+    .dropdown-option.selected i {
+        color: var(--primary);
+    }
+    
+    .no-option {
+        padding: 12px 16px;
+        text-align: center;
+        color: var(--gray-500);
+        font-size: 13px;
+    }
+
     .btn-filter {
         background: linear-gradient(135deg, var(--primary), var(--primary-dark));
         color: white;
@@ -1014,7 +1138,7 @@
         </div>
     </div>
 
-    <!-- Filter Card -->
+    <!-- Filter Card with Enhanced Dropdown Search -->
     <div class="filter-card">
         <form method="get" id="filterForm" class="filter-form">
             <div class="filter-group">
@@ -1023,12 +1147,30 @@
             </div>
             <div class="filter-group">
                 <label><i class="fas fa-layer-group"></i> Select Batch</label>
-                <select name="batch" id="batchSelect">
-                    <option value="">-- All Batches --</option>
-                    {% for batch in batches %}
-                        <option value="{{ batch.id }}" {% if batch_filter|stringformat:"s" == batch.id|stringformat:"s" %}selected{% endif %}>{{ batch.name }}</option>
-                    {% endfor %}
-                </select>
+                <!-- Enhanced Dropdown with Search -->
+                <div class="enhanced-dropdown" id="batchDropdown">
+                    <div class="dropdown-search-input" id="dropdownTrigger">
+                        <span id="selectedBatchText">-- All Batches --</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="dropdown-menu-custom" id="dropdownMenu">
+                        <div class="dropdown-search-box">
+                            <input type="text" id="batchSearchInput" placeholder="Search batch..." autocomplete="off">
+                        </div>
+                        <div class="dropdown-options" id="dropdownOptions">
+                            <div class="dropdown-option" data-value="" data-name="-- All Batches --">
+                                <i class="fas fa-globe"></i> -- All Batches --
+                            </div>
+                            {% for batch in batches %}
+                                <div class="dropdown-option" data-value="{{ batch.id }}" data-name="{{ batch.name }}">
+                                    <i class="fas fa-layer-group"></i> {{ batch.name }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <!-- Hidden input to store selected batch value -->
+                <input type="hidden" name="batch" id="batchHiddenInput" value="{{ batch_filter|default:'' }}">
             </div>
             <div class="filter-group">
                 <button type="submit" class="btn-filter"><i class="fas fa-filter"></i> Apply Filter</button>
@@ -1203,21 +1345,154 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 <script>
-    // Auto-submit form when batch is changed
-    const batchSelect = document.getElementById('batchSelect');
-    const filterForm = document.getElementById('filterForm');
-    
-    if (batchSelect) {
-        batchSelect.addEventListener('change', function() {
-            filterForm.submit();
+    // Enhanced Dropdown with Search Functionality
+    (function() {
+        const dropdown = document.getElementById('batchDropdown');
+        const trigger = document.getElementById('dropdownTrigger');
+        const menu = document.getElementById('dropdownMenu');
+        const searchInput = document.getElementById('batchSearchInput');
+        const optionsContainer = document.getElementById('dropdownOptions');
+        const hiddenInput = document.getElementById('batchHiddenInput');
+        const selectedTextSpan = document.getElementById('selectedBatchText');
+        
+        // Get all options (excluding the ones that will be recreated)
+        let allOptions = [];
+        const originalOptions = Array.from(optionsContainer.querySelectorAll('.dropdown-option'));
+        originalOptions.forEach(opt => {
+            allOptions.push({
+                value: opt.getAttribute('data-value'),
+                name: opt.getAttribute('data-name'),
+                html: opt.innerHTML
+            });
         });
-    }
+        
+        // Set initial selected text based on hidden input value
+        function updateSelectedText() {
+            const selectedValue = hiddenInput.value;
+            if (selectedValue) {
+                const selectedOption = allOptions.find(opt => opt.value == selectedValue);
+                if (selectedOption) {
+                    selectedTextSpan.textContent = selectedOption.name;
+                    // Also mark the option as selected in the dropdown
+                    const options = optionsContainer.querySelectorAll('.dropdown-option');
+                    options.forEach(opt => {
+                        if (opt.getAttribute('data-value') == selectedValue) {
+                            opt.classList.add('selected');
+                        } else {
+                            opt.classList.remove('selected');
+                        }
+                    });
+                } else {
+                    selectedTextSpan.textContent = '-- All Batches --';
+                    const allOpt = optionsContainer.querySelector('.dropdown-option[data-value=""]');
+                    if (allOpt) allOpt.classList.add('selected');
+                }
+            } else {
+                selectedTextSpan.textContent = '-- All Batches --';
+                const allOpt = optionsContainer.querySelector('.dropdown-option[data-value=""]');
+                if (allOpt) allOpt.classList.add('selected');
+            }
+        }
+        
+        // Render options based on search query
+        function renderOptions(searchTerm = '') {
+            const filtered = allOptions.filter(opt => 
+                opt.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            
+            optionsContainer.innerHTML = '';
+            if (filtered.length === 0) {
+                const noOptionDiv = document.createElement('div');
+                noOptionDiv.className = 'no-option';
+                noOptionDiv.innerHTML = '<i class="fas fa-search"></i> No batches found';
+                optionsContainer.appendChild(noOptionDiv);
+            } else {
+                filtered.forEach(opt => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'dropdown-option';
+                    if (hiddenInput.value == opt.value) {
+                        optionDiv.classList.add('selected');
+                    }
+                    optionDiv.setAttribute('data-value', opt.value);
+                    optionDiv.setAttribute('data-name', opt.name);
+                    optionDiv.innerHTML = opt.html;
+                    optionsContainer.appendChild(optionDiv);
+                });
+            }
+            
+            // Reattach click events to new options
+            attachOptionEvents();
+        }
+        
+        function attachOptionEvents() {
+            const options = optionsContainer.querySelectorAll('.dropdown-option');
+            options.forEach(option => {
+                option.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const value = this.getAttribute('data-value');
+                    const name = this.getAttribute('data-name');
+                    hiddenInput.value = value;
+                    selectedTextSpan.textContent = name;
+                    
+                    // Update selected class
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    // Close dropdown
+                    menu.classList.remove('show');
+                    
+                    // Auto-submit the form when batch is selected
+                    const filterForm = document.getElementById('filterForm');
+                    if (filterForm) {
+                        filterForm.submit();
+                    }
+                });
+            });
+        }
+        
+        // Toggle dropdown
+        trigger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            menu.classList.toggle('show');
+            if (menu.classList.contains('show')) {
+                searchInput.value = '';
+                renderOptions('');
+                searchInput.focus();
+            }
+        });
+        
+        // Search functionality
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                renderOptions(this.value);
+            });
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!dropdown.contains(e.target)) {
+                menu.classList.remove('show');
+            }
+        });
+        
+        // Prevent click inside menu from closing
+        menu.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+        
+        // Initial render
+        renderOptions('');
+        updateSelectedText();
+    })();
+    
+    // Auto-submit form when batch is changed (legacy select - kept for compatibility)
+    const filterForm = document.getElementById('filterForm');
     
     // Debounce search input
     let searchTimeout;
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.addEventListener('input', function() {
+    const searchInputField = document.getElementById('searchInput');
+    if (searchInputField) {
+        searchInputField.addEventListener('input', function() {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(() => {
                 filterForm.submit();

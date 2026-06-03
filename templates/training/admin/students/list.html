@@ -213,6 +213,132 @@
 
     }
 
+    /* Enhanced Dropdown with Search Bar */
+    .enhanced-dropdown {
+        position: relative;
+        width: 100%;
+    }
+    
+    .dropdown-search-input {
+        width: 100%;
+        padding: 16px;
+        border-radius: 15px;
+        border: 1px solid #ddd;
+        font-size: 14px;
+        background: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: all 0.2s ease;
+    }
+    
+    .dropdown-search-input:hover {
+        border-color: var(--primary-red);
+    }
+    
+    .dropdown-search-input span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: #1a1a2e;
+    }
+    
+    .dropdown-search-input i {
+        color: #94a3b8;
+        transition: transform 0.2s ease;
+    }
+    
+    .dropdown-menu-custom {
+        position: absolute;
+        top: calc(100% + 5px);
+        left: 0;
+        right: 0;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.02);
+        border: 1px solid #e2e8f0;
+        z-index: 1000;
+        display: none;
+        max-height: 320px;
+        overflow: hidden;
+        flex-direction: column;
+    }
+    
+    .dropdown-menu-custom.show {
+        display: flex;
+    }
+    
+    .dropdown-search-box {
+        padding: 12px;
+        border-bottom: 1px solid #e2e8f0;
+        position: sticky;
+        top: 0;
+        background: white;
+    }
+    
+    .dropdown-search-box input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 13px;
+        background: #f8fafc;
+    }
+    
+    .dropdown-search-box input:focus {
+        outline: none;
+        border-color: var(--primary-red);
+        background: white;
+    }
+    
+    .dropdown-options {
+        max-height: 260px;
+        overflow-y: auto;
+        padding: 8px 0;
+    }
+    
+    .dropdown-option {
+        padding: 10px 16px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #1a1a2e;
+    }
+    
+    .dropdown-option:hover {
+        background: #f1f5f9;
+    }
+    
+    .dropdown-option.selected {
+        background: #ffe5e5;
+        color: var(--primary-red);
+        font-weight: 500;
+    }
+    
+    .dropdown-option i {
+        width: 18px;
+        color: #94a3b8;
+    }
+    
+    .dropdown-option.selected i {
+        color: var(--primary-red);
+    }
+    
+    .no-option {
+        padding: 12px 16px;
+        text-align: center;
+        color: #64748b;
+        font-size: 13px;
+    }
+    
+    .hidden-original {
+        display: none;
+    }
+
     .btn-premium {
 
         height: 55px;
@@ -1287,11 +1413,10 @@
     </div>
 
 
-    <!-- FILTER -->
-
+    <!-- FILTER WITH ENHANCED BATCH DROPDOWN -->
     <div class="premium-card">
 
-        <form method="get">
+        <form method="get" id="filterForm">
 
             <div class="filter-grid">
 
@@ -1335,29 +1460,37 @@
                 <div class="field">
 
                     <label>Batch</label>
-
-                    <select name="batch" class="premium-select">
-
-                        <option value="">
-
-                            All Batch
-
-                        </option>
-{% for batch in batches %}
-
-<option value="{{ batch.id }}"
-{% if batch_filter == batch.id|stringformat:"s" %}
-selected
-{% endif %}
->
-
-{{ batch.name }}
-
-</option>
-
-{% endfor %}
-
-                    </select>
+                    
+                    <!-- Enhanced Batch Dropdown with Search -->
+                    <div class="enhanced-dropdown" id="batchDropdown">
+                        <div class="dropdown-search-input" id="batchDropdownTrigger">
+                            <span id="selectedBatchText">
+                                {% if batch_filter and selected_batch_name %}
+                                    {{ selected_batch_name }}
+                                {% else %}
+                                    All Batch
+                                {% endif %}
+                            </span>
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                        <div class="dropdown-menu-custom" id="batchDropdownMenu">
+                            <div class="dropdown-search-box">
+                                <input type="text" id="batchSearchInput" placeholder="Search batch..." autocomplete="off">
+                            </div>
+                            <div class="dropdown-options" id="batchDropdownOptions">
+                                <div class="dropdown-option" data-value="" data-name="All Batch">
+                                    <i class="bi bi-grid"></i> All Batch
+                                </div>
+                                {% for batch in batches %}
+                                    <div class="dropdown-option" data-value="{{ batch.id }}" data-name="{{ batch.name }}">
+                                        <i class="bi bi-folder"></i> {{ batch.name }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Hidden input to store selected batch value -->
+                    <input type="hidden" name="batch" id="batchHiddenInput" value="{{ batch_filter|default:'' }}">
 
                 </div>
 
@@ -1627,8 +1760,162 @@ status-inactive
     </div>
 
 </div>
-<script>
 
+<script>
+    // ============================================
+    // ENHANCED BATCH DROPDOWN WITH SEARCH
+    // ============================================
+    
+    (function() {
+        const dropdown = document.getElementById('batchDropdown');
+        const trigger = document.getElementById('batchDropdownTrigger');
+        const menu = document.getElementById('batchDropdownMenu');
+        const searchInput = document.getElementById('batchSearchInput');
+        const optionsContainer = document.getElementById('batchDropdownOptions');
+        const hiddenInput = document.getElementById('batchHiddenInput');
+        const selectedTextSpan = document.getElementById('selectedBatchText');
+        const filterForm = document.getElementById('filterForm');
+        
+        // Store all options data
+        let allOptions = [];
+        const originalOptions = Array.from(optionsContainer.querySelectorAll('.dropdown-option'));
+        originalOptions.forEach(opt => {
+            allOptions.push({
+                value: opt.getAttribute('data-value'),
+                name: opt.getAttribute('data-name'),
+                html: opt.innerHTML
+            });
+        });
+        
+        // Set initial selected text based on hidden input value
+        function updateSelectedText() {
+            const selectedValue = hiddenInput.value;
+            if (selectedValue) {
+                const selectedOption = allOptions.find(opt => opt.value == selectedValue);
+                if (selectedOption) {
+                    selectedTextSpan.textContent = selectedOption.name;
+                    // Mark as selected in dropdown
+                    const options = optionsContainer.querySelectorAll('.dropdown-option');
+                    options.forEach(opt => {
+                        if (opt.getAttribute('data-value') == selectedValue) {
+                            opt.classList.add('selected');
+                        } else {
+                            opt.classList.remove('selected');
+                        }
+                    });
+                } else {
+                    selectedTextSpan.textContent = 'All Batch';
+                    const allOpt = optionsContainer.querySelector('.dropdown-option[data-value=""]');
+                    if (allOpt) allOpt.classList.add('selected');
+                }
+            } else {
+                selectedTextSpan.textContent = 'All Batch';
+                const allOpt = optionsContainer.querySelector('.dropdown-option[data-value=""]');
+                if (allOpt) allOpt.classList.add('selected');
+            }
+        }
+        
+        // Render options based on search query
+        function renderOptions(searchTerm = '') {
+            const filtered = allOptions.filter(opt => 
+                opt.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            
+            optionsContainer.innerHTML = '';
+            if (filtered.length === 0) {
+                const noOptionDiv = document.createElement('div');
+                noOptionDiv.className = 'no-option';
+                noOptionDiv.innerHTML = '<i class="bi bi-search"></i> No batches found';
+                optionsContainer.appendChild(noOptionDiv);
+            } else {
+                filtered.forEach(opt => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'dropdown-option';
+                    if (hiddenInput.value == opt.value) {
+                        optionDiv.classList.add('selected');
+                    }
+                    optionDiv.setAttribute('data-value', opt.value);
+                    optionDiv.setAttribute('data-name', opt.name);
+                    optionDiv.innerHTML = opt.html;
+                    optionsContainer.appendChild(optionDiv);
+                });
+            }
+            
+            // Reattach click events to new options
+            attachOptionEvents();
+        }
+        
+        function attachOptionEvents() {
+            const options = optionsContainer.querySelectorAll('.dropdown-option');
+            options.forEach(option => {
+                option.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const value = this.getAttribute('data-value');
+                    const name = this.getAttribute('data-name');
+                    hiddenInput.value = value;
+                    selectedTextSpan.textContent = name;
+                    
+                    // Update selected class
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    // Close dropdown
+                    menu.classList.remove('show');
+                    
+                    // Submit the form automatically
+                    if (filterForm) {
+                        filterForm.submit();
+                    }
+                });
+            });
+        }
+        
+        // Toggle dropdown
+        if (trigger) {
+            trigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                menu.classList.toggle('show');
+                if (menu.classList.contains('show')) {
+                    if (searchInput) {
+                        searchInput.value = '';
+                        renderOptions('');
+                        searchInput.focus();
+                    } else {
+                        renderOptions('');
+                    }
+                }
+            });
+        }
+        
+        // Search functionality
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                renderOptions(this.value);
+            });
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (dropdown && !dropdown.contains(e.target)) {
+                if (menu) menu.classList.remove('show');
+            }
+        });
+        
+        // Prevent click inside menu from closing
+        if (menu) {
+            menu.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
+        
+        // Initial render
+        if (optionsContainer) {
+            renderOptions('');
+        }
+        updateSelectedText();
+    })();
+
+    // Assignment filter function
     function filterAssignment(type, btn) {
 
         document
@@ -1714,7 +2001,7 @@ status-inactive
 
                 const batch =
                     document.querySelector(
-                        'select[name="batch"]'
+                        'input[name="batch"]'
                     );
 
 
