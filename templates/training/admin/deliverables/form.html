@@ -70,6 +70,129 @@
         background: white; box-shadow: 0 0 0 4px rgba(11, 61, 145, 0.1);
     }
 
+    /* Enhanced Dropdown with Search Bar */
+    .enhanced-dropdown {
+        position: relative;
+        width: 100%;
+    }
+    
+    .dropdown-search-input {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.6);
+        font-size: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: var(--transition);
+    }
+    
+    .dropdown-search-input:hover {
+        border-color: var(--hin-blue);
+        background: white;
+    }
+    
+    .dropdown-search-input span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: #1a1a2e;
+    }
+    
+    .dropdown-search-input i {
+        color: #94a3b8;
+        transition: transform 0.2s ease;
+    }
+    
+    .dropdown-menu-custom {
+        position: absolute;
+        top: calc(100% + 5px);
+        left: 0;
+        right: 0;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.02);
+        border: 1px solid #e2e8f0;
+        z-index: 1000;
+        display: none;
+        max-height: 320px;
+        overflow: hidden;
+        flex-direction: column;
+    }
+    
+    .dropdown-menu-custom.show {
+        display: flex;
+    }
+    
+    .dropdown-search-box {
+        padding: 12px;
+        border-bottom: 1px solid #e2e8f0;
+        position: sticky;
+        top: 0;
+        background: white;
+    }
+    
+    .dropdown-search-box input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 13px;
+        background: #f8fafc;
+    }
+    
+    .dropdown-search-box input:focus {
+        outline: none;
+        border-color: var(--hin-blue);
+        background: white;
+    }
+    
+    .dropdown-options {
+        max-height: 260px;
+        overflow-y: auto;
+        padding: 8px 0;
+    }
+    
+    .dropdown-option {
+        padding: 10px 16px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #1a1a2e;
+    }
+    
+    .dropdown-option:hover {
+        background: #f1f5f9;
+    }
+    
+    .dropdown-option.selected {
+        background: #eef2ff;
+        color: var(--hin-blue);
+        font-weight: 500;
+    }
+    
+    .dropdown-option i {
+        width: 18px;
+        color: #94a3b8;
+    }
+    
+    .dropdown-option.selected i {
+        color: var(--hin-blue);
+    }
+    
+    .no-option {
+        padding: 12px 16px;
+        text-align: center;
+        color: #64748b;
+        font-size: 13px;
+    }
+
     /* Buttons */
     .btn-group { display: flex; gap: 15px; margin-top: 30px; }
     
@@ -90,6 +213,10 @@
     .alert { padding: 15px; border-radius: 12px; margin-bottom: 20px; }
     .alert-danger { background: #fef2f2; color: #C62828; }
     .alert-info { background: #eef5ff; color: #0B3D91; font-size: 0.9rem; }
+    
+    .hidden-original {
+        display: none;
+    }
 </style>
 
 <div class="form-wrapper">
@@ -124,15 +251,63 @@
                     {{ form.deliverable_type }}
                 </div>
                 
+                <!-- Enhanced Batch Dropdown with Search -->
                 <div class="form-floating-group" id="batchField">
                     <label id="batchLabel">Select Batch *</label>
-                    {{ form.batch }}
+                    <div class="enhanced-dropdown" id="batchDropdown">
+                        <div class="dropdown-search-input" id="batchDropdownTrigger">
+                            <span id="selectedBatchText">Select a batch</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="dropdown-menu-custom" id="batchDropdownMenu">
+                            <div class="dropdown-search-box">
+                                <input type="text" id="batchSearchInput" placeholder="Search batch..." autocomplete="off">
+                            </div>
+                            <div class="dropdown-options" id="batchDropdownOptions">
+                                <div class="dropdown-option" data-value="" data-name="Select a batch">
+                                    <i class="fas fa-layer-group"></i> Select a batch
+                                </div>
+                                {% for batch in form.batch.field.queryset %}
+                                    <div class="dropdown-option" data-value="{{ batch.id }}" data-name="{{ batch.name }}">
+                                        <i class="fas fa-layer-group"></i> {{ batch.name }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Hidden original select -->
+                    <select name="batch" id="id_batch" class="hidden-original">
+                        <option value="">Select a batch</option>
+                        {% for batch in form.batch.field.queryset %}
+                            <option value="{{ batch.id }}">{{ batch.name }}</option>
+                        {% endfor %}
+                    </select>
                     <div id="batchInfo" class="mt-1"></div>
                 </div>
                 
+                <!-- Enhanced Student Dropdown with Search -->
                 <div class="form-floating-group" id="studentField" style="display: none;">
                     <label>Select Student *</label>
-                    {{ form.assigned_student }}
+                    <div class="enhanced-dropdown" id="studentDropdown">
+                        <div class="dropdown-search-input" id="studentDropdownTrigger">
+                            <span id="selectedStudentText">Select a student</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="dropdown-menu-custom" id="studentDropdownMenu">
+                            <div class="dropdown-search-box">
+                                <input type="text" id="studentSearchInput" placeholder="Search student..." autocomplete="off">
+                            </div>
+                            <div class="dropdown-options" id="studentDropdownOptions">
+                                <div class="dropdown-option" data-value="" data-name="Select a student">
+                                    <i class="fas fa-user"></i> Select a student
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Hidden original select -->
+                    <select name="assigned_student" id="id_assigned_student" class="hidden-original">
+                        <option value="">Select a student</option>
+                    </select>
                     <div id="studentInfo" class="mt-1"></div>
                 </div>
                 
@@ -155,25 +330,377 @@
 </div>
 
 <script>
-    // Logic for dynamic form fields remains identical to your working implementation
-    document.addEventListener('DOMContentLoaded', function() {
-        const typeSelect = document.getElementById('id_deliverable_type');
-        const batchSelect = document.getElementById('id_batch');
-        const studentSelect = document.getElementById('id_assigned_student');
-        const studentField = document.getElementById('studentField');
+document.addEventListener('DOMContentLoaded', function () {
+
+    const typeSelect = document.getElementById('id_deliverable_type');
+    const originalBatchSelect = document.getElementById('id_batch');
+    const originalStudentSelect = document.getElementById('id_assigned_student');
+
+    const studentField = document.getElementById('studentField');
+    const studentInfo = document.getElementById('studentInfo');
+    const batchInfo = document.getElementById('batchInfo');
+
+    // Batch dropdown elements
+    const batchDropdown = document.getElementById('batchDropdown');
+    const batchTrigger = document.getElementById('batchDropdownTrigger');
+    const batchMenu = document.getElementById('batchDropdownMenu');
+    const batchSearchInput = document.getElementById('batchSearchInput');
+    const batchOptionsContainer = document.getElementById('batchDropdownOptions');
+    const selectedBatchText = document.getElementById('selectedBatchText');
+
+    // Student dropdown elements
+    const studentDropdown = document.getElementById('studentDropdown');
+    const studentTrigger = document.getElementById('studentDropdownTrigger');
+    const studentMenu = document.getElementById('studentDropdownMenu');
+    const studentSearchInput = document.getElementById('studentSearchInput');
+    const studentOptionsContainer = document.getElementById('studentDropdownOptions');
+    const selectedStudentText = document.getElementById('selectedStudentText');
+
+    // Store batch options data
+    let batchOptions = [];
+    let studentOptions = [];
+
+    // =========================
+    // BATCH DROPDOWN FUNCTIONS
+    // =========================
+    function initBatchDropdown() {
+        const originalOptions = Array.from(batchOptionsContainer.querySelectorAll('.dropdown-option:not(.no-option)'));
+        batchOptions = [];
+        originalOptions.forEach(opt => {
+            if (opt.getAttribute('data-value') !== undefined) {
+                batchOptions.push({
+                    value: opt.getAttribute('data-value'),
+                    name: opt.getAttribute('data-name'),
+                    html: opt.innerHTML
+                });
+            }
+        });
         
-        function toggleFields() {
-            if (typeSelect.value === 'batch') {
-                studentField.style.display = 'none';
-            } else {
-                studentField.style.display = 'block';
+        // Set initial selected value from original select
+        const selectedValue = originalBatchSelect.value;
+        if (selectedValue) {
+            const selectedOption = batchOptions.find(opt => opt.value == selectedValue);
+            if (selectedOption) {
+                selectedBatchText.textContent = selectedOption.name;
+                // Mark as selected in dropdown
+                const options = batchOptionsContainer.querySelectorAll('.dropdown-option');
+                options.forEach(opt => {
+                    if (opt.getAttribute('data-value') == selectedValue) {
+                        opt.classList.add('selected');
+                    }
+                });
             }
         }
         
-        typeSelect.addEventListener('change', toggleFields);
-        toggleFields();
+        renderBatchOptions('');
+        attachBatchEvents();
+    }
+    
+    function renderBatchOptions(searchTerm = '') {
+        const filtered = batchOptions.filter(opt => 
+            opt.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
         
-        // Add student loading logic here as per your previous script...
+        batchOptionsContainer.innerHTML = '';
+        if (filtered.length === 0) {
+            const noOptionDiv = document.createElement('div');
+            noOptionDiv.className = 'no-option';
+            noOptionDiv.innerHTML = '<i class="fas fa-search"></i> No batches found';
+            batchOptionsContainer.appendChild(noOptionDiv);
+        } else {
+            filtered.forEach(opt => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'dropdown-option';
+                if (originalBatchSelect.value == opt.value) {
+                    optionDiv.classList.add('selected');
+                }
+                optionDiv.setAttribute('data-value', opt.value);
+                optionDiv.setAttribute('data-name', opt.name);
+                optionDiv.innerHTML = opt.html;
+                batchOptionsContainer.appendChild(optionDiv);
+            });
+        }
+        attachBatchEvents();
+    }
+    
+    function attachBatchEvents() {
+        const options = batchOptionsContainer.querySelectorAll('.dropdown-option');
+        options.forEach(option => {
+            option.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const value = this.getAttribute('data-value');
+                const name = this.getAttribute('data-name');
+                originalBatchSelect.value = value;
+                selectedBatchText.textContent = name;
+                
+                // Update selected class
+                options.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                // Close dropdown
+                batchMenu.classList.remove('show');
+                
+                // Trigger change event for batch select
+                const changeEvent = new Event('change', { bubbles: true });
+                originalBatchSelect.dispatchEvent(changeEvent);
+            });
+        });
+    }
+    
+    // Batch dropdown event listeners
+    if (batchTrigger) {
+        batchTrigger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            batchMenu.classList.toggle('show');
+            if (batchMenu.classList.contains('show')) {
+                if (batchSearchInput) {
+                    batchSearchInput.value = '';
+                    renderBatchOptions('');
+                    batchSearchInput.focus();
+                }
+            }
+        });
+    }
+    
+    if (batchSearchInput) {
+        batchSearchInput.addEventListener('input', function(e) {
+            renderBatchOptions(this.value);
+        });
+    }
+    
+    // =========================
+    // STUDENT DROPDOWN FUNCTIONS
+    // =========================
+    function renderStudentOptions(searchTerm = '') {
+        const filtered = studentOptions.filter(opt => 
+            opt.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        
+        studentOptionsContainer.innerHTML = '';
+        if (filtered.length === 0) {
+            const noOptionDiv = document.createElement('div');
+            noOptionDiv.className = 'no-option';
+            noOptionDiv.innerHTML = '<i class="fas fa-search"></i> No students found';
+            studentOptionsContainer.appendChild(noOptionDiv);
+        } else {
+            filtered.forEach(opt => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'dropdown-option';
+                if (originalStudentSelect.value == opt.value) {
+                    optionDiv.classList.add('selected');
+                }
+                optionDiv.setAttribute('data-value', opt.value);
+                optionDiv.setAttribute('data-name', opt.name);
+                optionDiv.innerHTML = opt.html;
+                studentOptionsContainer.appendChild(optionDiv);
+            });
+        }
+        attachStudentEvents();
+    }
+    
+    function attachStudentEvents() {
+        const options = studentOptionsContainer.querySelectorAll('.dropdown-option');
+        options.forEach(option => {
+            option.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const value = this.getAttribute('data-value');
+                const name = this.getAttribute('data-name');
+                originalStudentSelect.value = value;
+                selectedStudentText.textContent = name;
+                
+                // Update selected class
+                options.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                // Close dropdown
+                studentMenu.classList.remove('show');
+            });
+        });
+    }
+    
+    function updateStudentDropdown(students) {
+        studentOptions = [];
+        studentOptions.push({
+            value: '',
+            name: 'Select a student',
+            html: '<i class="fas fa-user"></i> Select a student'
+        });
+        
+        students.forEach(student => {
+            studentOptions.push({
+                value: student.id,
+                name: `${student.name} (${student.email})`,
+                html: `<i class="fas fa-user"></i> ${student.name} (${student.email})`
+            });
+        });
+        
+        // Reset selected text
+        originalStudentSelect.value = '';
+        selectedStudentText.textContent = 'Select a student';
+        
+        renderStudentOptions('');
+    }
+    
+    // Student dropdown event listeners
+    if (studentTrigger) {
+        studentTrigger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (studentField.style.display !== 'none') {
+                studentMenu.classList.toggle('show');
+                if (studentMenu.classList.contains('show')) {
+                    if (studentSearchInput) {
+                        studentSearchInput.value = '';
+                        renderStudentOptions('');
+                        studentSearchInput.focus();
+                    }
+                }
+            }
+        });
+    }
+    
+    if (studentSearchInput) {
+        studentSearchInput.addEventListener('input', function(e) {
+            renderStudentOptions(this.value);
+        });
+    }
+
+    // =========================
+    // TOGGLE STUDENT FIELD
+    // =========================
+    function toggleFields() {
+        if (typeSelect.value === 'batch') {
+            studentField.style.display = 'none';
+            originalStudentSelect.required = false;
+            originalStudentSelect.value = '';
+            selectedStudentText.textContent = 'Select a student';
+            // Reset student options
+            studentOptions = [];
+            renderStudentOptions('');
+        } else {
+            studentField.style.display = 'block';
+            originalStudentSelect.required = true;
+        }
+    }
+
+    // =========================
+    // LOAD STUDENTS
+    // =========================
+    function loadStudents(batchId) {
+        // Reset dropdown
+        originalStudentSelect.innerHTML = '<option value="">Select Student</option>';
+        studentOptions = [];
+        selectedStudentText.textContent = 'Select a student';
+        studentInfo.innerHTML = '';
+
+        if (!batchId) {
+            renderStudentOptions('');
+            return;
+        }
+
+        studentInfo.innerHTML = `
+            <div class="alert alert-info mt-2">
+                <i class="fas fa-spinner fa-spin"></i> Loading students from selected batch...
+            </div>
+        `;
+
+        fetch(`/training/admin/deliverables/get-students/${batchId}/`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch students');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success && data.students.length > 0) {
+                    updateStudentDropdown(data.students);
+                    studentInfo.innerHTML = `
+                        <div class="alert alert-info mt-2">
+                            <i class="fas fa-users"></i> ${data.count} active students found in this batch
+                        </div>
+                    `;
+                } else {
+                    studentOptions = [{
+                        value: '',
+                        name: 'No students found',
+                        html: '<i class="fas fa-exclamation-circle"></i> No students found'
+                    }];
+                    renderStudentOptions('');
+                    studentInfo.innerHTML = `
+                        <div class="alert alert-danger mt-2">
+                            <i class="fas fa-exclamation-triangle"></i> No active students assigned to this batch.
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading students:', error);
+                studentOptions = [{
+                    value: '',
+                    name: 'Failed to load students',
+                    html: '<i class="fas fa-exclamation-circle"></i> Failed to load students'
+                }];
+                renderStudentOptions('');
+                studentInfo.innerHTML = `
+                    <div class="alert alert-danger mt-2">
+                        <i class="fas fa-exclamation-triangle"></i> Failed to load students. Please try again.
+                    </div>
+                `;
+            });
+    }
+
+    // =========================
+    // EVENTS
+    // =========================
+
+    typeSelect.addEventListener('change', toggleFields);
+    
+    originalBatchSelect.addEventListener('change', function () {
+        const batchId = this.value;
+        if (typeSelect.value === 'individual' && batchId) {
+            loadStudents(batchId);
+        } else if (typeSelect.value === 'individual' && !batchId) {
+            studentOptions = [];
+            renderStudentOptions('');
+            studentInfo.innerHTML = `
+                <div class="alert alert-warning mt-2">
+                    <i class="fas fa-info-circle"></i> Please select a batch first.
+                </div>
+            `;
+        }
     });
+
+    // =========================
+    // INITIAL LOAD
+    // =========================
+    initBatchDropdown();
+    toggleFields();
+
+    // Auto-load students if batch already selected
+    if (originalBatchSelect.value && typeSelect.value === 'individual') {
+        loadStudents(originalBatchSelect.value);
+    }
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(e) {
+        if (batchDropdown && !batchDropdown.contains(e.target)) {
+            if (batchMenu) batchMenu.classList.remove('show');
+        }
+        if (studentDropdown && !studentDropdown.contains(e.target)) {
+            if (studentMenu) studentMenu.classList.remove('show');
+        }
+    });
+    
+    // Prevent click inside menus from closing
+    if (batchMenu) {
+        batchMenu.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    }
+    if (studentMenu) {
+        studentMenu.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    }
+});
 </script>
-{% endblock %}  
+{% endblock %}

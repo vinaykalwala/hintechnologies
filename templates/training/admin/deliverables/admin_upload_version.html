@@ -1,67 +1,633 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card">
+<style>
+    /* ============================================ */
+    /* MINIMAL DESIGN - ONLY WHAT YOU ASKED */
+    /* ============================================ */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #f0f2f5;
+    }
+    
+    /* Hero Section with Shapes */
+    .hero-section {
+        background: linear-gradient(135deg, #0B3D91 0%, #1a4fa8 50%, #e74c3c 100%);
+        position: relative;
+        overflow: hidden;
+        padding: 60px 32px;
+        margin-bottom: 40px;
+    }
+    
+    .hero-section .shape {
+        position: absolute;
+        background: rgba(255,255,255,0.08);
+        border-radius: 50%;
+        animation: floatShape 15s infinite ease-in-out;
+    }
+    
+    .shape-1 {
+        width: 250px;
+        height: 250px;
+        top: -80px;
+        right: -50px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1), transparent);
+        animation-delay: 0s;
+    }
+    
+    .shape-2 {
+        width: 180px;
+        height: 180px;
+        bottom: -60px;
+        left: 10%;
+        background: radial-gradient(circle, rgba(231,76,60,0.15), transparent);
+        animation-delay: 2s;
+    }
+    
+    .shape-3 {
+        width: 120px;
+        height: 120px;
+        top: 30%;
+        left: 30%;
+        background: radial-gradient(circle, rgba(255,255,255,0.12), transparent);
+        animation-delay: 4s;
+    }
+    
+    .shape-4 {
+        width: 300px;
+        height: 300px;
+        bottom: -100px;
+        right: 15%;
+        background: radial-gradient(circle, rgba(11,61,145,0.15), transparent);
+        animation-delay: 1s;
+    }
+    
+    .shape-5 {
+        width: 80px;
+        height: 80px;
+        top: 15%;
+        right: 25%;
+        background: radial-gradient(circle, rgba(255,255,255,0.2), transparent);
+        animation-delay: 3s;
+    }
+    
+    @keyframes floatShape {
+        0%, 100% {
+            transform: translateY(0) scale(1);
+        }
+        50% {
+            transform: translateY(-30px) scale(1.05);
+        }
+    }
+    
+    .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+        position: relative;
+        z-index: 10;
+    }
+    
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        padding: 6px 18px;
+        border-radius: 60px;
+        font-size: 12px;
+        font-weight: 600;
+        color: rgba(255,255,255,0.95);
+        margin-bottom: 20px;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .hero-content h1 {
+        font-size: 42px;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 16px;
+        letter-spacing: -1px;
+    }
+    
+    .hero-content h1 span {
+        background: linear-gradient(135deg, #ff8a8a, #ff5e5e);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+    
+    .hero-content p {
+        font-size: 16px;
+        color: rgba(255,255,255,0.85);
+        max-width: 550px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+    
+    /* Container */
+    .upload-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 32px 60px;
+    }
+    
+    /* Two Column Layout - Right Fixed */
+    .two-columns {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 32px;
+        align-items: start;
+    }
+    
+    .left-column {
+        min-width: 0;
+    }
+    
+    .right-column {
+        position: sticky;
+        top: 30px;
+        align-self: start;
+    }
+    
+    /* Cards */
+    .main-card {
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+    
+    .card-header {
+        background: linear-gradient(135deg, #0B3D91, #092c6e);
+        padding: 20px 28px;
+    }
+    
+    .card-header h4 {
+        color: white;
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .card-header h4 i {
+        font-size: 20px;
+    }
+    
+    .card-body {
+        padding: 28px;
+    }
+    
+    /* Student Info */
+    .info-section {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 24px;
+        border: 1px solid #eef2f8;
+    }
+    
+    .info-section h5 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .info-section h5 i {
+        color: #0B3D91;
+    }
+    
+    .info-section h6 {
+        font-size: 14px;
+        font-weight: 500;
+        color: #475569;
+        margin-bottom: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .info-section h6 i {
+        color: #e74c3c;
+    }
+    
+    .divider {
+        height: 1px;
+        background: #e2e8f0;
+        margin: 16px 0;
+    }
+    
+    /* Form Fields - NO CUSTOM STYLING, LET DEFAULT */
+    form p {
+        margin-bottom: 20px;
+    }
+    
+    form label {
+        font-weight: 600;
+        font-size: 13px;
+        color: #334155;
+        display: block;
+        margin-bottom: 6px;
+    }
+    
+    form input, form select, form textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-family: 'Inter', sans-serif;
+        font-size: 14px;
+    }
+    
+    form input:focus, form select:focus, form textarea:focus {
+        outline: none;
+        border-color: #0B3D91;
+        ring: 2px solid rgba(11,61,145,0.1);
+    }
+    
+    /* Alert Box */
+    .alert-info {
+        background: #eef2ff;
+        border-left: 4px solid #0B3D91;
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin: 24px 0;
+    }
+    
+    .alert-info strong {
+        color: #0B3D91;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .alert-info ul {
+        margin: 10px 0 0 20px;
+        font-size: 12px;
+        color: #475569;
+        line-height: 1.6;
+    }
+    
+    /* Buttons */
+    .btn-group {
+        display: flex;
+        gap: 14px;
+        margin-top: 8px;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #0B3D91, #092c6e);
+        color: white;
+        padding: 12px 28px;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(11,61,145,0.3);
+    }
+    
+    .btn-secondary {
+        background: #f1f5f9;
+        color: #475569;
+        padding: 12px 28px;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .btn-secondary:hover {
+        background: #e2e8f0;
+        transform: translateY(-2px);
+    }
+    
+    /* Version History Sidebar */
+    .history-card {
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+    
+    .history-header {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        padding: 20px 24px;
+    }
+    
+    .history-header h4 {
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .history-body {
+        padding: 20px;
+        max-height: 500px;
+        overflow-y: auto;
+    }
+    
+    .version-item {
+        border-bottom: 1px solid #edf2f7;
+        padding-bottom: 14px;
+        margin-bottom: 14px;
+    }
+    
+    .version-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    
+    .version-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    
+    .version-number {
+        font-weight: 700;
+        font-size: 13px;
+        color: #1e293b;
+        background: #f1f5f9;
+        padding: 3px 10px;
+        border-radius: 20px;
+    }
+    
+    .badge {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .badge.bg-success {
+        background: #d1fae5;
+        color: #059669;
+    }
+    
+    .badge.bg-warning {
+        background: #fed7aa;
+        color: #b45309;
+    }
+    
+    .badge.bg-danger {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+    
+    .version-meta {
+        font-size: 11px;
+        color: #94a3b8;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .version-meta i {
+        font-size: 10px;
+        margin-right: 2px;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+    }
+    
+    .empty-state i {
+        font-size: 48px;
+        color: #cbd5e1;
+        margin-bottom: 12px;
+    }
+    
+    .empty-state p {
+        font-size: 13px;
+        color: #94a3b8;
+    }
+    
+    /* Scrollbar */
+    .history-body::-webkit-scrollbar {
+        width: 4px;
+    }
+    
+    .history-body::-webkit-scrollbar-track {
+        background: #e2e8f0;
+        border-radius: 10px;
+    }
+    
+    .history-body::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 1000px) {
+        .two-columns {
+            grid-template-columns: 1fr;
+        }
+        
+        .right-column {
+            position: static;
+        }
+        
+        .upload-container {
+            padding: 0 20px 40px;
+        }
+        
+        .hero-content h1 {
+            font-size: 32px;
+        }
+    }
+    
+    @media (max-width: 600px) {
+        .btn-group {
+            flex-direction: column;
+        }
+        
+        .btn-primary, .btn-secondary {
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .hero-section {
+            padding: 40px 20px;
+        }
+        
+        .hero-content h1 {
+            font-size: 24px;
+        }
+    }
+</style>
+
+<!-- Hero Section with Shapes -->
+<div class="hero-section">
+   
+    
+    <div class="hero-content">
+        <div class="hero-badge">
+            <i class="fas fa-shield-alt"></i> Admin Portal
+        </div>
+        <h1>Upload <span>Admin Version</span></h1>
+        <p>Review, manage and publish new versions for student deliverables with complete version control</p>
+    </div>
+</div>
+
+<div class="upload-container">
+    <div class="two-columns">
+        <!-- Left Column - Form -->
+        <div class="left-column">
+            <div class="main-card">
                 <div class="card-header">
-                    <h4>Upload Admin Version</h4>
+                    <h4>
+                        <i class="fas fa-upload"></i>
+                        Upload Admin Version
+                    </h4>
                 </div>
                 <div class="card-body">
-                    <h5>Student: {{ student_record.student.user.get_full_name }}</h5>
-                    <h6>Deliverable: {{ deliverable.title }}</h6>
-                    <hr>
-
+                    <!-- Student & Deliverable Info -->
+                    <div class="info-section">
+                        <h5>
+                            <i class="fas fa-user-graduate"></i>
+                            Student: {{ student_record.student.user.get_full_name }}
+                        </h5>
+                        <h6>
+                            <i class="fas fa-tasks"></i>
+                            Deliverable: {{ deliverable.title }}
+                        </h6>
+                        <div class="divider"></div>
+                    </div>
+                    
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
+                        
+                        <!-- ORIGINAL FORM FIELDS - NO EXTRA STYLING -->
                         {{ form.as_p }}
-
-                        <div class="alert alert-info">
-                            <strong>Note:</strong> Uploading an admin version will automatically:
-                            <ul class="mb-0 mt-2">
-                                <li>Create a new version for the student</li>
+                        
+                        <!-- Alert Box -->
+                        <div class="alert-info">
+                            <strong>
+                                <i class="fas fa-info-circle"></i>
+                                Note:
+                            </strong>
+                            <ul>
+                                <li>Uploading an admin version will automatically create a new version for the student</li>
                                 <li>If marked as approved, student can download this version</li>
                                 <li>The student will be notified of the new version</li>
                             </ul>
                         </div>
-
-                        <button type="submit" class="btn btn-primary">Upload Version</button>
-                        <a href="{% url 'training:admin_student_deliverable_detail' student_record.id %}" class="btn btn-secondary">Cancel</a>
+                        
+                        <!-- Action Buttons -->
+                        <div class="btn-group">
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-upload"></i> Upload Version
+                            </button>
+                            <a href="{% url 'training:admin_student_deliverable_detail' student_record.id %}" class="btn-secondary">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
-
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <h4>Version History</h4>
+        
+        <!-- Right Column - Version History (Fixed/Sticky) -->
+        <div class="right-column">
+            <div class="history-card">
+                <div class="history-header">
+                    <h4>
+                        <i class="fas fa-history"></i>
+                        Version History
+                    </h4>
                 </div>
-                <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                <div class="history-body">
                     {% if versions %}
                         {% for ver in versions %}
-                            <div class="border-bottom mb-3 pb-3">
-                                <div class="d-flex justify-content-between">
-                                    <strong>v{{ ver.version_number }}</strong>
+                            <div class="version-item">
+                                <div class="version-header">
+                                    <span class="version-number">
+                                        <i class="fas fa-code-branch"></i> v{{ ver.version_number }}
+                                    </span>
                                     <span class="badge 
                                         {% if ver.status == 'approved' %}bg-success
                                         {% elif ver.status == 'pending' %}bg-warning
                                         {% else %}bg-danger{% endif %}">
+                                        <i class="fas 
+                                            {% if ver.status == 'approved' %}fa-check-circle
+                                            {% elif ver.status == 'pending' %}fa-clock
+                                            {% else %}fa-times-circle{% endif %}"></i>
                                         {{ ver.get_status_display }}
                                     </span>
                                 </div>
-                                <small>By: {{ ver.get_submitter_type_display }}</small>
-                                <br>
-                                <small>{{ ver.submitted_at|date:"Y-m-d H:i" }}</small>
+                                <div class="version-meta">
+                                    <span><i class="fas fa-user-shield"></i> By: {{ ver.get_submitter_type_display }}</span>
+                                    <span><i class="fas fa-calendar-alt"></i> {{ ver.submitted_at|date:"Y-m-d H:i" }}</span>
+                                </div>
+                                {% if ver.comments %}
+                                    <div style="font-size: 11px; color: #64748b; margin-top: 8px; padding-top: 6px; border-top: 1px solid #edf2f7;">
+                                        <i class="fas fa-quote-left"></i> {{ ver.comments|truncatechars:50 }}
+                                    </div>
+                                {% endif %}
                             </div>
                         {% endfor %}
                     {% else %}
-                        <p>No versions yet</p>
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>No versions yet</p>
+                        </div>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 {% endblock %}

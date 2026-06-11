@@ -1,157 +1,1932 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>{{ deliverable.title }}</h2>
-        <div>
-            <a href="{% url 'training:student_submit_deliverable' deliverable.id %}" class="btn btn-primary">
-                <i class="fas fa-upload"></i> Submit New Version
-            </a>
-            <a href="{% url 'training:student_deliverables' %}" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Back to Deliverables
-            </a>
+{% load static %}
+
+<style>
+    :root {
+
+        --primary-red: #C62828;
+        --dark-red: #8e0e12;
+
+        --logo-blue: #0B3D91;
+        --light-blue: #f5f9ff;
+
+        --bg: #f7fafe;
+        --text: #1a1a2e;
+
+        --glass: rgba(255, 255, 255, .75);
+
+        --white: #ffffff;
+
+        --border: #e2e8f0;
+
+        --success-bg: #ecfdf3;
+        --success: #16a34a;
+
+        --warning-bg: #fff7ed;
+        --warning: #ea580c;
+
+        --danger-bg: #fef2f2;
+        --danger: #dc2626;
+
+        --shadow:
+            0 10px 35px rgba(11, 61, 145, .08);
+
+        --transition: all .3s ease;
+    }
+
+    body {
+        background: var(--bg);
+        color: var(--text);
+        overflow-x: hidden;
+    }
+
+    .container {
+        max-width: 1450px;
+    }
+
+    /* ===================================================== */
+    /* PAGE */
+    /* ===================================================== */
+
+    .deliverable-page {
+        padding: 0 0 20px;
+    }
+
+    /* ===================================================== */
+    /* HERO */
+    /* ===================================================== */
+
+    .hero-banner {
+
+        background: linear-gradient(135deg,
+            rgba(11, 61, 145, .95),
+            rgba(142, 14, 18, .92)),
+        url('{% static "images/hero-bg1.avif" %}');
+        background-size: cover;
+        background-position: center;
+        min-height: 150px;
+
+        display: flex;
+        align-items: center;
+
+        padding: 22px 0;
+
+
+        position: relative;
+
+        overflow: hidden;
+
+        margin-bottom: 14px;
+    }
+
+    .hero-banner::before {
+        content: '';
+        position: absolute;
+        display: none;
+
+        width: 500px;
+        height: 500px;
+
+        right: -150px;
+        top: -180px;
+
+        background:
+            radial-gradient(circle,
+                rgba(91, 75, 255, .25),
+                transparent 70%);
+    }
+
+    .hero-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        position: relative;
+        z-index: 2;
+        gap: 30px;
+        flex-wrap: wrap;
+    }
+
+    .hero-left {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex: 1;
+    }
+
+    .hero-text {
+
+        display: flex;
+
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .hero-icon {
+
+        width: 66px;
+        height: 66px;
+
+        border-radius: 18px;
+
+        background:
+            linear-gradient(135deg,
+                var(--primary-red),
+                var(--dark-red));
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 34px;
+
+        color: white;
+        flex-shrink: 0;
+
+        box-shadow: none;
+    }
+
+    .hero-title {
+
+        font-size: 26px;
+        font-weight: 700;
+
+        color: white;
+
+        margin-bottom: 10px;
+
+        line-height: 1.2;
+    }
+
+    .hero-badge {
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+
+        padding: 6px 12px;
+
+        border-radius: 6px;
+
+        background: rgba(255, 255, 255, .12);
+
+        border: 1px solid rgba(255, 255, 255, .18);
+
+        color: white;
+
+        font-size: 11px;
+
+        backdrop-filter: blur(12px);
+        font-weight: 500;
+    }
+
+    .hero-btns {
+        text-decoration: none !important;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-top: 0;
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+
+    .submit-btn {
+        text-decoration: none !important;
+
+
+        background:
+            linear-gradient(135deg,
+                var(--primary-red),
+                var(--dark-red));
+
+        color: white;
+
+        border: none;
+
+        padding: 10px 22px;
+
+        border-radius: 14px;
+
+        font-weight: 600;
+        min-width: 195px;
+
+        height: 42px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        box-shadow: none;
+    }
+
+    .submit-btn:hover {
+
+        transform: translateY(-3px);
+
+        color: white;
+    }
+
+    .back-btn {
+        text-decoration: none !important;
+
+        background: transparent;
+
+        border: 1px solid rgba(255, 255, 255, .4);
+
+        color: white;
+
+        padding: 10px 20px;
+
+        border-radius: 10px;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+        height: 42px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        min-width: 180px;
+    }
+
+    .back-btn:hover {
+
+        background: white;
+
+        color: var(--logo-blue);
+
+        transform: translateY(-3px);
+    }
+
+    /* ===================================================== */
+    /* LAYOUT */
+    /* ===================================================== */
+    .dashboard-grid {
+
+        display: grid;
+
+        grid-template-columns:
+            minmax(0, 2.2fr) minmax(360px, .95fr);
+
+        gap: 20px;
+
+        align-items: start;
+    }
+
+    /* ===================================================== */
+    /* CARDS */
+    /* ===================================================== */
+    .dashboard-grid {
+
+        display: grid;
+
+        grid-template-columns:
+            minmax(0, 3fr) minmax(320px, .9fr);
+
+        gap: 24px;
+
+        align-items: start;
+    }
+
+    .main-card {
+
+        width: 100%;
+
+        overflow: hidden;
+    }
+
+    .card-header-custom,
+    .side-head {
+
+        padding: 18px 24px;
+
+        border-bottom: 1px solid #edf2f7;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 12px;
+    }
+
+    .card-icon {
+        font-size: 28px;
+        color: #6d4dff;
+    }
+
+    .card-title,
+    .side-head h4 {
+
+        margin: 0;
+
+        font-size: 18px;
+
+        font-weight: 700;
+
+        color: var(--text);
+    }
+
+    .side-head h4 {
+        border-bottom: 1px solid #0b0c0e;
+    }
+
+    .card-body-custom,
+    .side-body {
+
+        padding: 18px 24px;
+    }
+
+    /* ===================================================== */
+    /* DESCRIPTION - UPDATED: 3 lines with smooth scroll */
+    /* ===================================================== */
+
+    .description-text {
+
+        color: #374151;
+
+        line-height: 1.9;
+
+        font-size: 15px;
+
+        /* ✅ Exactly 3 lines (approx 4.5rem based on line-height 1.9 * 15px = 28.5px per line) */
+        max-height: 85.5px;
+
+        overflow-y: auto;
+
+        overflow-x: hidden;
+
+        padding-right: 10px;
+
+        scroll-behavior: smooth;
+
+        word-break: break-word;
+    }
+
+    /* ✅ Custom smooth scrollbar for description (optional but nice) */
+    .description-text::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .description-text::-webkit-scrollbar-track {
+        background: #eef2ff;
+        border-radius: 20px;
+    }
+
+    .description-text::-webkit-scrollbar-thumb {
+        background: #c7d2fe;
+        border-radius: 20px;
+    }
+
+    .description-text::-webkit-scrollbar-thumb:hover {
+        background: #818cf8;
+    }
+
+    /* ===================================================== */
+    /* APPROVED */
+    /* ===================================================== */
+
+    .approved-box {
+
+        margin-top: 30px;
+
+        background: var(--success-bg);
+
+        border: 1px solid #bbf7d0;
+
+        border-radius: 20px;
+
+        padding: 28px;
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        gap: 20px;
+
+        flex-wrap: wrap;
+    }
+
+    .approved-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .approved-icon {
+        width: 55px;
+        height: 55px;
+
+        border-radius: 50%;
+
+        background: #28a745;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        color: white;
+
+        font-size: 22px;
+    }
+
+    .approved-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1f3b2d;
+    }
+
+    .approved-text {
+        color: #4b5563;
+        margin-top: 4px;
+    }
+
+    .download-approved {
+        background: #28a745;
+
+        color: white;
+
+        border: none;
+
+        padding: 13px 24px;
+
+        border-radius: 12px;
+
+        font-weight: 600;
+        text-decoration: none !important;
+    }
+
+    .download-approved:hover {
+        background: #24963f;
+        color: white;
+    }
+
+    /* ===================================================== */
+    /* VERSION TABLE - FULL PAGE WIDTH (no restrictions) */
+    /* ===================================================== */
+    .table-wrapper {
+
+        width: 100%;
+
+        /* ✅ Ensure it takes full available width of parent */
+        max-width: 100%;
+
+        border: 1px solid #ede9fe;
+
+        border-radius: 14px;
+
+        overflow-x: auto;
+
+        background: white;
+
+        /* ✅ No max-width limitations, spans full container/page width */
+    }
+
+    .table-wrapper {
+
+        scroll-behavior: smooth;
+    }
+
+    .table-wrapper::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-wrapper::-webkit-scrollbar-track {
+        background: #eef2ff;
+        border-radius: 20px;
+    }
+
+    .table-wrapper::-webkit-scrollbar-thumb {
+        background: #c7d2fe;
+        border-radius: 20px;
+    }
+
+    .table-wrapper::-webkit-scrollbar-thumb:hover {
+        background: #818cf8;
+    }
+
+    .table {
+
+        width: 100%;
+
+        /* ✅ Table uses full width, no min-width restrictions that clip content */
+        min-width: 100%;
+
+        table-layout: auto;
+
+        margin: 0;
+
+        border-collapse: collapse;
+
+        border-spacing: 0;
+    }
+
+    .table thead {
+        background: #f7f5ff;
+    }
+
+    .table thead th {
+        padding: 18px 20px;
+        font-size: 14px;
+        font-weight: 700;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .table tbody td {
+        padding: 18px 20px;
+
+
+
+        font-size: 13px;
+        text-align: center;
+        vertical-align: middle;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    .table tbody tr {
+        height: 90px;
+    }
+
+    .table tbody tr:hover {
+        background: #fafbff;
+    }
+
+    .table th:nth-child(1),
+    .table td:nth-child(1) {
+        width: 12%;
+    }
+
+    .table th:nth-child(2),
+    .table td:nth-child(2) {
+        width: 22%;
+    }
+
+    .table th:nth-child(3),
+    .table td:nth-child(3) {
+        width: 26%;
+    }
+
+    .table th:nth-child(4),
+    .table td:nth-child(4) {
+        width: 20%;
+    }
+
+    .table th:nth-child(5),
+    .table td:nth-child(5) {
+        width: 20%;
+        text-align: center;
+    }
+
+    .table th:nth-child(6),
+    .table td:nth-child(6) {
+        width: 140px;
+        text-align: center;
+    }
+
+    .comment-box {
+
+        max-height: 72px;
+
+        overflow-y: auto;
+
+        overflow-x: hidden;
+
+        padding-right: 8px;
+
+        word-break: break-word;
+
+        line-height: 1.6;
+
+        scroll-behavior: smooth;
+    }
+
+    .comment-box::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .comment-box::-webkit-scrollbar-track {
+        background: #f3f4f6;
+        border-radius: 20px;
+    }
+
+    .comment-box::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 20px;
+    }
+
+    .comment-box::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+    /* ===================================================== */
+    /* VERSION BADGE */
+    /* ===================================================== */
+
+    .version-pill {
+        background: #f3f0ff;
+        color: #5B4BFF;
+
+        padding: 8px 12px;
+
+        border-radius: 10px;
+
+        font-weight: 700;
+        font-size: 13px;
+    }
+
+    /* ===================================================== */
+    /* STATUS BADGES */
+    /* ===================================================== */
+    .status-pill {
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 12px 22px;
+
+        border-radius: 14px;
+
+        font-size: 13px;
+        font-weight: 700;
+
+        line-height: 1.4;
+
+        min-height: 48px;
+
+        min-width: 150px;
+
+        text-align: center;
+
+        white-space: normal;
+    }
+
+    .approved-pill {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .pending-pill {
+        background: #ffedd5;
+        color: #ea580c;
+    }
+
+    .rejected-pill {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .revision-pill {
+        background: #eef2ff;
+        color: #4f46e5;
+    }
+
+    /* ===================================================== */
+    /* DOWNLOAD BTN */
+    /* ===================================================== */
+
+    .download-btn {
+        border: 1px solid #c4b5fd;
+
+        color: #5B4BFF;
+
+        background: white;
+
+        padding: 10px 18px;
+
+        border-radius: 10px;
+
+        font-weight: 600;
+        text-decoration: none !important;
+    }
+
+    .download-btn {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+    }
+
+    .download-btn:hover {
+        background: #5B4BFF;
+        color: white;
+    }
+
+    /* ===================================================== */
+    /* SIDE CARD */
+    /* ===================================================== */
+
+
+
+    .side-head i {
+        color: #6d4dff;
+        font-size: 26px;
+    }
+
+
+    /* ===================================================== */
+    /* STATUS INFO */
+    /* ===================================================== */
+
+    .side-body {
+        padding: 24px;
+    }
+
+    .status-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+
+        padding-bottom: 24px;
+
+        margin-bottom: 24px;
+
+        border-bottom: 1px solid #171718;
+    }
+
+    .info-title {
+        color: #374151;
+        font-size: 16px;
+    }
+
+    .side-info {
+        border-top: 1px solid #edf2f7;
+        padding-top: 20px;
+    }
+
+    .info-row {
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        gap: 20px;
+
+        padding: 24px 0;
+
+        border-bottom: 1px solid #0b0c0e;
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        color: #374151;
+    }
+
+    .info-right {
+        color: #111827;
+        font-weight: 500;
+    }
+
+    /* ===================================================== */
+    /* EMPTY */
+    /* ===================================================== */
+    .empty-box {
+        text-align: center;
+        padding: 70px 20px;
+        background: white;
+        border-radius: 24px;
+        border: 1px dashed #dbe2ea;
+        margin-top: 10px;
+    }
+
+    .empty-box img {
+        width: 140px;
+        margin-bottom: 20px;
+        opacity: .95;
+    }
+
+    .empty-box h4 {
+        font-size: 42px;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 10px;
+    }
+
+    .empty-box p {
+        color: #6b7280;
+        font-size: 16px;
+        margin-bottom: 28px;
+    }
+
+    /* NEW BUTTON */
+    .first-version-btn {
+        text-decoration: none !important;
+
+        background: linear-gradient(135deg, #C62828, #8e0e12);
+
+        color: white !important;
+
+        border: none;
+
+        padding: 14px 30px;
+
+        border-radius: 14px;
+
+        font-weight: 600;
+
+        font-size: 15px;
+
+        display: inline-flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        gap: 10px;
+
+        width: auto !important;
+
+        min-width: 260px;
+
+        transition: .3s ease;
+
+        box-shadow:
+            0 10px 25px rgba(198, 40, 40, .18);
+
+    }
+
+    .first-version-btn:hover {
+
+        transform: translateY(-3px);
+
+        box-shadow:
+            0 14px 30px rgba(198, 40, 40, .28);
+
+        color: white;
+    }
+
+    /* ===================================================== */
+    /* RESPONSIVE STYLES - All Screen Sizes */
+    /* ===================================================== */
+
+    /* Extra Large Devices (Large Desktops, 1400px and up) */
+    @media (min-width: 1400px) {
+        .container {
+            max-width: 1320px;
+        }
+
+        .hero-content {
+            gap: 400px;
+        }
+
+        .dashboard-grid {
+            gap: 30px;
+        }
+    }
+
+    /* Large Devices (Desktops, 1200px to 1399px) */
+    @media (max-width: 1399.98px) {
+        .hero-title {
+            font-size: 24px;
+        }
+
+        .hero-content {
+            gap: 300px;
+        }
+
+        .submit-btn,
+        .back-btn {
+            min-width: 160px;
+            padding: 8px 18px;
+        }
+    }
+
+    /* Medium Devices (Tablets, 992px to 1199px) */
+    @media (max-width: 1199.98px) {
+
+        /* Hero Section */
+        .hero-content {
+            gap: 200px;
+        }
+
+        .hero-title {
+            font-size: 22px;
+        }
+
+        .hero-icon {
+            width: 55px;
+            height: 55px;
+            font-size: 28px;
+        }
+
+        /* Dashboard Grid - Switch to Single Column */
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        /* Table adjustments */
+        .table thead th,
+        .table tbody td {
+            padding: 12px 16px;
+        }
+
+        .table tbody tr {
+            height: auto;
+        }
+
+        /* Version Badge */
+        .version-pill {
+            white-space: nowrap;
+        }
+
+        /* Status Badges */
+        .status-pill {
+            white-space: nowrap;
+        }
+
+        /* Download Button */
+        .download-btn {
+            padding: 8px 14px;
+            font-size: 12px;
+        }
+
+        .download-btn i {
+            margin-right: 6px;
+        }
+
+        /* Approved Box */
+        .approved-box {
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .approved-left {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .download-approved {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    /* Small Devices (Landscape Phones, 768px to 991px) */
+    @media (max-width: 991.98px) {
+
+        /* Hero Banner */
+        .hero-banner {
+            min-height: auto;
+            padding: 30px 0;
+        }
+
+        .hero-content {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .hero-left {
+            width: 100%;
+        }
+
+        .hero-btns {
+            margin-left: 0;
+            width: 100%;
+            justify-content: flex-start;
+        }
+
+        .hero-title {
+            font-size: 20px;
+        }
+
+        .hero-badge {
+            font-size: 10px;
+            padding: 4px 10px;
+        }
+
+        .hero-icon {
+            width: 48px;
+            height: 48px;
+            font-size: 24px;
+            border-radius: 14px;
+        }
+
+        .submit-btn,
+        .back-btn {
+            min-width: 140px;
+            padding: 8px 16px;
+            font-size: 13px;
+            height: 38px;
+        }
+
+        /* Cards */
+        .card-header-custom,
+        .side-head {
+            padding: 14px 20px;
+        }
+
+        .card-body-custom,
+        .side-body {
+            padding: 16px 20px;
+        }
+
+        .card-title,
+        .side-head h4 {
+            font-size: 16px;
+        }
+
+        .card-icon,
+        .side-head i {
+            font-size: 22px;
+        }
+
+        /* Table - Make it more compact */
+        .table thead th,
+        .table tbody td {
+            padding: 10px 12px;
+            font-size: 12px;
+        }
+
+        .table thead th {
+            font-size: 12px;
+        }
+
+        .version-pill {
+            padding: 6px 10px;
+            font-size: 11px;
+        }
+
+        .status-pill {
+            padding: 5px 10px;
+            font-size: 11px;
+        }
+
+        .comment-box {
+            max-height: 60px;
+            font-size: 12px;
+        }
+
+        /* Empty State */
+        .empty-box {
+            padding: 40px 20px;
+        }
+
+        .empty-box h4 {
+            font-size: 28px;
+        }
+
+        .empty-box p {
+            font-size: 14px;
+        }
+
+        .first-version-btn {
+            padding: 12px 24px;
+            min-width: 220px;
+            font-size: 14px;
+        }
+
+        .empty-box img {
+            width: 100px;
+        }
+
+        /* Side Card Info Rows */
+        .info-row {
+            padding: 12px 0;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .info-left,
+        .info-right {
+            font-size: 13px;
+        }
+
+        .status-row {
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+    }
+
+    /* Extra Small Devices (Phones, 576px to 767px) */
+    @media (max-width: 767.98px) {
+
+        /* Hero Section */
+        .hero-text {
+            gap: 8px;
+        }
+
+        .hero-title {
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .hero-left {
+            gap: 12px;
+        }
+
+        .hero-icon {
+            width: 42px;
+            height: 42px;
+            font-size: 20px;
+            border-radius: 12px;
+        }
+
+        .hero-btns {
+            flex-direction: column;
+            width: 100%;
+            gap: 10px;
+        }
+
+        .submit-btn,
+        .back-btn {
+            width: 100%;
+            min-width: unset;
+        }
+
+        /* Table - Horizontal scroll is already handled by overflow-x: auto */
+        /* But we can adjust cell content */
+        .table thead th,
+        .table tbody td {
+            padding: 10px 12px;
+            font-size: 11px;
+        }
+
+        /* Ensure table doesn't get too cramped */
+        .table-wrapper {
+            border-radius: 12px;
+        }
+
+        /* Make badges more compact */
+        .version-pill {
+            padding: 4px 8px;
+            font-size: 10px;
+            white-space: nowrap;
+        }
+
+        .status-pill {
+            padding: 4px 8px;
+            font-size: 10px;
+            white-space: nowrap;
+        }
+
+        .download-btn {
+            padding: 6px 10px;
+            font-size: 11px;
+        }
+
+        .download-btn i {
+            font-size: 10px;
+            margin-right: 4px;
+        }
+
+        /* Description - keep 3 lines but adjust font size */
+        .description-text {
+            font-size: 13px;
+            line-height: 1.6;
+            max-height: 62.4px;
+            /* 13px * 1.6 * 3 = 62.4px */
+        }
+
+        /* Approved Box */
+        .approved-icon {
+            width: 45px;
+            height: 45px;
+            font-size: 18px;
+        }
+
+        .approved-title {
+            font-size: 16px;
+        }
+
+        .approved-text {
+            font-size: 12px;
+        }
+
+        .download-approved {
+            padding: 10px 20px;
+            font-size: 13px;
+        }
+
+        /* Empty State */
+        .empty-box {
+            padding: 30px 15px;
+        }
+
+        .empty-box h4 {
+            font-size: 24px;
+        }
+
+        .empty-box p {
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .first-version-btn {
+            padding: 10px 20px;
+            min-width: 200px;
+            font-size: 13px;
+        }
+
+        /* Side Card */
+        .side-head {
+            padding: 12px 16px;
+        }
+
+        .side-body {
+            padding: 14px 16px;
+        }
+
+        .info-row {
+            padding: 10px 0;
+        }
+
+        .info-left,
+        .info-right {
+            font-size: 12px;
+        }
+
+        .info-left i {
+            font-size: 14px;
+            width: 20px;
+        }
+    }
+
+    /* Very Small Devices (Small Phones, up to 575px) */
+    @media (max-width: 575.98px) {
+
+        /* Container padding */
+        .container {
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        /* Hero */
+        .hero-banner {
+            padding: 20px 0;
+            margin-bottom: 10px;
+        }
+
+        .hero-title {
+            font-size: 16px;
+        }
+
+        .hero-badge {
+            font-size: 9px;
+            padding: 3px 8px;
+        }
+
+        .hero-icon {
+            width: 36px;
+            height: 36px;
+            font-size: 18px;
+            border-radius: 10px;
+        }
+
+        /* Cards */
+        .card-header-custom,
+        .side-head {
+            padding: 12px 14px;
+        }
+
+        .card-body-custom,
+        .side-body {
+            padding: 12px 14px;
+        }
+
+        .card-title,
+        .side-head h4 {
+            font-size: 15px;
+        }
+
+        /* Table cells - minimal padding */
+        .table thead th,
+        .table tbody td {
+            padding: 8px 10px;
+            font-size: 10px;
+        }
+
+        .version-pill {
+            padding: 3px 6px;
+            font-size: 9px;
+        }
+
+        .status-pill {
+            padding: 3px 6px;
+            font-size: 9px;
+        }
+
+        .download-btn {
+            padding: 5px 8px;
+            font-size: 10px;
+        }
+
+        .download-btn i {
+            margin-right: 3px;
+        }
+
+        /* Description */
+        .description-text {
+            font-size: 12px;
+            line-height: 1.5;
+            max-height: 54px;
+            /* 12px * 1.5 * 3 = 54px */
+        }
+
+        /* Approved Box */
+        .approved-box {
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .approved-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 16px;
+        }
+
+        .approved-title {
+            font-size: 14px;
+        }
+
+        .approved-text {
+            font-size: 11px;
+        }
+
+        .download-approved {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        /* Empty State */
+        .empty-box {
+            padding: 25px 15px;
+        }
+
+        .empty-box h4 {
+            font-size: 20px;
+        }
+
+        .empty-box p {
+            font-size: 12px;
+        }
+
+        .empty-box img {
+            width: 80px;
+            margin-bottom: 15px;
+        }
+
+        .first-version-btn {
+            padding: 8px 16px;
+            min-width: 180px;
+            font-size: 12px;
+        }
+
+        /* Side Card Info */
+        .info-left,
+        .info-right {
+            font-size: 11px;
+        }
+
+        .info-left i {
+            font-size: 12px;
+            width: 18px;
+        }
+
+        .status-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
+        }
+
+        .info-title {
+            font-size: 13px;
+        }
+    }
+
+    /* Landscape Mode for Phones (max-height: 500px) */
+    @media (max-height: 500px) and (orientation: landscape) {
+        .hero-banner {
+            min-height: 100px;
+            padding: 15px 0;
+        }
+
+        .hero-title {
+            font-size: 18px;
+        }
+
+        .dashboard-grid {
+            gap: 16px;
+        }
+
+        .table tbody tr {
+            height: auto;
+        }
+
+        .table tbody td {
+            padding: 6px 10px;
+        }
+    }
+
+    /* Print Styles (Optional - for better printing) */
+    @media print {
+
+        .hero-btns,
+        .submit-btn,
+        .back-btn,
+        .download-btn,
+        .first-version-btn,
+        .download-approved {
+            display: none !important;
+        }
+
+        .hero-banner {
+            background: #f0f0f0;
+            color: #000;
+            padding: 10px 0;
+        }
+
+        .hero-title {
+            color: #000;
+        }
+
+        .table-wrapper {
+            overflow-x: visible;
+        }
+
+        .table {
+            width: 100%;
+        }
+
+        .status-pill,
+        .version-pill {
+            border: 1px solid #ccc;
+            background: none;
+            color: #000;
+        }
+    }
+
+    /* Touch Device Optimizations */
+    @media (hover: none) and (pointer: coarse) {
+
+        /* Larger tap targets for touch devices */
+        .submit-btn,
+        .back-btn,
+        .download-btn,
+        .download-approved,
+        .first-version-btn {
+            min-height: 44px;
+        }
+
+        .table tbody tr {
+            cursor: pointer;
+        }
+
+        /* Improve scrollbar visibility on touch */
+        .description-text::-webkit-scrollbar,
+        .table-wrapper::-webkit-scrollbar,
+        .comment-box::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+    }
+</style>
+
+<div class="deliverable-page">
+
+    <!-- HERO -->
+
+    <div class="hero-banner">
+
+        <div class="container">
+
+            <div class="hero-content">
+
+                <div class="hero-left">
+
+                    <div class="hero-icon">
+                        <i class="fab fa-python"></i>
+                    </div>
+
+                    <div class="hero-text">
+
+                        <h1 class="hero-title">
+                            {{ deliverable.title }}
+                        </h1>
+
+                        <span class="hero-badge">
+                            {{ deliverable.get_deliverable_type_display }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="hero-btns">
+
+                    <a href="{% url 'training:student_submit_deliverable' deliverable.id %}" class="btn submit-btn">
+
+                        <i class="fas fa-upload me-2"></i>
+                        Submit New Version
+
+                    </a>
+
+                    <a href="{% url 'training:student_deliverables' %}" class="btn back-btn">
+
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Back to Deliverables
+
+                    </a>
+
+                </div>
+
+            </div>
         </div>
+
     </div>
 
-    <div class="row">
-        <div class="col-md-8">
-            <!-- Deliverable Description -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h4>Description</h4>
-                </div>
-                <div class="card-body">
-                    <p>{{ deliverable.description|linebreaks }}</p>
-                    {% if approved_version %}
-                        <div class="alert alert-success mt-3">
-                            <strong><i class="fas fa-check-circle"></i> Approved Version Available</strong><br>
-                            <a href="{% url 'training:student_download_approved' student_record.id %}" class="btn btn-success btn-sm mt-2">
-                                <i class="fas fa-download"></i> Download Approved Version
-                            </a>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
+    <!-- CONTENT -->
 
-            <!-- Version History -->
-            <div class="card">
-                <div class="card-header">
-                    <h4>Version History</h4>
+    <div class="container">
+
+        <div class="dashboard-grid">
+
+            <!-- LEFT -->
+
+            <div>
+
+                <!-- DESCRIPTION -->
+
+                <div class="main-card">
+
+                    <div class="card-header-custom">
+
+                        <i class="fas fa-file-alt card-icon"></i>
+
+                        <h3 class="card-title">
+                            Description
+                        </h3>
+
+                    </div>
+
+                    <div class="card-body-custom">
+
+                        <!-- ✅ Updated: only 3 lines visible, smooth scroll for remaining content -->
+                        <div class="description-text">
+
+                            {{ deliverable.description|linebreaks }}
+
+                        </div>
+
+                        {% if approved_version %}
+
+                        <div class="approved-box">
+
+                            <div class="approved-left">
+
+                                <div class="approved-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+
+                                <div>
+
+                                    <div class="approved-title">
+                                        Approved Version Available
+                                    </div>
+
+                                    <div class="approved-text">
+                                        You can download the latest approved version of this deliverable.
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <a href="{% url 'training:student_download_approved' student_record.id %}"
+                                class="btn download-approved">
+
+                                <i class="fas fa-download me-2"></i>
+                                Download Approved Version
+
+                            </a>
+
+                        </div>
+
+                        {% endif %}
+
+                    </div>
+
                 </div>
-                <div class="card-body">
-                    {% if versions %}
-                        <div class="table-responsive">
-                            <table class="table table-hover">
+
+                <!-- VERSION HISTORY - FULL PAGE WIDTH BELOW -->
+
+                <div class="main-card">
+
+                    <div class="card-header-custom">
+
+                        <i class="fas fa-history card-icon"></i>
+
+                        <h3 class="card-title">
+                            Version History
+                        </h3>
+
+                    </div>
+
+                    <div class="card-body-custom">
+
+                        {% if versions %}
+
+                        <div class="table-wrapper">
+
+                            <table class="table">
+
                                 <thead>
+
                                     <tr>
                                         <th>Version</th>
                                         <th>Submitted By</th>
                                         <th>Submitted At</th>
                                         <th>Status</th>
-                                        <th>Comments</th>
                                         <th>Action</th>
                                     </tr>
+
                                 </thead>
+
                                 <tbody>
+
                                     {% for version in versions %}
-                                        <tr>
-                                            <td><strong>v{{ version.version_number }}</strong></td>
-                                            <td>{{ version.get_submitter_type_display }}</td>
-                                            <td>{{ version.submitted_at|date:"Y-m-d H:i" }}</td>
-                                            <td>
-                                                {% if version.status == 'approved' %}
-                                                    <span class="badge bg-success">Approved</span>
-                                                {% elif version.status == 'pending' %}
-                                                    <span class="badge bg-warning">Pending</span>
-                                                {% elif version.status == 'rejected' %}
-                                                    <span class="badge bg-danger">Rejected</span>
-                                                {% elif version.status == 'revision_requested' %}
-                                                    <span class="badge bg-info">Revision Requested</span>
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                {% if version.comments %}
-                                                    <small class="text-muted">{{ version.comments|truncatechars:50 }}</small>
-                                                {% else %}
-                                                    <small class="text-muted">-</small>
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                <a href="{{ version.file.url }}" class="btn btn-sm btn-outline-primary" target="_blank">
-                                                    <i class="fas fa-download"></i> Download
-                                                </a>
-                                            </td>
-                                        </tr>
+
+                                    <tr>
+
+                                        <td>
+                                            <span class="version-pill">
+                                                v{{ version.version_number }}
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            {{ version.get_submitter_type_display }}
+                                        </td>
+
+                                        <td>
+                                            {{ version.submitted_at|date:"Y-m-d H:i" }}
+                                        </td>
+
+                                        <td>
+
+                                            {% if version.status == 'approved' %}
+
+                                            <span class="status-pill approved-pill">
+                                                Approved
+                                            </span>
+
+                                            {% elif version.status == 'pending' %}
+
+                                            <span class="status-pill pending-pill">
+                                                Pending
+                                            </span>
+
+                                            {% elif version.status == 'rejected' %}
+
+                                            <span class="status-pill rejected-pill">
+                                                Rejected
+                                            </span>
+
+                                            {% elif version.status == 'revision_requested' %}
+
+                                            <span class="status-pill revision-pill">
+                                                Revision Requested
+                                            </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+                                        <td>
+
+                                            <a href="{{ version.file.url }}" target="_blank" class="btn download-btn">
+
+                                                <i class="fas fa-download me-2"></i>
+                                                Download
+
+                                            </a>
+
+                                        </td>
+
+                                    </tr>
+
                                     {% endfor %}
+
                                 </tbody>
+
                             </table>
-                        </div>
-                    {% else %}
-                        <p class="text-muted">No versions submitted yet.</p>
-                        <a href="{% url 'training:student_submit_deliverable' deliverable.id %}" class="btn btn-primary">
-                            Submit First Version
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
 
-        <div class="col-md-4">
-            <!-- Status Card -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h4>Status</h4>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <strong>Submission Status:</strong><br>
-                        {% if student_record.is_approved %}
-                            <span class="badge bg-success">Approved</span>
-                        {% elif student_record.is_submitted %}
-                            <span class="badge bg-warning">Submitted - Pending Review</span>
+                        </div>
                         {% else %}
-                            <span class="badge bg-secondary">Not Started</span>
+
+                        <div class="empty-box">
+
+
+                            <img src="{% static 'images/empty-version.png' %}" alt="Empty State">
+                            <h4>Create Your 1st Version</h4>
+
+                            <p style="color:#6b7280; margin-top:10px;">
+                                You haven't submitted any version yet.
+                            </p>
+
+                            <a href="{% url 'training:student_submit_deliverable' deliverable.id %}"
+                                class="btn first-version-btn mt-4">
+
+                                <i class="fas fa-upload me-2"></i>
+                                Submit First Version
+
+                            </a>
+
+                        </div>
+
                         {% endif %}
+
                     </div>
-                    
-                    {% if latest_version %}
-                        <div class="mb-3">
-                            <strong>Latest Version:</strong> v{{ latest_version.version_number }}
-                        </div>
-                    {% endif %}
-                    
-                    {% if approved_version %}
-                        <div class="mb-3">
-                            <strong>Approved Version:</strong> v{{ approved_version.version_number }}
-                            <br>
-                            <small class="text-muted">Approved on: {{ approved_version.reviewed_at|date:"Y-m-d" }}</small>
-                        </div>
-                    {% endif %}
-                    
-                    {% if pending_version %}
-                        <div class="alert alert-warning">
-                            <strong>Pending Review</strong><br>
-                            Version v{{ pending_version.version_number }} is waiting for admin review.
-                        </div>
-                    {% endif %}
+
                 </div>
+
             </div>
 
-            <!-- Info Card -->
-            <div class="card">
-                <div class="card-header">
-                    <h4>Information</h4>
+            <!-- RIGHT -->
+
+            <div>
+
+                <!-- STATUS -->
+
+                <div class="side-card">
+
+                    <div class="side-head">
+
+                        <i class="fas fa-border-all"></i>
+
+                        <h4>Status</h4>
+
+                    </div>
+
+                    <div class="side-body">
+
+                        <div class="status-row">
+
+                            <div class="info-title">
+                                Submission Status:
+                            </div>
+
+                            <div>
+
+                                {% if student_record.is_approved %}
+
+                                <span class="status-pill approved-pill">
+                                    Approved
+                                </span>
+
+                                {% elif student_record.is_submitted %}
+
+                                <span class="status-pill pending-pill">
+                                    Submitted - Pending
+                                </span>
+
+                                {% else %}
+
+                                <span class="status-pill revision-pill">
+                                    Not Started
+                                </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                        <div class="side-info">
+
+                            <div class="info-row">
+
+                                <div class="info-left">
+                                    <i class="far fa-calendar"></i>
+                                    Assigned:
+                                </div>
+
+                                <div class="info-right">
+                                    {{ student_record.assigned_at|date:"Y-m-d" }}
+                                </div>
+
+                            </div>
+
+                            <div class="info-row">
+
+                                <div class="info-left">
+                                    <i class="far fa-user"></i>
+                                    Type:
+                                </div>
+
+                                <div class="info-right">
+                                    {{ deliverable.get_deliverable_type_display }}
+                                </div>
+
+                            </div>
+
+                            {% if deliverable.batch %}
+
+                            <div class="info-row">
+
+                                <div class="info-left">
+                                    <i class="fas fa-layer-group"></i>
+                                    Batch:
+                                </div>
+
+                                <div class="info-right">
+                                    {{ deliverable.batch.name }}
+                                </div>
+
+                            </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
                 </div>
-                <div class="card-body">
-                    <p><strong>Assigned:</strong> {{ student_record.assigned_at|date:"Y-m-d" }}</p>
-                    <p><strong>Type:</strong> {{ deliverable.get_deliverable_type_display }}</p>
-                    {% if deliverable.batch %}
-                        <p><strong>Batch:</strong> {{ deliverable.batch.name }}</p>
-                    {% endif %}
+
+                <!-- INFO -->
+
+                <div class="side-card">
+
+                    <div class="side-head">
+
+                        <i class="fas fa-info-circle"></i>
+
+                        <h4>Information</h4>
+
+                    </div>
+
+                    <div class="side-body">
+
+                        <div class="info-row">
+
+                            <div class="info-left">
+                                <i class="far fa-file"></i>
+                                Total Versions:
+                            </div>
+
+                            <div class="info-right">
+                                {{ versions|length }}
+                            </div>
+
+                        </div>
+
+                        <div class="info-row">
+
+                            <div class="info-left">
+                                <i class="far fa-check-circle"></i>
+                                Approved Version:
+                            </div>
+
+                            <div class="info-right">
+
+                                {% if approved_version %}
+                                Available
+                                {% else %}
+                                Not Available
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
+
 </div>
+
+
 {% endblock %}

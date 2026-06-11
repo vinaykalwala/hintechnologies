@@ -460,7 +460,7 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Stage</th>
+                                <!-- <th>Stage</th> -->
                                 <th>Title</th>
                                 <th>Description</th>
                                 <th>Batch Assignment</th>
@@ -472,11 +472,11 @@
                         <tbody>
                             {% for sd in deliverables %}
                                 <tr>
-                                    <td>
+                                    <!-- <td>
                                         <span class="stage-badge">
                                             <i class="fas fa-step-forward fa-sm"></i> Stage {{ sd.deliverable.stage_number }}
                                         </span>
-                                    </td>
+                                    </td> -->
                                     <td class="title-cell">
                                         <strong>{{ sd.deliverable.title }}</strong>
                                         <small><i class="far fa-calendar-alt"></i> Added: {{ sd.deliverable.created_at|date:"M d, Y" }}</small>
